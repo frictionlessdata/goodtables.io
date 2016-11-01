@@ -22,20 +22,20 @@ A number of user stories related to data validation can be found there. Some of 
 
 ## High-level design
 
-![googletables.io high-level design](https://docs.google.com/drawings/d/1NZUILFIZWo9w7U3dQXwB_CdU043QzuIi0rGWkeRsUq4/pub?w=960&h=720)
+![googletables.io high-level design](https://docs.google.com/drawings/d/1emknr4Qy74lx9uQ-YSoJB_v9bLAwq6msUBmxhhnxwig/pub?w=960&h=720)
 
 ### Backends
 
 - Auth server provided by Google and GitHub
-- Git server, CI runner and CI server all self-hosted GitLab
+- Job runner powered by Celery
 - Object storage provided by S3
 
 ### goodtables.io
 
-- `.goodtables.yml` is defined by a spec we write. This is them passed into a .gitlab.yml file via a new forced commit on our Git server
+- `.goodtables.yml` is defined by a spec we write. This is passed to the runner with the files (or linsk to the the files) to configure the validation.
 - Auth UI/API is a pretty general auth handler affair, as per many other apps we have
 - Integration UI/API to handle hooking up a client, and general communication with a client once initialised
-- Report UI to show GoodTables reports. Such reports can simply be static JSON files on Object storage, created as artifacts of the CI run. The API to access these files would be based on a simple naming convention we employ on S3.
+- Report UI to show GoodTables reports. For a MVP such reports can simply be static JSON files on Object storage, uploaded by the job runner. The API to access these files would be based on a simple naming convention we employ on S3. Future versions could have more elaborate UIs with lists of previous jobs, etc.
 
 ### Clients
 
@@ -78,26 +78,19 @@ At a minimum, the package provides:
 - Validation against the [data-quality-spec](https://github.com/frictionlessdata/data-quality-spec)
 - An output report on the validation run, available in a number of formats, including as JSON
 
-### gitlab-ce
+### goodtables.yml
 
-[gitlab-ce](https://gitlab.com/gitlab-org/gitlab-ce) is an open source software collaboration platform built around git, with a built in CI server.
+`.goodtables.yml` is a file located at the root of the repository (or more generally, the directory) containing the data for validation. It is used to declare which files in the directory are to be run against **goodtables.io**.
 
-At a minimum, gitlab-ce provides:
+### Celery validation jobs
 
-- A git server
-- a CI runner
-- a CI server
+[Celery](http://www.celeryproject.org/) is a asynchronous task queue that will be used to schedule and run the validation jobs.
 
-And we will make the following customisations:
+Validation jobs
 
-- read the `.goodtables.yml` from an incoming payload, and mixin this data into our own `.gitlab.yml` for executing the CI
-- Take the resulting `results.json` from the CI process, and write it to S3
-
-Note that there are several possible ways to make these customisations:
-
-- Through some custom code before and after gitlab in various code paths
-- Possibly using some hooks gitlab provides around executing git
-- In the CI run itself, for example, to push a results.json to S3
+- read the `.goodtables.yml` from an incoming payload to extract the files to be validated and other configuration options.
+- run the validation on all required files
+- Take the resulting `results.json` report and write it to S3
 
 ### Auth providers
 
@@ -105,16 +98,6 @@ There are many auth providers: we'll start with Google and GitHub.
 
 We've got plenty of examples of using OAuth 2 backends in various other apps.
 
-### goodtables.yml
-
-`.goodtables.yml` is a file located at the root of the repository (or more generally, the directory) containing he data for validation. It is used to declare which files in the directory are to be run against **goodtables.io**.
-
-#### How will this work?
-
-- `.goodtables.yml` just exposes an API for goodtables config
-- when we receive a repo to run data validation, we do a new commit, where we've read the `.goodtables.yml`, taken that info, and put it in a generated `.gitlab.yml`
-  - So our git server has at least an extra forced commit for each run. Similar to how we'd sometimes use heroku.
-- Our `.gitlab.yml` template is what has the info for running goodtables, for pushing results to S3 and so on.
 
 #### A proposed config
 
