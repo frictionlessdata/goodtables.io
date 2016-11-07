@@ -41,6 +41,11 @@ setup(
     zip_safe=False,
     long_description=README,
     description=DESCRIPTION,
+    entry_points={
+        'console_scripts': [
+            'goodtablesio = goodtablesio.commands:main',
+        ]
+    },
     author='Open Knowledge International',
     author_email='info@okfn.org',
     url='https://github.com/frictionlessdata/goodtables.io',
