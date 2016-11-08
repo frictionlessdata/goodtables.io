@@ -1,28 +1,25 @@
 from celery import Celery
 from goodtables import Inspector
+from . import config
 
 
 app = Celery('tasks')
-app.config_from_object('celeryconfig')
+app.config_from_object(config)
 
 
 @app.task(name='goodtableio.tasks.validate')
-def validate(user_id, job_id, job):
+def validate(payload):
     """Main validation task.
 
     Args:
-        user_id (str): user identifier
-        job_id (str): job identifier
-        job (mixed): validation job descriptor
+        payload (mixed): task payload
 
     """
 
-    # TODO: Process multiple files in batch
-    # TODO: Configure inspector (schemas, checks, etc)
-
-    inspector = Inspector()
-    report = inspector.inspect(url)
+    inspector = Inspector(**payload.pop('config', {}))
+    report = inspector.inspect(**payload)
 
     # TODO: Upload report
+    # task_id = validate.request.id ?
 
     return report
