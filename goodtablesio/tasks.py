@@ -6,13 +6,16 @@ app = Celery('tasks')
 app.config_from_object('celeryconfig')
 
 
-@app.task(name='goodtableio.tasks.validate_table')
-def validate_table(url):
-    '''
-    Main validation task
+@app.task(name='goodtableio.tasks.validate')
+def validate(user_id, job_id, job):
+    """Main validation task.
 
-    TODO: Document
-    '''
+    Args:
+        user_id (str): user identifier
+        job_id (str): job identifier
+        job (mixed): validation job descriptor
+
+    """
 
     # TODO: Process multiple files in batch
     # TODO: Configure inspector (schemas, checks, etc)
