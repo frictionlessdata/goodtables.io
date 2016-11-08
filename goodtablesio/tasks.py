@@ -1,16 +1,9 @@
-import os
-
 from celery import Celery
-
 from goodtables import Inspector
 
 
 app = Celery('tasks')
 app.config_from_object('celeryconfig')
-
-for key in ('BROKER_URL', 'RESULT_BACKEND'):
-    if key in os.environ:
-        app.conf.update({key.lower(): os.environ[key]})
 
 
 @app.task(name='goodtableio.tasks.validate_table')
