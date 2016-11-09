@@ -1,5 +1,4 @@
 # API hadler stubs (instead of request it gets payload/task_id and returns)
-import dataset
 from . import tasks
 from . import services
 
