@@ -11,7 +11,7 @@ print('Table:')
 payload = {
     'source': 'https://raw.githubusercontent.com/frictionlessdata/goodtables-py/master/data/valid.csv',
 }
-task_id = handlers.post_task(payload)
+task_id = handlers.create_task(payload)
 while True:
     time.sleep(1)
     task = handlers.get_task(task_id)
@@ -39,7 +39,7 @@ payload = {
         # other options
     }
 }
-task_id = handlers.post_task(payload)
+task_id = handlers.create_task(payload)
 while True:
     time.sleep(1)
     task = handlers.get_task(task_id)
@@ -54,7 +54,7 @@ payload = {
     'source': 'https://raw.githubusercontent.com/frictionlessdata/goodtables-py/master/data/datapackages/valid/datapackage.json',
     'preset': 'datapackage',
 }
-task_id = handlers.post_task(payload)
+task_id = handlers.create_task(payload)
 while True:
     time.sleep(1)
     task = handlers.get_task(task_id)

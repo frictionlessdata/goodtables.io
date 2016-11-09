@@ -5,7 +5,7 @@ from . import services
 
 # Module API
 
-def post_task(payload):
+def create_task(payload):
     result = tasks.validate.delay(payload)
     return result.id
 
