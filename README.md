@@ -21,6 +21,14 @@ Install the Python package:
     pip install -r requirements.txt
     python setup.py develop
 
+Create `.env` file with environment variables:
+
+```bash
+$ cp .env.example .env
+$ editor .env # edit your vars
+
+```
+
 ## Quickstart
 
 Start the Celery worker:

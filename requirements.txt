@@ -4,12 +4,14 @@
 #
 #    pip-compile --output-file requirements.txt requirements.in
 #
+alembic==0.8.8            # via dataset
 amqp==2.1.1               # via kombu
 billiard==3.5.0.2         # via celery
 cchardet==1.1.1           # via tabulator
 celery==4.0.0
-click==6.6                # via goodtables, jsontableschema
+click==6.6                # via goodtables, jsontableschema, python-dotenv
 datapackage==0.8.4        # via goodtables
+dataset==0.7.0
 et-xmlfile==1.0.1         # via openpyxl
 ezodf==0.3.2              # via tabulator
 future==0.16.0            # via jsontableschema
@@ -22,12 +24,21 @@ jsontableschema==0.8.3    # via datapackage, goodtables
 kombu==4.0.0              # via celery
 linear-tsv==1.0.0         # via tabulator
 lxml==3.6.4               # via tabulator
+Mako==1.0.5               # via alembic
+MarkupSafe==0.23          # via mako
+normality==0.3.0          # via dataset
 openpyxl==2.4.0           # via tabulator
-python-dateutil==2.5.3    # via jsontableschema
+psycopg2==2.6.2
+python-dateutil==2.6.0    # via jsontableschema
+python-dotenv==0.6.0
+python-editor==1.0.1      # via alembic
 pytz==2016.7              # via celery
+PyYAML==3.12              # via dataset
+redis==2.10.5
 requests==2.11.1          # via datapackage, goodtables, jsontableschema, tabulator
 rfc3986==0.4.1            # via jsontableschema
-six==1.10.0               # via datapackage, goodtables, jsonlines, linear-tsv, python-dateutil, tabulator
+six==1.10.0               # via datapackage, dataset, goodtables, jsonlines, linear-tsv, normality, python-dateutil, tabulator
+sqlalchemy==1.1.3         # via alembic, dataset
 tabulator==0.10.5         # via datapackage, goodtables, jsontableschema
 unicodecsv==0.14.1        # via datapackage, jsontableschema, tabulator
 vine==1.1.3               # via amqp
