@@ -1,7 +1,7 @@
 import sys
 import argparse
 
-from goodtablesio.tasks import validate_table
+from goodtablesio import create_task, get_task
 
 
 def main():
@@ -13,6 +13,18 @@ def main():
         print('Usage: goodtablesio <url or file path>')
         sys.exit(1)
 
-    task = validate_table.delay(args.url)
+    task_id = create_task(args.url)
 
-    print('Task submitted to the queue: {0}'.format(task.task_id))
+    print('Task submitted to the queue: {0}'.format(task_id))
+
+
+def status():
+    parser = argparse.ArgumentParser(prog='goodtablesio')
+    parser.add_argument('id', help='Validation task id')
+    args = parser.parse_args()
+
+    if not args.id:
+        print('Usage: goodtablesio-status <id>')
+        sys.exit(1)
+
+    print(get_task(args.id))

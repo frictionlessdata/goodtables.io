@@ -1,6 +1,7 @@
 import os
 
 from celery import Celery
+from celery.result import AsyncResult
 
 from goodtables import Inspector
 
@@ -30,3 +31,25 @@ def validate_table(url):
     # TODO: Upload report
 
     return report
+
+
+def get_task_status(task_id):
+    '''
+    Returns an object with details for the task provided.
+
+    TODO: Distinguish between PENDING tasks and not found ones (we probably
+    need to store the task id externally)
+
+    The object returned has the following keys:
+
+    * id: Task id
+    * status: A string describing the status of the actual task (not the
+        validation result): eg SUCCESS, PENDING, FAILURE
+    * result: The result object returned by the validation task (if any)
+
+    '''
+
+    res = AsyncResult(task_id)
+    return {'status': res.status,
+            'id': res.task_id,
+            'result': res.result}

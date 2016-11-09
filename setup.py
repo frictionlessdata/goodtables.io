@@ -44,6 +44,8 @@ setup(
     entry_points={
         'console_scripts': [
             'goodtablesio = goodtablesio.commands:main',
+
+            'goodtablesio-status = goodtablesio.commands:status',
         ]
     },
     author='Open Knowledge International',
