@@ -1,7 +1,12 @@
+import datetime
+
 import dataset
 from celery import Celery
-from goodtables import Inspector
+from sqlalchemy.types import DateTime
 from sqlalchemy.dialects.postgresql import JSONB
+from goodtables import Inspector
+
+
 from . import config
 
 
@@ -70,5 +75,12 @@ def validate(payload):
 
     # Save report
     database = dataset.connect(config.DATABASE_URL)
-    row = {'task_id': validate.request.id, 'report': report}
-    database['reports'].insert(row, types={'report': JSONB}, ensure=True)
+    row = {
+        'task_id': validate.request.id,
+        'report': report,
+        'finished': datetime.datetime.utcnow()
+    }
+    database['reports'].update(row,
+                               ['task_id'],
+                               types={'report': JSONB, 'finished': DateTime},
+                               ensure=True)
