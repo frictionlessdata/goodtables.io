@@ -19,6 +19,11 @@ def create_task():
     return task_id
 
 
+@api.route('/task')
+def list_tasks():
+    return jsonify(handlers.get_task_ids())
+
+
 @api.route('/task/<task_id>')
 def get_task(task_id):
     return jsonify(handlers.get_task(task_id))
