@@ -13,4 +13,5 @@ requirements:
 	pip-compile > requirements.txt
 
 test:
+	pylama goodtablesio
 	py.test
