@@ -1,4 +1,5 @@
 celery==4.0.0
+flask==0.11.1
 goodtables==1.0.0a3
 python-dotenv==0.6.0
 dataset==0.7.0
