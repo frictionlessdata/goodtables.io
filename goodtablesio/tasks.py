@@ -16,7 +16,51 @@ def validate(payload):
     """Main validation task.
 
     Args:
-        payload (mixed): task payload
+        payload (dict): task payload
+
+    Payload structure reflects `goodtables.Inspector` API:
+        - `config` key will be used as `Inspector` options
+        - all other keys will be used as `Inspector.inspect` options
+
+    Examples:
+        - table preset:
+            ```
+            payload = {
+                'source': 'path.csv',
+                'config': {
+                    'checks': 'structure',
+                }
+            }
+            ```
+        - tables preset:
+            ```
+            payload = {
+                'source': [
+                    {'source': 'path1.csv'},
+                    {
+                        'source': 'path2.csv',
+                        'schema': 'schema.json',
+                        'delimiter': ';',
+                    }
+                ],
+                'preset': 'tables',
+                'config': {
+                    'checks': 'schema',
+                    'error_limit': 10,
+                    'order_fields': True,
+                }
+            }
+            ```
+        - datapackage preset:
+            ```
+            payload = {
+                'source': 'datapackage.json',
+                'preset': 'datapackage',
+                'config': {
+                    'table_limit': 2,
+                }
+            }
+            ```
 
     """
 
@@ -25,7 +69,6 @@ def validate(payload):
     report = inspector.inspect(**payload)
 
     # Save report
-    # TODO: use shared connection?
     database = dataset.connect(config.DATABASE_URL)
     row = {'task_id': validate.request.id, 'report': report}
     database['reports'].insert(row, types={'report': JSONB}, ensure=True)
