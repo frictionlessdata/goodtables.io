@@ -9,9 +9,11 @@ from . import services
 
 # Module API
 
-def create_task(payload):
+def create_task(payload, task_id=None):
 
-    task_id = str(uuid.uuid4())
+    # TODO: validate task id if provided
+    if not task_id:
+        task_id = str(uuid.uuid4())
 
     row = {
         'task_id': task_id,
