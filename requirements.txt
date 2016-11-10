@@ -15,7 +15,6 @@ dataset==0.7.0
 et-xmlfile==1.0.1         # via openpyxl
 ezodf==0.3.2              # via tabulator
 flask==0.11.1
-functools32==3.2.3.post2  # via jsonschema
 future==0.16.0            # via jsontableschema
 goodtables==1.0.0a3
 ijson==2.3                # via tabulator

@@ -11,7 +11,7 @@ from . import services
 
 def create_task(payload):
 
-    task_id = unicode(uuid.uuid4())
+    task_id = str(uuid.uuid4())
 
     row = {
         'task_id': task_id,
