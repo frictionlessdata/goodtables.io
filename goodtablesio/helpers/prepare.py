@@ -2,7 +2,7 @@ import os
 import yaml
 import requests
 from fnmatch import fnmatch
-from .validate import validate_task_conf, validate_task_desc
+from .validate import validate_task_conf
 from .. import config
 
 

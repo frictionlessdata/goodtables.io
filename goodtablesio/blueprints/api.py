@@ -1,7 +1,7 @@
 from flask import Blueprint, request, abort
 from flask.json import jsonify
+from .. import helpers
 
-from goodtablesio import handlers
 
 api = Blueprint('api', __name__, url_prefix='/api')
 
@@ -14,19 +14,19 @@ def create_task():
     if not payload or 'source' not in payload:
         abort(400)
 
-    task_id = handlers.create_task(payload)
+    task_id = helpers.create_task(payload)
 
     return task_id
 
 
 @api.route('/task')
 def list_tasks():
-    return jsonify(handlers.get_task_ids())
+    return jsonify(helpers.get_task_ids())
 
 
 @api.route('/task/<task_id>')
 def get_task(task_id):
-    return jsonify(handlers.get_task(task_id))
+    return jsonify(helpers.get_task(task_id))
 
 
 @api.route('/')

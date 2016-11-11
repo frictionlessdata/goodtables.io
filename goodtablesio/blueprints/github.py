@@ -3,10 +3,8 @@ import subprocess
 import tempfile
 import uuid
 import logging
-
 from flask import Blueprint, request, abort
-
-from goodtablesio import handlers
+from .. import helpers
 
 
 log = logging.getLogger(__name__)
@@ -42,7 +40,7 @@ def create_task():
             'source': [{'source': path} for path in paths],
             'preset': 'tables'
         }
-        handlers.create_task(validation_payload, task_id=task_id)
+        helpers.create_task(validation_payload, task_id=task_id)
 
         # TODO: set commit status on GitHub
 

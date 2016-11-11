@@ -7,6 +7,10 @@ load_dotenv('.env')
 
 TABULAR_EXTENSIONS = ['csv', 'xls', 'xlsx', 'ods']
 
+# API
+
+APP_PORT = os.environ.get('PORT', '5000')
+
 # Database
 
 DATABASE_URL = os.environ['DATABASE_URL']
