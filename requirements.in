@@ -1,7 +1,11 @@
-celery[redis]==4.0.0
+celery==4.0.0
+redis==2.10.5
 flask==0.11.1
 goodtables==1.0.0a3
 python-dotenv==0.6.0
 dataset==0.7.0
 psycopg2==2.6.2
 redis==2.10.5
+jsonschema==2.5.1
+pyyaml==3.12.0
+requests==2.11.1

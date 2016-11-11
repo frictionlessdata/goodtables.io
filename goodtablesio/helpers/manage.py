@@ -3,8 +3,8 @@ import datetime
 
 from sqlalchemy.types import DateTime
 
-from . import tasks
-from . import services
+from .. import tasks
+from .. import services
 
 
 # Module API

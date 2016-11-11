@@ -3,10 +3,13 @@ from dotenv import load_dotenv
 load_dotenv('.env')
 
 
+# General
+
+TABULAR_EXTENSIONS = ['csv', 'xls', 'xlsx', 'ods']
+
 # Database
 
 DATABASE_URL = os.environ['DATABASE_URL']
-
 
 # Celery
 
