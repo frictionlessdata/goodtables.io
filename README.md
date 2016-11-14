@@ -31,14 +31,81 @@ $ editor .env # edit your vars
 
 ## Quickstart
 
-Start the Celery worker:
+Start the Celery worker and dev server:
 
-    celery -A goodtablesio.tasks worker --loglevel=info
+```bash
+bash1$ make celery
+bash2$ make dev
+```
 
-You can use the `goodtablesio` command line helper to send validation tasks to the queue:
+Now developmet server runs on `localhost:5000`. We could send github repo for validation getting task identifiers as a response:
 
-    goodtablesio https://raw.githubusercontent.com/amercader/newcastle-libraries-data/master/councillors-wards.csv
+> localhost:5000/github/hook/
+```json
+{
+  "repository": {
+      "clone_url": "https://github.com/roll/goodtables-example.git"
+    }
+}
+---
+693f40f0-fcad-416e-b2c7-a5beebff4f44
+```
 
-or
-
-    goodtablesio  /path/to/local/file.csv
+> localhost:5000/api/task/693f40f0-fcad-416e-b2c7-a5beebff4f44
+```json
+{
+  "repository": {
+      "clone_url": "https://github.com/roll/goodtables-example.git"
+    }
+}
+---
+{
+  "report": {
+    "created": "Mon, 14 Nov 2016 12:42:41 GMT",
+    "finished": "Mon, 14 Nov 2016 12:42:43 GMT",
+    "report": {
+      "error-count": 1,
+      "errors": [],
+      "table-count": 2,
+      "tables": [
+        {
+          "error-count": 1,
+          "errors": [
+            {
+              "code": "blank-header",
+              "column-number": 3,
+              "message": "Header in column 3 is blank",
+              "row": null,
+              "row-number": null
+            }
+          ],
+          "headers": [
+            "id",
+            "name",
+            "",
+            "name"
+          ],
+          "row-count": 2,
+          "time": 0.964,
+          "valid": false
+        },
+        {
+          "error-count": 0,
+          "errors": [],
+          "headers": [
+            "id",
+            "name"
+          ],
+          "row-count": 3,
+          "time": 0.945,
+          "valid": true
+        }
+      ],
+      "time": 0.981,
+      "valid": false
+    },
+    "task_id": "693f40f0-fcad-416e-b2c7-a5beebff4f44"
+  },
+  "status": "SUCCESS"
+}
+```
