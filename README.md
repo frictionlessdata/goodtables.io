@@ -41,6 +41,7 @@ bash2$ make dev
 Now developmet server runs on `localhost:5000`. We could send github repo for validation getting task identifiers as a response:
 
 > localhost:5000/github/hook/
+
 ```json
 {
   "repository": {
@@ -52,6 +53,7 @@ Now developmet server runs on `localhost:5000`. We could send github repo for va
 ```
 
 > localhost:5000/api/task/693f40f0-fcad-416e-b2c7-a5beebff4f44
+
 ```json
 {
   "repository": {
