@@ -9,7 +9,7 @@ from .. import services
 
 # Module API
 
-def create_task(payload, task_id=None):
+def create_task(task_desc, task_id=None):
 
     # TODO: validate task id if provided
     if not task_id:
@@ -22,7 +22,7 @@ def create_task(payload, task_id=None):
     services.database['reports'].insert(row,
                                         types={'created': DateTime},
                                         ensure=True)
-    result = tasks.validate.apply_async((payload,), task_id=task_id)
+    result = tasks.validate.apply_async((task_desc,), task_id=task_id)
     return result.id
 
 
