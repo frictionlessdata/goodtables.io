@@ -1,17 +1,18 @@
 import uuid
 import datetime
-
 from sqlalchemy.types import DateTime
-
 from .. import tasks
 from .. import services
+from .validate import validate_task_desc
 
 
 # Module API
 
 def create_task(task_desc, task_id=None):
 
-    # TODO: validate task id if provided
+    # Validate task descriptor
+    validate_task_desc(task_desc)
+
     if not task_id:
         task_id = str(uuid.uuid4())
 
