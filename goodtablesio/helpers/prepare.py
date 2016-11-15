@@ -44,7 +44,13 @@ def prepare_task(task_conf, task_files):
 
     # Granular syntax
     else:
-        raise NotImplementedError()
+        for item in task_conf['files']:
+            if item['source'] in task_files:
+                item['source'] = '/'.join([base_url, item['source']])
+                if 'schema' in item:
+                    if not item['schema'].startswith('http'):
+                        item['schema'] = '/'.join([base_url, item['schema']])
+                task_desc['files'].append(item)
 
     # Copy settings
     if 'settings' in task_conf:
