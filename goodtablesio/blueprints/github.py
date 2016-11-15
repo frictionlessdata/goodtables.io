@@ -66,13 +66,13 @@ def _clone_repo(task_id, clone_url):
     return clone_dir
 
 
-def _get_task_conf(clone_url):
+def _get_task_conf(clone_url, branch='master'):
     pattern = r'github.com/(?P<user>[^/]*)/(?P<repo>[^/]*)\.git'
     match = re.search(pattern, clone_url)
     user = match.group('user')
     repo = match.group('repo')
-    template = 'https://raw.githubusercontent.com/{user}/{repo}/master/goodtables.yml'
-    task_conf = template.format(user=user, repo=repo)
+    template = 'https://raw.githubusercontent.com/{user}/{repo}/{branch}/goodtables.yml'
+    task_conf = template.format(user=user, repo=repo, branch=branch)
     return task_conf
 
 
