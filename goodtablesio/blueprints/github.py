@@ -1,59 +1,62 @@
+import re
 import os
 import subprocess
 import tempfile
 import uuid
 import logging
-
 from flask import Blueprint, request, abort
-
-from goodtablesio import handlers
-
-
+from .. import exceptions
+from .. import helpers
 log = logging.getLogger(__name__)
 
 
-TABULAR_EXTENSIONS = ['csv', 'xls', 'xlsx', 'ods']
+SECRET = 'HUGI#6A2X|e{.Rkn`zg?a!`/9(&(Y7WYQqW#5.(&][s&-W(A8y;85pC:&;H<v*aw'
 CLONE_DIR = '/tmp'
 
 
 github = Blueprint('github', __name__, url_prefix='/github')
-
-SECRET = 'HUGI#6A2X|e{.Rkn`zg?a!`/9(&(Y7WYQqW#5.(&][s&-W(A8y;85pC:&;H<v*aw'
 
 
 @github.route('/hook', methods=['POST'])
 def create_task():
 
     # TODO: check origin with secret
+    # TODO: process errors
 
+    # Get payload
     payload = request.get_json()
     if not payload:
         abort(400)
 
+    # Get task id
     task_id = str(uuid.uuid4())
 
-    clone_dir = clone_repo(task_id, payload['repository']['clone_url'])
+    # Get task configuration and files
+    clone_url = payload['repository']['clone_url']
+    clone_dir = _clone_repo(task_id, clone_url)
+    task_conf = _get_task_conf(clone_url)
+    task_files = _get_task_files(clone_dir)
 
-    # TODO: take goodtables.yml into account
-    paths = get_files_to_validate(clone_dir)
+    # Get task descriptor
+    try:
+        task_desc = helpers.prepare_task(task_conf, task_files)
+    except exceptions.InvalidTaskConfiguration:
+        abort(400)
 
-    if paths:
-        validation_payload = {
-            'source': [{'source': path} for path in paths],
-            'preset': 'tables'
-        }
-        handlers.create_task(validation_payload, task_id=task_id)
-
-        # TODO: set commit status on GitHub
-
-        return task_id
-
-    return ''
+    # Create task
+    try:
+        helpers.create_task(task_desc, task_id=task_id)
+    except exceptions.InvalidTaskDescriptor:
+        abort(400)
 
     # TODO: cleanup clone dirs
 
+    return task_id
 
-def clone_repo(task_id, clone_url):
+
+# Internal
+
+def _clone_repo(task_id, clone_url):
     clone_dir = tempfile.mkdtemp(prefix=task_id, dir=CLONE_DIR)
 
     clone_command = ['git', 'clone', clone_url, clone_dir]
@@ -70,25 +73,21 @@ def clone_repo(task_id, clone_url):
     return clone_dir
 
 
-def get_files_to_validate(clone_dir):
-    paths = get_dir_paths(clone_dir)
-    return get_tabular_file_paths(paths)
+def _get_task_conf(clone_url, branch='master'):
+    pattern = r'github.com/(?P<user>[^/]*)/(?P<repo>[^/]*)\.git'
+    match = re.search(pattern, clone_url)
+    user = match.group('user')
+    repo = match.group('repo')
+    template = 'https://raw.githubusercontent.com/{user}/{repo}/{branch}/goodtables.yml'
+    task_conf = template.format(user=user, repo=repo, branch=branch)
+    return task_conf
 
 
-def get_dir_paths(top):
+def _get_task_files(top):
     out = []
     for dir_name, sub_dir_list, file_list in os.walk(top, topdown=True):
         if '.git' in sub_dir_list:
             sub_dir_list.remove('.git')
         for file_name in file_list:
-            out.append(os.path.join(dir_name, file_name))
-    return out
-
-
-def get_tabular_file_paths(paths):
-    out = []
-    for path in paths:
-        name, extension = os.path.splitext(path)
-        if extension and extension[1:].lower() in TABULAR_EXTENSIONS:
-            out.append(path)
+            out.append(file_name)
     return out

@@ -1,29 +1,14 @@
 import time
-from goodtablesio import handlers
+from goodtablesio import helpers
 
 
 # Start celery
 # celery -A goodtablesio.tasks worker --loglevel=info
 
 
-# Validate table
-print('Table:')
+# Validate
 payload = {
-    'source': 'https://raw.githubusercontent.com/frictionlessdata/goodtables-py/master/data/valid.csv',
-}
-task_id = handlers.create_task(payload)
-while True:
-    time.sleep(1)
-    task = handlers.get_task(task_id)
-    print(task)
-    if task['status'] != 'PENDING':
-        break
-
-
-# Validate tables
-print('Tables:')
-payload = {
-    'source': [
+    'files': [
         {'source': 'https://raw.githubusercontent.com/frictionlessdata/goodtables-py/master/data/valid.csv'},
         {
             'source': 'https://raw.githubusercontent.com/frictionlessdata/goodtables-py/master/data/invalid.csv',
@@ -32,32 +17,16 @@ payload = {
             # other options
         },
     ],
-    'preset': 'tables',
-    'config': {
+    'settings': {
         'checks': 'structure',
         'error_limit': 1,
         # other options
     }
 }
-task_id = handlers.create_task(payload)
+task_id = helpers.create_task(payload)
 while True:
     time.sleep(1)
-    task = handlers.get_task(task_id)
-    print(task)
-    if task['status'] != 'PENDING':
-        break
-
-
-# Validate datapackage
-print('Datapackage:')
-payload = {
-    'source': 'https://raw.githubusercontent.com/frictionlessdata/goodtables-py/master/data/datapackages/valid/datapackage.json',
-    'preset': 'datapackage',
-}
-task_id = handlers.create_task(payload)
-while True:
-    time.sleep(1)
-    task = handlers.get_task(task_id)
+    task = helpers.get_task(task_id)
     print(task)
     if task['status'] != 'PENDING':
         break
