@@ -73,7 +73,6 @@ def _get_task_conf(clone_url):
     repo = match.group('repo')
     template = 'https://raw.githubusercontent.com/{user}/{repo}/master/goodtables.yml'
     task_conf = template.format(user=user, repo=repo)
-    print(task_conf)
     return task_conf
 
 
