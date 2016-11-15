@@ -40,7 +40,7 @@ bash2$ make dev
 
 Now developmet server runs on `localhost:5000`. We could send github repo for validation getting task identifiers as a response:
 
-> localhost:5000/github/hook/
+> POST localhost:5000/github/hook/
 
 ```json
 {
@@ -52,15 +52,9 @@ Now developmet server runs on `localhost:5000`. We could send github repo for va
 693f40f0-fcad-416e-b2c7-a5beebff4f44
 ```
 
-> localhost:5000/api/task/693f40f0-fcad-416e-b2c7-a5beebff4f44
+> GET localhost:5000/api/task/693f40f0-fcad-416e-b2c7-a5beebff4f44
 
 ```json
-{
-  "repository": {
-      "clone_url": "https://github.com/roll/goodtables-example.git"
-    }
-}
----
 {
   "report": {
     "created": "Mon, 14 Nov 2016 12:42:41 GMT",
