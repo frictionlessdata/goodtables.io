@@ -15,6 +15,9 @@ def prepare_task(task_conf, task_files):
         task_conf (url): task configuration
         task_files (url[]): task files (not filtered, relative paths)
 
+    Raises:
+        exceptions.InvalidTaskConfiguration
+
     Returns:
         task_desc (dict): task descriptor
 
@@ -27,6 +30,8 @@ def prepare_task(task_conf, task_files):
     # Get base url and load task configuration
     base_url = task_conf.rsplit('/', 1)[0]
     task_conf = yaml.load(_load_file(task_conf))
+
+    # Validate task configuration
     validate_task_conf(task_conf)
 
     # Wild-card syntax

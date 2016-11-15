@@ -1,5 +1,5 @@
 import pytest
-from goodtablesio import helpers
+from goodtablesio import helpers, exceptions
 
 
 # Tests
@@ -11,7 +11,7 @@ def test_validate_task_conf():
 
 
 def test_validate_task_conf_invalid():
-    with pytest.raises(Exception):
+    with pytest.raises(exceptions.InvalidTaskConfiguration):
         assert helpers.validate_task_conf({
             'files': ['*'],
         })
@@ -24,7 +24,7 @@ def test_validate_task_desc():
 
 
 def test_validate_task_desc_invalid():
-    with pytest.raises(Exception):
+    with pytest.raises(exceptions.InvalidTaskDescriptor):
         assert helpers.validate_task_desc({
             'files': ['*'],
         })

@@ -5,6 +5,7 @@ import tempfile
 import uuid
 import logging
 from flask import Blueprint, request, abort
+from .. import exceptions
 from .. import helpers
 log = logging.getLogger(__name__)
 
@@ -37,10 +38,16 @@ def create_task():
     task_files = _get_task_files(clone_dir)
 
     # Get task descriptor
-    task_desc = helpers.prepare_task(task_conf, task_files)
+    try:
+        task_desc = helpers.prepare_task(task_conf, task_files)
+    except exceptions.InvalidTaskConfiguration:
+        abort(400)
 
     # Create task
-    helpers.create_task(task_desc, task_id=task_id)
+    try:
+        helpers.create_task(task_desc, task_id=task_id)
+    except exceptions.InvalidTaskDescriptor:
+        abort(400)
 
     # TODO: cleanup clone dirs
 

@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import patch
-from goodtablesio import helpers
+from goodtablesio import helpers, exceptions
 
 
 # Tests
@@ -113,7 +113,7 @@ def test_prepare_task_invalid(load_file):
         """
     ]
     load_file.return_value = task_conf[1]
-    with pytest.raises(Exception):
+    with pytest.raises(exceptions.InvalidTaskConfiguration):
         assert helpers.prepare_task(task_conf[0], [])
 
 
@@ -121,4 +121,5 @@ def test_prepare_task_invalid(load_file):
 
 @pytest.fixture
 def load_file():
-    return patch('goodtablesio.helpers.prepare._load_file').start()
+    yield patch('goodtablesio.helpers.prepare._load_file').start()
+    patch.stopall()

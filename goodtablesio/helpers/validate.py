@@ -2,16 +2,41 @@ import io
 import os
 import yaml
 import jsonschema
+from .. import exceptions
 
 
 # Module API
 
 def validate_task_conf(task_conf):
-    return _validate(task_conf, 'task-conf.yml')
+    """Validate task configuration.
+
+    Raises:
+        exceptions.InvalidTaskConfiguration
+
+    Returns:
+        True
+
+    """
+    try:
+        return _validate(task_conf, 'task-conf.yml')
+    except jsonschema.ValidationError:
+        raise exceptions.InvalidTaskConfiguration()
 
 
 def validate_task_desc(task_desc):
-    return _validate(task_desc, 'task-desc.yml')
+    """Validate task descriptor.
+
+    Raises:
+        exceptions.InvalidTaskDescriptor
+
+    Returns:
+        True
+
+    """
+    try:
+        return _validate(task_desc, 'task-desc.yml')
+    except jsonschema.ValidationError:
+        raise exceptions.InvalidTaskDescriptor()
 
 
 # Internal
