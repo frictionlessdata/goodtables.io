@@ -1,38 +1,21 @@
 import os
 import subprocess
 import tempfile
-import uuid
 import logging
 
-from flask import Blueprint, request, abort
-
-from goodtablesio import handlers
+from goodtablesio.tasks import app as celery_app
 
 
 log = logging.getLogger(__name__)
-
 
 TABULAR_EXTENSIONS = ['csv', 'xls', 'xlsx', 'ods']
 CLONE_DIR = '/tmp'
 
 
-github = Blueprint('github', __name__, url_prefix='/github')
+@celery_app.task(name='goodtablesio.github.clone_repo_files')
+def clone_repo_files(clone_url, task_id):
 
-SECRET = 'HUGI#6A2X|e{.Rkn`zg?a!`/9(&(Y7WYQqW#5.(&][s&-W(A8y;85pC:&;H<v*aw'
-
-
-@github.route('/hook', methods=['POST'])
-def create_task():
-
-    # TODO: check origin with secret
-
-    payload = request.get_json()
-    if not payload:
-        abort(400)
-
-    task_id = str(uuid.uuid4())
-
-    clone_dir = clone_repo(task_id, payload['repository']['clone_url'])
+    clone_dir = clone_repo(task_id, clone_url)
 
     # TODO: take goodtables.yml into account
     paths = get_files_to_validate(clone_dir)
@@ -42,15 +25,10 @@ def create_task():
             'source': [{'source': path} for path in paths],
             'preset': 'tables'
         }
-        handlers.create_task(validation_payload, task_id=task_id)
 
         # TODO: set commit status on GitHub
 
-        return task_id
-
-    return ''
-
-    # TODO: cleanup clone dirs
+        return validation_payload
 
 
 def clone_repo(task_id, clone_url):
