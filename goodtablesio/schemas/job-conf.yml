@@ -1,0 +1,114 @@
+# Job configuration schema
+# -------------------------
+#
+# The goodtables.yml file structure should conform to this schema.
+#
+$schema: http://json-schema.org/draft-04/schema#
+type: object
+required:
+  - files
+properties:
+
+  # Ths property defines validation sources
+  #
+  # All paths should be relative to goodtables.yml
+  # file location in the reposotiry.
+  #
+  files:
+    oneOf:
+
+      # Could be a string
+      #
+      # Examples:
+      #
+      # files: '*' - everything that is tabular
+      # files: '*.csv' - everything that is csv
+      # files: 'data/*' - everything that is tabular in a certain directory
+      #
+      - type: string
+
+      # Could be an array
+      #
+      # Examples:
+      #
+      # - source: source1.csv
+      #   schema: schema1.json
+      # - source: source2.csv
+      #   schema: schema2.json
+      #
+      - type: array
+        items:
+          type: object
+          required:
+            - source
+          properties:
+
+            # For any format
+            source:
+              type: string
+            schema:
+              type: string
+            format:
+              type: string
+            encoding:
+              type: string
+
+            # For csv format
+            doublequote:
+              type: boolean
+            escapechar:
+              type: string
+            quotechar:
+              type: string
+            quoting:
+              type: string
+            skipinitialspace:
+              type: boolean
+
+            # For json format
+            prefix:
+              type: string
+
+            # For xls[x] format
+            sheet:
+              type: integer
+
+  # This property defines validation settings
+  #
+  # Settings will be applied to all tables
+  # which will be validated.
+  #
+  settings:
+    type: object
+    properties:
+
+      # Checks: structure or schema
+      checks:
+        type: string
+        enum:
+          - structure
+          - schema
+
+      # Error limit per table
+      errorLimit:
+        type: integer
+
+      # Table limit per job
+      tableLimit:
+        type: integer
+
+      # Row limit per table
+      rowLimit:
+        type: integer
+
+      # Allow infer schema
+      inferSchema:
+        type: boolean
+
+      # Allow infer extra fields
+      inferFields:
+        type: boolean
+
+      # Allow fields ordering
+      orderFields:
+        type: boolean
