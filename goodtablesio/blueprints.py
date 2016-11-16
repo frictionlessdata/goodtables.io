@@ -1,7 +1,7 @@
 from flask import Blueprint, request, abort
 from flask.json import jsonify
-from .. import exceptions
-from .. import helpers
+from goodtablesio import exceptions
+from goodtablesio import helpers
 
 
 api = Blueprint('api', __name__, url_prefix='/api')

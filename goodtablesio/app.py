@@ -1,6 +1,6 @@
 from flask import Flask
-from .blueprints.api import api
-from .blueprints.github import github
+from .blueprints import api
+from .plugins.github.blueprint import github
 from . import config
 
 

@@ -1,4 +1,5 @@
 import datetime
+import logging
 
 import dataset
 from celery import Celery
@@ -6,8 +7,10 @@ from sqlalchemy.types import DateTime
 from sqlalchemy.dialects.postgresql import JSONB
 from goodtables import Inspector
 
-
 from . import config
+
+
+log = logging.getLogger(__name__)
 
 
 # Module API
@@ -15,9 +18,12 @@ from . import config
 app = Celery('tasks')
 app.config_from_object(config)
 
+# TODO: automate
+app.autodiscover_tasks(['goodtablesio.plugins.github'])
 
-@app.task(name='goodtableio.tasks.validate')
-def validate(task_desc):
+
+@app.task(name='goodtablesio.tasks.validate')
+def validate(task_desc, task_id=None):
     """Main validation task.
 
     Args:
@@ -26,7 +32,6 @@ def validate(task_desc):
     See `schemas/task-desc.yml`.
 
     """
-
     # Get report
     inspector = Inspector(**task_desc['settings'])
     report = inspector.inspect(task_desc['files'], preset='tables')
@@ -34,7 +39,7 @@ def validate(task_desc):
     # Save report
     database = dataset.connect(config.DATABASE_URL)
     row = {
-        'task_id': validate.request.id,
+        'task_id': task_id or validate.request.id,
         'report': report,
         'finished': datetime.datetime.utcnow()
     }

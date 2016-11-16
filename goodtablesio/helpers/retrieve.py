@@ -1,5 +1,4 @@
-from .. import tasks
-from .. import services
+from goodtablesio import services
 
 
 # Module API
@@ -14,11 +13,11 @@ def get_task(task_id):
         dict: task result
 
     """
-    report = None
-    result = tasks.validate.AsyncResult(task_id)
-    if result.state == 'SUCCESS':
-        report = services.database['reports'].find_one(task_id=task_id)
-    return {'status': result.status, 'report': report}
+    report = services.database['reports'].find_one(task_id=task_id)
+    # TODO: we need to store the status in the DB as we can no longer rely on
+    # the task id being the same one used by celery
+    status = 'Not Implemented'
+    return {'status': status, 'report': report}
 
 
 def get_task_ids():
