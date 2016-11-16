@@ -23,7 +23,7 @@ env:
 install:
   - make install
   - pip install coveralls
-  - psql -c 'create database goodtables;' -U postgres
+  - psql -c 'create database goodtables;' -U postgres -h localhost
 
 script:
   - make test
