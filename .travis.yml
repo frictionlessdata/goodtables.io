@@ -12,7 +12,7 @@ services:
   - redis-server
 
 addons:
-  postgresql: '9.5'
+  postgresql: '9.4'
 
 env:
   global:
