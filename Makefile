@@ -10,7 +10,7 @@ celery-dev:
 	celery -A goodtablesio.tasks worker --loglevel=debug
 
 dev:
-	FLASK_APP=devapp.py FLASK_DEBUG=1 flask run
+	FLASK_APP=goodtablesio/app.py FLASK_DEBUG=1 flask run
 
 install:
 	pip install --upgrade -r requirements.dev
@@ -22,8 +22,8 @@ requirements:
 	pip-compile > requirements.txt
 
 start:
-	python -m goodtablesio.app
+	gunicorn goodtablesio.app:app
 
 test:
 	pylama goodtablesio
-	py.test
+	py.test --cov goodtablesio --cov-report term-missing

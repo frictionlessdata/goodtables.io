@@ -1,9 +1,11 @@
 import uuid
+import logging
 import datetime
 from sqlalchemy.types import DateTime
 from .validate import validate_validation_conf
 from .. import tasks
 from .. import services
+logger = logging.getLogger(__name__)
 
 
 # Module API
@@ -47,4 +49,6 @@ def insert_job_row(job_id):
     services.database['reports'].insert(row,
                                         types={'created': DateTime},
                                         ensure=True)
+
+    logger.debug('Saved job "%s" to the database', job_id)
     return job_id
