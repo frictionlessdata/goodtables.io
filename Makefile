@@ -1,10 +1,13 @@
-.PHONY: all celery install dev list requirements serve test
+.PHONY: all celery celery-dev dev install list requirements serve test
 
 
 all: list
 
 celery:
 	celery -A goodtablesio.tasks worker --loglevel=info
+
+celery-dev:
+	celery -A goodtablesio.tasks worker --loglevel=debug
 
 dev:
 	FLASK_APP=devapp.py FLASK_DEBUG=1 flask run
