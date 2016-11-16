@@ -22,10 +22,14 @@ env:
 
 install:
   - make install
+  - pip install coveralls
   - psql -c 'create database goodtables;' -U postgres
 
 script:
   - make test
+
+after_success:
+  - coveralls
 
 deploy:
   provider: deis

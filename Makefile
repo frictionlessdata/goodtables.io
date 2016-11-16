@@ -26,4 +26,4 @@ start:
 
 test:
 	pylama goodtablesio
-	py.test
+	py.test --cov goodtablesio --cov-report term-missing
