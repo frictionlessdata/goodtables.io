@@ -6,9 +6,9 @@ class GoodtablesioException(Exception):
 
 # Validation
 
-class InvalidTaskConfiguration(GoodtablesioException):
+class InvalidJobConfiguration(GoodtablesioException):
     pass
 
 
-class InvalidTaskDescriptor(GoodtablesioException):
+class InvalidValidationConfiguration(GoodtablesioException):
     pass

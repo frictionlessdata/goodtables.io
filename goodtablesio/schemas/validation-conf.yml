@@ -1,7 +1,7 @@
-# Task descriptor schema
-# ----------------------
+# Validation configuration schema
+# -------------------------------
 #
-# Create task payload passed to the API should conform to this schema.
+# The configuration object passed to the validation task should conform to this schema.
 #
 $schema: http://json-schema.org/draft-04/schema#
 type: object
@@ -71,7 +71,7 @@ properties:
       errorLimit:
         type: integer
 
-      # Table limit per task
+      # Table limit per job
       tableLimit:
         type: integer
 

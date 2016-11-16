@@ -1,4 +1,4 @@
-# Task configuration schema
+# Job configuration schema
 # -------------------------
 #
 # The goodtables.yml file structure should conform to this schema.
@@ -93,7 +93,7 @@ properties:
       errorLimit:
         type: integer
 
-      # Table limit per task
+      # Table limit per job
       tableLimit:
         type: integer
 

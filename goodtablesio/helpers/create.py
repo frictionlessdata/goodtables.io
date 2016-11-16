@@ -2,7 +2,7 @@ import uuid
 import logging
 import datetime
 from sqlalchemy.types import DateTime
-from .validate import validate_task_desc
+from .validate import validate_validation_conf
 from .. import tasks
 from .. import services
 logger = logging.getLogger(__name__)
@@ -10,44 +10,45 @@ logger = logging.getLogger(__name__)
 
 # Module API
 
-def create_task(task_desc, task_id=None):
-    """Create task.
+def create_job(validation_conf, job_id=None):
+    """Create job.
 
     Args:
-        task_desc (dict): task descriptor
-        task_id (str): optional task identifier
+        validation_conf (dict): validation configuration
+        job_id (str): optional job identifier
 
     Raises:
-        exceptions.InvalidTaskDescriptor
+        exceptions.InvalidValidationConfiguration
 
     Returns:
-        task_id (str): task identifier
+        job_id (str): job identifier
 
     """
 
-    # Validate task descriptor
-    validate_task_desc(task_desc)
+    # Validate validation configuration
+    validate_validation_conf(validation_conf)
 
-    # Get task identifier
-    if not task_id:
-        task_id = str(uuid.uuid4())
+    # Get job identifier
+    if not job_id:
+        job_id = str(uuid.uuid4())
 
     # Write to database
-    insert_task_row(task_id)
+    insert_job_row(job_id)
 
     # Create celery task
-    result = tasks.validate.apply_async((task_desc,), task_id=task_id)
+    result = tasks.validate.apply_async((validation_conf,), job_id=job_id)
 
     return result.id
 
 
-def insert_task_row(task_id):
+def insert_job_row(job_id):
     row = {
-        'task_id': task_id,
+        'job_id': job_id,
         'created': datetime.datetime.utcnow()
     }
     services.database['reports'].insert(row,
                                         types={'created': DateTime},
                                         ensure=True)
-    logger.debug('Saved task "%s" to database', task_id)
-    return task_id
+
+    logger.debug('Saved job "%s" to the database', job_id)
+    return job_id

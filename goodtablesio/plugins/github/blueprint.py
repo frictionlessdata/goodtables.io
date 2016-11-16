@@ -6,7 +6,7 @@ from flask import Blueprint, request, abort
 from goodtablesio import tasks
 from goodtablesio import helpers
 
-from goodtablesio.plugins.github.tasks import get_task_desc
+from goodtablesio.plugins.github.tasks import get_validation_conf
 
 
 log = logging.getLogger(__name__)
@@ -16,7 +16,7 @@ github = Blueprint('github', __name__, url_prefix='/github')
 
 
 @github.route('/hook', methods=['POST'])
-def create_task():
+def create_job():
 
     # TODO: check origin with secret
 
@@ -24,12 +24,12 @@ def create_task():
     if not payload:
         abort(400)
 
-    task_id = str(uuid.uuid4())
+    job_id = str(uuid.uuid4())
 
-    helpers.insert_task_row(task_id)
+    helpers.insert_job_row(job_id)
 
-    get_task_desc.apply_async(
-        (payload['repository']['clone_url'], task_id),
-        link=tasks.validate.s(task_id=task_id))
+    get_validation_conf.apply_async(
+        (payload['repository']['clone_url'], job_id),
+        link=tasks.validate.s(job_id=job_id))
 
-    return task_id
+    return job_id

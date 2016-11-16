@@ -7,36 +7,36 @@ from .. import exceptions
 
 # Module API
 
-def validate_task_conf(task_conf):
-    """Validate task configuration.
+def validate_job_conf(job_conf):
+    """Validate job configuration.
 
     Raises:
-        exceptions.InvalidTaskConfiguration
+        exceptions.InvalidJobConfiguration
 
     Returns:
         True
 
     """
     try:
-        return _validate(task_conf, 'task-conf.yml')
+        return _validate(job_conf, 'job-conf.yml')
     except jsonschema.ValidationError:
-        raise exceptions.InvalidTaskConfiguration()
+        raise exceptions.InvalidJobConfiguration()
 
 
-def validate_task_desc(task_desc):
-    """Validate task descriptor.
+def validate_validation_conf(validation_conf):
+    """Validate the configuration for the validation task.
 
     Raises:
-        exceptions.InvalidTaskDescriptor
+        exceptions.InvalidValidationConfiguration
 
     Returns:
         True
 
     """
     try:
-        return _validate(task_desc, 'task-desc.yml')
+        return _validate(validation_conf, 'validation-conf.yml')
     except jsonschema.ValidationError:
-        raise exceptions.InvalidTaskDescriptor()
+        raise exceptions.InvalidValidationConfiguration()
 
 
 # Internal

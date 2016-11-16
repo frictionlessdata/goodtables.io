@@ -1,19 +1,19 @@
 import pytest
-from unittest.mock import Mock, patch
-from goodtablesio import helpers, exceptions
+from unittest.mock import patch
+from goodtablesio import helpers
 
 
 # Tests
 
 def test_get_ids(services):
     services.database['reports'].find.return_value = [
-        {'task_id': 'id1'}, {'task_id': 'id2'}
+        {'job_id': 'id1'}, {'job_id': 'id2'}
     ]
-    assert helpers.get_task_ids() == ['id1', 'id2']
-
+    assert helpers.get_job_ids() == ['id1', 'id2']
 
 
 # Fixtures
+
 
 @pytest.fixture
 def services():

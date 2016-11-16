@@ -7,31 +7,31 @@ from goodtablesio import helpers
 api = Blueprint('api', __name__, url_prefix='/api')
 
 
-@api.route('/task', methods=['POST'])
-def create_task():
+@api.route('/job', methods=['POST'])
+def create_job():
 
-    # Get task descriptor
-    task_desc = request.get_json()
-    if not task_desc:
-        abort(400)
+    # Get validation configuration
+    validation_conf = request.get_json()
+    if not validation_conf:
+        abort(400, 'Missing configuration')
 
-    # Create task
+    # Create job
     try:
-        task_id = helpers.create_task(task_desc)
-    except exceptions.InvalidTaskDescriptor:
-        abort(400)
+        job_id = helpers.create_job(validation_conf)
+    except exceptions.InvalidValidationConfiguration:
+        abort(400, 'Invalid configuration')
 
-    return task_id
-
-
-@api.route('/task')
-def list_tasks():
-    return jsonify(helpers.get_task_ids())
+    return job_id
 
 
-@api.route('/task/<task_id>')
-def get_task(task_id):
-    return jsonify(helpers.get_task(task_id))
+@api.route('/job')
+def list_jobs():
+    return jsonify(helpers.get_job_ids())
+
+
+@api.route('/job/<job_id>')
+def get_job(job_id):
+    return jsonify(helpers.get_job(job_id))
 
 
 @api.route('/')

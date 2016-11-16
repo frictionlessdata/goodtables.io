@@ -7,7 +7,7 @@ from goodtablesio import helpers
 
 
 # Validate
-payload = {
+validation_conf = {
     'files': [
         {'source': 'https://raw.githubusercontent.com/frictionlessdata/goodtables-py/master/data/valid.csv'},
         {
@@ -23,10 +23,10 @@ payload = {
         # other options
     }
 }
-task_id = helpers.create_task(payload)
+job_id = helpers.create_job(validation_conf)
 while True:
     time.sleep(1)
-    task = helpers.get_task(task_id)
-    print(task)
-    if task['status'] != 'PENDING':
+    job = helpers.get_job(job_id)
+    print(job)
+    if job['status'] != 'PENDING':
         break

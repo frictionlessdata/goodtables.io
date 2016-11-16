@@ -41,7 +41,7 @@ bash1$ make celery
 bash2$ make dev
 ```
 
-Now developmet server runs on `localhost:5000`. We could send github repo for validation getting task identifiers as a response:
+Now developmet server runs on `localhost:5000`. We could send github repo for validation getting job identifiers as a response:
 
 > POST localhost:5000/github/hook/
 
@@ -55,7 +55,7 @@ Now developmet server runs on `localhost:5000`. We could send github repo for va
 693f40f0-fcad-416e-b2c7-a5beebff4f44
 ```
 
-> GET localhost:5000/api/task/693f40f0-fcad-416e-b2c7-a5beebff4f44
+> GET localhost:5000/api/job/693f40f0-fcad-416e-b2c7-a5beebff4f44
 
 ```json
 {
@@ -103,7 +103,7 @@ Now developmet server runs on `localhost:5000`. We could send github repo for va
       "time": 0.981,
       "valid": false
     },
-    "task_id": "693f40f0-fcad-416e-b2c7-a5beebff4f44"
+    "job_id": "693f40f0-fcad-416e-b2c7-a5beebff4f44"
   },
   "status": "SUCCESS"
 }
