@@ -9,6 +9,7 @@ amqp==2.1.1               # via kombu
 billiard==3.5.0.2         # via celery
 cchardet==1.1.1           # via tabulator
 celery==4.0.0
+chardet==2.3.0            # via normality
 click==6.6                # via flask, goodtables, jsontableschema, python-dotenv, tabulator
 datapackage==0.8.4        # via goodtables
 dataset==0.7.0
@@ -17,6 +18,7 @@ ezodf==0.3.2              # via tabulator
 flask==0.11.1
 future==0.16.0            # via jsontableschema
 goodtables==1.0.0a3
+gunicorn==19.6.0
 ijson==2.3                # via tabulator
 itsdangerous==0.24        # via flask
 jdcal==1.3                # via openpyxl
@@ -29,7 +31,7 @@ linear-tsv==1.0.0         # via tabulator
 lxml==3.6.4               # via tabulator
 Mako==1.0.6               # via alembic
 MarkupSafe==0.23          # via jinja2, mako
-normality==0.3.0          # via dataset
+normality==0.3.6          # via dataset
 openpyxl==2.4.0           # via tabulator
 psycopg2==2.6.2
 python-dateutil==2.6.0    # via jsontableschema
@@ -41,7 +43,7 @@ redis==2.10.5
 requests==2.11.1
 rfc3986==0.4.1            # via jsontableschema
 six==1.10.0               # via datapackage, dataset, goodtables, jsonlines, linear-tsv, normality, python-dateutil, tabulator
-SQLAlchemy==1.1.3         # via alembic, dataset
+SQLAlchemy==1.1.4         # via alembic, dataset
 tabulator==0.11.1         # via datapackage, goodtables, jsontableschema
 unicodecsv==0.14.1        # via datapackage, jsontableschema, tabulator
 vine==1.1.3               # via amqp
