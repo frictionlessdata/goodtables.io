@@ -5,20 +5,20 @@ from goodtablesio import helpers, exceptions
 
 # Tests
 
-def test_prepare_task(load_file):
-    task_conf = [
-        'http://example.com/task_conf.yml',
+def test_prepare_job(load_file):
+    job_conf = [
+        'http://example.com/job_conf.yml',
         """
         files: '*'
         settings:
             error_limit: 1
         """
     ]
-    task_files = [
+    job_files = [
         'file.csv',
         'file.pdf',
     ]
-    task_desc = {
+    validation_conf = {
         'files': [
             {'source': 'http://example.com/file.csv'},
         ],
@@ -26,54 +26,54 @@ def test_prepare_task(load_file):
             'error_limit': 1,
         }
     }
-    load_file.return_value = task_conf[1]
-    assert helpers.prepare_task(task_conf[0], task_files) == task_desc
+    load_file.return_value = job_conf[1]
+    assert helpers.prepare_job(job_conf[0], job_files) == validation_conf
 
 
-def test_prepare_task_subdir(load_file):
-    task_conf = [
-        'http://example.com/task_conf.yml',
+def test_prepare_job_subdir(load_file):
+    job_conf = [
+        'http://example.com/job_conf.yml',
         """
         files: '*'
         """
     ]
-    task_files = [
+    job_files = [
         'data/file.csv',
         'file.pdf',
     ]
-    task_desc = {
+    validation_conf = {
         'files': [
             {'source': 'http://example.com/data/file.csv'},
         ]
     }
-    load_file.return_value = task_conf[1]
-    assert helpers.prepare_task(task_conf[0], task_files) == task_desc
+    load_file.return_value = job_conf[1]
+    assert helpers.prepare_job(job_conf[0], job_files) == validation_conf
 
 
-def test_prepare_task_subdir_config(load_file):
-    task_conf = [
-        'http://example.com/task_conf.yml',
+def test_prepare_job_subdir_config(load_file):
+    job_conf = [
+        'http://example.com/job_conf.yml',
         """
         files: 'data/*'
         """
     ]
-    task_files = [
+    job_files = [
         'data/file.csv',
         'file.ods',
         'file.pdf',
     ]
-    task_desc = {
+    validation_conf = {
         'files': [
             {'source': 'http://example.com/data/file.csv'},
         ]
     }
-    load_file.return_value = task_conf[1]
-    assert helpers.prepare_task(task_conf[0], task_files) == task_desc
+    load_file.return_value = job_conf[1]
+    assert helpers.prepare_job(job_conf[0], job_files) == validation_conf
 
 
-def test_prepare_task_subdir_granular(load_file):
-    task_conf = [
-        'http://example.com/task_conf.yml',
+def test_prepare_job_subdir_granular(load_file):
+    job_conf = [
+        'http://example.com/job_conf.yml',
         """
         files:
           - source: data/file.csv
@@ -83,13 +83,13 @@ def test_prepare_task_subdir_granular(load_file):
             order_fields: true
         """
     ]
-    task_files = [
+    job_files = [
         'data/file.csv',
         'data/schema.json',
         'file.ods',
         'file.pdf',
     ]
-    task_desc = {
+    validation_conf = {
         'files': [
             {
                 'source': 'http://example.com/data/file.csv',
@@ -101,20 +101,20 @@ def test_prepare_task_subdir_granular(load_file):
             'order_fields': True,
         }
     }
-    load_file.return_value = task_conf[1]
-    assert helpers.prepare_task(task_conf[0], task_files) == task_desc
+    load_file.return_value = job_conf[1]
+    assert helpers.prepare_job(job_conf[0], job_files) == validation_conf
 
 
-def test_prepare_task_invalid(load_file):
-    task_conf = [
-        'http://example.com/task_conf.yml',
+def test_prepare_job_invalid(load_file):
+    job_conf = [
+        'http://example.com/job_conf.yml',
         """
         files: {}
         """
     ]
-    load_file.return_value = task_conf[1]
-    with pytest.raises(exceptions.InvalidTaskConfiguration):
-        assert helpers.prepare_task(task_conf[0], [])
+    load_file.return_value = job_conf[1]
+    with pytest.raises(exceptions.InvalidJobConfiguration):
+        assert helpers.prepare_job(job_conf[0], [])
 
 
 # Fixtures

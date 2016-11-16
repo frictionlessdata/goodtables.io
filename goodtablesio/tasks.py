@@ -23,27 +23,27 @@ app.autodiscover_tasks(['goodtablesio.plugins.github'])
 
 
 @app.task(name='goodtablesio.tasks.validate')
-def validate(task_desc, task_id=None):
+def validate(validation_conf, job_id=None):
     """Main validation task.
 
     Args:
-        task_desc (dict): task descriptor
+        validation_conf (dict): validation configuration
 
-    See `schemas/task-desc.yml`.
+    See `schemas/validation-conf.yml`.
 
     """
     # Get report
-    inspector = Inspector(**task_desc['settings'])
-    report = inspector.inspect(task_desc['files'], preset='tables')
+    inspector = Inspector(**validation_conf['settings'])
+    report = inspector.inspect(validation_conf['files'], preset='tables')
 
     # Save report
     database = dataset.connect(config.DATABASE_URL)
     row = {
-        'task_id': task_id or validate.request.id,
+        'job_id': job_id or validate.request.id,
         'report': report,
         'finished': datetime.datetime.utcnow()
     }
     database['reports'].update(row,
-                               ['task_id'],
+                               ['job_id'],
                                types={'report': JSONB, 'finished': DateTime},
                                ensure=True)

@@ -4,9 +4,9 @@ from goodtablesio import helpers, exceptions
 
 # Tests
 
-def test_create_task_invalid():
-    task_desc = {
+def test_create_job_invalid():
+    validation_conf = {
         'files': {},
     }
-    with pytest.raises(exceptions.InvalidTaskDescriptor):
-        assert helpers.create_task(task_desc)
+    with pytest.raises(exceptions.InvalidValidationConfiguration):
+        assert helpers.create_job(validation_conf)

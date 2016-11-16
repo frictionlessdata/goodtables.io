@@ -2,66 +2,65 @@ import os
 import yaml
 import requests
 from fnmatch import fnmatch
-from .validate import validate_task_conf
+from .validate import validate_job_conf
 from .. import config
 
 
 # Module API
 
-def prepare_task(task_conf, task_files):
-    """Convert task configuration and task files to task description.
+def prepare_job(job_conf, job_files):
+    """Convert job configuration and job files to a validation configuration.
 
     Args:
-        task_conf (url): task configuration
-        task_files (url[]): task files (not filtered, relative paths)
+        job_conf (url): URL to the job configuration file (goodtable.yml)
+        job_files (url[]): Potential job files (not filtered, relative paths)
 
     Raises:
-        exceptions.InvalidTaskConfiguration
+        exceptions.InvalidJobConfiguration
 
     Returns:
-        task_desc (dict): task descriptor
+        validation_conf (dict): Configuration object to be used by the
+            validation task
 
-    This is a pure function for better testing ability
-    of this important chunk of application logic.
-
+    This function is separate to make testing easier.
     """
-    task_desc = {}
+    validation_conf = {}
 
-    # Get base url and load task configuration
-    base_url = task_conf.rsplit('/', 1)[0]
-    task_conf = yaml.load(_load_file(task_conf))
+    # Get base url and load job configuration
+    base_url = job_conf.rsplit('/', 1)[0]
+    job_conf = yaml.load(_load_file(job_conf))
 
-    # Validate task configuration
-    validate_task_conf(task_conf)
+    # Validate job configuration
+    validate_job_conf(job_conf)
 
     # Wild-card syntax
-    task_desc['files'] = []
-    if isinstance(task_conf['files'], str):
-        pattern = task_conf['files']
-        for name in task_files:
+    validation_conf['files'] = []
+    if isinstance(job_conf['files'], str):
+        pattern = job_conf['files']
+        for name in job_files:
             if not _is_tabular_file(name):
                 continue
             if fnmatch(name, pattern):
                 source = '/'.join([base_url, name])
-                task_desc['files'].append({
+                validation_conf['files'].append({
                     'source': source,
                 })
 
     # Granular syntax
     else:
-        for item in task_conf['files']:
-            if item['source'] in task_files:
+        for item in job_conf['files']:
+            if item['source'] in job_files:
                 item['source'] = '/'.join([base_url, item['source']])
                 if 'schema' in item:
                     if not item['schema'].startswith('http'):
                         item['schema'] = '/'.join([base_url, item['schema']])
-                task_desc['files'].append(item)
+                validation_conf['files'].append(item)
 
     # Copy settings
-    if 'settings' in task_conf:
-        task_desc['settings'] = task_conf['settings']
+    if 'settings' in job_conf:
+        validation_conf['settings'] = job_conf['settings']
 
-    return task_desc
+    return validation_conf
 
 
 # Internal
