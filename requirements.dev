@@ -1,2 +1,5 @@
 -r requirements.txt
 pip-tools
+pytest
+pytest-cov
+coverage

@@ -1,7 +1,8 @@
 from flask import Blueprint, request, abort
 from flask.json import jsonify
+from goodtablesio import exceptions
+from goodtablesio import helpers
 
-from goodtablesio import handlers
 
 api = Blueprint('api', __name__, url_prefix='/api')
 
@@ -9,24 +10,28 @@ api = Blueprint('api', __name__, url_prefix='/api')
 @api.route('/task', methods=['POST'])
 def create_task():
 
-    payload = request.get_json()
-
-    if not payload or 'source' not in payload:
+    # Get task descriptor
+    task_desc = request.get_json()
+    if not task_desc:
         abort(400)
 
-    task_id = handlers.create_task(payload)
+    # Create task
+    try:
+        task_id = helpers.create_task(task_desc)
+    except exceptions.InvalidTaskDescriptor:
+        abort(400)
 
     return task_id
 
 
 @api.route('/task')
 def list_tasks():
-    return jsonify(handlers.get_task_ids())
+    return jsonify(helpers.get_task_ids())
 
 
 @api.route('/task/<task_id>')
 def get_task(task_id):
-    return jsonify(handlers.get_task(task_id))
+    return jsonify(helpers.get_task(task_id))
 
 
 @api.route('/')

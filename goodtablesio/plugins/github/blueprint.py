@@ -3,8 +3,8 @@ import logging
 
 from flask import Blueprint, request, abort
 
-from goodtablesio.tasks import validate
-from goodtablesio.handlers import insert_task_row
+from goodtablesio import tasks
+from goodtablesio import helpers
 
 from .tasks import clone_repo_files
 
@@ -26,36 +26,10 @@ def create_task():
 
     task_id = str(uuid.uuid4())
 
-    insert_task_row(task_id)
+    helpers.insert_task_row(task_id)
 
     clone_repo_files.apply_async(
         (payload['repository']['clone_url'], task_id),
-        link=validate.s(task_id=task_id))
+        link=tasks.validate.s(task_id=task_id))
 
-    return ''
-    '''
-    task_id = str(uuid.uuid4())
-
-    clone_dir = clone_repo(task_id, payload['repository']['clone_url'])
-
-    # TODO: take goodtables.yml into account
-    paths = get_files_to_validate(clone_dir)
-
-    if paths:
-        validation_payload = {
-            'source': [{'source': path} for path in paths],
-            'preset': 'tables'
-        }
-        handlers.create_task(validation_payload, task_id=task_id)
-
-        # TODO: set commit status on GitHub
-
-        return task_id
-
-    return ''
-
-    # TODO: cleanup clone dirs
-    '''
-
-
-
+    return task_id

@@ -1,0 +1,25 @@
+from flask import Flask
+from .plugins.http.blueprint import api
+from .plugins.github.blueprint import github
+from . import config
+
+
+# Module API
+
+def create_app():
+
+    # Create instance
+    app = Flask(__name__)
+
+    # Register blueprints
+    app.register_blueprint(api)
+    app.register_blueprint(github)
+
+    return app
+
+
+# Main program
+
+if __name__ == '__main__':
+    app = create_app()
+    app.run(port=config.APP_PORT)

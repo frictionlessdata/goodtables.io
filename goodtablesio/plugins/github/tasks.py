@@ -1,8 +1,10 @@
+import re
 import os
 import subprocess
 import tempfile
 import logging
 
+from goodtablesio import helpers
 from goodtablesio.tasks import app as celery_app
 
 
@@ -15,23 +17,22 @@ CLONE_DIR = '/tmp'
 @celery_app.task(name='goodtablesio.github.clone_repo_files')
 def clone_repo_files(clone_url, task_id):
 
-    clone_dir = clone_repo(task_id, clone_url)
+    clone_dir = _clone_repo(task_id, clone_url)
+    task_conf = _get_task_conf(clone_url)
+    task_files = _get_task_files(clone_dir)
 
-    # TODO: take goodtables.yml into account
-    paths = get_files_to_validate(clone_dir)
+    # Get task descriptor
+    task_desc = helpers.prepare_task(task_conf, task_files)
 
-    if paths:
-        validation_payload = {
-            'source': [{'source': path} for path in paths],
-            'preset': 'tables'
-        }
+    # TODO: handle exceptions (eg bad task description)
+    # TODO: cleanup clone dirs
 
-        # TODO: set commit status on GitHub
-
-        return validation_payload
+    return task_desc
 
 
-def clone_repo(task_id, clone_url):
+# Internal
+
+def _clone_repo(task_id, clone_url):
     clone_dir = tempfile.mkdtemp(prefix=task_id, dir=CLONE_DIR)
 
     clone_command = ['git', 'clone', clone_url, clone_dir]
@@ -48,25 +49,21 @@ def clone_repo(task_id, clone_url):
     return clone_dir
 
 
-def get_files_to_validate(clone_dir):
-    paths = get_dir_paths(clone_dir)
-    return get_tabular_file_paths(paths)
+def _get_task_conf(clone_url, branch='master'):
+    pattern = r'github.com/(?P<user>[^/]*)/(?P<repo>[^/]*)\.git'
+    match = re.search(pattern, clone_url)
+    user = match.group('user')
+    repo = match.group('repo')
+    template = 'https://raw.githubusercontent.com/{user}/{repo}/{branch}/goodtables.yml'
+    task_conf = template.format(user=user, repo=repo, branch=branch)
+    return task_conf
 
 
-def get_dir_paths(top):
+def _get_task_files(top):
     out = []
     for dir_name, sub_dir_list, file_list in os.walk(top, topdown=True):
         if '.git' in sub_dir_list:
             sub_dir_list.remove('.git')
         for file_name in file_list:
-            out.append(os.path.join(dir_name, file_name))
-    return out
-
-
-def get_tabular_file_paths(paths):
-    out = []
-    for path in paths:
-        name, extension = os.path.splitext(path)
-        if extension and extension[1:].lower() in TABULAR_EXTENSIONS:
-            out.append(path)
+            out.append(file_name)
     return out
