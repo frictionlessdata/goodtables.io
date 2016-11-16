@@ -33,7 +33,7 @@ after_success:
 
 deploy:
   on:
-    branch: deployment
+    branch: master
   provider: deis
   controller: deis.oklabs.org
   app: goodtables
