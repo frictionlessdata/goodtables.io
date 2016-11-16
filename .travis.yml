@@ -1,0 +1,28 @@
+sudo:
+  false
+
+language:
+  python
+
+python:
+  - 3.5
+
+services:
+  - postgresql
+  - redis-server
+
+addons:
+  postgresql: '9.5'
+
+env:
+  global:
+    - DATABASE_URL=postgres://postgres@localhost:5432/goodtables
+    - BROKER_URL=redis://localhost:6379/10
+    - RESULT_BACKEND=redis://localhost:6379/11
+
+install:
+  - make install
+  - psql -c 'create database goodtables;' -U postgres
+
+script:
+  - make test
