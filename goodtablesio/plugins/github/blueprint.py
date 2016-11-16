@@ -6,7 +6,7 @@ from flask import Blueprint, request, abort
 from goodtablesio import tasks
 from goodtablesio import helpers
 
-from .tasks import clone_repo_files
+from goodtablesio.plugins.github.tasks import get_task_desc
 
 
 log = logging.getLogger(__name__)
@@ -28,7 +28,7 @@ def create_task():
 
     helpers.insert_task_row(task_id)
 
-    clone_repo_files.apply_async(
+    get_task_desc.apply_async(
         (payload['repository']['clone_url'], task_id),
         link=tasks.validate.s(task_id=task_id))
 

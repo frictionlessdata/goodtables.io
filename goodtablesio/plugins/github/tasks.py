@@ -14,8 +14,8 @@ TABULAR_EXTENSIONS = ['csv', 'xls', 'xlsx', 'ods']
 CLONE_DIR = '/tmp'
 
 
-@celery_app.task(name='goodtablesio.github.clone_repo_files')
-def clone_repo_files(clone_url, task_id):
+@celery_app.task(name='goodtablesio.github.get_task_desc')
+def get_task_desc(clone_url, task_id):
 
     clone_dir = _clone_repo(task_id, clone_url)
     task_conf = _get_task_conf(clone_url)
