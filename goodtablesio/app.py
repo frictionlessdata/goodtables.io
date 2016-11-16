@@ -1,5 +1,5 @@
 from flask import Flask
-from .plugins.http.blueprint import api
+from .blueprints import api
 from .plugins.github.blueprint import github
 from . import config
 
