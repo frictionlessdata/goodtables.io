@@ -1,6 +1,4 @@
-from flask import Blueprint, request, abort, render_template
-from flask.json import jsonify
-from goodtablesio import exceptions
+from flask import Blueprint, abort, render_template
 from goodtablesio import helpers
 
 
