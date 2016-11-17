@@ -43,7 +43,7 @@ def validate(validation_conf, job_id=None):
         'report': report,
         'finished': datetime.datetime.utcnow()
     }
-    database['reports'].update(row,
+    database['jobs'].update(row,
                                ['job_id'],
                                types={'report': JSONB, 'finished': DateTime},
                                ensure=True)

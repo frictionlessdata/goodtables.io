@@ -13,7 +13,7 @@ def get_job(job_id):
         dict: job result
 
     """
-    report = services.database['reports'].find_one(job_id=job_id)
+    report = services.database['jobs'].find_one(job_id=job_id)
     # TODO: we need to store the status in the DB as we can no longer rely on
     # the job id being the same one used by a celery task
     status = 'Not Implemented'
@@ -29,4 +29,4 @@ def get_job_ids():
     """
     return [r['job_id']
             for r in
-            services.database['reports'].find(order_by=['-created'])]
+            services.database['jobs'].find(order_by=['-created'])]

@@ -4,7 +4,14 @@ from goodtablesio import exceptions
 from goodtablesio import helpers
 
 
+# Module API
+
 api = Blueprint('api', __name__, url_prefix='/api')
+
+
+@api.route('/')
+def home():
+    return 'goodtables.io/api'
 
 
 @api.route('/job', methods=['POST'])
@@ -32,8 +39,3 @@ def list_jobs():
 @api.route('/job/<job_id>')
 def get_job(job_id):
     return jsonify(helpers.get_job(job_id))
-
-
-@api.route('/')
-def hi():
-    return "hi"

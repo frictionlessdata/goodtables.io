@@ -46,7 +46,7 @@ def insert_job_row(job_id):
         'job_id': job_id,
         'created': datetime.datetime.utcnow()
     }
-    services.database['reports'].insert(row,
+    services.database['jobs'].insert(row,
                                         types={'created': DateTime},
                                         ensure=True)
 
