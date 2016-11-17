@@ -6,7 +6,7 @@ from goodtablesio import helpers
 # Tests
 
 def test_get_ids(services):
-    services.database['reports'].find.return_value = [
+    services.database['jobs'].find.return_value = [
         {'job_id': 'id1'}, {'job_id': 'id2'}
     ]
     assert helpers.get_job_ids() == ['id1', 'id2']

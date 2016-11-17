@@ -46,9 +46,9 @@ def insert_job_row(job_id):
         'job_id': job_id,
         'created': datetime.datetime.utcnow()
     }
-    services.database['reports'].insert(row,
-                                        types={'created': DateTime},
-                                        ensure=True)
+    services.database['jobs'].insert(row,
+                                     types={'created': DateTime},
+                                     ensure=True)
 
     logger.debug('Saved job "%s" to the database', job_id)
     return job_id
