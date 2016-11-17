@@ -14,7 +14,9 @@ def home():
     return 'goodtables.io'
 
 
-@site.route('/report/<job_id>')
-def report(job_id):
+@site.route('/job/<job_id>')
+def job(job_id):
     job = helpers.get_job(job_id)
-    return render_template('report.html', job=job)
+    if not job['result']:
+        abort(404)
+    return render_template('job.html', job=job)
