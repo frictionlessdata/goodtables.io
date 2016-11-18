@@ -1,7 +1,7 @@
 celery==4.0.0
 redis==2.10.5
 flask==0.11.1
-goodtables==1.0.0a3
+goodtables==1.0.0a4
 python-dotenv==0.6.0
 dataset==0.7.0
 psycopg2==2.6.2
