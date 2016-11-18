@@ -4,120 +4,103 @@
 <div class="container">
   <h1>Job</h1>
 
-  <h2>Overview</h2>
-
-  {% set color = 'yellow' %}
-  {% if job.result.report.valid %}
-  {% set color = 'green' %}
-  {% else %}
-  {% set color = 'red' %}
+  {% set color = 'black' %}
+  {% if job.result.finished %}
+    {% if job.result.report.valid %}
+    {% set color = 'green' %}
+    {% else %}
+    {% set color = 'red' %}
+    {% endif %}
   {% endif %}
+
+  <h2>Report</h2>
 
   <table class="table table-bordered">
     <thead style="background-color: {{ color }}; color: #fff;">
       <tr>
         <td>Job Id</td>
         <td>Status</td>
-        <td>Created</td>
-        <td>Finished</td>
+        <td>Valid</td>
+        <td>Errors</td>
+        <td>Tables</td>
+        <td>Time</td>
       </tr>
     </thead>
     <thead>
       <tr>
         <td>{{ job.result.job_id }}</td>
         <td>{{ job.status }}</td>
-        <td>{{ job.result.created }}</td>
-        <td>{{ job.result.finished }}</td>
+        <td>{{ job.result.report.valid }}</td>
+        <td>{{ job.result.report['error-count'] }}</td>
+        <td>{{ job.result.report['table-count'] }}</td>
+        <td>{{ job.result.report.time }}</td>
       </tr>
     </thead>
   </table>
 
-  {% if job.result.report %}
+  {% if job.result.finished %}
+  <h2>Files</h2>
+  {% endif %}
+
+  {% for table in job.result.report.tables %}
+
+    {% set color = 'yellow' %}
+    {% if job.result.report.tables[loop.index0].valid %}
+    {% set color = 'green' %}
+    {% else %}
+    {% set color = 'red' %}
+    {% endif %}
 
     <hr>
 
-    <h2>Dataset</h2>
-
+    <h3><a target="_blank" href="{{ table.source }}">{{ table.source|replace('https://raw.githubusercontent.com/', '')}}</a></h3>
     <table class="table table-bordered">
       <thead style="background-color: {{ color }}; color: #fff;">
         <tr>
           <td>Valid</td>
           <td>Errors</td>
-          <td>Tables</td>
+          <td>Rows</td>
           <td>Time</td>
         </tr>
       </thead>
       <thead>
         <tr>
-          <td>{{ job.result.report.valid }}</td>
-          <td>{{ job.result.report['error-count'] }}</td>
-          <td>{{ job.result.report['table-count'] }}</td>
-          <td>{{ job.result.report.time }}</td>
+          <td>{{ table.valid }}</td>
+          <td>{{ table['error-count'] }}</td>
+          <td>{{ table['row-count'] }}</td>
+          <td>{{ table.time }}</td>
         </tr>
       </thead>
     </table>
 
-    {% for table in job.result.report.tables %}
+    {% if table.errors %}
 
-      {% set color = 'yellow' %}
-      {% if job.result.report.tables[loop.index0].valid %}
-      {% set color = 'green' %}
-      {% else %}
-      {% set color = 'red' %}
-      {% endif %}
+      <h4>Errors</h4>
 
-      <hr>
-
-      <h2>Table-{{ loop.index }}</h2>
+      {% for error in table.errors %}
       <table class="table table-bordered">
         <thead style="background-color: {{ color }}; color: #fff;">
           <tr>
-            <td>Valid</td>
-            <td>Errors</td>
-            <td>Rows</td>
-            <td>Time</td>
+            <td>Row</td>
+            <td>Column</td>
+            <td>Code</td>
+            <td>Message</td>
           </tr>
         </thead>
         <thead>
           <tr>
-            <td>{{ table.valid }}</td>
-            <td>{{ table['error-count'] }}</td>
-            <td>{{ table['row-count'] }}</td>
-            <td>{{ table.time }}</td>
+            <td>{{ error['row-number'] or '-' }}</td>
+            <td>{{ error['column-number'] }}</td>
+            <td>{{ error.code }}</td>
+            <td>{{ error.message }}</td>
           </tr>
         </thead>
       </table>
+      {% endfor %}
 
-      {% if table.errors %}
+    {% endif %}
 
-        <h3>Errors</h3>
-
-        {% for error in table.errors %}
-        <table class="table table-bordered">
-          <thead style="background-color: {{ color }}; color: #fff;">
-            <tr>
-              <td>Row</td>
-              <td>Column</td>
-              <td>Code</td>
-              <td>Message</td>
-            </tr>
-          </thead>
-          <thead>
-            <tr>
-              <td>{{ error['row-number'] or '-' }}</td>
-              <td>{{ error['column-number'] }}</td>
-              <td>{{ error.code }}</td>
-              <td>{{ error.message }}</td>
-            </tr>
-          </thead>
-        </table>
-        {% endfor %}
-
-      {% endif %}
-
-    {% endfor %}
-
-  {% endif %}
+  {% endfor %}
 
 </div>
 {% endblock %}
