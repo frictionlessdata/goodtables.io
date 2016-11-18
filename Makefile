@@ -22,7 +22,7 @@ requirements:
 	pip-compile > requirements.txt
 
 start:
-	gunicorn goodtablesio.app:app
+	gunicorn --access-logfile - --log-file - goodtablesio.app:app
 
 test:
 	pylama goodtablesio

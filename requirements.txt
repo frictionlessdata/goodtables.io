@@ -17,7 +17,7 @@ et-xmlfile==1.0.1         # via openpyxl
 ezodf==0.3.2              # via tabulator
 flask==0.11.1
 future==0.16.0            # via jsontableschema
-goodtables==1.0.0a3
+goodtables==1.0.0a4
 gunicorn==19.6.0
 ijson==2.3                # via tabulator
 itsdangerous==0.24        # via flask
@@ -44,7 +44,7 @@ requests==2.11.1
 rfc3986==0.4.1            # via jsontableschema
 six==1.10.0               # via datapackage, dataset, goodtables, jsonlines, linear-tsv, normality, python-dateutil, tabulator
 SQLAlchemy==1.1.4         # via alembic, dataset
-tabulator==0.11.1         # via datapackage, goodtables, jsontableschema
+tabulator==0.11.2         # via datapackage, goodtables, jsontableschema
 unicodecsv==0.14.1        # via datapackage, jsontableschema, tabulator
 vine==1.1.3               # via amqp
 Werkzeug==0.11.11         # via flask
