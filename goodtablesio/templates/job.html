@@ -2,7 +2,6 @@
 
 {% block contents %}
 <div class="container">
-  <h1>Job</h1>
 
   {% set color = 'black' %}
   {% if job.result.finished %}
@@ -14,6 +13,8 @@
   {% endif %}
 
   <h2>Report</h2>
+
+  <hr>
 
   <table class="table table-bordered">
     <thead style="background-color: {{ color }}; color: #fff;">
