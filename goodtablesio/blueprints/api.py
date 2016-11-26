@@ -62,4 +62,4 @@ def get_job(job_id):
     if job:
         return jsonify(job)
     else:
-        raise APIError(404, 'Job Not Found')
+        raise APIError(404, 'Job not found')

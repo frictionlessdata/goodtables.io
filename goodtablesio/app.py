@@ -9,6 +9,8 @@ from .plugins.github.blueprint import github
 # Create instance
 app = Flask(__name__)
 
+app.config['JSONIFY_MIMETYPE'] = 'application/json; charset=utf-8'
+
 # Register blueprints
 app.register_blueprint(api)
 app.register_blueprint(site)
