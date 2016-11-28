@@ -1,4 +1,5 @@
 -r requirements.txt
+factory-boy
 pylama
 pip-tools
 pytest
