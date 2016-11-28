@@ -31,6 +31,10 @@ script:
 after_success:
   - coveralls
 
+cache:
+  directories:
+    - $HOME/.cache/pip    
+
 deploy:
   on:
     branch: master
