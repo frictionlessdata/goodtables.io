@@ -3,7 +3,8 @@ from unittest import mock
 
 import pytest
 
-from goodtablesio import helpers, services
+from goodtablesio import services
+from goodtablesio.tests import factories
 
 
 # Clean up DB on all this module's tests
@@ -33,26 +34,26 @@ def test_api_job_list_empty(client):
 
 def test_api_job_list(client):
 
-    helpers.insert_job_row('1')
-    helpers.insert_job_row('2')
+    job1 = factories.Job()
+    job2 = factories.Job()
 
     response = client.get('/api/job')
 
-    assert _data(response) == ['2', '1']
+    assert _data(response) == [job2.job_id, job1.job_id]
 
 
 def test_api_get_job(client):
 
-    helpers.insert_job_row('1')
+    job = factories.Job()
 
-    response = client.get('/api/job/1')
+    response = client.get('/api/job/{0}'.format(job.job_id))
 
     data = _data(response)
 
     # TODO: Update after #19
 
     assert 'result' in data
-    assert data['result']['job_id'] == '1'
+    assert data['result']['job_id'] == job.job_id
     assert 'created' in data['result']
     assert 'status' in data
 

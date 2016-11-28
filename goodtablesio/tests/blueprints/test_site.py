@@ -1,6 +1,7 @@
 import pytest
 
-from goodtablesio import helpers
+from goodtablesio.tests import factories
+
 
 # Clean up DB on all this module's tests
 
@@ -19,15 +20,15 @@ def test_site_basic(client):
 
 def test_site_get_job(client):
 
-    helpers.insert_job_row('101')
+    job = factories.Job()
 
-    response = client.get('/job/101')
+    response = client.get('/job/{0}'.format(job.job_id))
 
     # TODO: Test actual content when implemented
 
     body = response.get_data(as_text=True)
     assert 'Report' in body
-    assert '101' in body
+    assert job.job_id in body
 
 
 def test_site_get_job_not_found(client):
