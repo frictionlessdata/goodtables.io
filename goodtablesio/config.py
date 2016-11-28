@@ -4,24 +4,6 @@ from logging.handlers import SysLogHandler
 from dotenv import load_dotenv
 load_dotenv('.env')
 
-
-# General
-
-TABULAR_EXTENSIONS = ['csv', 'xls', 'xlsx', 'ods']
-
-# Database
-
-DATABASE_URL = os.environ['DATABASE_URL']
-
-# Celery
-
-broker_url = os.environ['BROKER_URL']
-result_backend = os.environ['RESULT_BACKEND']
-task_serializer = 'json'
-result_serializer = 'json'
-timezone = 'Europe/London'
-enable_utc = True
-
 # Logging
 
 logging.basicConfig(level=logging.DEBUG)
@@ -31,3 +13,28 @@ if os.environ.get('LOGGING_URL', None):
     syslog_handler = SysLogHandler(address=(host, int(port)))
     syslog_handler.setLevel(logging.INFO)
     root_logger.addHandler(syslog_handler)
+
+
+log = logging.getLogger(__name__)
+
+# General
+
+TABULAR_EXTENSIONS = ['csv', 'xls', 'xlsx', 'ods']
+
+# Database
+
+if not os.environ.get('TESTING'):
+    log.debug('Not testing mode')
+    DATABASE_URL = os.environ['DATABASE_URL']
+else:
+    log.debug('Testing mode')
+    DATABASE_URL = os.environ['TEST_DATABASE_URL']
+
+# Celery
+
+broker_url = os.environ['BROKER_URL']
+result_backend = os.environ['RESULT_BACKEND']
+task_serializer = 'json'
+result_serializer = 'json'
+timezone = 'Europe/London'
+enable_utc = True
