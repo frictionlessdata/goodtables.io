@@ -3,7 +3,8 @@ from unittest import mock
 
 import pytest
 
-from goodtablesio import tasks, services, helpers
+from goodtablesio import tasks, services
+from goodtablesio.tests import factories
 
 
 pytestmark = pytest.mark.usefixtures('db_cleanup')
@@ -13,7 +14,7 @@ pytestmark = pytest.mark.usefixtures('db_cleanup')
 def test_tasks_validate(_inspect):
 
     job_id = str(uuid.uuid4())
-    helpers.insert_job_row(job_id)
+    job = factories.Job(job_id=job_id)
 
     mock_report = {'valid': True, 'errors': []}
     _inspect.return_value = mock_report
@@ -23,7 +24,7 @@ def test_tasks_validate(_inspect):
 
     _inspect.assert_called_with(validation_conf['files'], preset='tables')
 
-    jobs = [job for job in services.database['jobs'].find()]
+    jobs = [row for row in services.database['jobs'].find()]
 
     assert len(jobs) == 1
 
