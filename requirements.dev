@@ -1,6 +1,8 @@
 -r requirements.txt
+factory-boy
 pylama
 pip-tools
 pytest
 pytest-cov
+pytest-env
 coverage

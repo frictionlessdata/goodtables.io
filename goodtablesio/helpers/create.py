@@ -36,9 +36,9 @@ def create_job(validation_conf, job_id=None):
     insert_job_row(job_id)
 
     # Create celery task
-    result = tasks.validate.apply_async((validation_conf,), job_id=job_id)
+    tasks.validate.apply_async((validation_conf,), {'job_id': job_id})
 
-    return result.id
+    return job_id
 
 
 def insert_job_row(job_id):

@@ -33,7 +33,8 @@ def validate(validation_conf, job_id=None):
 
     """
     # Get report
-    inspector = Inspector(**validation_conf['settings'])
+    settings = validation_conf.get('settings', {})
+    inspector = Inspector(**settings)
     report = inspector.inspect(validation_conf['files'], preset='tables')
 
     # Save report
