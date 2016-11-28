@@ -1,4 +1,10 @@
-from goodtablesio import helpers, services
+import pytest
+
+from goodtablesio import helpers
+
+# Clean up DB on all this module's tests
+
+pytestmark = pytest.mark.usefixtures('db_cleanup')
 
 
 def test_site_basic(client):
@@ -22,8 +28,6 @@ def test_site_get_job(client):
     body = response.get_data(as_text=True)
     assert 'Report' in body
     assert '101' in body
-
-    services.database['jobs'].delete()
 
 
 def test_site_get_job_not_found(client):

@@ -3,23 +3,12 @@ from unittest import mock
 
 import pytest
 
-
 from goodtablesio import helpers, services
-from goodtablesio.app import app
 
 
-@pytest.fixture(scope='function', autouse=True)
-def db_cleanup():
+# Clean up DB on all this module's tests
 
-    services.database['jobs'].delete()
-
-    yield
-
-
-@pytest.fixture()
-def client():
-
-    return app.test_client()
+pytestmark = pytest.mark.usefixtures('db_cleanup')
 
 
 def _data(response):
