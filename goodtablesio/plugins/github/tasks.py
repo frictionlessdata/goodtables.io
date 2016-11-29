@@ -72,5 +72,5 @@ def _get_job_files(top):
 
 
 def _remove_repo(clone_url, clone_dir):
-    log.info('Removing repo {0} from {1}'.format(clone_url, clone_dir))
+    log.debug('Removing repo {0}'.format(clone_url))
     shutil.rmtree(clone_dir)
