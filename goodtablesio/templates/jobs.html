@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block contents %}
+<div class="container">
+
+  <h1>Jobs</h1>
+
+  <ul>
+    {% for id in job_ids %}
+    <li><a href="/job/{{ id }}">{{ id }}</a></li>
+    {% endfor %}
+  </ul>
+
+</div>
+{% endblock %}
