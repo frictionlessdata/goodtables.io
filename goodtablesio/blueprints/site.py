@@ -9,7 +9,13 @@ site = Blueprint('site', __name__)
 
 @site.route('/')
 def home():
-    return 'goodtables.io'
+    return render_template('home.html')
+
+
+@site.route('/job')
+def jobs():
+    job_ids = helpers.get_job_ids()
+    return render_template('jobs.html', job_ids=job_ids)
 
 
 @site.route('/job/<job_id>')
