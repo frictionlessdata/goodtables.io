@@ -3,6 +3,7 @@ import os
 import subprocess
 import tempfile
 import logging
+import shutil
 
 from goodtablesio import helpers
 from goodtablesio.tasks import app as celery_app
@@ -31,7 +32,8 @@ def get_validation_conf(clone_url, job_id):
     validation_conf = helpers.prepare_job(job_conf, job_files)
 
     # TODO: handle exceptions (eg bad task description)
-    # TODO: cleanup clone dirs
+
+    _remove_repo(clone_url, clone_dir)
 
     return validation_conf
 
@@ -73,3 +75,8 @@ def _get_job_files(top):
         for file_name in file_list:
             out.append(file_name)
     return out
+
+
+def _remove_repo(clone_url, clone_dir):
+    log.debug('Removing repo {0}'.format(clone_url))
+    shutil.rmtree(clone_dir)
