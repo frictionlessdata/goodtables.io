@@ -17,6 +17,12 @@ CLONE_DIR = '/tmp'
 
 @celery_app.task(name='goodtablesio.github.get_validation_conf')
 def get_validation_conf(clone_url, job_id):
+    # We need to import the DB connection at this point, as it has been
+    # initialized when the worker started
+    from goodtablesio.tasks import tasks_db
+
+    tasks_db['jobs'].update({'job_id': job_id, 'status': 'running'},
+                            ['job_id'])
 
     clone_dir = _clone_repo(job_id, clone_url)
     job_conf = _get_job_conf(clone_url)

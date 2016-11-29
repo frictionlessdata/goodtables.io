@@ -30,6 +30,6 @@ def create_job():
 
     get_validation_conf.apply_async(
         (payload['repository']['clone_url'], job_id),
-        link=tasks.validate.s(job_id=job_id))
+        link=tasks.validate.s(job_id))
 
     return job_id

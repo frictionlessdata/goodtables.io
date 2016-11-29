@@ -4,8 +4,8 @@
 <div class="container">
 
   {% set color = 'black' %}
-  {% if job.result.finished %}
-    {% if job.result.report.valid %}
+  {% if job.finished %}
+    {% if job.report.valid %}
     {% set color = 'green' %}
     {% else %}
     {% set color = 'red' %}
@@ -29,24 +29,24 @@
     </thead>
     <thead>
       <tr>
-        <td>{{ job.result.job_id }}</td>
+        <td>{{ job.job_id }}</td>
         <td>{{ job.status }}</td>
-        <td>{{ job.result.report.valid }}</td>
-        <td>{{ job.result.report['error-count'] }}</td>
-        <td>{{ job.result.report['table-count'] }}</td>
-        <td>{{ job.result.report.time }}</td>
+        <td>{{ job.report.valid }}</td>
+        <td>{{ job.report['error-count'] }}</td>
+        <td>{{ job.report['table-count'] }}</td>
+        <td>{{ job.report.time }}</td>
       </tr>
     </thead>
   </table>
 
-  {% if job.result.finished %}
+  {% if job.finished %}
   <h2>Files</h2>
   {% endif %}
 
-  {% for table in job.result.report.tables %}
+  {% for table in job.report.tables %}
 
     {% set color = 'yellow' %}
-    {% if job.result.report.tables[loop.index0].valid %}
+    {% if job.report.tables[loop.index0].valid %}
     {% set color = 'green' %}
     {% else %}
     {% set color = 'red' %}
