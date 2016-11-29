@@ -4,7 +4,9 @@ import subprocess
 import tempfile
 import logging
 
-from goodtablesio import helpers
+import dataset
+
+from goodtablesio import helpers, services, config
 from goodtablesio.tasks import app as celery_app
 
 
@@ -16,6 +18,12 @@ CLONE_DIR = '/tmp'
 
 @celery_app.task(name='goodtablesio.github.get_validation_conf')
 def get_validation_conf(clone_url, job_id):
+
+    # TODO: reuse connections
+    database = dataset.connect(config.DATABASE_URL)
+
+    database['jobs'].update({'job_id': job_id, 'status': 'running'},
+                            ['job_id'])
 
     clone_dir = _clone_repo(job_id, clone_url)
     job_conf = _get_job_conf(clone_url)

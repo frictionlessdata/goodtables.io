@@ -44,7 +44,8 @@ def create_job(validation_conf, job_id=None):
 def insert_job_row(job_id):
     row = {
         'job_id': job_id,
-        'created': datetime.datetime.utcnow()
+        'created': datetime.datetime.utcnow(),
+        'status': 'created'
     }
     services.database['jobs'].insert(row,
                                      types={'created': DateTime},

@@ -32,17 +32,26 @@ def validate(validation_conf, job_id):
     See `schemas/validation-conf.yml`.
 
     """
+
+    database = dataset.connect(config.DATABASE_URL)
+
+    job = database['jobs'].find_one(job_id=job_id)
+    # TODO: job not found
+    if job['status'] == 'created':
+        database['jobs'].update({'job_id': job_id, 'status': 'running'},
+                                ['job_id'])
+
     # Get report
     settings = validation_conf.get('settings', {})
     inspector = Inspector(**settings)
     report = inspector.inspect(validation_conf['files'], preset='tables')
 
     # Save report
-    database = dataset.connect(config.DATABASE_URL)
     row = {
         'job_id': job_id,
         'report': report,
-        'finished': datetime.datetime.utcnow()
+        'finished': datetime.datetime.utcnow(),
+        'status': 'success' if report['valid'] else 'failure'
     }
     database['jobs'].update(row,
                             ['job_id'],
