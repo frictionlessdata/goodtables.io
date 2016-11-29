@@ -52,9 +52,9 @@ def test_api_get_job(client):
 
     # TODO: Update after #19
 
-    assert 'result' in data
-    assert data['result']['job_id'] == job.job_id
-    assert 'created' in data['result']
+    assert 'report' in data
+    assert data['job_id'] == job.job_id
+    assert 'created' in data
     assert 'status' in data
 
 

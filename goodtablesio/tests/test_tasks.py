@@ -17,6 +17,9 @@ def test_tasks_validate(_inspect):
     mock_report = {'valid': True, 'errors': []}
     _inspect.return_value = mock_report
 
+    # Needed to initialize the DB connection
+    tasks.init_worker()
+
     validation_conf = {'files': ['file1', 'file2'], 'settings': {}}
     tasks.validate(validation_conf, job_id=job.job_id)
 
