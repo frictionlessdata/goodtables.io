@@ -23,7 +23,7 @@ app.autodiscover_tasks(['goodtablesio.plugins.github'])
 
 
 @app.task(name='goodtablesio.tasks.validate')
-def validate(validation_conf, job_id=None):
+def validate(validation_conf, job_id):
     """Main validation task.
 
     Args:
@@ -40,7 +40,7 @@ def validate(validation_conf, job_id=None):
     # Save report
     database = dataset.connect(config.DATABASE_URL)
     row = {
-        'job_id': job_id or validate.request.id,
+        'job_id': job_id,
         'report': report,
         'finished': datetime.datetime.utcnow()
     }
