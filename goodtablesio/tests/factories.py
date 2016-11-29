@@ -19,6 +19,7 @@ class Job(factory.Factory):
     job_id = factory.Sequence(lambda n: str(uuid.uuid4()))
 
     created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    status = 'created'
     finished = None
     report = None
 
@@ -26,7 +27,7 @@ class Job(factory.Factory):
     def _create(cls, model_class, *args, **kwargs):
 
         row = {}
-        for field in ('job_id', 'created', 'finished', 'report'):
+        for field in ('job_id', 'created', 'finished', 'report', 'status'):
             row[field] = kwargs.get(field)
 
         services.database['jobs'].insert(row,
