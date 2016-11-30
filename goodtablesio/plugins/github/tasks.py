@@ -5,8 +5,11 @@ import tempfile
 import logging
 import shutil
 
+from celery import signals
+
 from goodtablesio import helpers
-from goodtablesio.tasks import app as celery_app
+from goodtablesio.tasks import app as celery_app, validate
+from goodtablesio.plugins.github.utils import set_commit_status
 
 
 log = logging.getLogger(__name__)
@@ -36,6 +39,34 @@ def get_validation_conf(clone_url, job_id):
     _remove_repo(clone_url, clone_dir)
 
     return validation_conf
+
+
+@signals.task_postrun.connect(sender=validate)
+def post_task_handler(**kwargs):
+
+    job = kwargs['retval']
+
+    if job.get('plugin') != 'github':
+        return
+
+    task_state = kwargs['state']
+
+    status = job['status']
+    plugin_conf = job['plugin_conf']
+
+    if plugin_conf:
+
+        if task_state == 'SUCCESS' and status != 'running':
+            github_status = status
+        else:
+            github_status = 'error'
+
+        set_commit_status(
+           github_status,
+           owner=plugin_conf['repository']['owner'],
+           repo=plugin_conf['repository']['name'],
+           sha=plugin_conf['sha'],
+           job_id=job['job_id'])
 
 
 # Internal
