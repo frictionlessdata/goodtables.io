@@ -8,11 +8,11 @@ from .. import config
 
 # Module API
 
-def prepare_job(job_conf, job_files):
+def prepare_job(job_conf_url, job_files):
     """Convert job configuration and job files to a validation configuration.
 
     Args:
-        job_conf (url): URL to the job configuration file (goodtable.yml)
+        job_conf_url (url): URL to the job configuration file (goodtable.yml)
         job_files (url[]): Potential job files (not filtered, relative paths)
 
     Raises:
@@ -24,14 +24,27 @@ def prepare_job(job_conf, job_files):
 
     This function is separate to make testing easier.
     """
-    validation_conf = {}
 
     # Get base url and load job configuration
-    base_url = job_conf.rsplit('/', 1)[0]
-    job_conf = yaml.load(_load_file(job_conf))
+    base_url = job_conf_url.rsplit('/', 1)[0]
+    yml_file = _load_file(job_conf_url)
+    if yml_file:
+        job_conf = yaml.load(yml_file)
 
-    # Validate job configuration
-    validate_job_conf(job_conf)
+        # Validate job configuration
+        validate_job_conf(job_conf)
+
+    else:
+        job_conf = {'files': '*'}
+
+    return _prepare_validation_conf(job_conf, job_files, base_url)
+
+
+# Internal
+
+def _prepare_validation_conf(job_conf, job_files, base_url):
+
+    validation_conf = {}
 
     # Wild-card syntax
     validation_conf['files'] = []
@@ -63,11 +76,12 @@ def prepare_job(job_conf, job_files):
     return validation_conf
 
 
-# Internal
-
 def _load_file(url):
     response = requests.get(url)
-    return response.text
+    if response.status_code == 200:
+        return response.text
+    else:
+        return None
 
 
 def _is_tabular_file(name):

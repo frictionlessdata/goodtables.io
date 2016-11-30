@@ -117,6 +117,23 @@ def test_prepare_job_invalid(load_file):
         assert helpers.prepare_job(job_conf[0], [])
 
 
+def test_prepare_job_goodtables_yml_not_found(load_file):
+    job_conf_url = 'http://example.com/job_conf.yml'
+    job_files = [
+        'file1.csv',
+        'file2.csv',
+        'file.pdf',
+    ]
+    validation_conf = {
+        'files': [
+            {'source': 'http://example.com/file1.csv'},
+            {'source': 'http://example.com/file2.csv'},
+        ]
+    }
+    load_file.return_value = None
+    assert helpers.prepare_job(job_conf_url, job_files) == validation_conf
+
+
 # Fixtures
 
 @pytest.fixture

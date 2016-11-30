@@ -25,11 +25,11 @@ def get_validation_conf(clone_url, job_id):
                             ['job_id'])
 
     clone_dir = _clone_repo(job_id, clone_url)
-    job_conf = _get_job_conf(clone_url)
+    job_conf_url = _get_job_conf_url(clone_url)
     job_files = _get_job_files(clone_dir)
 
     # Get job descriptor
-    validation_conf = helpers.prepare_job(job_conf, job_files)
+    validation_conf = helpers.prepare_job(job_conf_url, job_files)
 
     # TODO: handle exceptions (eg bad task description)
 
@@ -57,7 +57,7 @@ def _clone_repo(job_id, clone_url):
     return clone_dir
 
 
-def _get_job_conf(clone_url, branch='master'):
+def _get_job_conf_url(clone_url, branch='master'):
     pattern = r'github.com/(?P<user>[^/]*)/(?P<repo>[^/]*)\.git'
     match = re.search(pattern, clone_url)
     user = match.group('user')
