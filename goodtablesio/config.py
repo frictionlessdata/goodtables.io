@@ -18,7 +18,7 @@ if os.environ.get('LOGGING_URL', None):
 log = logging.getLogger(__name__)
 
 # General
-
+BASE_URL = os.environ['BASE_URL']
 TABULAR_EXTENSIONS = ['csv', 'xls', 'xlsx', 'ods']
 
 # Database
@@ -38,3 +38,8 @@ task_serializer = 'json'
 result_serializer = 'json'
 timezone = 'Europe/London'
 enable_utc = True
+
+# GitHub
+
+GITHUB_API_BASE = 'https://api.github.com'
+GITHUB_API_TOKEN = os.environ['GITHUB_API_TOKEN']
