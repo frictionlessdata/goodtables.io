@@ -29,7 +29,7 @@ def test_insert_job_row():
 
 
 @pytest.mark.usefixtures('db_cleanup')
-def test_insert_job_row_plugins_conf():
+def test_insert_job_row_plugin_conf():
 
     helpers.insert_job_row('my-id', 'my-plugin', {'some': 'conf'})
 
