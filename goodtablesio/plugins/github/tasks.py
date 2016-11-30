@@ -25,7 +25,7 @@ def get_validation_conf(clone_url, job_id):
     from goodtablesio.tasks import tasks_db
 
     tasks_db['jobs'].update({'job_id': job_id, 'status': 'running'},
-                            ['job_id'])
+                            ['job_id'], ensure=True)
 
     clone_dir = _clone_repo(job_id, clone_url)
     job_conf_url = _get_job_conf_url(clone_url)
