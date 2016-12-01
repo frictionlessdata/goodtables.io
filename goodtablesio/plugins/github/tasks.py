@@ -102,11 +102,16 @@ def _get_job_conf_url(clone_url, branch='master'):
 
 def _get_job_files(top):
     out = []
+
     for dir_name, sub_dir_list, file_list in os.walk(top, topdown=True):
         if '.git' in sub_dir_list:
             sub_dir_list.remove('.git')
+        current_dir = dir_name.replace(top, '').lstrip('/')
         for file_name in file_list:
-            out.append(file_name)
+            if current_dir:
+                out.append(os.path.join(current_dir, file_name))
+            else:
+                out.append(file_name)
     return out
 
 
