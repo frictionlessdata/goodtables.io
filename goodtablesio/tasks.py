@@ -79,6 +79,7 @@ class JobTask(Task):
             'job_id': job_id,
             'status': 'error',
             'error': {'message': message},
+            'finished': datetime.datetime.utcnow(),
         }
 
         # Update database

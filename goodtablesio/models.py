@@ -11,6 +11,7 @@ class Job():
     created = None
     finished = None
     report = None
+    error = None
 
     def __init__(self, *args, **kwargs):
         self.job_id = kwargs.get('job_id')
@@ -20,3 +21,4 @@ class Job():
         self.created = kwargs.get('created')
         self.finished = kwargs.get('finished')
         self.report = kwargs.get('report')
+        self.error = kwargs.get('report')

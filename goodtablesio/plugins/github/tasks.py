@@ -47,10 +47,10 @@ def post_task_handler(**kwargs):
     # initialized when the worker started
     from goodtablesio.tasks import tasks_db
 
-    # We can't use retval because on errors
-    # it will be an exception
-    job_id = kwargs['kwargs']['job_id']
-    job = tasks_db['jobs'].find_one(job_id=job_id)
+    job = kwargs['retval']
+    if isinstance(kwargs['retval'], Exception):
+        job_id = kwargs['kwargs']['job_id']
+        job = tasks_db['jobs'].find_one(job_id=job_id)
 
     if job.get('plugin_name') != 'github':
         return
