@@ -2,12 +2,13 @@ import datetime
 import logging
 
 import dataset
-from celery import Celery, signals
+from celery import Celery, Task, signals
 from sqlalchemy.types import DateTime
 from sqlalchemy.dialects.postgresql import JSONB
 from goodtables import Inspector
 
 from . import config
+from . import exceptions
 
 
 log = logging.getLogger(__name__)
@@ -42,7 +43,50 @@ def shutdown_worker(**kwargs):
         tasks_db.engine.dispose()
 
 
-@app.task(name='goodtablesio.tasks.validate')
+class JobTask(Task):
+    """Base class for all job lifetime tasks.
+
+    JobTask tasks should be called with `job_id` in kwargs!
+    Otherwise we can't link exceptions and jobs.
+
+    TODO: This class should require job_id somehow.
+
+    """
+
+    # Public
+
+    def on_failure(self, exc, task_id, args, kwargs, einfo):
+        """This handler is responsible to catch all job exceptions.
+
+        Exceptions should be wrapped into this library exception
+        classes so this function will be able to map it to corresponding
+        error messages (could be moved to exceptions).
+
+        """
+
+        # Get job id
+        job_id = kwargs['job_id']
+
+        # Get error message
+        message = 'Inernal Error'
+        if isinstance(exc, exceptions.InvalidJobConfiguration):
+            message = 'Invalid Job Configuration'
+        elif isinstance(exc, exceptions.InvalidValidationConfiguration):
+            message = 'Invalid Validation Configuration'
+
+        # Compose job update
+        job = {
+            'job_id': job_id,
+            'status': 'error',
+            'error': {'message': message},
+        }
+
+        # Update database
+        tasks_db['jobs'].update(job,
+            keys=['job_id'], types={'error': JSONB}, ensure=True)
+
+
+@app.task(name='goodtablesio.tasks.validate', base=JobTask)
 def validate(validation_conf, job_id):
     """Main validation task.
 
@@ -53,6 +97,7 @@ def validate(validation_conf, job_id):
 
     """
 
+    # Get job
     job = tasks_db['jobs'].find_one(job_id=job_id)
     # TODO: job not found
     if job['status'] == 'created':
@@ -74,4 +119,3 @@ def validate(validation_conf, job_id):
                             ['job_id'],
                             types={'report': JSONB, 'finished': DateTime},
                             ensure=True)
-    return job

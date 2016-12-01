@@ -8,7 +8,7 @@ import shutil
 from celery import signals
 
 from goodtablesio import helpers
-from goodtablesio.tasks import app as celery_app, validate
+from goodtablesio.tasks import app as celery_app, validate, JobTask
 from goodtablesio.plugins.github.utils import set_commit_status
 
 
@@ -18,7 +18,7 @@ TABULAR_EXTENSIONS = ['csv', 'xls', 'xlsx', 'ods']
 CLONE_DIR = '/tmp'
 
 
-@celery_app.task(name='goodtablesio.github.get_validation_conf')
+@celery_app.task(name='goodtablesio.github.get_validation_conf', base=JobTask)
 def get_validation_conf(clone_url, job_id):
     # We need to import the DB connection at this point, as it has been
     # initialized when the worker started
@@ -43,8 +43,14 @@ def get_validation_conf(clone_url, job_id):
 
 @signals.task_postrun.connect(sender=validate)
 def post_task_handler(**kwargs):
+    # We need to import the DB connection at this point, as it has been
+    # initialized when the worker started
+    from goodtablesio.tasks import tasks_db
 
-    job = kwargs['retval']
+    # We can't use retval because on errors
+    # it will be an exception
+    job_id = kwargs['kwargs']['job_id']
+    job = tasks_db['jobs'].find_one(job_id=job_id)
 
     if job.get('plugin_name') != 'github':
         return
