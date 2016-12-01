@@ -49,6 +49,6 @@ def create_job():
     tasks_chain = chain(
         get_validation_conf.s(payload['repository']['clone_url'], job_id=job_id),
         tasks.validate.s(job_id=job_id))
-    tasks_chain.apply_async()
+    tasks_chain.delay()
 
     return job_id

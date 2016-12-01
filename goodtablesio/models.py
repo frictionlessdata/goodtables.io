@@ -21,4 +21,4 @@ class Job():
         self.created = kwargs.get('created')
         self.finished = kwargs.get('finished')
         self.report = kwargs.get('report')
-        self.error = kwargs.get('report')
+        self.error = kwargs.get('error')
