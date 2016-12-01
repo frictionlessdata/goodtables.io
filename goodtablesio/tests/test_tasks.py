@@ -1,8 +1,9 @@
 from unittest import mock
 
 import pytest
+from celery import Celery
 
-from goodtablesio import tasks, services
+from goodtablesio import tasks, services, exceptions
 from goodtablesio.tests import factories
 
 
@@ -31,3 +32,26 @@ def test_tasks_validate(_inspect):
 
     assert jobs[0]['job_id'] == job.job_id
     assert jobs[0]['report'] == mock_report
+
+
+def test_JobTask_on_failure():
+
+    # Prepare things
+    job = factories.Job()
+    tasks.init_worker()
+    app = Celery('app')
+    app.conf['task_always_eager'] = True
+
+    # Prepare and call task
+    @app.task(base=tasks.JobTask)
+    def task(job_id):
+        raise exceptions.InvalidJobConfiguration()
+    task.s(job_id=job.job_id).delay()
+
+    # Assert errored job
+    jobs = list(services.database['jobs'].find())
+    assert len(jobs) == 1
+    assert jobs[0]['job_id'] == job.job_id
+    assert jobs[0]['status'] == 'error'
+    assert jobs[0]['error'] == {'message': 'Invalid job configuration'}
+    assert jobs[0]['finished']

@@ -70,9 +70,9 @@ class JobTask(Task):
         # Get error message
         message = 'Inernal Error'
         if isinstance(exc, exceptions.InvalidJobConfiguration):
-            message = 'Invalid Job Configuration'
+            message = 'Invalid job configuration'
         elif isinstance(exc, exceptions.InvalidValidationConfiguration):
-            message = 'Invalid Validation Configuration'
+            message = 'Invalid validation configuration'
 
         # Compose job update
         job = {
