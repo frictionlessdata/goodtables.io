@@ -16,9 +16,11 @@ addons:
 
 env:
   global:
+    - BASE_URL=http://localhost:5000
     - TEST_DATABASE_URL=postgres://postgres@localhost:5432/goodtables_test
     - BROKER_URL=redis://localhost:6379/10
     - RESULT_BACKEND=redis://localhost:6379/11
+    - GITHUB_API_TOKEN=test-github-token
 
 install:
   - make install

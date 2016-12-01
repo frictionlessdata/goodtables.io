@@ -7,6 +7,7 @@ from goodtablesio import tasks
 from goodtablesio import helpers
 
 from goodtablesio.plugins.github.tasks import get_validation_conf
+from goodtablesio.plugins.github.utils import set_commit_status
 
 
 log = logging.getLogger(__name__)
@@ -26,7 +27,23 @@ def create_job():
 
     job_id = str(uuid.uuid4())
 
-    helpers.insert_job_row(job_id)
+    # Store these details to be used when the job finishes
+    plugin_conf = {
+        'repository': {
+            'owner': payload['repository']['owner']['name'],
+            'name': payload['repository']['name'],
+            },
+        'sha': payload['head_commit']['id'],
+    }
+
+    helpers.insert_job_row(job_id, 'github', plugin_conf=plugin_conf)
+
+    set_commit_status(
+        'pending',
+        owner=payload['repository']['owner']['name'],
+        repo=payload['repository']['name'],
+        sha=payload['head_commit']['id'],
+        job_id=job_id)
 
     get_validation_conf.apply_async(
         (payload['repository']['clone_url'], job_id),

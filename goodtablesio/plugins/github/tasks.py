@@ -5,8 +5,11 @@ import tempfile
 import logging
 import shutil
 
+from celery import signals
+
 from goodtablesio import helpers
-from goodtablesio.tasks import app as celery_app
+from goodtablesio.tasks import app as celery_app, validate
+from goodtablesio.plugins.github.utils import set_commit_status
 
 
 log = logging.getLogger(__name__)
@@ -25,17 +28,45 @@ def get_validation_conf(clone_url, job_id):
                             ['job_id'])
 
     clone_dir = _clone_repo(job_id, clone_url)
-    job_conf = _get_job_conf(clone_url)
+    job_conf_url = _get_job_conf_url(clone_url)
     job_files = _get_job_files(clone_dir)
 
     # Get job descriptor
-    validation_conf = helpers.prepare_job(job_conf, job_files)
+    validation_conf = helpers.prepare_job(job_conf_url, job_files)
 
     # TODO: handle exceptions (eg bad task description)
 
     _remove_repo(clone_url, clone_dir)
 
     return validation_conf
+
+
+@signals.task_postrun.connect(sender=validate)
+def post_task_handler(**kwargs):
+
+    job = kwargs['retval']
+
+    if job.get('plugin_name') != 'github':
+        return
+
+    task_state = kwargs['state']
+
+    status = job['status']
+    plugin_conf = job['plugin_conf']
+
+    if plugin_conf:
+
+        if task_state == 'SUCCESS' and status != 'running':
+            github_status = status
+        else:
+            github_status = 'error'
+
+        set_commit_status(
+           github_status,
+           owner=plugin_conf['repository']['owner'],
+           repo=plugin_conf['repository']['name'],
+           sha=plugin_conf['sha'],
+           job_id=job['job_id'])
 
 
 # Internal
@@ -57,13 +88,15 @@ def _clone_repo(job_id, clone_url):
     return clone_dir
 
 
-def _get_job_conf(clone_url, branch='master'):
+def _get_job_conf_url(clone_url, branch='master'):
     pattern = r'github.com/(?P<user>[^/]*)/(?P<repo>[^/]*)\.git'
     match = re.search(pattern, clone_url)
     user = match.group('user')
     repo = match.group('repo')
-    template = 'https://raw.githubusercontent.com/{user}/{repo}/{branch}/goodtables.yml'
-    job_conf = template.format(user=user, repo=repo, branch=branch)
+    template = '/{user}/{repo}/{branch}/goodtables.yml'
+    job_conf = template.format(
+        base='https://raw.githubusercontent.com',
+        user=user, repo=repo, branch=branch)
     return job_conf
 
 

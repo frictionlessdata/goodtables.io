@@ -65,13 +65,13 @@ def validate(validation_conf, job_id):
     report = inspector.inspect(validation_conf['files'], preset='tables')
 
     # Save report
-    row = {
-        'job_id': job_id,
+    job.update({
         'report': report,
         'finished': datetime.datetime.utcnow(),
         'status': 'success' if report['valid'] else 'failure'
-    }
-    tasks_db['jobs'].update(row,
+    })
+    tasks_db['jobs'].update(job,
                             ['job_id'],
                             types={'report': JSONB, 'finished': DateTime},
                             ensure=True)
+    return job
