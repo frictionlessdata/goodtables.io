@@ -18,7 +18,7 @@ class Job(factory.Factory):
 
     job_id = factory.Sequence(lambda n: str(uuid.uuid4()))
     created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
-    plugin = 'api'
+    plugin_name = 'api'
     plugin_conf = None
     status = 'created'
     finished = None
@@ -28,14 +28,15 @@ class Job(factory.Factory):
     def _create(cls, model_class, *args, **kwargs):
 
         row = {}
-        for field in ('job_id', 'plugin', 'plugin_conf',
+        for field in ('job_id', 'plugin_name', 'plugin_conf',
                       'created', 'finished', 'report', 'status'):
             row[field] = kwargs.get(field)
 
         services.database['jobs'].insert(row,
                                          types={'created': DateTime,
                                                 'finished': DateTime,
-                                                'report': JSONB},
+                                                'report': JSONB,
+                                                'plugin_conf': JSONB},
                                          ensure=True)
 
         return model_class(*args, **kwargs)

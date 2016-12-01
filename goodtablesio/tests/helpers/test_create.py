@@ -19,7 +19,7 @@ def test_insert_job_row():
 
     assert job['job_id'] == 'my-id'
     assert job['status'] == 'created'
-    assert job['plugin'] == 'api'
+    assert job['plugin_name'] == 'api'
     assert job['plugin_conf'] is None
     assert job['created']
 
@@ -37,7 +37,7 @@ def test_insert_job_row_plugin_conf():
 
     assert job['job_id'] == 'my-id'
     assert job['status'] == 'created'
-    assert job['plugin'] == 'my-plugin'
+    assert job['plugin_name'] == 'my-plugin'
     assert job['plugin_conf'] == {'some': 'conf'}
     assert job['created']
 

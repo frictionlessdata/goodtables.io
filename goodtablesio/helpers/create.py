@@ -46,10 +46,10 @@ def create_job(validation_conf, job_id=None):
     return job_id
 
 
-def insert_job_row(job_id, plugin='api', plugin_conf=None):
+def insert_job_row(job_id, plugin_name='api', plugin_conf=None):
     row = {
         'job_id': job_id,
-        'plugin': plugin,
+        'plugin_name': plugin_name,
         'plugin_conf': plugin_conf,
         'created': datetime.datetime.utcnow(),
         'status': 'created',

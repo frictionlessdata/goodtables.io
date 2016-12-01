@@ -46,7 +46,7 @@ def post_task_handler(**kwargs):
 
     job = kwargs['retval']
 
-    if job.get('plugin') != 'github':
+    if job.get('plugin_name') != 'github':
         return
 
     task_state = kwargs['state']
@@ -93,8 +93,10 @@ def _get_job_conf_url(clone_url, branch='master'):
     match = re.search(pattern, clone_url)
     user = match.group('user')
     repo = match.group('repo')
-    template = 'https://raw.githubusercontent.com/{user}/{repo}/{branch}/goodtables.yml'
-    job_conf = template.format(user=user, repo=repo, branch=branch)
+    template = '/{user}/{repo}/{branch}/goodtables.yml'
+    job_conf = template.format(
+        base='https://raw.githubusercontent.com',
+        user=user, repo=repo, branch=branch)
     return job_conf
 
 
