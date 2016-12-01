@@ -39,7 +39,7 @@ cache:
 
 deploy:
   on:
-    branch: master
+    branch: drop-table
   provider: deis
   controller: deis.oklabs.org
   app: goodtables
