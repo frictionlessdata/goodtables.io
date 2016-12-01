@@ -23,19 +23,21 @@ class Job(factory.Factory):
     status = 'created'
     finished = None
     report = None
+    error = None
 
     @classmethod
     def _create(cls, model_class, *args, **kwargs):
 
         row = {}
         for field in ('job_id', 'plugin_name', 'plugin_conf',
-                      'created', 'finished', 'report', 'status'):
+                      'created', 'finished', 'report', 'status', 'error'):
             row[field] = kwargs.get(field)
 
         services.database['jobs'].insert(row,
                                          types={'created': DateTime,
                                                 'finished': DateTime,
                                                 'report': JSONB,
+                                                'error': JSONB,
                                                 'plugin_conf': JSONB},
                                          ensure=True)
 
