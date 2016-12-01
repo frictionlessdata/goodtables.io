@@ -1,6 +1,24 @@
 from unittest import mock
 
-from goodtablesio.plugins.github.tasks import _get_job_files
+from goodtablesio.plugins.github import tasks
+
+
+def test_get_job_conf_url():
+
+    clone_url = 'https://github.com/my-org/my-repo.git'
+
+    expected_url = \
+        'https://raw.githubusercontent.com/my-org/my-repo/master/goodtables.yml'
+    assert tasks._get_job_conf_url(clone_url) == expected_url
+
+
+def test_get_job_conf_url_custom_branch():
+
+    clone_url = 'https://github.com/my-org/my-repo.git'
+
+    expected_url = \
+        'https://raw.githubusercontent.com/my-org/my-repo/fix/goodtables.yml'
+    assert tasks._get_job_conf_url(clone_url, branch='fix') == expected_url
 
 
 def test_get_job_files():
@@ -30,7 +48,7 @@ def test_get_job_files():
                 ['file3.pdf', 'file4.csv', 'file5.csv']),
         ]
 
-        assert _get_job_files('/my/folder') == [
+        assert tasks._get_job_files('/my/folder') == [
             'file6.csv',
             'file7.txt',
             'folder2/file1.csv',
