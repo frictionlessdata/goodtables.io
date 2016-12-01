@@ -93,7 +93,7 @@ def _get_job_conf_url(clone_url, branch='master'):
     match = re.search(pattern, clone_url)
     user = match.group('user')
     repo = match.group('repo')
-    template = '/{user}/{repo}/{branch}/goodtables.yml'
+    template = '{base}/{user}/{repo}/{branch}/goodtables.yml'
     job_conf = template.format(
         base='https://raw.githubusercontent.com',
         user=user, repo=repo, branch=branch)
