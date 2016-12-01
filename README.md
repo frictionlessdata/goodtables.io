@@ -13,7 +13,7 @@ Preliminary designs and specifications can be found in the [wiki](https://github
 
 ## Development installation
 
-We currently use Redis as a broker and result storage:
+We currently use Redis as a broker:
 
     sudo apt-get install redis-server
 
