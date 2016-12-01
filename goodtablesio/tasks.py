@@ -120,3 +120,5 @@ def validate(validation_conf, job_id):
                             ['job_id'],
                             types={'report': JSONB, 'finished': DateTime},
                             ensure=True)
+
+    return job
