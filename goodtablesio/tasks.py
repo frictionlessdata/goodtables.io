@@ -82,8 +82,8 @@ class JobTask(Task):
         }
 
         # Update database
-        tasks_db['jobs'].update(job,
-            keys=['job_id'], types={'error': JSONB}, ensure=True)
+        tasks_db['jobs'].update(
+            job, keys=['job_id'], types={'error': JSONB}, ensure=True)
 
 
 @app.task(name='goodtablesio.tasks.validate', base=JobTask)
