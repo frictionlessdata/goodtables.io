@@ -1,6 +1,7 @@
 import uuid
 import logging
 
+from celery import chain
 from flask import Blueprint, request, abort
 
 from goodtablesio import tasks
@@ -45,8 +46,9 @@ def create_job():
         sha=payload['head_commit']['id'],
         job_id=job_id)
 
-    get_validation_conf.apply_async(
-        (payload['repository']['clone_url'], job_id),
-        link=tasks.validate.s(job_id))
+    tasks_chain = chain(
+        get_validation_conf.s(payload['repository']['clone_url'], job_id=job_id),
+        tasks.validate.s(job_id=job_id))
+    tasks_chain.delay()
 
     return job_id
