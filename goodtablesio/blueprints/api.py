@@ -1,8 +1,12 @@
+import logging
+
 from flask import Blueprint, request
 from flask.json import jsonify
 
 from goodtablesio import exceptions
 from goodtablesio import helpers
+
+log = logging.getLogger(__name__)
 
 
 # Module API
@@ -18,14 +22,15 @@ class APIError(Exception):
         self.status_code = status_code
         self.message = message
 
-    def to_dict(self):
-        return {'message': self.message}
 
-
-@api.app_errorhandler(APIError)
+@api.app_errorhandler(Exception)
 def handle_api_errors(error):
-    response = jsonify(error.to_dict())
-    response.status_code = error.status_code
+    if not isinstance(error, APIError):
+        log.error(repr(error))
+    message = getattr(error, 'message', 'Internal Error')
+    status_code = getattr(error, 'status_code', 500)
+    response = jsonify({'message': message})
+    response.status_code = status_code
     return response
 
 
