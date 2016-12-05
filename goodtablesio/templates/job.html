@@ -78,7 +78,6 @@
 
       <h4>Errors</h4>
 
-      {% for error in table.errors %}
       <table class="table table-bordered">
         <thead style="background-color: {{ color }}; color: #fff;">
           <tr>
@@ -89,15 +88,16 @@
           </tr>
         </thead>
         <thead>
+          {% for error in table.errors %}
           <tr>
             <td>{{ error['row-number'] or '-' }}</td>
             <td>{{ error['column-number'] }}</td>
             <td>{{ error.code }}</td>
             <td>{{ error.message }}</td>
           </tr>
+          {% endfor %}
         </thead>
       </table>
-      {% endfor %}
 
     {% endif %}
 
