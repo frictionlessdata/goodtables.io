@@ -26,7 +26,7 @@ class APIError(Exception):
 @api.app_errorhandler(Exception)
 def handle_api_errors(error):
     if not isinstance(error, APIError):
-        log.error(repr(error))
+        log.exception(repr(error))
     message = getattr(error, 'message', 'Internal Error')
     status_code = getattr(error, 'status_code', 500)
     response = jsonify({'message': message})
