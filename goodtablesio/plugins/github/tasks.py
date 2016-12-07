@@ -5,14 +5,10 @@ import tempfile
 import logging
 import shutil
 
-from goodtablesio import helpers
+from goodtablesio import config, helpers
 from goodtablesio.tasks import app as celery_app, JobTask
 
-
 log = logging.getLogger(__name__)
-
-TABULAR_EXTENSIONS = ['csv', 'xls', 'xlsx', 'ods']
-CLONE_DIR = '/tmp'
 
 
 # Module API
@@ -42,7 +38,7 @@ def get_validation_conf(clone_url, job_id):
 # Internal
 
 def _clone_repo(job_id, clone_url):
-    clone_dir = tempfile.mkdtemp(prefix=job_id, dir=CLONE_DIR)
+    clone_dir = tempfile.mkdtemp(prefix=job_id, dir=config.GITHUB_CLONE_DIR)
     clone_command = ['git', 'clone', clone_url, clone_dir]
     log.info('Cloning repo {0} into {1}'.format(clone_url, clone_dir))
     try:
