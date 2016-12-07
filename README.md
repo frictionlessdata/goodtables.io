@@ -34,8 +34,8 @@ $ editor .env # edit your vars
 
 Migrations:
 - migrate - `make migrate`
-- downgrade - alembic downgrade -1
-- add migration - alembic revision -m '<name>'
+- downgrade - `alembic downgrade -1`
+- add migration - `alembic revision -m '<name>'`
 
 ## Quickstart
 
