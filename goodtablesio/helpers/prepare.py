@@ -8,12 +8,12 @@ from .. import config
 
 # Module API
 
-def prepare_job(job_conf_url, job_files):
-    """Convert job configuration and job files to a validation configuration.
+def create_validation_conf(job_base, job_files):
+    """Create validation configuration from job base url and file paths.
 
     Args:
-        job_conf_url (url): URL to the job configuration file (goodtable.yml)
-        job_files (url[]): Potential job files (not filtered, relative paths)
+        job_base (url): url base for job file paths
+        job_files (str[]): relative to base job file paths
 
     Raises:
         exceptions.InvalidJobConfiguration
@@ -22,28 +22,29 @@ def prepare_job(job_conf_url, job_files):
         validation_conf (dict): Configuration object to be used by the
             validation task
 
-    This function is separate to make testing easier.
+    This function is pure to make testing easier.
+
     """
-
-    # Get base url and load job configuration
-    base_url = job_conf_url.rsplit('/', 1)[0]
-    yml_file = _load_file(job_conf_url)
-    if yml_file:
-        job_conf = yaml.load(yml_file)
-
-        # Validate job configuration
-        validate_job_conf(job_conf)
-
-    else:
-        job_conf = {'files': '*'}
-
-    return _prepare_validation_conf(job_conf, job_files, base_url)
+    job_conf = _load_job_conf(job_base)
+    validate_job_conf(job_conf)
+    validation_conf = _make_validation_conf(job_base, job_files, job_conf)
+    return validation_conf
 
 
 # Internal
 
-def _prepare_validation_conf(job_conf, job_files, base_url):
 
+def _load_job_conf(job_base):
+    url = '/'.join([job_base, 'goodtables.yml'])
+    text = _load_file(url)
+    if text is not None:
+        job_conf = yaml.load(text)
+    else:
+        job_conf = {'files': '*'}
+    return job_conf
+
+
+def _make_validation_conf(job_base, job_files, job_conf):
     validation_conf = {}
 
     # Wild-card syntax
@@ -54,7 +55,7 @@ def _prepare_validation_conf(job_conf, job_files, base_url):
             if not _is_tabular_file(name):
                 continue
             if fnmatch(name, pattern):
-                source = '/'.join([base_url, name])
+                source = '/'.join([job_base, name])
                 validation_conf['files'].append({
                     'source': source,
                 })
@@ -63,10 +64,10 @@ def _prepare_validation_conf(job_conf, job_files, base_url):
     else:
         for item in job_conf['files']:
             if item['source'] in job_files:
-                item['source'] = '/'.join([base_url, item['source']])
+                item['source'] = '/'.join([job_base, item['source']])
                 if 'schema' in item:
                     if not item['schema'].startswith('http'):
-                        item['schema'] = '/'.join([base_url, item['schema']])
+                        item['schema'] = '/'.join([job_base, item['schema']])
                 validation_conf['files'].append(item)
 
     # Copy settings
@@ -80,8 +81,7 @@ def _load_file(url):
     response = requests.get(url)
     if response.status_code == 200:
         return response.text
-    else:
-        return None
+    return None
 
 
 def _is_tabular_file(name):
