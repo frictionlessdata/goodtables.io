@@ -3,8 +3,6 @@ import logging
 
 import dataset
 from celery import Celery, Task, signals
-from sqlalchemy.types import DateTime
-from sqlalchemy.dialects.postgresql import JSONB
 from goodtables import Inspector
 
 from . import config
@@ -83,8 +81,7 @@ class JobTask(Task):
         }
 
         # Update database
-        tasks_db['jobs'].update(
-            job, keys=['job_id'], types={'error': JSONB}, ensure=True)
+        tasks_db['jobs'].update(job, keys=['job_id'])
 
 
 @app.task(name='goodtablesio.tasks.validate', base=JobTask)
@@ -116,9 +113,6 @@ def validate(validation_conf, job_id):
         'finished': datetime.datetime.utcnow(),
         'status': 'success' if report['valid'] else 'failure'
     })
-    tasks_db['jobs'].update(job,
-                            ['job_id'],
-                            types={'report': JSONB, 'finished': DateTime},
-                            ensure=True)
+    tasks_db['jobs'].update(job, ['job_id'])
 
     return job

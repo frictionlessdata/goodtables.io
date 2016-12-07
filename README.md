@@ -32,13 +32,18 @@ $ editor .env # edit your vars
 
 ```
 
+Migrations:
+- migrate - `make migrate`
+- downgrade - `alembic downgrade -1`
+- add migration - `alembic revision -m '<name>'`
+
 ## Quickstart
 
 Start the Celery worker and dev server:
 
 ```bash
-bash1$ make celery
-bash2$ make dev
+bash1$ make celery-dev
+bash2$ make server-dev
 ```
 
 Now developmet server runs on `localhost:5000`. We could send github repo for validation getting job identifiers as a response:
