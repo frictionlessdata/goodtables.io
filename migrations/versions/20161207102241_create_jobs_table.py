@@ -18,13 +18,13 @@ depends_on = None
 
 def upgrade():
     op.create_table('jobs',
-        sa.Column('job_id', sa.Text),
+        sa.Column('job_id', sa.Unicode),
         sa.Column('created', sa.DateTime(timezone=True)),
         sa.Column('finished', sa.DateTime(timezone=True)),
-        sa.Column('status', sa.Text),
+        sa.Column('status', sa.Unicode),
         sa.Column('report', JSONB),
         sa.Column('error', JSONB),
-        sa.Column('plugin_name', sa.Text),
+        sa.Column('plugin_name', sa.Unicode),
         sa.Column('plugin_conf', JSONB),
     )
 
