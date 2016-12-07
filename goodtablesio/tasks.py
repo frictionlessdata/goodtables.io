@@ -1,14 +1,13 @@
 import datetime
 import logging
 
-import dataset
 from celery import Celery, Task, signals
-from sqlalchemy.types import DateTime
-from sqlalchemy.dialects.postgresql import JSONB
 from goodtables import Inspector
 
 from . import config
 from . import exceptions
+from .services import get_engine, make_db_session
+from .models import Job
 
 
 log = logging.getLogger(__name__)
@@ -23,24 +22,27 @@ app.config_from_object(config)
 app.autodiscover_tasks(['goodtablesio.plugins.github'])
 
 
-tasks_db = None
+tasks_db_engine = None
+tasks_db_session = None
 
 
 @signals.worker_process_init.connect
 def init_worker(**kwargs):
-    global tasks_db
+    global tasks_db_engine, tasks_db_session
     log.debug('Initializing database connection for the worker')
-    tasks_db = dataset.connect(
-        config.DATABASE_URL,
+    tasks_db_engine = get_engine()
+    tasks_db_session = make_db_session(
         engine_kwargs={'pool_size': 20, 'pool_recycle': 3600})
 
 
 @signals.worker_process_shutdown.connect
 def shutdown_worker(**kwargs):
-    global tasks_db
-    if tasks_db:
+    global tasks_db_engine, tasks_db_session
+    if tasks_db_engine:
         log.debug('Closing database connectionn for the worker')
-        tasks_db.engine.dispose()
+        tasks_db_engine.dispose()
+        if tasks_db_session:
+            tasks_db_session.close()
 
 
 class JobTask(Task):
@@ -75,7 +77,7 @@ class JobTask(Task):
             message = 'Invalid validation configuration'
 
         # Compose job update
-        job = {
+        params = {
             'job_id': job_id,
             'status': 'error',
             'error': {'message': message},
@@ -83,8 +85,8 @@ class JobTask(Task):
         }
 
         # Update database
-        tasks_db['jobs'].update(
-            job, keys=['job_id'], types={'error': JSONB}, ensure=True)
+        tasks_db_session.query(Job).filter(Job.job_id == job_id).update(params)
+        tasks_db_session.commit()
 
 
 @app.task(name='goodtablesio.tasks.validate', base=JobTask)
@@ -99,11 +101,13 @@ def validate(validation_conf, job_id):
     """
 
     # Get job
-    job = tasks_db['jobs'].find_one(job_id=job_id)
+    job = tasks_db_session.query(Job).get(job_id).to_dict()
+
     # TODO: job not found
     if job['status'] == 'created':
-        tasks_db['jobs'].update({'job_id': job_id, 'status': 'running'},
-                                ['job_id'])
+        tasks_db_session.query(Job).filter(Job.job_id == job_id).update(
+            {'status': 'running'})
+        tasks_db_session.commit()
 
     # Get report
     settings = validation_conf.get('settings', {})
@@ -111,14 +115,14 @@ def validate(validation_conf, job_id):
     report = inspector.inspect(validation_conf['files'], preset='tables')
 
     # Save report
-    job.update({
+    params = {
         'report': report,
         'finished': datetime.datetime.utcnow(),
         'status': 'success' if report['valid'] else 'failure'
-    })
-    tasks_db['jobs'].update(job,
-                            ['job_id'],
-                            types={'report': JSONB, 'finished': DateTime},
-                            ensure=True)
+    }
+    tasks_db_session.query(Job).filter(Job.job_id == job_id).update(params)
+    tasks_db_session.commit()
+
+    job.update(params)
 
     return job

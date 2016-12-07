@@ -1,4 +1,5 @@
-from goodtablesio import services
+from goodtablesio.services import db_session
+from goodtablesio.models import Job
 
 
 # Module API
@@ -13,18 +14,12 @@ def get_job(job_id):
         dict: job result if job was found, None otherwise
 
     """
-    job = services.database['jobs'].find_one(job_id=job_id)
+    job = db_session.query(Job).get(job_id)
 
     if not job:
         return None
 
-    # TODO: this should not be needed after #33
-    if 'report' not in job:
-        job['report'] = None
-    if 'finished' not in job:
-        job['finished'] = None
-
-    return job
+    return job.to_dict()
 
 
 def get_job_ids():
@@ -34,6 +29,6 @@ def get_job_ids():
         str[]: list of job identifiers
 
     """
-    return [r['job_id']
-            for r in
-            services.database['jobs'].find(order_by=['-created'])]
+
+    job_ids = db_session.query(Job.job_id).order_by(Job.created.desc()).all()
+    return [r.job_id for r in job_ids]
