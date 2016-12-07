@@ -23,7 +23,7 @@ validation_conf = {
         # other options
     }
 }
-job_id = helpers.create_job(validation_conf)
+job_id = helpers.create_and_run_job(validation_conf)
 while True:
     time.sleep(1)
     job = helpers.get_job(job_id)

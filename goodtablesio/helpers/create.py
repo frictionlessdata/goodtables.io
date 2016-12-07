@@ -8,23 +8,22 @@ from .. import services
 from goodtablesio.models import Job
 
 
-logger = logging.getLogger(__name__)
+log = logging.getLogger(__name__)
 
 
-# Module API
+def create_and_run_job(validation_conf, job_id=None):
+    """Create a job object in the database and send it to the queue.
 
-def create_job(validation_conf, job_id=None):
-    """Create job.
-
-    Args:
-        validation_conf (dict): validation configuration
-        job_id (str): optional job identifier
+    Arguments:
+        validation_conf (dict): A dict with the validation configuration.
+        job_id (str): Optional id that will be assigned to the new job.
 
     Raises:
-        exceptions.InvalidValidationConfiguration
+        exceptions.InvalidValidationConfiguration: The validation configuration
+            was not valid. See schemas/validation-conf.yml
 
     Returns:
-        job_id (str): job identifier
+        job_id (str): The newly created job id
 
     """
 
@@ -36,7 +35,7 @@ def create_job(validation_conf, job_id=None):
         job_id = str(uuid.uuid4())
 
     # Write to database
-    insert_job_row(job_id)
+    create_job({'job_id': job_id})
 
     # Create celery task
     tasks.validate.delay(validation_conf, job_id=job_id)
@@ -44,18 +43,24 @@ def create_job(validation_conf, job_id=None):
     return job_id
 
 
-def insert_job_row(job_id, plugin_name='api', plugin_conf=None):
-    params = {
-        'job_id': job_id,
-        'plugin_name': plugin_name,
-        'plugin_conf': plugin_conf,
-    }
+def create_job(params, _db_session=None):
+    """
+    Creates a job object in the database.
+
+    Arguments:
+        params (dict): A dictionary with the values for the new job.
+        _db_session (Session): An alternative SQLAlchemy session instance. If
+            not provided the default one from goodtablesio.services will be
+            used. This is useful for tasks run on the Celery processes.
+
+    Returns:
+        job_id (str): The newly created job id
+    """
 
     job = Job(**params)
 
     services.db_session.add(job)
-
     services.db_session.commit()
 
-    logger.debug('Saved job "%s" to the database', job_id)
-    return job_id
+    log.debug('Saved job "%s" to the database', job.job_id)
+    return job.job_id

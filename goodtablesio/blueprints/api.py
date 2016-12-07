@@ -56,7 +56,7 @@ def create_job():
 
     # Create job
     try:
-        job_id = helpers.create_job(validation_conf)
+        job_id = helpers.create_and_run_job(validation_conf)
     except exceptions.InvalidValidationConfiguration:
         raise APIError(400, 'Invalid configuration')
 

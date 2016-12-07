@@ -6,8 +6,8 @@ from goodtables import Inspector
 
 from . import config
 from . import exceptions
+from . import helpers
 from .services import get_engine, make_db_session
-from .models import Job
 
 
 log = logging.getLogger(__name__)
@@ -85,8 +85,7 @@ class JobTask(Task):
         }
 
         # Update database
-        tasks_db_session.query(Job).filter(Job.job_id == job_id).update(params)
-        tasks_db_session.commit()
+        helpers.update_job(params, _db_session=tasks_db_session)
 
 
 @app.task(name='goodtablesio.tasks.validate', base=JobTask)
@@ -101,13 +100,15 @@ def validate(validation_conf, job_id):
     """
 
     # Get job
-    job = tasks_db_session.query(Job).get(job_id).to_dict()
+    job = helpers.get_job(job_id, _db_session=tasks_db_session)
 
     # TODO: job not found
     if job['status'] == 'created':
-        tasks_db_session.query(Job).filter(Job.job_id == job_id).update(
-            {'status': 'running'})
-        tasks_db_session.commit()
+        params = {
+            'job_id': job_id,
+            'status': 'running'
+        }
+        helpers.update_job(params, _db_session=tasks_db_session)
 
     # Get report
     settings = validation_conf.get('settings', {})
@@ -116,13 +117,13 @@ def validate(validation_conf, job_id):
 
     # Save report
     params = {
+        'job_id': job_id,
         'report': report,
         'finished': datetime.datetime.utcnow(),
         'status': 'success' if report['valid'] else 'failure'
     }
 
-    tasks_db_session.query(Job).filter(Job.job_id == job_id).update(params)
-    tasks_db_session.commit()
+    helpers.update_job(params, _db_session=tasks_db_session)
 
     job.update(params)
 

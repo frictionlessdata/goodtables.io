@@ -1,22 +1,21 @@
 import pytest
-from goodtablesio import helpers, exceptions, services
-from goodtablesio.models import Job
+from goodtablesio import helpers, exceptions
 
 
-def test_create_job_invalid():
+def test_create_and_run_job_invalid():
     validation_conf = {
         'files': {},
     }
     with pytest.raises(exceptions.InvalidValidationConfiguration):
-        assert helpers.create_job(validation_conf)
+        assert helpers.create_and_run_job(validation_conf)
 
 
 @pytest.mark.usefixtures('db_cleanup')
-def test_insert_job_row():
+def test_create_job():
 
-    helpers.insert_job_row('my-id')
+    helpers.create_job({'job_id': 'my-id'})
 
-    job = services.db_session.query(Job).get('my-id').to_dict()
+    job = helpers.get_job('my-id')
 
     assert job['job_id'] == 'my-id'
     assert job['status'] == 'created'
@@ -29,11 +28,16 @@ def test_insert_job_row():
 
 
 @pytest.mark.usefixtures('db_cleanup')
-def test_insert_job_row_plugin_conf():
+def test_create_job_plugin_conf():
 
-    helpers.insert_job_row('my-id', 'my-plugin', {'some': 'conf'})
+    params = {
+        'job_id': 'my-id',
+        'plugin_name': 'my-plugin',
+        'plugin_conf': {'some': 'conf'}
+    }
+    helpers.create_job(params)
 
-    job = services.db_session.query(Job).get('my-id').to_dict()
+    job = helpers.get_job('my-id')
 
     assert job['job_id'] == 'my-id'
     assert job['status'] == 'created'

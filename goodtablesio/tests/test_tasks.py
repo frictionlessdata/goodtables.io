@@ -4,8 +4,7 @@ from unittest import mock
 import pytest
 from celery import Celery
 
-from goodtablesio import tasks, services, exceptions
-from goodtablesio.models import Job
+from goodtablesio import tasks, services, exceptions, helpers
 from goodtablesio.tests import factories
 
 
@@ -33,11 +32,11 @@ def test_tasks_validate(_inspect):
     # fields
     services.db_session.remove()
 
-    jobs = services.db_session.query(Job).all()
+    jobs = helpers.get_jobs()
 
     assert len(jobs) == 1
 
-    updated_job = jobs[0].to_dict()
+    updated_job = jobs[0]
     assert updated_job['job_id'] == job.job_id
     assert updated_job['report'] == mock_report
     assert isinstance(updated_job['finished'], datetime.datetime)
@@ -63,10 +62,10 @@ def test_JobTask_on_failure():
     services.db_session.remove()
 
     # Assert errored job
-    jobs = services.db_session.query(Job).all()
+    jobs = helpers.get_jobs()
     assert len(jobs) == 1
 
-    updated_job = jobs[0].to_dict()
+    updated_job = jobs[0]
     assert updated_job['job_id'] == job.job_id
     assert updated_job['status'] == 'error'
     assert updated_job['error'] == {'message': 'Invalid job configuration'}

@@ -8,7 +8,6 @@ import shutil
 from celery import signals
 
 from goodtablesio import helpers
-from goodtablesio.models import Job
 from goodtablesio.tasks import app as celery_app, validate, JobTask
 from goodtablesio.plugins.github.utils import set_commit_status
 
@@ -25,9 +24,11 @@ def get_validation_conf(clone_url, job_id):
     # initialized when the worker started
     from goodtablesio.tasks import tasks_db_session
 
-    tasks_db_session.query(Job).filter(Job.job_id == job_id).update(
-        {'status': 'running'})
-    tasks_db_session.commit()
+    params = {
+        'job_id': job_id,
+        'status': 'running'
+    }
+    helpers.update_job(params, _db_session=tasks_db_session)
 
     clone_dir = _clone_repo(job_id, clone_url)
     job_conf_url = _get_job_conf_url(clone_url)
@@ -52,7 +53,7 @@ def post_task_handler(**kwargs):
     job = kwargs['retval']
     if isinstance(kwargs['retval'], Exception):
         job_id = kwargs['kwargs']['job_id']
-        job = tasks_db_session.query(Job).get(job_id).to_dict()
+        job = helpers.get_job(job_id, _db_session=tasks_db_session)
 
     if job.get('plugin_name') != 'github':
         return
