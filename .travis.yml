@@ -35,7 +35,7 @@ after_success:
 
 cache:
   directories:
-    - $HOME/.cache/pip    
+    - $HOME/.cache/pip
 
 deploy:
   on:
@@ -47,3 +47,6 @@ deploy:
   username: ekarev
   password:
     secure: YZDt5MrYCoHjhAlHI4uCqoY4bi4Jw/qoh0PdYT1RQS9pJGGCs1K1EIESCRBkqGzECx450fLGUzIpnJkcwRo/AIkvQl/OimUrBDRXTzyNk29lrXOcphN41PMkeUdBzXmwB5wP12ugOSlzIebNGgyyDRWBGMbc9xsu78TxcqaFun3sgaGemHCWUFoAWFdBhIA2OCv0eHBNUMzugd0Z2Faktj5IbxVIAID1m6c2jgjwHH9z6a6wdrP8YSVpg1vDLkzqKi/9lE+DG3q1AhHjEcdRImO+PlcglfjxspLzSGQ8QbQ+uDypNmI+0j6O+bYxcQJVL0yXRcvCFHSWYw6Bw/+TJ0UMY8e6Ifw8cknyqTqkvmqZfdhKF8+8uVOEYiKG/B6bjMjGTuVFQ7BAKYx6ulXfhBAyfhRNgMD3bGvRAvU3q8J9Fs8TI3ER3ndFN1h/yTPot5Y6Mf3ih9pDt9ut7MVc4F2XJ8hMdCT0pCWmOe7ugJZD1CqZbj0BinAcdGSpNE2LpgUX3PAg5bARuL2ds4v9J2oIrp+C7UX1est7C+Wqep5z6irNAnj462sDKx8qzlLwOYSMcPtI0XglRJuSlXzhMUQFugrhxIIwZplp/gkN4+nsmNaRfHVy3tC7rdNRLZuZjHBLXC3arXdOPydoRyGP1A0M2hNWmkkZTJVzf69MFfc=
+
+after_deploy:
+  - deis run 'make migrate'

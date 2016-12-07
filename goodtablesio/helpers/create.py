@@ -2,9 +2,6 @@ import uuid
 import logging
 import datetime
 
-from sqlalchemy.types import DateTime
-from sqlalchemy.dialects.postgresql import JSONB
-
 from .validate import validate_validation_conf
 from .. import tasks
 from .. import services
@@ -54,10 +51,7 @@ def insert_job_row(job_id, plugin_name='api', plugin_conf=None):
         'created': datetime.datetime.utcnow(),
         'status': 'created',
     }
-    services.database['jobs'].insert(
-        row,
-        types={'created': DateTime, 'plugin_conf': JSONB},
-        ensure=True)
+    services.database['jobs'].insert(row)
 
     logger.debug('Saved job "%s" to the database', job_id)
     return job_id
