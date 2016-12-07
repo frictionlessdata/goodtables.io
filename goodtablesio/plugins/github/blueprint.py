@@ -10,9 +10,10 @@ from goodtablesio import helpers
 from goodtablesio.plugins.github.tasks import get_validation_conf
 from goodtablesio.plugins.github.utils import set_commit_status
 
-
 log = logging.getLogger(__name__)
 
+
+# Module API
 
 github = Blueprint('github', __name__, url_prefix='/github')
 

@@ -5,11 +5,8 @@ import tempfile
 import logging
 import shutil
 
-from celery import signals
-
 from goodtablesio import helpers
-from goodtablesio.tasks import app as celery_app, validate, JobTask
-from goodtablesio.plugins.github.utils import set_commit_status
+from goodtablesio.tasks import app as celery_app, JobTask
 
 
 log = logging.getLogger(__name__)
@@ -17,6 +14,8 @@ log = logging.getLogger(__name__)
 TABULAR_EXTENSIONS = ['csv', 'xls', 'xlsx', 'ods']
 CLONE_DIR = '/tmp'
 
+
+# Module API
 
 @celery_app.task(name='goodtablesio.github.get_validation_conf', base=JobTask)
 def get_validation_conf(clone_url, job_id):
@@ -40,56 +39,18 @@ def get_validation_conf(clone_url, job_id):
     return validation_conf
 
 
-@signals.task_postrun.connect(sender=validate)
-def post_task_handler(**kwargs):
-    # We need to import the DB connection at this point, as it has been
-    # initialized when the worker started
-    from goodtablesio.tasks import tasks_db
-
-    job = kwargs['retval']
-    if isinstance(kwargs['retval'], Exception):
-        job_id = kwargs['kwargs']['job_id']
-        job = tasks_db['jobs'].find_one(job_id=job_id)
-
-    if job.get('plugin_name') != 'github':
-        return
-
-    task_state = kwargs['state']
-
-    status = job['status']
-    plugin_conf = job['plugin_conf']
-
-    if plugin_conf:
-
-        if task_state == 'SUCCESS' and status != 'running':
-            github_status = status
-        else:
-            github_status = 'error'
-
-        set_commit_status(
-           github_status,
-           owner=plugin_conf['repository']['owner'],
-           repo=plugin_conf['repository']['name'],
-           sha=plugin_conf['sha'],
-           job_id=job['job_id'])
-
-
 # Internal
 
 def _clone_repo(job_id, clone_url):
     clone_dir = tempfile.mkdtemp(prefix=job_id, dir=CLONE_DIR)
-
     clone_command = ['git', 'clone', clone_url, clone_dir]
     log.info('Cloning repo {0} into {1}'.format(clone_url, clone_dir))
-
     try:
         subprocess.check_output(clone_command, stderr=subprocess.STDOUT)
-
         log.debug('Repo {0} cloned'.format(clone_url))
     except subprocess.CalledProcessError as e:
         log.error(e.output)
         raise e
-
     return clone_dir
 
 
@@ -107,7 +68,6 @@ def _get_job_conf_url(clone_url, branch='master'):
 
 def _get_job_files(top):
     out = []
-
     for dir_name, sub_dir_list, file_list in os.walk(top, topdown=True):
         if '.git' in sub_dir_list:
             sub_dir_list.remove('.git')
