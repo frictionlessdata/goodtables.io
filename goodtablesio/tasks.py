@@ -120,6 +120,7 @@ def validate(validation_conf, job_id):
         'finished': datetime.datetime.utcnow(),
         'status': 'success' if report['valid'] else 'failure'
     }
+
     tasks_db_session.query(Job).filter(Job.job_id == job_id).update(params)
     tasks_db_session.commit()
 
