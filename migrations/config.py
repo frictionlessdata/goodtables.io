@@ -13,7 +13,11 @@ load_dotenv('.env')
 
 # Storage
 
-DATABASE_URL = os.environ['DATABASE_URL']
+if not os.environ.get('TESTING'):
+    DATABASE_URL = os.environ['DATABASE_URL']
+else:
+    DATABASE_URL = os.environ['TEST_DATABASE_URL']
+
 
 # Logging
 
