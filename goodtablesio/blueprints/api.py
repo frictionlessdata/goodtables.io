@@ -23,8 +23,15 @@ class APIError(Exception):
         self.message = message
 
 
+@api.record
+def record_params(setup_state):
+    api.debug = setup_state.app.debug
+
+
 @api.app_errorhandler(Exception)
 def handle_api_errors(error):
+    if api.debug:
+        raise error
     if not isinstance(error, APIError):
         log.exception(repr(error))
     message = getattr(error, 'message', 'Internal Error')
