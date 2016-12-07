@@ -1,9 +1,11 @@
+import datetime
 from unittest import mock
 
 import pytest
 from celery import Celery
 
 from goodtablesio import tasks, services, exceptions
+from goodtablesio.models import Job
 from goodtablesio.tests import factories
 
 
@@ -18,7 +20,7 @@ def test_tasks_validate(_inspect):
     mock_report = {'valid': True, 'errors': []}
     _inspect.return_value = mock_report
 
-    # Needed to initialize the DB connection
+    # Needed to initialize the tasks DB connection
     tasks.init_worker()
 
     validation_conf = {'files': ['file1', 'file2'], 'settings': {}}
@@ -26,12 +28,19 @@ def test_tasks_validate(_inspect):
 
     _inspect.assert_called_with(validation_conf['files'], preset='tables')
 
-    jobs = [row for row in services.database['jobs'].find()]
+    # The job object was updated by the different session used on tasks so
+    # we need to remove it from the main session in order to get the updated
+    # fields
+    services.db_session.remove()
+
+    jobs = services.db_session.query(Job).all()
 
     assert len(jobs) == 1
 
-    assert jobs[0]['job_id'] == job.job_id
-    assert jobs[0]['report'] == mock_report
+    updated_job = jobs[0].to_dict()
+    assert updated_job['job_id'] == job.job_id
+    assert updated_job['report'] == mock_report
+    assert isinstance(updated_job['finished'], datetime.datetime)
 
 
 def test_JobTask_on_failure():
@@ -48,10 +57,17 @@ def test_JobTask_on_failure():
         raise exceptions.InvalidJobConfiguration()
     task.s(job_id=job.job_id).delay()
 
+    # The job object was updated by the different session used on tasks so
+    # we need to remove it from the main session in order to get the updated
+    # fields
+    services.db_session.remove()
+
     # Assert errored job
-    jobs = list(services.database['jobs'].find())
+    jobs = services.db_session.query(Job).all()
     assert len(jobs) == 1
-    assert jobs[0]['job_id'] == job.job_id
-    assert jobs[0]['status'] == 'error'
-    assert jobs[0]['error'] == {'message': 'Invalid job configuration'}
-    assert jobs[0]['finished']
+
+    updated_job = jobs[0].to_dict()
+    assert updated_job['job_id'] == job.job_id
+    assert updated_job['status'] == 'error'
+    assert updated_job['error'] == {'message': 'Invalid job configuration'}
+    assert isinstance(updated_job['finished'], datetime.datetime)

@@ -1,5 +1,6 @@
 import pytest
 from goodtablesio import helpers, exceptions, services
+from goodtablesio.models import Job
 
 
 def test_create_job_invalid():
@@ -15,17 +16,16 @@ def test_insert_job_row():
 
     helpers.insert_job_row('my-id')
 
-    job = services.database['jobs'].find_one(job_id='my-id')
+    job = services.db_session.query(Job).get('my-id').to_dict()
 
     assert job['job_id'] == 'my-id'
     assert job['status'] == 'created'
     assert job['plugin_name'] == 'api'
     assert job['plugin_conf'] is None
     assert job['created']
-
-    # TODO: enable when switching to plain SQLAlchemy
-    # assert job['finished'] is None
-    # assert job['report'] is None
+    assert job['finished'] is None
+    assert job['report'] is None
+    assert job['error'] is None
 
 
 @pytest.mark.usefixtures('db_cleanup')
@@ -33,14 +33,13 @@ def test_insert_job_row_plugin_conf():
 
     helpers.insert_job_row('my-id', 'my-plugin', {'some': 'conf'})
 
-    job = services.database['jobs'].find_one(job_id='my-id')
+    job = services.db_session.query(Job).get('my-id').to_dict()
 
     assert job['job_id'] == 'my-id'
     assert job['status'] == 'created'
     assert job['plugin_name'] == 'my-plugin'
     assert job['plugin_conf'] == {'some': 'conf'}
     assert job['created']
-
-    # TODO: enable when switching to plain SQLAlchemy
-    # assert job['finished'] is None
-    # assert job['report'] is None
+    assert job['finished'] is None
+    assert job['report'] is None
+    assert job['error'] is None

@@ -1,21 +1,14 @@
 import pytest
-from unittest.mock import patch
+
 from goodtablesio import helpers
+from goodtablesio.tests import factories
 
 
 # Tests
 
-def test_get_ids(services):
-    services.database['jobs'].find.return_value = [
-        {'job_id': 'id1'}, {'job_id': 'id2'}
-    ]
-    assert helpers.get_job_ids() == ['id1', 'id2']
+@pytest.mark.usefixtures('db_cleanup')
+def test_get_ids():
+    factories.Job(job_id='id1')
+    factories.Job(job_id='id2')
 
-
-# Fixtures
-
-
-@pytest.fixture
-def services():
-    yield patch('goodtablesio.helpers.retrieve.services').start()
-    patch.stopall()
+    assert helpers.get_job_ids() == ['id2', 'id1']

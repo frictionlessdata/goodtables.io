@@ -1,13 +1,16 @@
 import pytest
 
-from goodtablesio import services
+from goodtablesio.services import db_session
+from goodtablesio.models import Job
 from goodtablesio.app import app
 
 
 @pytest.fixture()
 def db_cleanup():
 
-    services.database['jobs'].delete()
+    db_session.query(Job).delete()
+
+    db_session.commit()
 
     yield
 
