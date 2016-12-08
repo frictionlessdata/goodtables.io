@@ -6,6 +6,7 @@ from flask.json import jsonify
 
 from goodtablesio import exceptions
 from goodtablesio import helpers
+from goodtablesio import models
 from goodtablesio import tasks
 
 log = logging.getLogger(__name__)
@@ -66,7 +67,7 @@ def create_job():
     job_id = str(uuid.uuid4())
 
     # Write to database
-    helpers.create_job({'job_id': job_id})
+    models.job.create({'job_id': job_id})
 
     # Create celery task
     tasks.validate.delay(validation_conf, job_id=job_id)
@@ -76,12 +77,12 @@ def create_job():
 
 @api.route('/job')
 def list_jobs():
-    return jsonify(helpers.get_job_ids())
+    return jsonify(models.job.get_ids())
 
 
 @api.route('/job/<job_id>')
 def get_job(job_id):
-    job = helpers.get_job(job_id)
+    job = models.job.get(job_id)
     if job:
         return jsonify(job)
     else:

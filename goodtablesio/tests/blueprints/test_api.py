@@ -3,7 +3,7 @@ from unittest import mock
 
 import pytest
 
-from goodtablesio import helpers
+from goodtablesio import models
 from goodtablesio.tests import factories
 
 
@@ -83,7 +83,7 @@ def test_api_create_job(client):
     assert response.status_code == 200
 
     job_id = response.get_data(as_text=True)
-    assert helpers.get_job(job_id)
+    assert models.job.get(job_id)
 
 
 def test_api_create_job_empty_body(client):

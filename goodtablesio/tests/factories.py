@@ -4,7 +4,7 @@ import datetime
 import factory
 
 from goodtablesio import services
-from goodtablesio.models import Job
+from goodtablesio.models.job import Job
 
 
 class Job(factory.alchemy.SQLAlchemyModelFactory):

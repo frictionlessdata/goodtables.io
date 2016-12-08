@@ -6,7 +6,7 @@ from goodtables import Inspector
 
 from . import config
 from . import exceptions
-from . import helpers
+from . import models
 from .services import get_engine, make_db_session
 
 
@@ -70,7 +70,7 @@ class JobTask(Task):
         job_id = kwargs['job_id']
 
         # Get error message
-        message = 'Inernal Error'
+        message = 'Internal Error'
         if isinstance(exc, exceptions.InvalidJobConfiguration):
             message = 'Invalid job configuration'
         elif isinstance(exc, exceptions.InvalidValidationConfiguration):
@@ -85,7 +85,7 @@ class JobTask(Task):
         }
 
         # Update database
-        helpers.update_job(params, _db_session=tasks_db_session)
+        models.job.update(params, _db_session=tasks_db_session)
 
 
 @app.task(name='goodtablesio.tasks.validate', base=JobTask)
@@ -100,7 +100,7 @@ def validate(validation_conf, job_id):
     """
 
     # Get job
-    job = helpers.get_job(job_id, _db_session=tasks_db_session)
+    job = models.job.get(job_id, _db_session=tasks_db_session)
 
     # TODO: job not found
     if job['status'] == 'created':
@@ -108,7 +108,7 @@ def validate(validation_conf, job_id):
             'job_id': job_id,
             'status': 'running'
         }
-        helpers.update_job(params, _db_session=tasks_db_session)
+        models.job.update(params, _db_session=tasks_db_session)
 
     # Get report
     settings = validation_conf.get('settings', {})
@@ -123,7 +123,7 @@ def validate(validation_conf, job_id):
         'status': 'success' if report['valid'] else 'failure'
     }
 
-    helpers.update_job(params, _db_session=tasks_db_session)
+    models.job.update(params, _db_session=tasks_db_session)
 
     job.update(params)
 

@@ -4,7 +4,7 @@ from unittest import mock
 import pytest
 from celery import Celery
 
-from goodtablesio import tasks, services, exceptions, helpers
+from goodtablesio import tasks, services, exceptions, models
 from goodtablesio.tests import factories
 
 
@@ -32,7 +32,7 @@ def test_tasks_validate(_inspect):
     # fields
     services.db_session.remove()
 
-    jobs = helpers.get_jobs()
+    jobs = models.job.get_all()
 
     assert len(jobs) == 1
 
@@ -42,7 +42,7 @@ def test_tasks_validate(_inspect):
     assert isinstance(updated_job['finished'], datetime.datetime)
 
 
-def test_JobTask_on_failure():
+def test_JobTask_on_failure_invalid_job_conf():
 
     # Prepare things
     job = factories.Job()
@@ -62,11 +62,41 @@ def test_JobTask_on_failure():
     services.db_session.remove()
 
     # Assert errored job
-    jobs = helpers.get_jobs()
+    jobs = models.job.get_all()
     assert len(jobs) == 1
 
     updated_job = jobs[0]
     assert updated_job['job_id'] == job.job_id
     assert updated_job['status'] == 'error'
     assert updated_job['error'] == {'message': 'Invalid job configuration'}
+    assert isinstance(updated_job['finished'], datetime.datetime)
+
+
+def test_JobTask_on_failure_invalid_validation_conf():
+
+    # Prepare things
+    job = factories.Job()
+    tasks.init_worker()
+    app = Celery('app')
+    app.conf['task_always_eager'] = True
+
+    # Prepare and call task
+    @app.task(base=tasks.JobTask)
+    def task(job_id):
+        raise exceptions.InvalidValidationConfiguration()
+    task.s(job_id=job.job_id).delay()
+
+    # The job object was updated by the different session used on tasks so
+    # we need to remove it from the main session in order to get the updated
+    # fields
+    services.db_session.remove()
+
+    # Assert errored job
+    jobs = models.job.get_all()
+    assert len(jobs) == 1
+
+    updated_job = jobs[0]
+    assert updated_job['job_id'] == job.job_id
+    assert updated_job['status'] == 'error'
+    assert updated_job['error'] == {'message': 'Invalid validation configuration'}
     assert isinstance(updated_job['finished'], datetime.datetime)

@@ -1,7 +1,7 @@
 import pytest
 
 from goodtablesio.services import db_session
-from goodtablesio.models import Job
+from goodtablesio.models.job import Job
 from goodtablesio.app import app
 
 

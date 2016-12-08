@@ -5,7 +5,7 @@ from celery import chain
 from flask import Blueprint, request, abort
 
 from goodtablesio import tasks
-from goodtablesio import helpers
+from goodtablesio import models
 
 from goodtablesio.plugins.github.tasks import get_validation_conf
 from goodtablesio.plugins.github.utils import set_commit_status
@@ -37,7 +37,11 @@ def create_job():
         'sha': payload['head_commit']['id'],
     }
 
-    helpers.insert_job_row(job_id, 'github', plugin_conf=plugin_conf)
+    models.job.create({
+        'job_id': job_id,
+        'plugin_name': 'github',
+        'plugin_conf': plugin_conf
+    })
 
     set_commit_status(
         'pending',

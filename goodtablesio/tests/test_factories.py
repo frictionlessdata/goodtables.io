@@ -1,7 +1,7 @@
 import pytest
 
 from goodtablesio import services
-from goodtablesio.models import Job
+from goodtablesio.models.job import Job
 from goodtablesio.tests import factories
 
 pytestmark = pytest.mark.usefixtures('db_cleanup')
