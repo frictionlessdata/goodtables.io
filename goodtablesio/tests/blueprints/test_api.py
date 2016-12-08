@@ -39,21 +39,21 @@ def test_api_job_list(client):
 
     response = client.get('/api/job')
 
-    assert _data(response) == [job2.job_id, job1.job_id]
+    assert _data(response) == [job2.id, job1.id]
 
 
 def test_api_get_job(client):
 
     job = factories.Job()
 
-    response = client.get('/api/job/{0}'.format(job.job_id))
+    response = client.get('/api/job/{0}'.format(job.id))
 
     data = _data(response)
 
     # TODO: Update after #19
 
     assert 'report' in data
-    assert data['job_id'] == job.job_id
+    assert data['id'] == job.id
     assert 'created' in data
     assert 'status' in data
 

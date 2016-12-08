@@ -38,4 +38,4 @@ def post_task_handler(**kwargs):
            owner=plugin_conf['repository']['owner'],
            repo=plugin_conf['repository']['name'],
            sha=plugin_conf['sha'],
-           job_id=job['job_id'])
+           job_id=job['id'])

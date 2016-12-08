@@ -78,7 +78,7 @@ class JobTask(Task):
 
         # Compose job update
         params = {
-            'job_id': job_id,
+            'id': job_id,
             'status': 'error',
             'error': {'message': message},
             'finished': datetime.datetime.utcnow(),
@@ -105,7 +105,7 @@ def validate(validation_conf, job_id):
     # TODO: job not found
     if job['status'] == 'created':
         params = {
-            'job_id': job_id,
+            'id': job_id,
             'status': 'running'
         }
         models.job.update(params, _db_session=tasks_db_session)
@@ -117,7 +117,7 @@ def validate(validation_conf, job_id):
 
     # Save report
     params = {
-        'job_id': job_id,
+        'id': job_id,
         'report': report,
         'finished': datetime.datetime.utcnow(),
         'status': 'success' if report['valid'] else 'failure'

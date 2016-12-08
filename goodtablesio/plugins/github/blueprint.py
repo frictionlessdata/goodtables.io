@@ -40,7 +40,7 @@ def create_job():
     }
 
     models.job.create({
-        'job_id': job_id,
+        'id': job_id,
         'plugin_name': 'github',
         'plugin_conf': plugin_conf
     })

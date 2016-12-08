@@ -14,7 +14,7 @@ class Job(factory.alchemy.SQLAlchemyModelFactory):
         sqlalchemy_session = services.db_session
         force_flush = True
 
-    job_id = factory.Sequence(lambda n: str(uuid.uuid4()))
+    id = factory.Sequence(lambda n: str(uuid.uuid4()))
     created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     plugin_name = 'api'
     status = 'created'

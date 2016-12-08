@@ -108,7 +108,7 @@ Now developmet server runs on `localhost:5000`. We could send github repo for va
       "time": 0.981,
       "valid": false
     },
-    "job_id": "693f40f0-fcad-416e-b2c7-a5beebff4f44"
+    "id": "693f40f0-fcad-416e-b2c7-a5beebff4f44"
   },
   "status": "SUCCESS"
 }

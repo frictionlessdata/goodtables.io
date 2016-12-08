@@ -9,9 +9,9 @@ from goodtablesio.tests import factories
 @pytest.mark.usefixtures('db_cleanup')
 def test_create_job_outputs_dict():
 
-    job = models.job.create({'job_id': 'my-id'})
+    job = models.job.create({'id': 'my-id'})
 
-    assert job['job_id'] == 'my-id'
+    assert job['id'] == 'my-id'
     assert job['status'] == 'created'
     assert job['plugin_name'] == 'api'
     assert job['plugin_conf'] is None
@@ -25,14 +25,14 @@ def test_create_job_outputs_dict():
 def test_create_job_params_outputs_dict():
 
     params = {
-        'job_id': 'my-id',
+        'id': 'my-id',
         'plugin_name': 'my-plugin',
         'plugin_conf': {'some': 'conf'}
     }
 
     job = models.job.create(params)
 
-    assert job['job_id'] == 'my-id'
+    assert job['id'] == 'my-id'
     assert job['status'] == 'created'
     assert job['plugin_name'] == 'my-plugin'
     assert job['plugin_conf'] == {'some': 'conf'}
@@ -46,7 +46,7 @@ def test_create_job_params_outputs_dict():
 def test_create_job_stored_in_db():
 
     params = {
-        'job_id': 'my-id',
+        'id': 'my-id',
         'plugin_name': 'my-plugin',
         'plugin_conf': {'some': 'conf'}
     }
@@ -60,7 +60,7 @@ def test_create_job_stored_in_db():
 
     assert job
 
-    assert job.job_id == 'my-id'
+    assert job.id == 'my-id'
     assert job.status == 'created'
     assert job.plugin_name == 'my-plugin'
     assert job.plugin_conf == {'some': 'conf'}
@@ -78,7 +78,7 @@ def test_update_job_outputs_dict():
     report = {'nice': 'csv'}
     finished = datetime.datetime.utcnow()
     params = {
-        'job_id': job.job_id,
+        'id': job.id,
         'status': 'success',
         'report': report,
         'finished': finished,
@@ -86,12 +86,12 @@ def test_update_job_outputs_dict():
 
     updated_job = models.job.update(params)
 
-    assert updated_job['job_id'] == job.job_id
+    assert updated_job['id'] == job.id
     assert updated_job['status'] == 'success'
     assert updated_job['plugin_name'] == 'api'
     assert updated_job['plugin_conf'] is None
     assert updated_job['created']
-    assert updated_job['finished'] == finished
+    assert updated_job['finished'].replace(tzinfo=None) == finished
     assert updated_job['report'] == report
     assert updated_job['error'] is None
 
@@ -104,7 +104,7 @@ def test_update_job_stored_in_db():
     report = {'nice': 'csv'}
     finished = datetime.datetime.utcnow()
     params = {
-        'job_id': job.job_id,
+        'id': job.id,
         'status': 'success',
         'report': report,
         'finished': finished,
@@ -115,16 +115,16 @@ def test_update_job_stored_in_db():
     # Make sure that we are not checking the cached object in the session
     services.db_session.remove()
 
-    updated_job = services.db_session.query(models.job.Job).get(job.job_id)
+    updated_job = services.db_session.query(models.job.Job).get(job.id)
 
     assert updated_job
 
-    assert updated_job.job_id == job.job_id
+    assert updated_job.id == job.id
     assert updated_job.status == 'success'
     assert updated_job.plugin_name == 'api'
     assert updated_job.plugin_conf is None
     assert updated_job.created
-    assert updated_job.finished == finished
+    assert updated_job.finished.replace(tzinfo=None) == finished
     assert updated_job.report == report
     assert updated_job.error is None
 
@@ -136,7 +136,7 @@ def test_update_job_no_id_raises_value_error():
 
 def test_update_job_not_found_raises_value_error():
     with pytest.raises(ValueError):
-        assert models.job.update({'job_id': 'not-found'})
+        assert models.job.update({'id': 'not-found'})
 
 
 @pytest.mark.usefixtures('db_cleanup')
@@ -146,9 +146,9 @@ def test_get_job_outputs_dict():
 
     services.db_session.remove()
 
-    job = models.job.get(job_db['job_id'])
+    job = models.job.get(job_db['id'])
 
-    assert job['job_id'] == job_db['job_id']
+    assert job['id'] == job_db['id']
     assert job['status'] == job_db['status']
     assert job['plugin_name'] == job_db['plugin_name']
     assert job['plugin_conf'] == job_db['plugin_conf']
@@ -181,4 +181,4 @@ def test_get_ids():
     job1 = factories.Job()
     job2 = factories.Job()
 
-    assert models.job.get_ids() == [job2.job_id, job1.job_id]
+    assert models.job.get_ids() == [job2.id, job1.id]

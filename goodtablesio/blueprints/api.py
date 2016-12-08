@@ -67,7 +67,7 @@ def create_job():
     job_id = str(uuid.uuid4())
 
     # Write to database
-    models.job.create({'job_id': job_id})
+    models.job.create({'id': job_id})
 
     # Create celery task
     tasks.validate.delay(validation_conf, job_id=job_id)

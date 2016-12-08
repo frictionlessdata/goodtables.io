@@ -25,13 +25,13 @@ def test_site_get_job(client):
 
     job = factories.Job()
 
-    response = client.get('/job/{0}'.format(job.job_id))
+    response = client.get('/job/{0}'.format(job.id))
 
     # TODO: Test actual content when implemented
 
     body = response.get_data(as_text=True)
     assert 'Job' in body
-    assert job.job_id in body
+    assert job.id in body
 
 
 def test_site_get_job_not_found(client):
@@ -46,4 +46,4 @@ def test_site_get_jobs(client):
     response = client.get('/job')
     body = response.get_data(as_text=True)
     assert 'Jobs' in body
-    assert job.job_id in body
+    assert job.id in body

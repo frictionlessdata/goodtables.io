@@ -15,12 +15,12 @@ class Job(Base, BaseModelMixin):
 
     __tablename__ = 'jobs'
 
-    job_id = Column(Unicode, primary_key=True, default=make_uuid)
+    id = Column(Unicode, primary_key=True, default=make_uuid)
     status = Column(Unicode, default='created')
     plugin_name = Column(Unicode, default='api')
     plugin_conf = Column(JSONB)
-    created = Column(DateTime, default=datetime.datetime.utcnow)
-    finished = Column(DateTime)
+    created = Column(DateTime(timezone=True), default=datetime.datetime.utcnow)
+    finished = Column(DateTime(timezone=True))
     report = Column(JSONB)
     error = Column(JSONB)
 
@@ -46,7 +46,7 @@ def create(params, _db_session=None):
     db_session.add(job)
     db_session.commit()
 
-    log.debug('Created job "%s" on the database', job.job_id)
+    log.debug('Created job "%s" on the database', job.id)
     return job.to_dict()
 
 
@@ -68,9 +68,9 @@ def update(params, _db_session=None):
         ValueError: A `job_id` was not provided in the params dict.
     """
 
-    job_id = params.get('job_id')
+    job_id = params.get('id')
     if not job_id:
-        raise ValueError('You must provide a job_id in the params dict')
+        raise ValueError('You must provide a id in the params dict')
 
     db_session = _db_session or default_db_session
 
@@ -79,7 +79,7 @@ def update(params, _db_session=None):
         raise ValueError('Job not found: %s', job_id)
 
     job_table = Job.__table__
-    u = db_update(job_table).where(job_table.c.job_id == job_id).values(**params)
+    u = db_update(job_table).where(job_table.c.id == job_id).values(**params)
 
     db_session.execute(u)
     db_session.commit()
@@ -128,8 +128,8 @@ def get_ids(_db_session=None):
 
     db_session = _db_session or default_db_session
 
-    job_ids = db_session.query(Job.job_id).order_by(Job.created.desc()).all()
-    return [j.job_id for j in job_ids]
+    job_ids = db_session.query(Job.id).order_by(Job.created.desc()).all()
+    return [j.id for j in job_ids]
 
 
 def get_all(_db_session=None):

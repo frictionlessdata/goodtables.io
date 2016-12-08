@@ -20,7 +20,7 @@ def get_validation_conf(owner, repo, sha, job_id):
     from goodtablesio.tasks import tasks_db_session
 
     params = {
-        'job_id': job_id,
+        'id': job_id,
         'status': 'running'
     }
     models.job.update(params, _db_session=tasks_db_session)

@@ -23,7 +23,7 @@ def test_tasks_validate(_inspect):
     tasks.init_worker()
 
     validation_conf = {'files': ['file1', 'file2'], 'settings': {}}
-    tasks.validate(validation_conf, job_id=job.job_id)
+    tasks.validate(validation_conf, job_id=job.id)
 
     _inspect.assert_called_with(validation_conf['files'], preset='tables')
 
@@ -37,7 +37,7 @@ def test_tasks_validate(_inspect):
     assert len(jobs) == 1
 
     updated_job = jobs[0]
-    assert updated_job['job_id'] == job.job_id
+    assert updated_job['id'] == job.id
     assert updated_job['report'] == mock_report
     assert isinstance(updated_job['finished'], datetime.datetime)
 
@@ -54,7 +54,7 @@ def test_JobTask_on_failure_invalid_job_conf():
     @app.task(base=tasks.JobTask)
     def task(job_id):
         raise exceptions.InvalidJobConfiguration()
-    task.s(job_id=job.job_id).delay()
+    task.s(job_id=job.id).delay()
 
     # The job object was updated by the different session used on tasks so
     # we need to remove it from the main session in order to get the updated
@@ -66,7 +66,7 @@ def test_JobTask_on_failure_invalid_job_conf():
     assert len(jobs) == 1
 
     updated_job = jobs[0]
-    assert updated_job['job_id'] == job.job_id
+    assert updated_job['id'] == job.id
     assert updated_job['status'] == 'error'
     assert updated_job['error'] == {'message': 'Invalid job configuration'}
     assert isinstance(updated_job['finished'], datetime.datetime)
@@ -84,7 +84,7 @@ def test_JobTask_on_failure_invalid_validation_conf():
     @app.task(base=tasks.JobTask)
     def task(job_id):
         raise exceptions.InvalidValidationConfiguration()
-    task.s(job_id=job.job_id).delay()
+    task.s(job_id=job.id).delay()
 
     # The job object was updated by the different session used on tasks so
     # we need to remove it from the main session in order to get the updated
@@ -96,7 +96,7 @@ def test_JobTask_on_failure_invalid_validation_conf():
     assert len(jobs) == 1
 
     updated_job = jobs[0]
-    assert updated_job['job_id'] == job.job_id
+    assert updated_job['id'] == job.id
     assert updated_job['status'] == 'error'
     assert updated_job['error'] == {'message': 'Invalid validation configuration'}
     assert isinstance(updated_job['finished'], datetime.datetime)
