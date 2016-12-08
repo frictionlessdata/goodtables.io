@@ -3,6 +3,7 @@ import yaml
 import requests
 from fnmatch import fnmatch
 from .validate import validate_job_conf
+from .. import exceptions
 from .. import config
 
 
@@ -35,12 +36,14 @@ def create_validation_conf(job_base, job_files):
 
 
 def _load_job_conf(job_base):
+    job_conf = {'files': '*'}
     url = '/'.join([job_base, 'goodtables.yml'])
     text = _load_file(url)
     if text is not None:
-        job_conf = yaml.safe_load(text)
-    else:
-        job_conf = {'files': '*'}
+        try:
+            job_conf = yaml.safe_load(text)
+        except Exception:
+            raise exceptions.InvalidJobConfiguration()
     return job_conf
 
 
