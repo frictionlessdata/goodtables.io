@@ -1,10 +1,12 @@
 import logging
+import uuid
 
 from flask import Blueprint, request
 from flask.json import jsonify
 
 from goodtablesio import exceptions
 from goodtablesio import helpers
+from goodtablesio import tasks
 
 log = logging.getLogger(__name__)
 
@@ -54,11 +56,20 @@ def create_job():
     if not validation_conf:
         raise APIError(400, 'Missing configuration')
 
-    # Create job
+    # Validate validation configuration
+
     try:
-        job_id = helpers.create_and_run_job(validation_conf)
+        helpers.validate_validation_conf(validation_conf)
     except exceptions.InvalidValidationConfiguration:
         raise APIError(400, 'Invalid configuration')
+
+    job_id = str(uuid.uuid4())
+
+    # Write to database
+    helpers.create_job({'job_id': job_id})
+
+    # Create celery task
+    tasks.validate.delay(validation_conf, job_id=job_id)
 
     return job_id
 

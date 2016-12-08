@@ -1,13 +1,5 @@
 import pytest
-from goodtablesio import helpers, exceptions
-
-
-def test_create_and_run_job_invalid():
-    validation_conf = {
-        'files': {},
-    }
-    with pytest.raises(exceptions.InvalidValidationConfiguration):
-        assert helpers.create_and_run_job(validation_conf)
+from goodtablesio import helpers
 
 
 @pytest.mark.usefixtures('db_cleanup')
