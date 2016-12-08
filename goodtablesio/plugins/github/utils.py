@@ -4,9 +4,10 @@ import requests
 
 from goodtablesio import config
 
-
 log = logging.getLogger(__name__)
 
+
+# Module API
 
 def set_commit_status(state, owner, repo, sha, job_id):
 
