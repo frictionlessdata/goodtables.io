@@ -5,19 +5,18 @@ from goodtablesio import helpers, exceptions
 
 # Tests
 
-def test_prepare_job(load_file):
-    job_conf = [
-        'http://example.com/job_conf.yml',
-        """
-        files: '*'
-        settings:
-            error_limit: 1
-        """
-    ]
+def test_create_validation_conf(load_file):
+    job_base = 'http://example.com'
     job_files = [
         'file.csv',
         'file.pdf',
+        'goodtables.yml',
     ]
+    job_conf_text = """
+        files: '*'
+        settings:
+            error_limit: 1
+    """
     validation_conf = {
         'files': [
             {'source': 'http://example.com/file.csv'},
@@ -26,69 +25,63 @@ def test_prepare_job(load_file):
             'error_limit': 1,
         }
     }
-    load_file.return_value = job_conf[1]
-    assert helpers.prepare_job(job_conf[0], job_files) == validation_conf
+    load_file.return_value = job_conf_text
+    assert helpers.create_validation_conf(job_base, job_files) == validation_conf
 
 
-def test_prepare_job_subdir(load_file):
-    job_conf = [
-        'http://example.com/job_conf.yml',
-        """
-        files: '*'
-        """
-    ]
+def test_create_validation_conf_subdir(load_file):
+    job_base = 'http://example.com'
     job_files = [
         'data/file.csv',
         'file.pdf',
     ]
+    job_conf_text = """
+        files: '*'
+    """
     validation_conf = {
         'files': [
             {'source': 'http://example.com/data/file.csv'},
         ]
     }
-    load_file.return_value = job_conf[1]
-    assert helpers.prepare_job(job_conf[0], job_files) == validation_conf
+    load_file.return_value = job_conf_text
+    assert helpers.create_validation_conf(job_base, job_files) == validation_conf
 
 
-def test_prepare_job_subdir_config(load_file):
-    job_conf = [
-        'http://example.com/job_conf.yml',
-        """
-        files: 'data/*'
-        """
-    ]
+def test_create_validation_conf_subdir_config(load_file):
+    job_base = 'http://example.com'
     job_files = [
         'data/file.csv',
         'file.ods',
         'file.pdf',
     ]
+    job_conf_text = """
+        files: 'data/*'
+    """
     validation_conf = {
         'files': [
             {'source': 'http://example.com/data/file.csv'},
         ]
     }
-    load_file.return_value = job_conf[1]
-    assert helpers.prepare_job(job_conf[0], job_files) == validation_conf
+    load_file.return_value = job_conf_text
+    assert helpers.create_validation_conf(job_base, job_files) == validation_conf
 
 
-def test_prepare_job_subdir_granular(load_file):
-    job_conf = [
-        'http://example.com/job_conf.yml',
-        """
-        files:
-          - source: data/file.csv
-            schema: data/schema.json
-            delimiter: ';'
-        settings:
-            order_fields: true
-        """
-    ]
+def test_create_validation_conf_subdir_granular(load_file):
+    job_base = 'http://example.com'
     job_files = [
         'data/file.csv',
         'data/schema.json',
         'file.ods',
         'file.pdf',
     ]
+    job_conf_text = """
+        files:
+          - source: data/file.csv
+            schema: data/schema.json
+            delimiter: ';'
+        settings:
+            order_fields: true
+    """
     validation_conf = {
         'files': [
             {
@@ -101,24 +94,22 @@ def test_prepare_job_subdir_granular(load_file):
             'order_fields': True,
         }
     }
-    load_file.return_value = job_conf[1]
-    assert helpers.prepare_job(job_conf[0], job_files) == validation_conf
+    load_file.return_value = job_conf_text
+    assert helpers.create_validation_conf(job_base, job_files) == validation_conf
 
 
-def test_prepare_job_invalid(load_file):
-    job_conf = [
-        'http://example.com/job_conf.yml',
-        """
+def test_create_validation_conf_invalid(load_file):
+    job_base = 'http://example.com'
+    job_conf_text = """
         files: {}
-        """
-    ]
-    load_file.return_value = job_conf[1]
+    """
+    load_file.return_value = job_conf_text
     with pytest.raises(exceptions.InvalidJobConfiguration):
-        assert helpers.prepare_job(job_conf[0], [])
+        assert helpers.create_validation_conf(job_base, [])
 
 
-def test_prepare_job_goodtables_yml_not_found(load_file):
-    job_conf_url = 'http://example.com/job_conf.yml'
+def test_create_validation_conf_goodtables_yml_not_found(load_file):
+    job_base = 'http://example.com'
     job_files = [
         'file1.csv',
         'file2.csv',
@@ -131,7 +122,7 @@ def test_prepare_job_goodtables_yml_not_found(load_file):
         ]
     }
     load_file.return_value = None
-    assert helpers.prepare_job(job_conf_url, job_files) == validation_conf
+    assert helpers.create_validation_conf(job_base, job_files) == validation_conf
 
 
 # Fixtures

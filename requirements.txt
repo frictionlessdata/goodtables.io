@@ -4,7 +4,7 @@
 #
 #    pip-compile --output-file requirements.txt requirements.in
 #
-alembic==0.8.8            # via dataset
+alembic==0.8.9            # via dataset
 amqp==2.1.1               # via kombu
 billiard==3.5.0.2         # via celery
 cchardet==1.1.1           # via tabulator
@@ -17,6 +17,7 @@ et-xmlfile==1.0.1         # via openpyxl
 ezodf==0.3.2              # via tabulator
 flask==0.11.1
 future==0.16.0            # via jsontableschema
+github3.py==0.9.6
 goodtables==1.0.0a4
 gunicorn==19.6.0
 ijson==2.3                # via tabulator
@@ -25,27 +26,29 @@ jdcal==1.3                # via openpyxl
 Jinja2==2.8               # via flask
 jsonlines==1.1.0          # via tabulator
 jsonschema==2.5.1
-jsontableschema==0.8.3    # via datapackage, goodtables
+jsontableschema==0.8.4    # via datapackage, goodtables
 kombu==4.0.0              # via celery
 linear-tsv==1.0.0         # via tabulator
 lxml==3.6.4               # via tabulator
 Mako==1.0.6               # via alembic
 MarkupSafe==0.23          # via jinja2, mako
 normality==0.3.6          # via dataset
-openpyxl==2.4.0           # via tabulator
+openpyxl==2.4.1           # via tabulator
 psycopg2==2.6.2
 python-dateutil==2.6.0    # via jsontableschema
 python-dotenv==0.6.0
-python-editor==1.0.1      # via alembic
-pytz==2016.7              # via celery
+python-editor==1.0.3      # via alembic
+pytz==2016.10             # via celery
 pyyaml==3.12
 redis==2.10.5
 requests==2.11.1
 rfc3986==0.4.1            # via jsontableschema
 six==1.10.0               # via datapackage, dataset, goodtables, jsonlines, linear-tsv, normality, python-dateutil, tabulator
-SQLAlchemy==1.1.4         # via alembic, dataset
-tabulator==0.11.2         # via datapackage, goodtables, jsontableschema
+sqlalchemy==1.1.4         # via alembic, dataset
+tabulator==0.12.1         # via datapackage, goodtables, jsontableschema
 unicodecsv==0.14.1        # via datapackage, jsontableschema, tabulator
+uritemplate.py==3.0.2     # via github3.py
+uritemplate==3.0.0        # via uritemplate.py
 vine==1.1.3               # via amqp
 Werkzeug==0.11.11         # via flask
 xlrd==1.0.0               # via tabulator

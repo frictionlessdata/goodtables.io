@@ -10,9 +10,10 @@ from goodtablesio import helpers
 from goodtablesio.plugins.github.tasks import get_validation_conf
 from goodtablesio.plugins.github.utils import set_commit_status
 
-
 log = logging.getLogger(__name__)
 
+
+# Module API
 
 github = Blueprint('github', __name__, url_prefix='/github')
 
@@ -20,34 +21,36 @@ github = Blueprint('github', __name__, url_prefix='/github')
 @github.route('/hook', methods=['POST'])
 def create_job():
 
-    # TODO: check origin with secret
-
+    # Get parameters from payload
     payload = request.get_json()
     if not payload:
         abort(400)
+    owner = payload['repository']['owner']['name']
+    repo = payload['repository']['name']
+    sha = payload['head_commit']['id']
 
+    # Save job to database
     job_id = str(uuid.uuid4())
-
-    # Store these details to be used when the job finishes
     plugin_conf = {
         'repository': {
-            'owner': payload['repository']['owner']['name'],
-            'name': payload['repository']['name'],
+            'owner': owner,
+            'name': repo,
             },
-        'sha': payload['head_commit']['id'],
+        'sha': sha,
     }
-
     helpers.insert_job_row(job_id, 'github', plugin_conf=plugin_conf)
 
+    # Set GitHub status
     set_commit_status(
         'pending',
-        owner=payload['repository']['owner']['name'],
-        repo=payload['repository']['name'],
-        sha=payload['head_commit']['id'],
+        owner=owner,
+        repo=repo,
+        sha=sha,
         job_id=job_id)
 
+    # Run validation
     tasks_chain = chain(
-        get_validation_conf.s(payload['repository']['clone_url'], job_id=job_id),
+        get_validation_conf.s(owner, repo, sha, job_id=job_id),
         tasks.validate.s(job_id=job_id))
     tasks_chain.delay()
 
