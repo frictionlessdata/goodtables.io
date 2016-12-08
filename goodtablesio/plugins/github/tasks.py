@@ -1,6 +1,6 @@
 from github3 import GitHub
 
-from goodtablesio import helpers
+from goodtablesio import helpers, config
 from goodtablesio.tasks import app as celery_app, JobTask
 
 
@@ -39,7 +39,8 @@ def _get_job_base(owner, repo, branch='master'):
 def _get_job_files(owner, repo, sha):
     """Get job's files.
     """
-    repo_api = GitHub().repository(owner, repo)
+    github_api = GitHub(token=config.GITHUB_API_TOKEN)
+    repo_api = github_api.repository(owner, repo)
     # First attempt - use GitHub Tree API
     files = _get_job_files_tree_api(repo_api, sha)
     if files is None:
