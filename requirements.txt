@@ -4,7 +4,7 @@
 #
 #    pip-compile --output-file requirements.txt requirements.in
 #
-alembic==0.8.8
+alembic==0.8.9
 amqp==2.1.1               # via kombu
 billiard==3.5.0.2         # via celery
 cchardet==1.1.1           # via tabulator
@@ -15,6 +15,7 @@ et-xmlfile==1.0.1         # via openpyxl
 ezodf==0.3.2              # via tabulator
 flask==0.11.1
 future==0.16.0            # via jsontableschema
+github3.py==0.9.6
 goodtables==1.0.0a4
 gunicorn==19.6.0
 ijson==2.3                # via tabulator
@@ -43,6 +44,8 @@ six==1.10.0               # via datapackage, goodtables, jsonlines, linear-tsv, 
 sqlalchemy==1.1.4
 tabulator==0.12.1         # via datapackage, goodtables, jsontableschema
 unicodecsv==0.14.1        # via datapackage, jsontableschema, tabulator
+uritemplate.py==3.0.2     # via github3.py
+uritemplate==3.0.0        # via uritemplate.py
 vine==1.1.3               # via amqp
 Werkzeug==0.11.11         # via flask
 xlrd==1.0.0               # via tabulator
