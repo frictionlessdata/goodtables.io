@@ -38,7 +38,7 @@ def _load_job_conf(job_base):
     url = '/'.join([job_base, 'goodtables.yml'])
     text = _load_file(url)
     if text is not None:
-        job_conf = yaml.load(text)
+        job_conf = yaml.safe_load(text)
     else:
         job_conf = {'files': '*'}
     return job_conf
