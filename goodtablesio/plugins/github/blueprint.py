@@ -50,7 +50,7 @@ def create_job():
 
     # Run validation
     tasks_chain = chain(
-        get_validation_conf.s(owner, repo, job_id=job_id),
+        get_validation_conf.s(owner, repo, sha, job_id=job_id),
         tasks.validate.s(job_id=job_id))
     tasks_chain.delay()
 

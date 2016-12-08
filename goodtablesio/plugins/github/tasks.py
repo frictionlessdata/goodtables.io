@@ -1,7 +1,10 @@
+import logging
 from github3 import GitHub
 
 from goodtablesio import helpers, config
 from goodtablesio.tasks import app as celery_app, JobTask
+
+log = logging.getLogger(__name__)
 
 
 # Module API
@@ -46,6 +49,9 @@ def _get_job_files(owner, repo, sha):
     if files is None:
         # Tree is trancated - use GitHub Contents API
         files = _get_job_files_contents_api(repo_api)
+    log.debug(
+        'Remaining GitHub API calls: %s',
+        github_api.rate_limit()['rate']['remaining'])
     return files
 
 
