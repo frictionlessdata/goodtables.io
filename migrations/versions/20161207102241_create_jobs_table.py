@@ -18,7 +18,7 @@ depends_on = None
 
 def upgrade():
     op.create_table('jobs',
-        sa.Column('job_id', sa.Unicode),
+        sa.Column('job_id', sa.Unicode, primary_key=True),
         sa.Column('created', sa.DateTime(timezone=True)),
         sa.Column('finished', sa.DateTime(timezone=True)),
         sa.Column('status', sa.Unicode),
