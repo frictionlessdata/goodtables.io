@@ -5,6 +5,7 @@ import factory
 
 from goodtablesio import services
 from goodtablesio.models.job import Job
+from goodtablesio.models.user import User
 
 
 class FactoryBase(factory.alchemy.SQLAlchemyModelFactory):
@@ -43,3 +44,17 @@ class Job(FactoryBase):
     created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     plugin_name = 'api'
     status = 'created'
+
+
+class User(FactoryBase):
+
+    class Meta:
+        model = User
+        sqlalchemy_session = services.db_session
+
+    id = factory.Sequence(lambda n: str(uuid.uuid4()))
+    name = factory.Faker('user_name')
+    display_name = factory.Faker('name')
+    email = factory.Faker('email')
+    created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    admin = False
