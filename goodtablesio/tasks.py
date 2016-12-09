@@ -1,12 +1,13 @@
 import datetime
 import logging
 
-import dataset
 from celery import Celery, Task, signals
 from goodtables import Inspector
 
 from . import config
 from . import exceptions
+from . import models
+from .services import get_engine, make_db_session
 
 
 log = logging.getLogger(__name__)
@@ -21,24 +22,27 @@ app.config_from_object(config)
 app.autodiscover_tasks(['goodtablesio.plugins.github'])
 
 
-tasks_db = None
+tasks_db_engine = None
+tasks_db_session = None
 
 
 @signals.worker_process_init.connect
 def init_worker(**kwargs):
-    global tasks_db
+    global tasks_db_engine, tasks_db_session
     log.debug('Initializing database connection for the worker')
-    tasks_db = dataset.connect(
-        config.DATABASE_URL,
+    tasks_db_engine = get_engine()
+    tasks_db_session = make_db_session(
         engine_kwargs={'pool_size': 20, 'pool_recycle': 3600})
 
 
 @signals.worker_process_shutdown.connect
 def shutdown_worker(**kwargs):
-    global tasks_db
-    if tasks_db:
+    global tasks_db_engine, tasks_db_session
+    if tasks_db_engine:
         log.debug('Closing database connectionn for the worker')
-        tasks_db.engine.dispose()
+        tasks_db_engine.dispose()
+        if tasks_db_session:
+            tasks_db_session.close()
 
 
 class JobTask(Task):
@@ -66,22 +70,22 @@ class JobTask(Task):
         job_id = kwargs['job_id']
 
         # Get error message
-        message = 'Inernal Error'
+        message = 'Internal Error'
         if isinstance(exc, exceptions.InvalidJobConfiguration):
             message = 'Invalid job configuration'
         elif isinstance(exc, exceptions.InvalidValidationConfiguration):
             message = 'Invalid validation configuration'
 
         # Compose job update
-        job = {
-            'job_id': job_id,
+        params = {
+            'id': job_id,
             'status': 'error',
             'error': {'message': message},
             'finished': datetime.datetime.utcnow(),
         }
 
         # Update database
-        tasks_db['jobs'].update(job, keys=['job_id'])
+        models.job.update(params, _db_session=tasks_db_session)
 
 
 @app.task(name='goodtablesio.tasks.validate', base=JobTask)
@@ -96,11 +100,15 @@ def validate(validation_conf, job_id):
     """
 
     # Get job
-    job = tasks_db['jobs'].find_one(job_id=job_id)
+    job = models.job.get(job_id, _db_session=tasks_db_session)
+
     # TODO: job not found
     if job['status'] == 'created':
-        tasks_db['jobs'].update({'job_id': job_id, 'status': 'running'},
-                                ['job_id'])
+        params = {
+            'id': job_id,
+            'status': 'running'
+        }
+        models.job.update(params, _db_session=tasks_db_session)
 
     # Get report
     settings = validation_conf.get('settings', {})
@@ -108,11 +116,15 @@ def validate(validation_conf, job_id):
     report = inspector.inspect(validation_conf['files'], preset='tables')
 
     # Save report
-    job.update({
+    params = {
+        'id': job_id,
         'report': report,
         'finished': datetime.datetime.utcnow(),
         'status': 'success' if report['valid'] else 'failure'
-    })
-    tasks_db['jobs'].update(job, ['job_id'])
+    }
+
+    models.job.update(params, _db_session=tasks_db_session)
+
+    job.update(params)
 
     return job

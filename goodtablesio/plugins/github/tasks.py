@@ -1,8 +1,9 @@
 import logging
+
 from github3 import GitHub
 
-from goodtablesio import helpers, config
 from goodtablesio.tasks import app as celery_app, JobTask
+from goodtablesio import helpers, models, config
 
 log = logging.getLogger(__name__)
 
@@ -14,13 +15,19 @@ def get_validation_conf(owner, repo, sha, job_id):
     """Celery tast to get validation conf.
     """
 
-    # Update job in database
-    from goodtablesio.tasks import tasks_db
-    tasks_db['jobs'].update({'job_id': job_id, 'status': 'running'}, ['job_id'])
+    # We need to import the DB connection at this point, as it has been
+    # initialized when the worker started
+    from goodtablesio.tasks import tasks_db_session
+
+    params = {
+        'id': job_id,
+        'status': 'running'
+    }
+    models.job.update(params, _db_session=tasks_db_session)
 
     # Get validation conf
     job_base = _get_job_base(owner, repo, sha)
-    job_files = _get_job_files(owner, repo)
+    job_files = _get_job_files(owner, repo, sha)
     validation_conf = helpers.create_validation_conf(job_base, job_files)
 
     return validation_conf

@@ -1,44 +1,30 @@
 import uuid
 import datetime
 
-from sqlalchemy.types import DateTime
-from sqlalchemy.dialects.postgresql import JSONB
 import factory
 
 from goodtablesio import services
-from goodtablesio.models import Job
+from goodtablesio.models.job import Job
 
 
-# TODO: Use SQLAlchemy models when we have a proper ORM
-
-class Job(factory.Factory):
+class Job(factory.alchemy.SQLAlchemyModelFactory):
 
     class Meta:
         model = Job
+        sqlalchemy_session = services.db_session
+        force_flush = True
 
-    job_id = factory.Sequence(lambda n: str(uuid.uuid4()))
+    id = factory.Sequence(lambda n: str(uuid.uuid4()))
     created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     plugin_name = 'api'
-    plugin_conf = None
     status = 'created'
-    finished = None
-    report = None
-    error = None
 
     @classmethod
     def _create(cls, model_class, *args, **kwargs):
 
-        row = {}
-        for field in ('job_id', 'plugin_name', 'plugin_conf',
-                      'created', 'finished', 'report', 'status', 'error'):
-            row[field] = kwargs.get(field)
+        out = super()._create(model_class, *args, **kwargs)
 
-        services.database['jobs'].insert(row,
-                                         types={'created': DateTime,
-                                                'finished': DateTime,
-                                                'report': JSONB,
-                                                'error': JSONB,
-                                                'plugin_conf': JSONB},
-                                         ensure=True)
+        # Actually store the object on the DB
+        cls._meta.sqlalchemy_session.commit()
 
-        return model_class(*args, **kwargs)
+        return out

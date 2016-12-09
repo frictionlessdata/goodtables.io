@@ -1,10 +1,13 @@
 import logging
+import uuid
 
 from flask import Blueprint, request
 from flask.json import jsonify
 
 from goodtablesio import exceptions
 from goodtablesio import helpers
+from goodtablesio import models
+from goodtablesio import tasks
 
 log = logging.getLogger(__name__)
 
@@ -23,8 +26,15 @@ class APIError(Exception):
         self.message = message
 
 
+@api.record
+def record_params(setup_state):
+    api.debug = setup_state.app.debug
+
+
 @api.app_errorhandler(Exception)
 def handle_api_errors(error):
+    if api.debug:
+        raise error
     if not isinstance(error, APIError):
         log.exception(repr(error))
     message = getattr(error, 'message', 'Internal Error')
@@ -47,23 +57,32 @@ def create_job():
     if not validation_conf:
         raise APIError(400, 'Missing configuration')
 
-    # Create job
+    # Validate validation configuration
+
     try:
-        job_id = helpers.create_job(validation_conf)
+        helpers.validate_validation_conf(validation_conf)
     except exceptions.InvalidValidationConfiguration:
         raise APIError(400, 'Invalid configuration')
+
+    job_id = str(uuid.uuid4())
+
+    # Write to database
+    models.job.create({'id': job_id})
+
+    # Create celery task
+    tasks.validate.delay(validation_conf, job_id=job_id)
 
     return job_id
 
 
 @api.route('/job')
 def list_jobs():
-    return jsonify(helpers.get_job_ids())
+    return jsonify(models.job.get_ids())
 
 
 @api.route('/job/<job_id>')
 def get_job(job_id):
-    job = helpers.get_job(job_id)
+    job = models.job.get(job_id)
     if job:
         return jsonify(job)
     else:

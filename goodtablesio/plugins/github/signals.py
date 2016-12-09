@@ -1,4 +1,6 @@
 from celery import signals
+
+from goodtablesio import models
 from goodtablesio.tasks import validate
 from goodtablesio.plugins.github.utils import set_commit_status
 
@@ -9,12 +11,12 @@ from goodtablesio.plugins.github.utils import set_commit_status
 def post_task_handler(**kwargs):
     # We need to import the DB connection at this point, as it has been
     # initialized when the worker started
-    from goodtablesio.tasks import tasks_db
+    from goodtablesio.tasks import tasks_db_session
 
     job = kwargs['retval']
     if isinstance(kwargs['retval'], Exception):
         job_id = kwargs['kwargs']['job_id']
-        job = tasks_db['jobs'].find_one(job_id=job_id)
+        job = models.job.get(job_id, _db_session=tasks_db_session)
 
     if job.get('plugin_name') != 'github':
         return
@@ -36,4 +38,4 @@ def post_task_handler(**kwargs):
            owner=plugin_conf['repository']['owner'],
            repo=plugin_conf['repository']['name'],
            sha=plugin_conf['sha'],
-           job_id=job['job_id'])
+           job_id=job['id'])
