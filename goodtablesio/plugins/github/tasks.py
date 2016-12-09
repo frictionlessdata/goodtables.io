@@ -6,7 +6,7 @@ from goodtablesio.tasks import app as celery_app, JobTask
 from goodtablesio import helpers, models, config
 
 # Register signals
-import goodtablesio.plugins.github.signals
+import goodtablesio.plugins.github.signals  # noqa
 
 log = logging.getLogger(__name__)
 
