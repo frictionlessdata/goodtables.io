@@ -5,6 +5,9 @@ from github3 import GitHub
 from goodtablesio.tasks import app as celery_app, JobTask
 from goodtablesio import helpers, models, config
 
+# Register signals
+import goodtablesio.plugins.github.signals
+
 log = logging.getLogger(__name__)
 
 
