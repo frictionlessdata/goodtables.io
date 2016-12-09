@@ -6,11 +6,9 @@ from goodtablesio.app import app
 
 
 @pytest.fixture()
-def db_cleanup():
+def session_cleanup():
 
     db_session.query(Job).delete()
-
-    db_session.commit()
 
     yield
 

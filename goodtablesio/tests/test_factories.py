@@ -4,11 +4,14 @@ from goodtablesio import services
 from goodtablesio.models.job import Job
 from goodtablesio.tests import factories
 
-pytestmark = pytest.mark.usefixtures('db_cleanup')
+pytestmark = pytest.mark.usefixtures('session_cleanup')
 
 
 def test_create_job():
     job = factories.Job()
+
+    assert job.status == 'created'
+    assert job.plugin_name == 'api'
 
     job_db = services.db_session.query(Job).get(job.id)
 
