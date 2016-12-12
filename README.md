@@ -113,3 +113,22 @@ Now developmet server runs on `localhost:5000`. We could send github repo for va
   "status": "SUCCESS"
 }
 ```
+
+# Set up (MVP version)
+
+As of now, the process to set up validation on a GitHub repo is the following:
+
+* Choose a repository that contains tabular data files *inside the frictionlessdata organization*
+* Go to *Settings* > *Webhooks*. Click on *Add Webhook*
+* On *Payload URL*, enter: http://goodtables.oklabs.org/github/hook (leave the rest of fields as they are)
+
+From this moment, once you start pushing to the master branch you should see the validation status next to the commit messages:
+
+![dealwithit 1](https://cloud.githubusercontent.com/assets/200230/20802449/001ee8c4-b7e4-11e6-9e8b-b88390a659c7.png)
+
+The statuses link to the full report on the prototype app.
+
+Support for PRs, custom branches and proper authorisation is coming.
+
+
+
