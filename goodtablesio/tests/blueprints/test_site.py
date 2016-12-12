@@ -5,7 +5,7 @@ from goodtablesio.tests import factories
 
 # Clean up DB on all this module's tests
 
-pytestmark = pytest.mark.usefixtures('db_cleanup')
+pytestmark = pytest.mark.usefixtures('session_cleanup')
 
 
 def test_site_basic(client):

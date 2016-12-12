@@ -10,6 +10,12 @@ import sqlalchemy as sa
 from alembic import context
 
 
+# Add the package base metadata object so we can autogenerate migrations
+from goodtablesio.models.base import Base
+
+target_metadata = Base.metadata
+
+
 def run_migrations_offline():
     """Run migrations in 'offline' mode.
 
@@ -39,7 +45,8 @@ def run_migrations_online():
     import config
     connectable = sa.create_engine(config.DATABASE_URL)
     with connectable.connect() as connection:
-        context.configure(connection=connection, target_metadata=None)
+        context.configure(connection=connection,
+                          target_metadata=target_metadata)
         with context.begin_transaction():
             context.run_migrations()
 

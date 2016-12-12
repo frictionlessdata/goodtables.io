@@ -6,7 +6,9 @@ from goodtablesio import models, services
 from goodtablesio.tests import factories
 
 
-@pytest.mark.usefixtures('db_cleanup')
+pytestmark = pytest.mark.usefixtures('session_cleanup')
+
+
 def test_create_job_outputs_dict():
 
     job = models.job.create({'id': 'my-id'})
@@ -21,7 +23,6 @@ def test_create_job_outputs_dict():
     assert job['error'] is None
 
 
-@pytest.mark.usefixtures('db_cleanup')
 def test_create_job_params_outputs_dict():
 
     params = {
@@ -42,7 +43,6 @@ def test_create_job_params_outputs_dict():
     assert job['error'] is None
 
 
-@pytest.mark.usefixtures('db_cleanup')
 def test_create_job_stored_in_db():
 
     params = {
@@ -70,7 +70,6 @@ def test_create_job_stored_in_db():
     assert job.error is None
 
 
-@pytest.mark.usefixtures('db_cleanup')
 def test_update_job_outputs_dict():
 
     job = factories.Job()
@@ -96,7 +95,6 @@ def test_update_job_outputs_dict():
     assert updated_job['error'] is None
 
 
-@pytest.mark.usefixtures('db_cleanup')
 def test_update_job_stored_in_db():
 
     job = factories.Job()
@@ -139,10 +137,10 @@ def test_update_job_not_found_raises_value_error():
         assert models.job.update({'id': 'not-found'})
 
 
-@pytest.mark.usefixtures('db_cleanup')
 def test_get_job_outputs_dict():
 
-    job_db = factories.Job().to_dict()
+    # Actually save it to the DB so we can test retrieving it
+    job_db = factories.Job(_save_in_db=True).to_dict()
 
     services.db_session.remove()
 
@@ -163,7 +161,6 @@ def test_get_job_not_found_outputs_none():
     assert models.job.get('not-found') is None
 
 
-@pytest.mark.usefixtures('db_cleanup')
 def test_get_all():
     job1 = factories.Job()
     job2 = factories.Job()
@@ -176,7 +173,6 @@ def test_get_all():
     assert all_jobs == [job3.to_dict(), job2.to_dict(), job1.to_dict()]
 
 
-@pytest.mark.usefixtures('db_cleanup')
 def test_get_ids():
     job1 = factories.Job()
     job2 = factories.Job()

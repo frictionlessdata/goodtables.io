@@ -8,13 +8,14 @@ from goodtablesio import tasks, services, exceptions, models
 from goodtablesio.tests import factories
 
 
-pytestmark = pytest.mark.usefixtures('db_cleanup')
+pytestmark = pytest.mark.usefixtures('session_cleanup')
 
 
 @mock.patch('goodtables.inspector.Inspector.inspect')
 def test_tasks_validate(_inspect):
 
-    job = factories.Job()
+    # We need to save it on the DB so the session used by the tasks can find it
+    job = factories.Job(_save_in_db=True)
 
     mock_report = {'valid': True, 'errors': []}
     _inspect.return_value = mock_report
@@ -45,7 +46,7 @@ def test_tasks_validate(_inspect):
 def test_JobTask_on_failure_invalid_job_conf():
 
     # Prepare things
-    job = factories.Job()
+    job = factories.Job(_save_in_db=True)
     tasks.init_worker()
     app = Celery('app')
     app.conf['task_always_eager'] = True
@@ -75,7 +76,7 @@ def test_JobTask_on_failure_invalid_job_conf():
 def test_JobTask_on_failure_invalid_validation_conf():
 
     # Prepare things
-    job = factories.Job()
+    job = factories.Job(_save_in_db=True)
     tasks.init_worker()
     app = Celery('app')
     app.conf['task_always_eager'] = True
