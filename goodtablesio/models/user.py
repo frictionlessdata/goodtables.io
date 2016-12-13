@@ -86,7 +86,7 @@ def update(params, db_session):
 @auto_db_session
 def get(user_id, db_session):
     """
-    Get a user object in the database and return it as a dict.
+    Get a user object in the database by id and return it as a dict.
 
     Arguments:
         user_id (str): The user id.
@@ -105,6 +105,53 @@ def get(user_id, db_session):
 
     return user.to_dict()
 
+
+@auto_db_session
+def get_by_email(email, db_session):
+    """
+    Get a user object in the database by email and return it as a dict.
+
+    Arguments:
+        email (str): The user email.
+        db_session (Session): The session to use, pre-filled if using
+            the default one.
+
+    Returns:
+        user (dict): A dictionary with the user details, or None if the user
+            was not found.
+    """
+
+    user = db_session.query(User).filter_by(email=email).one_or_none()
+
+    if not user:
+        return None
+
+    return user.to_dict()
+
+
+@auto_db_session
+def get_by_provider_id(provider_name, provider_id, db_session):
+    """
+    Get a user object in the database by a 3rd party provider id and return it
+        as a dict.
+
+    Arguments:
+        provider_name (str): The 3rd party provider (eg `github`).
+        provider_id (str): The 3rd party provider id.
+        db_session (Session): The session to use, pre-filled if using
+            the default one.
+
+    Returns:
+        user (dict): A dictionary with the user details, or None if the user
+            was not found.
+    """
+
+    user = db_session.query(User).filter(User.provider_ids[provider_name].astext == provider_id).one_or_none()
+
+    if not user:
+        return None
+
+    return user.to_dict()
 
 @auto_db_session
 def get_ids(db_session):

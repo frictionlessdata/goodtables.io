@@ -14,7 +14,7 @@ def test_create_user_outputs_dict():
         'name': 'my-name',
         'email': 'my-email@example.com',
         'admin': True,
-
+        'provider_ids': {'github': '123'},
     })
 
     assert user['id'] == 'my-id'
@@ -22,6 +22,7 @@ def test_create_user_outputs_dict():
     assert user['email'] == 'my-email@example.com'
     assert user['admin'] is True
     assert user['created']
+    assert user['provider_ids']['github'] == '123'
 
 
 def test_create_user_stored_in_db():
@@ -58,6 +59,7 @@ def test_update_user_outputs_dict():
         'id': user.id,
         'name': 'some-other-name',
         'email': 'updated@example.com',
+        'provider_ids': {'github': '123'},
     }
 
     updated_user = models.user.update(params)
@@ -65,6 +67,7 @@ def test_update_user_outputs_dict():
     assert updated_user['id'] == user.id
     assert updated_user['name'] == 'some-other-name'
     assert updated_user['email'] == 'updated@example.com'
+    assert updated_user['provider_ids']['github'] == '123'
 
 
 def test_update_user_stored_in_db():
@@ -140,3 +143,40 @@ def test_get_ids():
     user2 = factories.User()
 
     assert models.user.get_ids() == [user2.id, user1.id]
+
+
+def test_get_by_email():
+    user1 = factories.User(email='user1@example.com')
+    factories.User()
+
+    user = models.user.get_by_email('user1@example.com')
+
+    assert user['id'] == user1.id
+    assert user['email'] == user1.email
+
+
+def test_get_user_by_email_not_found_outputs_none():
+
+    assert models.user.get_by_email('not-found@example.com') is None
+
+
+def test_get_by_provider_id():
+    user1 = factories.User(provider_ids={'github': '123'})
+    factories.User(provider_ids={'google': '123'})
+
+    user = models.user.get_by_provider_id('github', '123')
+
+    assert user['id'] == user1.id
+    assert user['provider_ids']['github'] == '123'
+
+
+def test_get_user_by_provider_id_id_not_found_outputs_none():
+
+    factories.User(provider_ids={'github': '123'})
+    assert models.user.get_by_provider_id('github', 'not-found') is None
+
+
+def test_get_user_by_provider_id_name_not_found_outputs_none():
+
+    factories.User(provider_ids={'google': '123'})
+    assert models.user.get_by_provider_id('github', 'not-found') is None
