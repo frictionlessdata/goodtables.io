@@ -4,8 +4,8 @@ import datetime
 from sqlalchemy import Column, Unicode, DateTime, update as db_update
 from sqlalchemy.dialects.postgresql import JSONB
 
-from goodtablesio.services import db_session as default_db_session
-from goodtablesio.models.base import Base, BaseModelMixin, make_uuid
+from goodtablesio.models.base import (Base, BaseModelMixin, make_uuid,
+                                      auto_db_session)
 
 
 log = logging.getLogger(__name__)
@@ -25,23 +25,21 @@ class Job(Base, BaseModelMixin):
     error = Column(JSONB)
 
 
-def create(params, _db_session=None):
+@auto_db_session
+def create(params, db_session):
     """
     Creates a job object in the database.
 
     Arguments:
         params (dict): A dictionary with the values for the new job.
-        _db_session (Session): An alternative SQLAlchemy session instance. If
-            not provided the default one from goodtablesio.services will be
-            used. This is useful for tasks run on the Celery processes.
+        db_session (Session): The session to use, pre-filled if using
+            the default one.
 
     Returns:
         job (dict): The newly created job as a dict
     """
 
     job = Job(**params)
-
-    db_session = _db_session or default_db_session
 
     db_session.add(job)
     db_session.commit()
@@ -50,16 +48,16 @@ def create(params, _db_session=None):
     return job.to_dict()
 
 
-def update(params, _db_session=None):
+@auto_db_session
+def update(params, db_session):
     """
     Updates a job object in the database.
 
     Arguments:
         params (dict): A dictionary with the fields to be updated. It must
             contain a valid `job_id` key.
-        _db_session (Session): An alternative SQLAlchemy session instance. If
-            not provided the default one from goodtablesio.services will be
-            used. This is useful for tasks run on the Celery processes.
+        db_session (Session): The session to use, pre-filled if using
+            the default one.
 
     Returns:
         job (dict): The updated job as a dict
@@ -71,8 +69,6 @@ def update(params, _db_session=None):
     job_id = params.get('id')
     if not job_id:
         raise ValueError('You must provide a id in the params dict')
-
-    db_session = _db_session or default_db_session
 
     job = db_session.query(Job).get(job_id)
     if not job:
@@ -88,22 +84,20 @@ def update(params, _db_session=None):
     return job.to_dict()
 
 
-def get(job_id, _db_session=None):
+@auto_db_session
+def get(job_id, db_session):
     """
     Get a job object in the database and return it as a dict.
 
     Arguments:
         job_id (str): The job id.
-        _db_session (Session): An alternative SQLAlchemy session instance. If
-            not provided the default one from goodtablesio.services will be
-            used. This is useful for tasks run on the Celery processes.
+        db_session (Session): The session to use, pre-filled if using
+            the default one.
 
     Returns:
         job (dict): A dictionary with the job details, or None if the job was
             not found.
     """
-
-    db_session = _db_session or default_db_session
 
     job = db_session.query(Job).get(job_id)
 
@@ -113,41 +107,37 @@ def get(job_id, _db_session=None):
     return job.to_dict()
 
 
-def get_ids(_db_session=None):
+@auto_db_session
+def get_ids(db_session):
     """Get all job ids from the database.
 
     Arguments:
-        _db_session (Session): An alternative SQLAlchemy session instance. If
-            not provided the default one from goodtablesio.services will be
-            used. This is useful for tasks run on the Celery processes.
+        db_session (Session): The session to use, pre-filled if using
+            the default one.
 
     Returns:
         job_ids (str[]): A list of job ids, sorted by descending creation date.
 
     """
 
-    db_session = _db_session or default_db_session
-
     job_ids = db_session.query(Job.id).order_by(Job.created.desc()).all()
     return [j.id for j in job_ids]
 
 
-def get_all(_db_session=None):
+@auto_db_session
+def get_all(db_session):
     """Get all jobs in the database as dict.
 
     Warning: Use with caution, this should probably only be used in tests
 
     Arguments:
-        _db_session (Session): An alternative SQLAlchemy session instance. If
-            not provided the default one from goodtablesio.services will be
-            used. This is useful for tasks run on the Celery processes.
+        db_session (Session): The session to use, pre-filled if using
+            the default one.
 
     Returns:
         jobs (dict[]): A list of job dicts, sorted by descending creation date.
 
     """
-
-    db_session = _db_session or default_db_session
 
     jobs = db_session.query(Job).order_by(Job.created.desc()).all()
     return [j.to_dict() for j in jobs]

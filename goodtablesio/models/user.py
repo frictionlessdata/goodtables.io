@@ -2,9 +2,10 @@ import logging
 import datetime
 
 from sqlalchemy import Column, Unicode, DateTime, Boolean, update as db_update
+from sqlalchemy.dialects.postgresql import JSONB
 
-from goodtablesio.services import db_session as default_db_session
-from goodtablesio.models.base import Base, BaseModelMixin, make_uuid
+from goodtablesio.models.base import (Base, BaseModelMixin, make_uuid,
+                                      auto_db_session)
 
 
 log = logging.getLogger(__name__)
@@ -20,25 +21,24 @@ class User(Base, BaseModelMixin):
     display_name = Column(Unicode)
     created = Column(DateTime(timezone=True), default=datetime.datetime.utcnow)
     admin = Column(Boolean, nullable=False, default=False)
+    provider_ids = Column(JSONB)
 
 
-def create(params, _db_session=None):
+@auto_db_session
+def create(params, db_session):
     """
     Creates a user object in the database.
 
     Arguments:
         params (dict): A dictionary with the values for the new user.
-        _db_session (Session): An alternative SQLAlchemy session instance. If
-            not provided the default one from goodtablesio.services will be
-            used. This is useful for tasks run on the Celery processes.
+        db_session (Session): The session to use, pre-filled if using
+            the default one.
 
     Returns:
         user (dict): The newly created user as a dict
     """
 
     user = User(**params)
-
-    db_session = _db_session or default_db_session
 
     db_session.add(user)
     db_session.commit()
@@ -47,16 +47,16 @@ def create(params, _db_session=None):
     return user.to_dict()
 
 
-def update(params, _db_session=None):
+@auto_db_session
+def update(params, db_session):
     """
     Updates a user object in the database.
 
     Arguments:
         params (dict): A dictionary with the fields to be updated. It must
             contain a valid `user_id` key.
-        _db_session (Session): An alternative SQLAlchemy session instance. If
-            not provided the default one from goodtablesio.services will be
-            used. This is useful for tasks run on the Celery processes.
+        db_session (Session): The session to use, pre-filled if using
+            the default one.
 
     Returns:
         user (dict): The updated user as a dict
@@ -68,8 +68,6 @@ def update(params, _db_session=None):
     user_id = params.get('id')
     if not user_id:
         raise ValueError('You must provide a id in the params dict')
-
-    db_session = _db_session or default_db_session
 
     user = db_session.query(User).get(user_id)
     if not user:
@@ -85,22 +83,20 @@ def update(params, _db_session=None):
     return user.to_dict()
 
 
-def get(user_id, _db_session=None):
+@auto_db_session
+def get(user_id, db_session):
     """
     Get a user object in the database and return it as a dict.
 
     Arguments:
         user_id (str): The user id.
-        _db_session (Session): An alternative SQLAlchemy session instance. If
-            not provided the default one from goodtablesio.services will be
-            used. This is useful for tasks run on the Celery processes.
+        db_session (Session): The session to use, pre-filled if using
+            the default one.
 
     Returns:
         user (dict): A dictionary with the user details, or None if the user
             was not found.
     """
-
-    db_session = _db_session or default_db_session
 
     user = db_session.query(User).get(user_id)
 
@@ -110,13 +106,13 @@ def get(user_id, _db_session=None):
     return user.to_dict()
 
 
-def get_ids(_db_session=None):
+@auto_db_session
+def get_ids(db_session):
     """Get all user ids from the database.
 
     Arguments:
-        _db_session (Session): An alternative SQLAlchemy session instance. If
-            not provided the default one from goodtablesio.services will be
-            used. This is useful for tasks run on the Celery processes.
+        db_session (Session): The session to use, pre-filled if using
+            the default one.
 
     Returns:
         user_ids (str[]): A list of user ids, sorted by descending creation
@@ -124,29 +120,25 @@ def get_ids(_db_session=None):
 
     """
 
-    db_session = _db_session or default_db_session
-
     user_ids = db_session.query(User.id).order_by(User.created.desc()).all()
     return [j.id for j in user_ids]
 
 
-def get_all(_db_session=None):
+@auto_db_session
+def get_all(db_session):
     """Get all users in the database as dict.
 
     Warning: Use with caution, this should probably only be used in tests
 
     Arguments:
-        _db_session (Session): An alternative SQLAlchemy session instance. If
-            not provided the default one from goodtablesio.services will be
-            used. This is useful for tasks run on the Celery processes.
+        db_session (Session): The session to use, pre-filled if using
+            the default one.
 
     Returns:
         users (dict[]): A list of user dicts, sorted by descending creation
         date.
 
     """
-
-    db_session = _db_session or default_db_session
 
     users = db_session.query(User).order_by(User.created.desc()).all()
     return [j.to_dict() for j in users]

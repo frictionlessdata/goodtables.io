@@ -85,7 +85,7 @@ class JobTask(Task):
         }
 
         # Update database
-        models.job.update(params, _db_session=tasks_db_session)
+        models.job.update(params, db_session=tasks_db_session)
 
 
 @app.task(name='goodtablesio.tasks.validate', base=JobTask)
@@ -100,7 +100,7 @@ def validate(validation_conf, job_id):
     """
 
     # Get job
-    job = models.job.get(job_id, _db_session=tasks_db_session)
+    job = models.job.get(job_id, db_session=tasks_db_session)
 
     # TODO: job not found
     if job['status'] == 'created':
@@ -108,7 +108,7 @@ def validate(validation_conf, job_id):
             'id': job_id,
             'status': 'running'
         }
-        models.job.update(params, _db_session=tasks_db_session)
+        models.job.update(params, db_session=tasks_db_session)
 
     # Get report
     settings = validation_conf.get('settings', {})
@@ -123,7 +123,7 @@ def validate(validation_conf, job_id):
         'status': 'success' if report['valid'] else 'failure'
     }
 
-    models.job.update(params, _db_session=tasks_db_session)
+    models.job.update(params, db_session=tasks_db_session)
 
     job.update(params)
 
