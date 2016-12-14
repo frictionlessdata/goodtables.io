@@ -11,6 +11,7 @@ from alembic import context
 
 
 # Add the package base metadata object so we can autogenerate migrations
+sys.path.insert(0, '.')
 from goodtablesio.models.base import Base
 
 target_metadata = Base.metadata
