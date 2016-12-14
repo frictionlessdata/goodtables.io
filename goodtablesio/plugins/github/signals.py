@@ -16,7 +16,7 @@ def post_task_handler(**kwargs):
     job = kwargs['retval']
     if isinstance(kwargs['retval'], Exception):
         job_id = kwargs['kwargs']['job_id']
-        job = models.job.get(job_id, _db_session=tasks_db_session)
+        job = models.job.get(job_id, db_session=tasks_db_session)
 
     if job.get('plugin_name') != 'github':
         return

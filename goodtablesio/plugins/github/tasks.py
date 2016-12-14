@@ -26,7 +26,7 @@ def get_validation_conf(owner, repo, sha, job_id):
         'id': job_id,
         'status': 'running'
     }
-    models.job.update(params, _db_session=tasks_db_session)
+    models.job.update(params, db_session=tasks_db_session)
 
     # Get validation conf
     job_base = _get_job_base(owner, repo, sha)
