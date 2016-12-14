@@ -1,3 +1,4 @@
+# pylama:skip=1
 import json
 from unittest.mock import patch
 from goodtablesio.tasks import app as celery_app
