@@ -1,7 +1,7 @@
 from flask import Flask, render_template
 
 from . import config
-from .auth import oauth
+from .auth import oauth, login_manager
 from .blueprints.api import api
 from .blueprints.site import site
 from .blueprints.user import user
@@ -20,6 +20,7 @@ app.config['JSONIFY_MIMETYPE'] = 'application/json; charset=utf-8'
 
 # Register Flask plugins
 oauth.init_app(app)
+login_manager.init_app(app)
 
 # Register blueprints
 app.register_blueprint(api)

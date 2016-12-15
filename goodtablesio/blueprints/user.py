@@ -2,6 +2,7 @@ import logging
 
 from flask import (Blueprint, request, session, redirect, url_for, abort,
                    jsonify, flash)
+from flask_login import login_user, logout_user, login_required
 
 from goodtablesio import models
 from goodtablesio.auth import github_auth
@@ -30,9 +31,14 @@ def login(provider):
 
 @user.route('/logout')
 def logout():
-    session.pop('github_token', None)
-    session.pop('user_id', None)
-    session.pop('user_display_name', None)
+
+    # Remove any auth related keys
+
+    session.pop('auth_github_token', None)
+
+    # Logout user with Flask-Login
+    logout_user()
+
     return redirect(url_for('site.home'))
 
 
@@ -49,7 +55,9 @@ def authorized(provider):
                 response
             ))
             abort(401, 'There was a problem logging in')
-        session['github_token'] = (response['access_token'], '')
+
+        session['auth_github_token'] = (response['access_token'], '')
+
         oauth_user = github_auth.get('user')
         if oauth_user.status != 200:
             abort(401, 'Error logging in: could not get user details')
@@ -79,16 +87,16 @@ def authorized(provider):
 
         # TODO: check github scopes
 
-        session['user_display_name'] = user['display_name']
-        session['user_id'] = user['id']
+        # Login user with Flask-Login
+        # (we need the actual model object)
+        login_user(models.user.get(user['id'], as_dict=False))
 
     return redirect(url_for('site.home'))
 
 
 @user.route('/profile')
+@login_required
 def profile():
-    if not session.get('user_id'):
-        abort(401)
 
     user = models.user.get(session['user_id'])
 

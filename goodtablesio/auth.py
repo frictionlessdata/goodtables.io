@@ -1,12 +1,15 @@
 from flask import session
 from flask_oauthlib.client import OAuth
+from flask_login import LoginManager
 
-from goodtablesio import config
+from goodtablesio import config, models
 
 GITHUB_OAUTH_SCOPES = ['user', 'repo', 'admin:repo_hook']
 
 
 oauth = OAuth()
+
+login_manager = LoginManager()
 
 
 github_auth = oauth.remote_app(
@@ -24,4 +27,9 @@ github_auth = oauth.remote_app(
 
 @github_auth.tokengetter
 def get_github_oauth_token():
-    return session.get('github_token')
+    return session.get('auth_github_token')
+
+
+@login_manager.user_loader
+def load_user(user_id):
+        return models.user.get(user_id, as_dict=False)

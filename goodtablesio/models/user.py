@@ -3,6 +3,7 @@ import datetime
 
 from sqlalchemy import Column, Unicode, DateTime, Boolean, update as db_update
 from sqlalchemy.dialects.postgresql import JSONB
+from flask_login import UserMixin as UserLoginMixin
 
 from goodtablesio.models.base import (Base, BaseModelMixin, make_uuid,
                                       auto_db_session)
@@ -11,7 +12,7 @@ from goodtablesio.models.base import (Base, BaseModelMixin, make_uuid,
 log = logging.getLogger(__name__)
 
 
-class User(Base, BaseModelMixin):
+class User(Base, BaseModelMixin, UserLoginMixin):
 
     __tablename__ = 'users'
 
@@ -22,6 +23,10 @@ class User(Base, BaseModelMixin):
     created = Column(DateTime(timezone=True), default=datetime.datetime.utcnow)
     admin = Column(Boolean, nullable=False, default=False)
     provider_ids = Column(JSONB)
+
+    def get_id(self):
+        """This method is required by Flask-Login"""
+        return self.id
 
 
 @auto_db_session
@@ -85,7 +90,7 @@ def update(params, db_session):
 
 
 @auto_db_session
-def get(user_id, db_session):
+def get(user_id, db_session, as_dict=True):
     """
     Get a user object in the database by id and return it as a dict.
 
@@ -93,6 +98,8 @@ def get(user_id, db_session):
         user_id (str): The user id.
         db_session (Session): The session to use, pre-filled if using
             the default one.
+        as_dict (bool): Return the user as dict, rather than a model object.
+            Defaults to True.
 
     Returns:
         user (dict): A dictionary with the user details, or None if the user
@@ -104,7 +111,7 @@ def get(user_id, db_session):
     if not user:
         return None
 
-    return user.to_dict()
+    return user.to_dict() if as_dict else user
 
 
 @auto_db_session
