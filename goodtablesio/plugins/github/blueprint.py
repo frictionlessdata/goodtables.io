@@ -69,7 +69,7 @@ def _get_owner_repo_sha(payload):
 
         # PR
         if payload.get('pull_request'):
-            if payload['action'] not in ['opened', 'edited']:
+            if payload['action'] != 'opened':
                 return None, None, None
             repo = payload['pull_request']['head']['repo']['name']
             owner = payload['pull_request']['head']['repo']['owner']['login']
