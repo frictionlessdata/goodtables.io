@@ -18,4 +18,9 @@ def session_cleanup():
 @pytest.fixture()
 def client():
 
-    return app.test_client()
+    with app.test_client() as c:
+
+        # Save a reference to the app for convenience
+        c.app = app
+
+        yield c

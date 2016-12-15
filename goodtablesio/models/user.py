@@ -74,7 +74,8 @@ def update(params, db_session):
         raise ValueError('User not found: %s', user_id)
 
     user_table = User.__table__
-    u = db_update(user_table).where(user_table.c.id == user_id).values(**params)
+    u = db_update(user_table).where(
+        user_table.c.id == user_id).values(**params)
 
     db_session.execute(u)
     db_session.commit()
@@ -146,12 +147,15 @@ def get_by_provider_id(provider_name, provider_id, db_session):
             was not found.
     """
 
-    user = db_session.query(User).filter(User.provider_ids[provider_name].astext == provider_id).one_or_none()
+    user = db_session.query(User).filter(
+        User.provider_ids[provider_name].astext == str(provider_id)
+        ).one_or_none()
 
     if not user:
         return None
 
     return user.to_dict()
+
 
 @auto_db_session
 def get_ids(db_session):

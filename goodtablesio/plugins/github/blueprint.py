@@ -4,16 +4,14 @@ import logging
 from celery import chain
 from flask import Blueprint, request, abort
 
-from goodtablesio import tasks
-from goodtablesio import models
+from goodtablesio import tasks, models
 
 from goodtablesio.plugins.github.tasks import get_validation_conf
 from goodtablesio.plugins.github.utils import set_commit_status
 
+
 log = logging.getLogger(__name__)
 
-
-# Module API
 
 github = Blueprint('github', __name__, url_prefix='/github')
 
