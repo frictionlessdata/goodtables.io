@@ -19,13 +19,13 @@ github = Blueprint('github', __name__, url_prefix='/github')
 @github.route('/hook', methods=['POST'])
 def create_job():
 
-    # Get parameters from payload
+    # Get payload parameters
     payload = request.get_json()
     if not payload:
         abort(400)
-    owner = payload['repository']['owner']['name']
-    repo = payload['repository']['name']
-    sha = payload['head_commit']['id']
+    owner, repo, sha = _get_owner_repo_sha(payload)
+    if not owner:
+        abort(400)
 
     # Save job to database
     job_id = str(uuid.uuid4())
@@ -36,7 +36,6 @@ def create_job():
             },
         'sha': sha,
     }
-
     models.job.create({
         'id': job_id,
         'plugin_name': 'github',
@@ -58,3 +57,29 @@ def create_job():
     tasks_chain.delay()
 
     return job_id
+
+
+# Internal
+
+def _get_owner_repo_sha(payload):
+
+    try:
+
+        # PR
+        if payload.get('pull_request'):
+            if payload['action'] != 'opened':
+                return None, None, None
+            repo = payload['pull_request']['head']['repo']['name']
+            owner = payload['pull_request']['head']['repo']['owner']['login']
+            sha = payload['pull_request']['head']['sha']
+
+        # PUSH
+        else:
+            repo = payload['repository']['name']
+            owner = payload['repository']['owner']['name']
+            sha = payload['head_commit']['id']
+
+    except KeyError:
+        return None, None, None
+
+    return owner, repo, sha

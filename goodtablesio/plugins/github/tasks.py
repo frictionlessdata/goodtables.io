@@ -26,7 +26,7 @@ def get_validation_conf(owner, repo, sha, job_id):
         'id': job_id,
         'status': 'running'
     }
-    models.job.update(params, _db_session=tasks_db_session)
+    models.job.update(params, db_session=tasks_db_session)
 
     # Get validation conf
     job_base = _get_job_base(owner, repo, sha)
@@ -39,13 +39,13 @@ def get_validation_conf(owner, repo, sha, job_id):
 # Internal
 
 
-def _get_job_base(owner, repo, branch='master'):
+def _get_job_base(owner, repo, sha):
     """Get job's base url.
     """
-    template = '{base}/{owner}/{repo}/{branch}'
+    template = '{base}/{owner}/{repo}/{sha}'
     baseurl = template.format(
         base='https://raw.githubusercontent.com',
-        owner=owner, repo=repo, branch=branch)
+        owner=owner, repo=repo, sha=sha)
     return baseurl
 
 
@@ -58,7 +58,7 @@ def _get_job_files(owner, repo, sha):
     files = _get_job_files_tree_api(repo_api, sha)
     if files is None:
         # Tree is trancated - use GitHub Contents API
-        files = _get_job_files_contents_api(repo_api)
+        files = _get_job_files_contents_api(repo_api, sha)
     log.debug(
         'Remaining GitHub API calls: %s',
         github_api.rate_limit()['rate']['remaining'])
@@ -79,17 +79,17 @@ def _get_job_files_tree_api(repo_api, sha):
     return files
 
 
-def _get_job_files_contents_api(repo_api, contents=None):
+def _get_job_files_contents_api(repo_api, sha, contents=None):
     """Get job's files using GitHub Contents API.
     """
     files = []
     if not contents:
-        contents = repo_api.contents('/')
+        contents = repo_api.contents('', sha)
     for key in sorted(contents):
         item = contents[key]
         if item.type == 'file':
             files.append(item.path)
         elif item.type == 'dir':
-            dir_contents = repo_api.contents(item.path)
-            files.extend(_get_job_files_contents_api(repo_api, dir_contents))
+            dir_contents = repo_api.contents(item.path, sha)
+            files.extend(_get_job_files_contents_api(repo_api, sha, dir_contents))
     return files
