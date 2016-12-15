@@ -3,6 +3,7 @@ import datetime
 
 from sqlalchemy import Column, Unicode, DateTime, Boolean, update as db_update
 from sqlalchemy.dialects.postgresql import JSONB
+from flask_login import UserMixin as UserLoginMixin
 
 from goodtablesio.services import database
 from goodtablesio.models.base import Base, BaseModelMixin, make_uuid
@@ -11,7 +12,7 @@ from goodtablesio.models.base import Base, BaseModelMixin, make_uuid
 log = logging.getLogger(__name__)
 
 
-class User(Base, BaseModelMixin):
+class User(Base, BaseModelMixin, UserLoginMixin):
 
     __tablename__ = 'users'
 
@@ -22,6 +23,10 @@ class User(Base, BaseModelMixin):
     created = Column(DateTime(timezone=True), default=datetime.datetime.utcnow)
     admin = Column(Boolean, nullable=False, default=False)
     provider_ids = Column(JSONB)
+
+    def get_id(self):
+        """This method is required by Flask-Login"""
+        return self.id
 
 
 def create(params):
@@ -68,7 +73,8 @@ def update(params):
         raise ValueError('User not found: %s', user_id)
 
     user_table = User.__table__
-    u = db_update(user_table).where(user_table.c.id == user_id).values(**params)
+    u = db_update(user_table).where(
+        user_table.c.id == user_id).values(**params)
 
     database['session'].execute(u)
     database['session'].commit()
@@ -77,12 +83,14 @@ def update(params):
     return user.to_dict()
 
 
-def get(user_id):
+def get(user_id, as_dict=True):
     """
-    Get a user object in the database and return it as a dict.
+    Get a user object in the database by id and return it as a dict.
 
     Arguments:
         user_id (str): The user id.
+        as_dict (bool): Return the user as dict, rather than a model object.
+            Defaults to True.
 
     Returns:
         user (dict): A dictionary with the user details, or None if the user
@@ -90,6 +98,50 @@ def get(user_id):
     """
 
     user = database['session'].query(User).get(user_id)
+
+    if not user:
+        return None
+
+    return user.to_dict() if as_dict else user
+
+
+def get_by_email(email):
+    """
+    Get a user object in the database by email and return it as a dict.
+
+    Arguments:
+        email (str): The user email.
+
+    Returns:
+        user (dict): A dictionary with the user details, or None if the user
+            was not found.
+    """
+
+    user = database['session'].query(User).filter_by(email=email).one_or_none()
+
+    if not user:
+        return None
+
+    return user.to_dict()
+
+
+def get_by_provider_id(provider_name, provider_id):
+    """
+    Get a user object in the database by a 3rd party provider id and return it
+        as a dict.
+
+    Arguments:
+        provider_name (str): The 3rd party provider (eg `github`).
+        provider_id (str): The 3rd party provider id.
+
+    Returns:
+        user (dict): A dictionary with the user details, or None if the user
+            was not found.
+    """
+
+    user = database['session'].query(User).filter(
+        User.provider_ids[provider_name].astext == str(provider_id)
+        ).one_or_none()
 
     if not user:
         return None

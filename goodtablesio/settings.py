@@ -21,6 +21,10 @@ log = logging.getLogger(__name__)
 BASE_URL = os.environ['BASE_URL']
 TABULAR_EXTENSIONS = ['csv', 'xls', 'xlsx', 'ods']
 
+# Flask
+
+FLASK_SECRET_KEY = os.environ['FLASK_SECRET_KEY']
+
 # Database
 
 if not os.environ.get('TESTING'):
@@ -45,3 +49,8 @@ GITHUB_API_TOKEN = os.environ['GITHUB_API_TOKEN']
 # https://developer.github.com/webhooks/securing/
 # GITHUB_WEBHOOK_SECRET = os.environ['GITHUB_WEBHOOK_SECRET']
 GITHUB_CLONE_DIR = '/tmp'
+
+# OAuth
+
+GITHUB_CLIENT_ID = os.environ['GITHUB_CLIENT_ID']
+GITHUB_CLIENT_SECRET = os.environ['GITHUB_CLIENT_SECRET']

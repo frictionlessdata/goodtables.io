@@ -67,8 +67,10 @@ def test_create_user_are_different():
 
 
 def test_create_user_overrides():
-    user = factories.User(id='my-id', name='my-name', admin=True)
+    user = factories.User(id='my-id', name='my-name', admin=True,
+                          provider_ids={'github': '123'})
 
     assert user.id == 'my-id'
     assert user.name == 'my-name'
     assert user.admin is True
+    assert user.provider_ids['github'] == '123'
