@@ -5,9 +5,9 @@ from flask import Blueprint, request
 from flask.json import jsonify
 
 from goodtablesio import exceptions
-from goodtablesio import helpers
 from goodtablesio import models
 from goodtablesio import tasks
+from goodtablesio.utils.jobconf import verify_validation_conf
 
 log = logging.getLogger(__name__)
 
@@ -60,7 +60,7 @@ def create_job():
     # Validate validation configuration
 
     try:
-        helpers.validate_validation_conf(validation_conf)
+        verify_validation_conf(validation_conf)
     except exceptions.InvalidValidationConfiguration:
         raise APIError(400, 'Invalid configuration')
 

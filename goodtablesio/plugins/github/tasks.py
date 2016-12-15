@@ -2,8 +2,9 @@ import logging
 
 from github3 import GitHub
 
+from goodtablesio import models, settings
 from goodtablesio.tasks import app as celery_app, JobTask
-from goodtablesio import helpers, models, config
+from goodtablesio.utils.jobconf import create_validation_conf
 
 # Register signals
 import goodtablesio.plugins.github.signals  # noqa
@@ -18,20 +19,16 @@ def get_validation_conf(owner, repo, sha, job_id):
     """Celery tast to get validation conf.
     """
 
-    # We need to import the DB connection at this point, as it has been
-    # initialized when the worker started
-    from goodtablesio.tasks import tasks_db_session
-
-    params = {
+    # Update job
+    models.job.update({
         'id': job_id,
         'status': 'running'
-    }
-    models.job.update(params, db_session=tasks_db_session)
+    })
 
     # Get validation conf
     job_base = _get_job_base(owner, repo, sha)
     job_files = _get_job_files(owner, repo, sha)
-    validation_conf = helpers.create_validation_conf(job_base, job_files)
+    validation_conf = create_validation_conf(job_base, job_files)
 
     return validation_conf
 
@@ -52,7 +49,7 @@ def _get_job_base(owner, repo, sha):
 def _get_job_files(owner, repo, sha):
     """Get job's files.
     """
-    github_api = GitHub(token=config.GITHUB_API_TOKEN)
+    github_api = GitHub(token=settings.GITHUB_API_TOKEN)
     repo_api = github_api.repository(owner, repo)
     # First attempt - use GitHub Tree API
     files = _get_job_files_tree_api(repo_api, sha)

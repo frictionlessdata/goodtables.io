@@ -4,8 +4,8 @@ import datetime
 from sqlalchemy import Column, Unicode, DateTime, update as db_update
 from sqlalchemy.dialects.postgresql import JSONB
 
-from goodtablesio.models.base import (Base, BaseModelMixin, make_uuid,
-                                      auto_db_session)
+from goodtablesio.services import database
+from goodtablesio.models.base import Base, BaseModelMixin, make_uuid
 
 
 log = logging.getLogger(__name__)
@@ -25,15 +25,12 @@ class Job(Base, BaseModelMixin):
     error = Column(JSONB)
 
 
-@auto_db_session
-def create(params, db_session):
+def create(params):
     """
     Creates a job object in the database.
 
     Arguments:
         params (dict): A dictionary with the values for the new job.
-        db_session (Session): The session to use, pre-filled if using
-            the default one.
 
     Returns:
         job (dict): The newly created job as a dict
@@ -41,23 +38,20 @@ def create(params, db_session):
 
     job = Job(**params)
 
-    db_session.add(job)
-    db_session.commit()
+    database['session'].add(job)
+    database['session'].commit()
 
     log.debug('Created job "%s" on the database', job.id)
     return job.to_dict()
 
 
-@auto_db_session
-def update(params, db_session):
+def update(params):
     """
     Updates a job object in the database.
 
     Arguments:
         params (dict): A dictionary with the fields to be updated. It must
             contain a valid `job_id` key.
-        db_session (Session): The session to use, pre-filled if using
-            the default one.
 
     Returns:
         job (dict): The updated job as a dict
@@ -70,36 +64,33 @@ def update(params, db_session):
     if not job_id:
         raise ValueError('You must provide a id in the params dict')
 
-    job = db_session.query(Job).get(job_id)
+    job = database['session'].query(Job).get(job_id)
     if not job:
         raise ValueError('Job not found: %s', job_id)
 
     job_table = Job.__table__
     u = db_update(job_table).where(job_table.c.id == job_id).values(**params)
 
-    db_session.execute(u)
-    db_session.commit()
+    database['session'].execute(u)
+    database['session'].commit()
 
     log.debug('Updated job "%s" on the database', job_id)
     return job.to_dict()
 
 
-@auto_db_session
-def get(job_id, db_session):
+def get(job_id):
     """
     Get a job object in the database and return it as a dict.
 
     Arguments:
         job_id (str): The job id.
-        db_session (Session): The session to use, pre-filled if using
-            the default one.
 
     Returns:
         job (dict): A dictionary with the job details, or None if the job was
             not found.
     """
 
-    job = db_session.query(Job).get(job_id)
+    job = database['session'].query(Job).get(job_id)
 
     if not job:
         return None
@@ -107,37 +98,27 @@ def get(job_id, db_session):
     return job.to_dict()
 
 
-@auto_db_session
-def get_ids(db_session):
+def get_ids():
     """Get all job ids from the database.
-
-    Arguments:
-        db_session (Session): The session to use, pre-filled if using
-            the default one.
 
     Returns:
         job_ids (str[]): A list of job ids, sorted by descending creation date.
 
     """
 
-    job_ids = db_session.query(Job.id).order_by(Job.created.desc()).all()
+    job_ids = database['session'].query(Job.id).order_by(Job.created.desc()).all()
     return [j.id for j in job_ids]
 
 
-@auto_db_session
-def get_all(db_session):
+def get_all():
     """Get all jobs in the database as dict.
 
     Warning: Use with caution, this should probably only be used in tests
-
-    Arguments:
-        db_session (Session): The session to use, pre-filled if using
-            the default one.
 
     Returns:
         jobs (dict[]): A list of job dicts, sorted by descending creation date.
 
     """
 
-    jobs = db_session.query(Job).order_by(Job.created.desc()).all()
+    jobs = database['session'].query(Job).order_by(Job.created.desc()).all()
     return [j.to_dict() for j in jobs]

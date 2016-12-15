@@ -2,7 +2,7 @@ from unittest import mock
 
 import pytest
 
-from goodtablesio import config
+from goodtablesio import settings
 from goodtablesio.plugins.github.utils import set_commit_status
 
 
@@ -16,17 +16,17 @@ def test_set_commit_status_success(mock_post):
     assert r
 
     expected_url = '{base}/repos/my-org/my-repo/statuses/abcde'.format(
-        base=config.GITHUB_API_BASE,
+        base=settings.GITHUB_API_BASE,
     )
 
     expected_headers = {
-        'Authorization': 'token {0}'.format(config.GITHUB_API_TOKEN),
+        'Authorization': 'token {0}'.format(settings.GITHUB_API_TOKEN),
     }
 
     expected_data = {
       'state': 'success',
       'target_url': '{base}/job/my-job-id'.format(
-           base=config.BASE_URL),
+           base=settings.BASE_URL),
       'description': 'Data is valid',
       'context': 'goodtables.io/push'
     }
@@ -45,17 +45,17 @@ def test_set_commit_status_failure(mock_post):
     assert r
 
     expected_url = '{base}/repos/my-org/my-repo/statuses/abcde'.format(
-        base=config.GITHUB_API_BASE,
+        base=settings.GITHUB_API_BASE,
     )
 
     expected_headers = {
-        'Authorization': 'token {0}'.format(config.GITHUB_API_TOKEN),
+        'Authorization': 'token {0}'.format(settings.GITHUB_API_TOKEN),
     }
 
     expected_data = {
       'state': 'failure',
       'target_url': '{base}/job/my-job-id'.format(
-           base=config.BASE_URL),
+           base=settings.BASE_URL),
       'description': 'Data is invalid',
       'context': 'goodtables.io/push'
     }
@@ -74,17 +74,17 @@ def test_set_commit_status_pending(mock_post):
     assert r
 
     expected_url = '{base}/repos/my-org/my-repo/statuses/abcde'.format(
-        base=config.GITHUB_API_BASE,
+        base=settings.GITHUB_API_BASE,
     )
 
     expected_headers = {
-        'Authorization': 'token {0}'.format(config.GITHUB_API_TOKEN),
+        'Authorization': 'token {0}'.format(settings.GITHUB_API_TOKEN),
     }
 
     expected_data = {
       'state': 'pending',
       'target_url': '{base}/job/my-job-id'.format(
-           base=config.BASE_URL),
+           base=settings.BASE_URL),
       'description': 'Data validation under way',
       'context': 'goodtables.io/push'
     }
@@ -103,17 +103,17 @@ def test_set_commit_status_error(mock_post):
     assert r
 
     expected_url = '{base}/repos/my-org/my-repo/statuses/abcde'.format(
-        base=config.GITHUB_API_BASE,
+        base=settings.GITHUB_API_BASE,
     )
 
     expected_headers = {
-        'Authorization': 'token {0}'.format(config.GITHUB_API_TOKEN),
+        'Authorization': 'token {0}'.format(settings.GITHUB_API_TOKEN),
     }
 
     expected_data = {
       'state': 'error',
       'target_url': '{base}/job/my-job-id'.format(
-           base=config.BASE_URL),
+           base=settings.BASE_URL),
       'description': 'Errors during data validation',
       'context': 'goodtables.io/push'
     }

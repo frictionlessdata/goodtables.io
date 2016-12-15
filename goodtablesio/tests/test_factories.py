@@ -1,9 +1,9 @@
 import pytest
 
-from goodtablesio import services
 from goodtablesio.models.job import Job
 from goodtablesio.models.user import User
 from goodtablesio.tests import factories
+from goodtablesio.services import database
 
 pytestmark = pytest.mark.usefixtures('session_cleanup')
 
@@ -14,7 +14,7 @@ def test_create_job():
     assert job.status == 'created'
     assert job.plugin_name == 'api'
 
-    job_db = services.db_session.query(Job).get(job.id)
+    job_db = database['session'].query(Job).get(job.id)
 
     assert job_db.id == job.id
 
@@ -22,7 +22,7 @@ def test_create_job():
 def test_build_job():
     job = factories.Job.build()
 
-    job_db = services.db_session.query(Job).get(job.id)
+    job_db = database['session'].query(Job).get(job.id)
 
     assert job_db is None
 
@@ -52,7 +52,7 @@ def test_create_user():
     assert user.email
     assert user.admin is False
 
-    user_db = services.db_session.query(User).get(user.id)
+    user_db = database['session'].query(User).get(user.id)
 
     assert user_db.id == user.id
 

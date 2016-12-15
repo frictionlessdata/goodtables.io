@@ -9,14 +9,11 @@ from goodtablesio.plugins.github.utils import set_commit_status
 
 @signals.task_postrun.connect(sender=validate)
 def post_task_handler(**kwargs):
-    # We need to import the DB connection at this point, as it has been
-    # initialized when the worker started
-    from goodtablesio.tasks import tasks_db_session
 
     job = kwargs['retval']
     if isinstance(kwargs['retval'], Exception):
         job_id = kwargs['kwargs']['job_id']
-        job = models.job.get(job_id, db_session=tasks_db_session)
+        job = models.job.get(job_id)
 
     if job.get('plugin_name') != 'github':
         return

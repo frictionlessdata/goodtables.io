@@ -2,7 +2,7 @@ import logging
 
 import requests
 
-from goodtablesio import config
+from goodtablesio import settings
 
 log = logging.getLogger(__name__)
 
@@ -12,12 +12,12 @@ log = logging.getLogger(__name__)
 def set_commit_status(state, owner, repo, sha, job_id):
 
     url = '{base}/repos/{owner}/{repo}/statuses/{sha}'.format(
-        base=config.GITHUB_API_BASE,
+        base=settings.GITHUB_API_BASE,
         owner=owner, repo=repo, sha=sha,
     )
 
     headers = {
-        'Authorization': 'token {0}'.format(config.GITHUB_API_TOKEN),
+        'Authorization': 'token {0}'.format(settings.GITHUB_API_TOKEN),
     }
 
     if state == 'pending':
@@ -34,7 +34,7 @@ def set_commit_status(state, owner, repo, sha, job_id):
     data = {
       'state': state,
       'target_url': '{base}/job/{job_id}'.format(
-           base=config.BASE_URL, job_id=job_id),
+           base=settings.BASE_URL, job_id=job_id),
       'description': description,
       'context': 'goodtables.io/push'
     }

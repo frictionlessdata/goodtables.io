@@ -2,8 +2,9 @@ import datetime
 
 import pytest
 
-from goodtablesio import models, services
+from goodtablesio import models
 from goodtablesio.tests import factories
+from goodtablesio.services import database
 
 
 pytestmark = pytest.mark.usefixtures('session_cleanup')
@@ -54,9 +55,9 @@ def test_create_job_stored_in_db():
     models.job.create(params)
 
     # Make sure that we are not checking the cached object in the session
-    services.db_session.remove()
+    database['session'].remove()
 
-    job = services.db_session.query(models.job.Job).get('my-id')
+    job = database['session'].query(models.job.Job).get('my-id')
 
     assert job
 
@@ -111,9 +112,9 @@ def test_update_job_stored_in_db():
     models.job.update(params)
 
     # Make sure that we are not checking the cached object in the session
-    services.db_session.remove()
+    database['session'].remove()
 
-    updated_job = services.db_session.query(models.job.Job).get(job.id)
+    updated_job = database['session'].query(models.job.Job).get(job.id)
 
     assert updated_job
 
@@ -142,7 +143,7 @@ def test_get_job_outputs_dict():
     # Actually save it to the DB so we can test retrieving it
     job_db = factories.Job(_save_in_db=True).to_dict()
 
-    services.db_session.remove()
+    database['session'].remove()
 
     job = models.job.get(job_db['id'])
 
