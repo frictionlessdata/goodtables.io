@@ -1,48 +1,21 @@
 import datetime
-import logging
 
-from celery import Celery, Task, signals
+from celery import Celery, Task
 from goodtables import Inspector
 
-from . import config
-from . import exceptions
-from . import models
-from .services import get_engine, make_db_session
+from goodtablesio import settings, exceptions, models
 
-
-log = logging.getLogger(__name__)
+# Register signals
+import goodtablesio.signals  # noqa
 
 
 # Module API
 
 app = Celery('tasks')
-app.config_from_object(config)
+app.config_from_object(settings)
 
 # TODO: automate
 app.autodiscover_tasks(['goodtablesio.plugins.github'])
-
-
-tasks_db_engine = None
-tasks_db_session = None
-
-
-@signals.worker_process_init.connect
-def init_worker(**kwargs):
-    global tasks_db_engine, tasks_db_session
-    log.debug('Initializing database connection for the worker')
-    tasks_db_engine = get_engine()
-    tasks_db_session = make_db_session(
-        engine_kwargs={'pool_size': 20, 'pool_recycle': 3600})
-
-
-@signals.worker_process_shutdown.connect
-def shutdown_worker(**kwargs):
-    global tasks_db_engine, tasks_db_session
-    if tasks_db_engine:
-        log.debug('Closing database connectionn for the worker')
-        tasks_db_engine.dispose()
-        if tasks_db_session:
-            tasks_db_session.close()
 
 
 class JobTask(Task):
@@ -85,7 +58,7 @@ class JobTask(Task):
         }
 
         # Update database
-        models.job.update(params, db_session=tasks_db_session)
+        models.job.update(params)
 
 
 @app.task(name='goodtablesio.tasks.validate', base=JobTask)
@@ -100,7 +73,7 @@ def validate(validation_conf, job_id):
     """
 
     # Get job
-    job = models.job.get(job_id, db_session=tasks_db_session)
+    job = models.job.get(job_id)
 
     # TODO: job not found
     if job['status'] == 'created':
@@ -108,7 +81,7 @@ def validate(validation_conf, job_id):
             'id': job_id,
             'status': 'running'
         }
-        models.job.update(params, db_session=tasks_db_session)
+        models.job.update(params)
 
     # Get report
     settings = validation_conf.get('settings', {})
@@ -123,7 +96,7 @@ def validate(validation_conf, job_id):
         'status': 'success' if report['valid'] else 'failure'
     }
 
-    models.job.update(params, db_session=tasks_db_session)
+    models.job.update(params)
 
     job.update(params)
 

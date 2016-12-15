@@ -1,10 +1,10 @@
+import io
 import os
 import yaml
 import requests
+import jsonschema
 from fnmatch import fnmatch
-from .validate import validate_job_conf
-from .. import exceptions
-from .. import config
+from goodtablesio import exceptions, settings
 
 
 # Module API
@@ -27,13 +27,44 @@ def create_validation_conf(job_base, job_files):
 
     """
     job_conf = _load_job_conf(job_base)
-    validate_job_conf(job_conf)
+    verify_job_conf(job_conf)
     validation_conf = _make_validation_conf(job_base, job_files, job_conf)
     return validation_conf
 
 
-# Internal
+def verify_job_conf(job_conf):
+    """Validate job configuration.
 
+    Raises:
+        exceptions.InvalidJobConfiguration
+
+    Returns:
+        True
+
+    """
+    try:
+        return _validate(job_conf, 'job-conf.yml')
+    except jsonschema.ValidationError:
+        raise exceptions.InvalidJobConfiguration()
+
+
+def verify_validation_conf(validation_conf):
+    """Validate the configuration for the validation task.
+
+    Raises:
+        exceptions.InvalidValidationConfiguration
+
+    Returns:
+        True
+
+    """
+    try:
+        return _validate(validation_conf, 'validation-conf.yml')
+    except jsonschema.ValidationError:
+        raise exceptions.InvalidValidationConfiguration()
+
+
+# Internal
 
 def _load_job_conf(job_base):
     job_conf = {'files': '*'}
@@ -89,6 +120,14 @@ def _load_file(url):
 
 def _is_tabular_file(name):
     extension = os.path.splitext(name)[1]
-    if extension and extension[1:].lower() in config.TABULAR_EXTENSIONS:
+    if extension and extension[1:].lower() in settings.TABULAR_EXTENSIONS:
         return True
     return False
+
+
+def _validate(struct, schema):
+    schema_path = os.path.join(
+         os.path.dirname(__file__), '..', 'schemas', schema)
+    schema = yaml.load(io.open(schema_path, encoding='utf-8'))
+    jsonschema.validate(struct, schema)
+    return True

@@ -2,7 +2,7 @@ import uuid
 import logging
 
 from celery import chain
-from flask import Blueprint, request, abort
+from flask import Blueprint, request, abort, jsonify
 
 from goodtablesio import tasks, models
 
@@ -39,7 +39,7 @@ def create_job():
     models.job.create({
         'id': job_id,
         'plugin_name': 'github',
-        'plugin_conf': plugin_conf
+        'plugin_conf': plugin_conf,
     })
 
     # Set GitHub status
@@ -56,7 +56,7 @@ def create_job():
         tasks.validate.s(job_id=job_id))
     tasks_chain.delay()
 
-    return job_id
+    return jsonify({'job_id': job_id})
 
 
 # Internal

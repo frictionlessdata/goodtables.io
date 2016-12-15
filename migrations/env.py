@@ -43,8 +43,8 @@ def run_migrations_online():
 
     """
     sys.path.append(os.path.dirname(__file__))
-    import config
-    connectable = sa.create_engine(config.DATABASE_URL)
+    import settings
+    connectable = sa.create_engine(settings.DATABASE_URL)
     with connectable.connect() as connection:
         context.configure(connection=connection,
                           target_metadata=target_metadata)

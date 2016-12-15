@@ -4,7 +4,7 @@ from unittest import mock
 from flask import url_for, session
 import pytest
 
-from goodtablesio import models, config, auth
+from goodtablesio import models, settings, auth
 from goodtablesio.tests import factories
 
 
@@ -31,7 +31,7 @@ def test_github_login_basic(client):
     assert parts.path == '/login/oauth/authorize'
     params = urllib.parse.parse_qs(parts.query)
 
-    assert params['client_id'][0] == config.GITHUB_CLIENT_ID
+    assert params['client_id'][0] == settings.GITHUB_CLIENT_ID
     assert params['redirect_uri'][0] == authorized_url
     assert params['scope'][0] == ' '.join(auth.GITHUB_OAUTH_SCOPES)
 

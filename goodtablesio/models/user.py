@@ -5,8 +5,8 @@ from sqlalchemy import Column, Unicode, DateTime, Boolean, update as db_update
 from sqlalchemy.dialects.postgresql import JSONB
 from flask_login import UserMixin as UserLoginMixin
 
-from goodtablesio.models.base import (Base, BaseModelMixin, make_uuid,
-                                      auto_db_session)
+from goodtablesio.services import database
+from goodtablesio.models.base import Base, BaseModelMixin, make_uuid
 
 
 log = logging.getLogger(__name__)
@@ -29,15 +29,12 @@ class User(Base, BaseModelMixin, UserLoginMixin):
         return self.id
 
 
-@auto_db_session
-def create(params, db_session):
+def create(params):
     """
     Creates a user object in the database.
 
     Arguments:
         params (dict): A dictionary with the values for the new user.
-        db_session (Session): The session to use, pre-filled if using
-            the default one.
 
     Returns:
         user (dict): The newly created user as a dict
@@ -45,23 +42,20 @@ def create(params, db_session):
 
     user = User(**params)
 
-    db_session.add(user)
-    db_session.commit()
+    database['session'].add(user)
+    database['session'].commit()
 
     log.debug('Created user "%s" on the database', user.id)
     return user.to_dict()
 
 
-@auto_db_session
-def update(params, db_session):
+def update(params):
     """
     Updates a user object in the database.
 
     Arguments:
         params (dict): A dictionary with the fields to be updated. It must
             contain a valid `user_id` key.
-        db_session (Session): The session to use, pre-filled if using
-            the default one.
 
     Returns:
         user (dict): The updated user as a dict
@@ -74,7 +68,7 @@ def update(params, db_session):
     if not user_id:
         raise ValueError('You must provide a id in the params dict')
 
-    user = db_session.query(User).get(user_id)
+    user = database['session'].query(User).get(user_id)
     if not user:
         raise ValueError('User not found: %s', user_id)
 
@@ -82,22 +76,19 @@ def update(params, db_session):
     u = db_update(user_table).where(
         user_table.c.id == user_id).values(**params)
 
-    db_session.execute(u)
-    db_session.commit()
+    database['session'].execute(u)
+    database['session'].commit()
 
     log.debug('Updated user "%s" on the database', user_id)
     return user.to_dict()
 
 
-@auto_db_session
-def get(user_id, db_session, as_dict=True):
+def get(user_id, as_dict=True):
     """
     Get a user object in the database by id and return it as a dict.
 
     Arguments:
         user_id (str): The user id.
-        db_session (Session): The session to use, pre-filled if using
-            the default one.
         as_dict (bool): Return the user as dict, rather than a model object.
             Defaults to True.
 
@@ -106,7 +97,7 @@ def get(user_id, db_session, as_dict=True):
             was not found.
     """
 
-    user = db_session.query(User).get(user_id)
+    user = database['session'].query(User).get(user_id)
 
     if not user:
         return None
@@ -114,22 +105,19 @@ def get(user_id, db_session, as_dict=True):
     return user.to_dict() if as_dict else user
 
 
-@auto_db_session
-def get_by_email(email, db_session):
+def get_by_email(email):
     """
     Get a user object in the database by email and return it as a dict.
 
     Arguments:
         email (str): The user email.
-        db_session (Session): The session to use, pre-filled if using
-            the default one.
 
     Returns:
         user (dict): A dictionary with the user details, or None if the user
             was not found.
     """
 
-    user = db_session.query(User).filter_by(email=email).one_or_none()
+    user = database['session'].query(User).filter_by(email=email).one_or_none()
 
     if not user:
         return None
@@ -137,8 +125,7 @@ def get_by_email(email, db_session):
     return user.to_dict()
 
 
-@auto_db_session
-def get_by_provider_id(provider_name, provider_id, db_session):
+def get_by_provider_id(provider_name, provider_id):
     """
     Get a user object in the database by a 3rd party provider id and return it
         as a dict.
@@ -146,15 +133,13 @@ def get_by_provider_id(provider_name, provider_id, db_session):
     Arguments:
         provider_name (str): The 3rd party provider (eg `github`).
         provider_id (str): The 3rd party provider id.
-        db_session (Session): The session to use, pre-filled if using
-            the default one.
 
     Returns:
         user (dict): A dictionary with the user details, or None if the user
             was not found.
     """
 
-    user = db_session.query(User).filter(
+    user = database['session'].query(User).filter(
         User.provider_ids[provider_name].astext == str(provider_id)
         ).one_or_none()
 
@@ -164,13 +149,8 @@ def get_by_provider_id(provider_name, provider_id, db_session):
     return user.to_dict()
 
 
-@auto_db_session
-def get_ids(db_session):
+def get_ids():
     """Get all user ids from the database.
-
-    Arguments:
-        db_session (Session): The session to use, pre-filled if using
-            the default one.
 
     Returns:
         user_ids (str[]): A list of user ids, sorted by descending creation
@@ -178,19 +158,14 @@ def get_ids(db_session):
 
     """
 
-    user_ids = db_session.query(User.id).order_by(User.created.desc()).all()
+    user_ids = database['session'].query(User.id).order_by(User.created.desc()).all()
     return [j.id for j in user_ids]
 
 
-@auto_db_session
-def get_all(db_session):
+def get_all():
     """Get all users in the database as dict.
 
     Warning: Use with caution, this should probably only be used in tests
-
-    Arguments:
-        db_session (Session): The session to use, pre-filled if using
-            the default one.
 
     Returns:
         users (dict[]): A list of user dicts, sorted by descending creation
@@ -198,5 +173,5 @@ def get_all(db_session):
 
     """
 
-    users = db_session.query(User).order_by(User.created.desc()).all()
+    users = database['session'].query(User).order_by(User.created.desc()).all()
     return [j.to_dict() for j in users]
