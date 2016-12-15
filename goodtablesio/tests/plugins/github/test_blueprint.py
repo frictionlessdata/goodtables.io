@@ -1,7 +1,6 @@
 import json
 from unittest.mock import patch
 from goodtablesio import models
-from goodtablesio.tasks import app as celery_app
 from goodtablesio.plugins.github.blueprint import _get_owner_repo_sha
 
 
@@ -17,8 +16,8 @@ def test_create_job(set_commit_status, client, celery_app):
                 'owner': {'name': 'frictionlessdata'},
             },
             'head_commit': {'id': 'd5be243487d9882d7f762e7fa04b36b900164a59'},
-        }
-    ))
+        })
+    )
     job_id = json.loads(res.get_data(as_text=True))['job_id']
     job = models.job.get(job_id)
     assert job['id'] == job_id
