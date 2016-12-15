@@ -1,7 +1,8 @@
 import pytest
 
-from goodtablesio import models, services
+from goodtablesio import models
 from goodtablesio.tests import factories
+from goodtablesio.services import database
 
 
 pytestmark = pytest.mark.usefixtures('session_cleanup')
@@ -37,9 +38,9 @@ def test_create_user_stored_in_db():
     models.user.create(params)
 
     # Make sure that we are not checking the cached object in the session
-    services.db_session.remove()
+    database['session'].remove()
 
-    user = services.db_session.query(models.user.User).get('my-id')
+    user = database['session'].query(models.user.User).get('my-id')
 
     assert user
 
@@ -80,9 +81,9 @@ def test_update_user_stored_in_db():
     models.user.update(params)
 
     # Make sure that we are not checking the cached object in the session
-    services.db_session.remove()
+    database['session'].remove()
 
-    updated_user = services.db_session.query(models.user.User).get(user.id)
+    updated_user = database['session'].query(models.user.User).get(user.id)
 
     assert updated_user
 
@@ -106,7 +107,7 @@ def test_get_user_outputs_dict():
     # Actually save it to the DB so we can test retrieving it
     user_db = factories.User(_save_in_db=True).to_dict()
 
-    services.db_session.remove()
+    database['session'].remove()
 
     user = models.user.get(user_db['id'])
 

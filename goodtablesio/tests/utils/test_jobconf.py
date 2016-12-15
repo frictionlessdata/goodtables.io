@@ -1,6 +1,8 @@
 import pytest
 from unittest.mock import patch
-from goodtablesio import helpers, exceptions
+from goodtablesio import exceptions
+from goodtablesio.utils.jobconf import create_validation_conf
+from goodtablesio.utils.jobconf import verify_validation_conf, verify_job_conf
 
 
 # Tests
@@ -26,7 +28,7 @@ def test_create_validation_conf(load_file):
         }
     }
     load_file.return_value = job_conf_text
-    assert helpers.create_validation_conf(job_base, job_files) == validation_conf
+    assert create_validation_conf(job_base, job_files) == validation_conf
 
 
 def test_create_validation_conf_subdir(load_file):
@@ -44,7 +46,7 @@ def test_create_validation_conf_subdir(load_file):
         ]
     }
     load_file.return_value = job_conf_text
-    assert helpers.create_validation_conf(job_base, job_files) == validation_conf
+    assert create_validation_conf(job_base, job_files) == validation_conf
 
 
 def test_create_validation_conf_subdir_config(load_file):
@@ -63,7 +65,7 @@ def test_create_validation_conf_subdir_config(load_file):
         ]
     }
     load_file.return_value = job_conf_text
-    assert helpers.create_validation_conf(job_base, job_files) == validation_conf
+    assert create_validation_conf(job_base, job_files) == validation_conf
 
 
 def test_create_validation_conf_subdir_granular(load_file):
@@ -95,7 +97,7 @@ def test_create_validation_conf_subdir_granular(load_file):
         }
     }
     load_file.return_value = job_conf_text
-    assert helpers.create_validation_conf(job_base, job_files) == validation_conf
+    assert create_validation_conf(job_base, job_files) == validation_conf
 
 
 def test_create_validation_conf_invalid(load_file):
@@ -105,7 +107,7 @@ def test_create_validation_conf_invalid(load_file):
     """
     load_file.return_value = job_conf_text
     with pytest.raises(exceptions.InvalidJobConfiguration):
-        assert helpers.create_validation_conf(job_base, [])
+        assert create_validation_conf(job_base, [])
 
 
 def test_create_validation_conf_goodtables_yml_not_found(load_file):
@@ -122,12 +124,38 @@ def test_create_validation_conf_goodtables_yml_not_found(load_file):
         ]
     }
     load_file.return_value = None
-    assert helpers.create_validation_conf(job_base, job_files) == validation_conf
+    assert create_validation_conf(job_base, job_files) == validation_conf
+
+
+def test_verify_job_conf():
+    assert verify_job_conf({
+        'files': '*',
+    })
+
+
+def test_verify_job_conf_invalid():
+    with pytest.raises(exceptions.InvalidJobConfiguration):
+        assert verify_job_conf({
+            'files': ['*'],
+        })
+
+
+def test_verify_validation_conf():
+    assert verify_validation_conf({
+        'files': [{'source': 'path.csv'}],
+    })
+
+
+def test_verify_validation_conf_invalid():
+    with pytest.raises(exceptions.InvalidValidationConfiguration):
+        assert verify_validation_conf({
+            'files': ['*'],
+        })
 
 
 # Fixtures
 
 @pytest.fixture
 def load_file():
-    yield patch('goodtablesio.helpers.prepare._load_file').start()
+    yield patch('goodtablesio.utils.jobconf._load_file').start()
     patch.stopall()
