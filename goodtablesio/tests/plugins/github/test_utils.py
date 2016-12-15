@@ -4,6 +4,7 @@ import pytest
 
 from goodtablesio import settings
 from goodtablesio.plugins.github.utils import set_commit_status
+from goodtablesio.plugins.github.utils import create_signature, validate_signature
 
 
 def test_set_commit_status_success(mock_post):
@@ -130,6 +131,27 @@ def test_set_commit_status_problem(mock_post):
     r = set_commit_status('success', 'my-org', 'my-repo', 'abcde', 'my-job-id')
 
     assert not r
+
+
+def test_create_signature():
+    key = 'key'
+    text = 'text'
+    signature = 'sha1=369e2959eb49450338b212748f77d8ded74847bb'
+    assert create_signature(key, text) == signature
+
+
+def test_validate_signature():
+    key = 'key'
+    text = 'text'
+    signature = 'sha1=369e2959eb49450338b212748f77d8ded74847bb'
+    assert validate_signature(key, text, signature)
+
+
+def test_validate_signature_invalid():
+    key = 'key'
+    text = 'text'
+    signature = 'sha1=369e2959eb49450338b212748f77d8ded74-----'
+    assert not validate_signature(key, text, signature)
 
 
 @pytest.fixture

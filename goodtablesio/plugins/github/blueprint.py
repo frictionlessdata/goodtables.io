@@ -4,10 +4,10 @@ import logging
 from celery import chain
 from flask import Blueprint, request, abort, jsonify
 
-from goodtablesio import tasks, models
+from goodtablesio import tasks, models, settings
 
 from goodtablesio.plugins.github.tasks import get_validation_conf
-from goodtablesio.plugins.github.utils import set_commit_status
+from goodtablesio.plugins.github.utils import set_commit_status, validate_signature
 
 
 log = logging.getLogger(__name__)
@@ -18,6 +18,13 @@ github = Blueprint('github', __name__, url_prefix='/github')
 
 @github.route('/hook', methods=['POST'])
 def create_job():
+
+    # Validate signature
+    key = settings.GITHUB_HOOK_SECRET
+    text = request.data
+    signature = request.headers.get('HTTP_X_HUB_SIGNATURE', '')
+    if not validate_signature(key, text, signature):
+        abort(400)
 
     # Get payload parameters
     payload = request.get_json()

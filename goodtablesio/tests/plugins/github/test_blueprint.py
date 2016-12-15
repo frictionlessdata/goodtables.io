@@ -1,23 +1,26 @@
 import json
 from unittest.mock import patch
-from goodtablesio import models
+from goodtablesio import models, settings
 from goodtablesio.plugins.github.blueprint import _get_owner_repo_sha
+from goodtablesio.plugins.github.utils import create_signature
 
 
 # Tests
 
 @patch('goodtablesio.plugins.github.blueprint.set_commit_status')
 def test_create_job(set_commit_status, client, celery_app):
+    data = json.dumps({
+        'repository': {
+            'name': 'goodtables.io-example',
+            'owner': {'name': 'frictionlessdata'},
+        },
+        'head_commit': {'id': 'd5be243487d9882d7f762e7fa04b36b900164a59'},
+    })
+    sig = create_signature(settings.GITHUB_HOOK_SECRET, data)
     res = client.post('/github/hook',
+        headers={'HTTP_X_HUB_SIGNATURE': sig},
         content_type='application/json',
-        data=json.dumps({
-            'repository': {
-                'name': 'goodtables.io-example',
-                'owner': {'name': 'frictionlessdata'},
-            },
-            'head_commit': {'id': 'd5be243487d9882d7f762e7fa04b36b900164a59'},
-        })
-    )
+        data=data)
     job_id = json.loads(res.get_data(as_text=True))['job_id']
     job = models.job.get(job_id)
     assert job['id'] == job_id
