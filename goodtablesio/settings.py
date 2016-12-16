@@ -46,8 +46,7 @@ enable_utc = True
 
 GITHUB_API_BASE = 'https://api.github.com'
 GITHUB_API_TOKEN = os.environ['GITHUB_API_TOKEN']
-# https://developer.github.com/webhooks/securing/
-# GITHUB_WEBHOOK_SECRET = os.environ['GITHUB_WEBHOOK_SECRET']
+GITHUB_HOOK_SECRET = os.environ['GITHUB_HOOK_SECRET']
 GITHUB_CLONE_DIR = '/tmp'
 
 # OAuth

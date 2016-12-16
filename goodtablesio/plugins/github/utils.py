@@ -1,3 +1,5 @@
+import hmac
+import hashlib
 import logging
 
 import requests
@@ -49,3 +51,16 @@ def set_commit_status(state, owner, repo, sha, job_id):
                       url=url, response=response.text,
                       job_id=job_id, state=state))
         return False
+
+
+def create_signature(key, text):
+    if isinstance(key, str):
+        key = key.encode('utf-8')
+    if isinstance(text, str):
+        text = text.encode('utf-8')
+    mac = hmac.new(key, msg=text, digestmod=hashlib.sha1)
+    return 'sha1=%s' % mac.hexdigest()
+
+
+def validate_signature(key, text, signature):
+    return hmac.compare_digest(create_signature(key, text), signature)
