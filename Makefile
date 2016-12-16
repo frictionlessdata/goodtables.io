@@ -22,7 +22,7 @@ requirements:
 	pip-compile > requirements.txt
 
 server:
-	gunicorn --access-logfile - --log-file - goodtablesio.app:app
+	make migrate && gunicorn --access-logfile - --log-file - goodtablesio.app:app
 
 server-dev:
 	FLASK_APP=goodtablesio/app.py FLASK_DEBUG=1 flask run

@@ -1,2 +1,2 @@
-web: make start
+web: make server
 worker: make celery
