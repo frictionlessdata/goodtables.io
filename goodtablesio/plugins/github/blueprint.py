@@ -22,7 +22,7 @@ def create_job():
     # Validate signature
     key = settings.GITHUB_HOOK_SECRET
     text = request.data
-    signature = request.headers.get('HTTP_X_HUB_SIGNATURE', '')
+    signature = request.headers.get('X-Hub-Signature', '')
     if not validate_signature(key, text, signature):
         abort(400)
 

@@ -18,7 +18,7 @@ def test_create_job(set_commit_status, client, celery_app):
     })
     sig = create_signature(settings.GITHUB_HOOK_SECRET, data)
     res = client.post('/github/hook',
-        headers={'HTTP_X_HUB_SIGNATURE': sig},
+        headers={'X-Hub-Signature': sig},
         content_type='application/json',
         data=data)
     job_id = json.loads(res.get_data(as_text=True))['job_id']
