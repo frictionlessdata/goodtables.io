@@ -1,7 +1,7 @@
 import logging
 
 from flask import (Blueprint, request, session, redirect, url_for, abort,
-                   jsonify, flash)
+                   jsonify, flash, render_template)
 from flask_login import login_user, logout_user, login_required
 
 from goodtablesio import models
@@ -101,3 +101,10 @@ def profile():
     user = models.user.get(session['user_id'])
 
     return jsonify(user)
+
+
+@user.route('/projects')
+@login_required
+def projects():
+    user = models.user.get(session['user_id'])
+    return render_template('projects.html', {'user': user})
