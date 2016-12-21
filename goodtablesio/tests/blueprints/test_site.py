@@ -18,7 +18,7 @@ def test_site_basic(client):
     # TODO: Test actual content when implemented
 
     body = response.get_data(as_text=True)
-    assert 'Good Tables' in body
+    assert 'Dashboard' in body
 
 
 def test_site_get_job(client):
