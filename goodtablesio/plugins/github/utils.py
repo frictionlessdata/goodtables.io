@@ -3,6 +3,7 @@ import hashlib
 import logging
 
 import requests
+from github3 import GitHub
 
 from goodtablesio import settings
 
@@ -64,3 +65,19 @@ def create_signature(key, text):
 
 def validate_signature(key, text, signature):
     return hmac.compare_digest(create_signature(key, text), signature)
+
+
+def get_repos_by_token(token):
+    """Returns list of repos as list of dicts {owner, repo, url}.
+    """
+    repos = []
+    client = GitHub(token=token)
+    iterator = client.iter_repos()
+    for item in iterator:
+        data = item.to_json()
+        repos.append({
+            'owner': data['owner']['login'],
+            'repo': data['name'],
+            'url': data['html_url'],
+        })
+    return repos

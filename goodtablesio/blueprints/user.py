@@ -6,6 +6,7 @@ from flask_login import login_user, logout_user, login_required
 
 from goodtablesio import models
 from goodtablesio.auth import github_auth
+from goodtablesio.plugins.github.utils import get_repos_by_token
 
 
 log = logging.getLogger(__name__)
@@ -106,5 +107,8 @@ def profile():
 @user.route('/projects')
 @login_required
 def projects():
-    user = models.user.get(session['user_id'])
-    return render_template('projects.html', {'user': user})
+    github_repos = []
+    auth_github_token = session.get('auth_github_token')
+    if auth_github_token:
+        github_repos = get_repos_by_token(auth_github_token[0])
+    return render_template('projects.html', github_repos=github_repos)
