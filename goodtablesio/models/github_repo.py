@@ -11,6 +11,8 @@ now = datetime.datetime.utcnow
 
 class GithubRepo(Base, BaseModelMixin):
 
+    # Public
+
     __tablename__ = 'github_repos'
 
     id = Column(Unicode, primary_key=True)
@@ -22,3 +24,8 @@ class GithubRepo(Base, BaseModelMixin):
         Column('user_id', Unicode, ForeignKey('users.id')),
         Column('github_repo_id', Unicode, ForeignKey('github_repos.id')),
     ))
+
+    @property
+    def url(self):
+        template = 'https://github.com/{owner}/{repo}'
+        return template.format(owner=self.owner, repo=self.repo)

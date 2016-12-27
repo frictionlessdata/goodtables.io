@@ -19,6 +19,7 @@ def test_create():
     assert repos[0].owner == 'owner'
     assert repos[0].repo == 'repo'
     assert repos[0].active == False
+    assert repos[0].url == 'https://github.com/owner/repo'
 
 
 def test_update():
