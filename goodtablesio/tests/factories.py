@@ -5,6 +5,7 @@ import factory
 
 from goodtablesio.models.job import Job
 from goodtablesio.models.user import User
+from goodtablesio.models.github_repo import GithubRepo
 from goodtablesio.services import database
 
 
@@ -58,3 +59,16 @@ class User(FactoryBase):
     email = factory.Faker('email')
     created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     admin = False
+
+
+class GithubRepo(FactoryBase):
+
+    class Meta:
+        model = GithubRepo
+        sqlalchemy_session = database['session']
+
+    id = factory.Sequence(lambda n: str(uuid.uuid4()))
+    owner = factory.Faker('name')
+    repo = factory.Faker('name')
+    updated = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    active = True
