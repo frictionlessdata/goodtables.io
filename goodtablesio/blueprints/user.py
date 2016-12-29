@@ -6,11 +6,12 @@ from flask_login import login_user, logout_user, login_required
 
 from goodtablesio import models
 from goodtablesio.auth import github_auth
-from goodtablesio.plugins.github.utils import get_repos_by_token
+from goodtablesio.services import database
+from goodtablesio.models.github_repo import GithubRepo
+from goodtablesio.plugins.github.tasks import sync_user_repositories
 
 
 log = logging.getLogger(__name__)
-
 
 user = Blueprint('user', __name__, url_prefix='/user')
 
@@ -107,8 +108,27 @@ def profile():
 @user.route('/projects')
 @login_required
 def projects():
+
+    # Get github syncing status
+    github_sync = False
+    if session.get('github_sync_task_id'):
+        task_id = session['github_sync_task_id']
+        result = sync_user_repositories.AsyncResult(task_id)
+        if result.status == 'PENDING':
+            github_sync = True
+        else:
+            # TODO: cover errors
+            del session['github_sync_task_id']
+
+    # Get github repos
     github_repos = []
-    auth_github_token = session.get('auth_github_token')
-    if auth_github_token:
-        github_repos = get_repos_by_token(auth_github_token[0])
-    return render_template('projects.html', github_repos=github_repos)
+    if not github_sync:
+        user_id = session['user_id']
+        github_repos = (database['session'].query(GithubRepo).
+            filter(GithubRepo.users.any(id=user_id)).
+            order_by(GithubRepo.owner, GithubRepo.repo).
+            all())
+
+    return render_template('projects.html',
+        github_sync=github_sync,
+        github_repos=github_repos)

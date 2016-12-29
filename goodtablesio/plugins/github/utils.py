@@ -67,17 +67,19 @@ def validate_signature(key, text, signature):
     return hmac.compare_digest(create_signature(key, text), signature)
 
 
-def get_repos_by_token(token):
-    """Returns list of repos as list of dicts {owner, repo, url}.
+def iter_repos_by_token(token):
+    """Returns list of repos as list of dicts {id, owner, repo, active}.
     """
-    repos = []
     client = GitHub(token=token)
-    iterator = client.iter_repos()
-    for item in iterator:
-        data = item.to_json()
-        repos.append({
+    for repo in client.iter_repos():
+        active = False
+        data = repo.to_json()
+        for hook in repo.iter_hooks():
+            if 'goodtables' in hook.config.get('url', ''):
+                active = True
+        yield {
+            'id': str(data['id']),
             'owner': data['owner']['login'],
             'repo': data['name'],
-            'url': data['html_url'],
-        })
-    return repos
+            'active': active,
+        }

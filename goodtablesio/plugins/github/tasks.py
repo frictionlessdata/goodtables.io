@@ -1,15 +1,21 @@
 import logging
+import datetime
 
 from github3 import GitHub
 
 from goodtablesio import models, settings
+from goodtablesio.services import database
+from goodtablesio.models.user import User
+from goodtablesio.models.github_repo import GithubRepo
 from goodtablesio.tasks import app as celery_app, JobTask
 from goodtablesio.utils.jobconf import create_validation_conf
+from goodtablesio.plugins.github.utils import iter_repos_by_token
 
 # Register signals
 import goodtablesio.plugins.github.signals  # noqa
 
 log = logging.getLogger(__name__)
+session = database['session']
 
 
 # Module API
@@ -31,6 +37,29 @@ def get_validation_conf(owner, repo, sha, job_id):
     validation_conf = create_validation_conf(job_base, job_files)
 
     return validation_conf
+
+
+@celery_app.task(name='goodtablesio.github.collect_user_repositories')
+def sync_user_repositories(user_id, token):
+    """Sync user repositories.
+    """
+    # TODO: rewrite using sqlalchemy query
+    session.execute(
+        'DELETE FROM users_github_repos WHERE user_id = :user_id',
+        {'user_id': user_id})
+    user = session.query(User).get(user_id)
+    for repo_data in iter_repos_by_token(token):
+        repo = session.query(GithubRepo).get(repo_data['id'])
+        if repo is None:
+            repo = GithubRepo(**repo_data)
+            session.add(repo)
+        repo.active = repo_data['active']
+        repo.updated = datetime.datetime.utcnow(),
+        repo.users.append(user)
+        # TODO: remove
+        if repo_data['repo'] == 'example-goodtables.io':
+            break
+    session.commit()
 
 
 # Internal

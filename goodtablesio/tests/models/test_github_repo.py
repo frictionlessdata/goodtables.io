@@ -1,5 +1,4 @@
 import pytest
-import datetime
 from goodtablesio.tests import factories
 from goodtablesio.services import database
 from goodtablesio.models.github_repo import GithubRepo
@@ -18,7 +17,7 @@ def test_create():
     assert repos[0].id == 'id'
     assert repos[0].owner == 'owner'
     assert repos[0].repo == 'repo'
-    assert repos[0].active == False
+    assert repos[0].active is False
     assert repos[0].url == 'https://github.com/owner/repo'
 
 

@@ -2,11 +2,12 @@ import uuid
 import logging
 
 from celery import chain
-from flask import Blueprint, request, abort, jsonify
+from flask import Blueprint, request, abort, jsonify, session, redirect, url_for
+from flask_login import login_required
 
 from goodtablesio import tasks, models, settings
 
-from goodtablesio.plugins.github.tasks import get_validation_conf
+from goodtablesio.plugins.github.tasks import get_validation_conf, sync_user_repositories
 from goodtablesio.plugins.github.utils import set_commit_status, validate_signature
 
 
@@ -64,6 +65,20 @@ def create_job():
     tasks_chain.delay()
 
     return jsonify({'job_id': job_id})
+
+
+@github.route('/sync')
+@login_required
+def sync_account():
+    # TODO: cover case when session doens't have github_token
+    user_id = session['user_id']
+    github_token = session['auth_github_token'][0]
+    result = sync_user_repositories.delay(user_id, github_token)
+    # TODO: store in the database (not session)
+    # It's kinda general problem it looks like we need
+    # to track syncing tasks in the database (github, s3, etc)
+    session['github_sync_task_id'] = result.task_id
+    return redirect(url_for('user.projects'))
 
 
 # Internal

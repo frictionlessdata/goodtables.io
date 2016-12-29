@@ -7,6 +7,8 @@ from goodtablesio.plugins.github.utils import set_commit_status
 from goodtablesio.plugins.github.utils import create_signature, validate_signature
 
 
+# Tests
+
 def test_set_commit_status_success(mock_post):
     mock_response = mock.MagicMock()
     mock_response.status_code = 201
@@ -153,6 +155,8 @@ def test_validate_signature_invalid():
     signature = 'sha1=369e2959eb49450338b212748f77d8ded74-----'
     assert not validate_signature(key, text, signature)
 
+
+# Fixtures
 
 @pytest.fixture
 def mock_post():

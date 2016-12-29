@@ -7,9 +7,38 @@
 
   <h2>GitHub</h2>
 
-  {% for repo in github_repos %}
-  <div><a href="{{ repo.url }}">{{ repo.owner }}/{{ repo.repo }}</a></div>
-  {% endfor %}
+  {% if github_sync %}
+
+    <a href="" disable class="btn btn-warning">Syncing account</a>
+    <script>
+      window.location.reload(5);
+    </script>
+
+  {% else %}
+
+    <div style="border-bottom: solid 1px #eee;">
+      <a href="/github/sync" class="btn btn-primary" style="width:120px;">Sync account</a>
+      <strong>Repositories</strong>
+    </div>
+
+    {% for repo in github_repos %}
+      <div style="border-bottom: solid 1px #eee;">
+        {% if repo.active %}
+          <a href="" class="btn btn-success" style="width:120px;">Settings</a>
+        {% else %}
+          <a class="btn btn-danger" style="width:120px;">Activate</a>
+        {% endif %}
+        <a href="{{ repo.url }}">{{ repo.owner }}/{{ repo.repo }}</a>
+      </div>
+    {% else %}
+      <p style="margin: 10px 0">There are no synced repositories</p>
+    {% endfor %}
+
+  {% endif %}
+
+  <h2>S3</h2>
+
+  <p><em>under construction</em></p>
 
 </div>
 {% endblock %}

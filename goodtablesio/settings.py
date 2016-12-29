@@ -37,6 +37,7 @@ else:
 # Celery
 
 broker_url = os.environ['BROKER_URL']
+result_backend = os.environ['RESULT_BACKEND']
 task_serializer = 'json'
 result_serializer = 'json'
 timezone = 'Europe/London'
