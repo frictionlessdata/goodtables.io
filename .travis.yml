@@ -20,6 +20,7 @@ env:
     - BASE_URL=http://localhost:5000
     - TEST_DATABASE_URL=postgres://postgres@localhost:5432/goodtables_test
     - BROKER_URL=redis://localhost:6379/10
+    - RESULT_BACKEND=redis://localhost:6379/11
     - FLASK_SECRET_KEY=test-key
     - GITHUB_HOOK_SECRET=test-github-hook-secret
     - GITHUB_CLIENT_ID=test-github-client-id

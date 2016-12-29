@@ -3,9 +3,7 @@
 {% block contents %}
 <div class="container">
 
-  <h1>Projects</h1>
-
-  <h2>GitHub</h2>
+  <h1>GitHub</h1>
 
   {% if github_sync %}
 
@@ -24,7 +22,7 @@
     {% for repo in github_repos %}
       <div style="border-bottom: solid 1px #eee;">
         {% if repo.active %}
-          <a href="" class="btn btn-success" style="width:120px;">Settings</a>
+          <a href="" class="btn btn-success" style="width:120px;">Deactivate</a>
         {% else %}
           <a class="btn btn-danger" style="width:120px;">Activate</a>
         {% endif %}
@@ -35,10 +33,6 @@
     {% endfor %}
 
   {% endif %}
-
-  <h2>S3</h2>
-
-  <p><em>under construction</em></p>
 
 </div>
 {% endblock %}

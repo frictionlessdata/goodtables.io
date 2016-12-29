@@ -12,13 +12,13 @@ def home():
     return render_template('home.html')
 
 
-@site.route('/job')
+@site.route('/jobs')
 def jobs():
     job_ids = models.job.get_ids()
     return render_template('jobs.html', job_ids=job_ids)
 
 
-@site.route('/job/<job_id>')
+@site.route('/jobs/<job_id>')
 def job(job_id):
     job = models.job.get(job_id)
     if not job:

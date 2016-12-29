@@ -5,8 +5,8 @@ import factory
 
 from goodtablesio.models.job import Job
 from goodtablesio.models.user import User
-from goodtablesio.models.github_repo import GithubRepo
 from goodtablesio.services import database
+from goodtablesio.plugins.github.models.repo import GithubRepo
 
 
 class FactoryBase(factory.alchemy.SQLAlchemyModelFactory):

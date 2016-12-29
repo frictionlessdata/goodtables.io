@@ -1,18 +1,14 @@
-import hmac
-import hashlib
 import logging
-
 import requests
-from github3 import GitHub
-
 from goodtablesio import settings
-
 log = logging.getLogger(__name__)
 
 
 # Module API
 
 def set_commit_status(state, owner, repo, sha, job_id):
+    """Set commit status on GitHub.
+    """
 
     url = '{base}/repos/{owner}/{repo}/statuses/{sha}'.format(
         base=settings.GITHUB_API_BASE,
@@ -36,7 +32,7 @@ def set_commit_status(state, owner, repo, sha, job_id):
 
     data = {
       'state': state,
-      'target_url': '{base}/job/{job_id}'.format(
+      'target_url': '{base}/jobs/{job_id}'.format(
            base=settings.BASE_URL, job_id=job_id),
       'description': description,
       'context': 'goodtables.io/push'
@@ -52,34 +48,3 @@ def set_commit_status(state, owner, repo, sha, job_id):
                       url=url, response=response.text,
                       job_id=job_id, state=state))
         return False
-
-
-def create_signature(key, text):
-    if isinstance(key, str):
-        key = key.encode('utf-8')
-    if isinstance(text, str):
-        text = text.encode('utf-8')
-    mac = hmac.new(key, msg=text, digestmod=hashlib.sha1)
-    return 'sha1=%s' % mac.hexdigest()
-
-
-def validate_signature(key, text, signature):
-    return hmac.compare_digest(create_signature(key, text), signature)
-
-
-def iter_repos_by_token(token):
-    """Returns list of repos as list of dicts {id, owner, repo, active}.
-    """
-    client = GitHub(token=token)
-    for repo in client.iter_repos():
-        active = False
-        data = repo.to_json()
-        for hook in repo.iter_hooks():
-            if 'goodtables' in hook.config.get('url', ''):
-                active = True
-        yield {
-            'id': str(data['id']),
-            'owner': data['owner']['login'],
-            'repo': data['name'],
-            'active': active,
-        }

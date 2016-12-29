@@ -4,10 +4,10 @@
 all: list
 
 celery:
-	celery -A goodtablesio.tasks worker --loglevel=info
+	celery -A goodtablesio.celery_app worker --loglevel=info
 
 celery-dev:
-	celery -A goodtablesio.tasks worker --loglevel=debug
+	celery -A goodtablesio.celery_app worker --loglevel=debug
 
 install:
 	pip install --upgrade -r requirements.dev

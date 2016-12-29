@@ -1,7 +1,7 @@
 import pytest
 from goodtablesio.tests import factories
 from goodtablesio.services import database
-from goodtablesio.models.github_repo import GithubRepo
+from goodtablesio.plugins.github.models.repo import GithubRepo
 pytestmark = pytest.mark.usefixtures('session_cleanup')
 session = database['session']
 

@@ -1,12 +1,13 @@
 import pytest
-
+from goodtablesio.app import app
 from goodtablesio.services import database
 from goodtablesio.models.job import Job
 from goodtablesio.models.user import User
-from goodtablesio.models.github_repo import GithubRepo
-from goodtablesio.tasks import app as celapp
-from goodtablesio.app import app
+from goodtablesio.celery_app import celery_app as celapp
+from goodtablesio.plugins.github.models.repo import GithubRepo
 
+
+# Fixture
 
 @pytest.fixture()
 def session_cleanup():

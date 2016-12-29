@@ -1,22 +1,9 @@
 import datetime
-
-from celery import Celery, Task
-from goodtables import Inspector
-
-from goodtablesio import settings, exceptions, models
-
-# Register signals
-import goodtablesio.signals  # noqa
+from celery import Task
+from goodtablesio import exceptions, models
 
 
 # Module API
-
-app = Celery('tasks')
-app.config_from_object(settings)
-
-# TODO: automate
-app.autodiscover_tasks(['goodtablesio.plugins.github'])
-
 
 class JobTask(Task):
     """Base class for all job lifetime tasks.
@@ -59,45 +46,3 @@ class JobTask(Task):
 
         # Update database
         models.job.update(params)
-
-
-@app.task(name='goodtablesio.tasks.validate', base=JobTask)
-def validate(validation_conf, job_id):
-    """Main validation task.
-
-    Args:
-        validation_conf (dict): validation configuration
-
-    See `schemas/validation-conf.yml`.
-
-    """
-
-    # Get job
-    job = models.job.get(job_id)
-
-    # TODO: job not found
-    if job['status'] == 'created':
-        params = {
-            'id': job_id,
-            'status': 'running'
-        }
-        models.job.update(params)
-
-    # Get report
-    settings = validation_conf.get('settings', {})
-    inspector = Inspector(**settings)
-    report = inspector.inspect(validation_conf['files'], preset='tables')
-
-    # Save report
-    params = {
-        'id': job_id,
-        'report': report,
-        'finished': datetime.datetime.utcnow(),
-        'status': 'success' if report['valid'] else 'failure'
-    }
-
-    models.job.update(params)
-
-    job.update(params)
-
-    return job
