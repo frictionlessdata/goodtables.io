@@ -3,12 +3,11 @@
 {% block contents %}
 <div class="container">
 
-  <h1>Jobs</h1>
+  <h1>User</h1>
 
   <ul>
-    {% for id in job_ids %}
-    <li><a href="/jobs/{{ id }}">{{ id }}</a></li>
-    {% endfor %}
+    <li>Name - {{ user.name }}</li>
+    <li>Email - {{ user.email }}</li>
   </ul>
 
 </div>

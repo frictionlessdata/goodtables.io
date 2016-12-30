@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+
+{% block contents %}
+<div class="container">
+
+  <h1>GitHub</h1>
+
+  <p>GitHub integration description</p>
+
+  <h2>Repos</h2>
+
+  {% if current_user.is_authenticated %}
+
+    {% if github_sync %}
+
+      <a href="" disable class="btn btn-warning">Syncing account</a>
+      <script>
+        window.location.reload(5);
+      </script>
+
+    {% else %}
+
+      <div style="border-bottom: solid 1px #eee;">
+        <a href="/github/sync" class="btn btn-primary" style="width:120px;">Sync account</a>
+        <strong>Repositories</strong>
+      </div>
+
+      {% for repo in github_repos %}
+        <div style="border-bottom: solid 1px #eee;">
+          {% if repo.active %}
+            <a href="" class="btn btn-success" style="width:120px;">Deactivate</a>
+          {% else %}
+            <a class="btn btn-danger" style="width:120px;">Activate</a>
+          {% endif %}
+          <a href="{{ repo.url }}">{{ repo.owner }}/{{ repo.repo }}</a>
+        </div>
+      {% else %}
+        <p style="margin: 10px 0">There are no synced repositories</p>
+      {% endfor %}
+
+    {% endif %}
+
+  {% else %}
+
+    <p>Login to setup repos!</p>
+
+  {% endif %}
+
+</div>
+{% endblock %}

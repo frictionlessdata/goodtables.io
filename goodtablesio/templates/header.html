@@ -17,7 +17,7 @@
 		{% if not current_user.is_authenticated %}
           <li><a href="{{ url_for('user.login', provider='github') }}">Login with GitHub</a></li>
 		{% else %}
-        <li><p class="navbar-text">Hello <a href="{{ url_for('user.profile') }}">{{ current_user.display_name }}</a></p></li>
+        <li><p class="navbar-text">Hello <a href="{{ url_for('user.home') }}">{{ current_user.display_name }}</a></p></li>
           <li role="separator" class="divider"></li>
           <li><a href="{{ url_for('user.logout') }}">Logout</a></li>
 		{% endif %}

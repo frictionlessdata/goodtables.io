@@ -23,6 +23,49 @@ log = logging.getLogger(__name__)
 github = Blueprint('github', __name__, url_prefix='/github', template_folder='templates')
 
 
+@github.route('/')
+def home():
+
+    # Get github syncing status
+    github_sync = False
+    if session.get('github_sync_task_id'):
+        task_id = session['github_sync_task_id']
+        result = sync_user_repositories.AsyncResult(task_id)
+        if result.status == 'PENDING':
+            github_sync = True
+        else:
+            # TODO: cover errors
+            del session['github_sync_task_id']
+
+    # Get github repos
+    github_repos = []
+    if not github_sync:
+        user_id = session.get('user_id')
+        if user_id:
+            github_repos = (database['session'].query(GithubRepo).
+                filter(GithubRepo.users.any(id=user_id)).
+                order_by(GithubRepo.owner, GithubRepo.repo).
+                all())
+
+    return render_template('github_home.html',
+        github_sync=github_sync,
+        github_repos=github_repos)
+
+
+@github.route('/sync')
+@login_required
+def sync_account():
+    # TODO: cover case when session doens't have github_token
+    user_id = session['user_id']
+    github_token = session['auth_github_token'][0]
+    result = sync_user_repositories.delay(user_id, github_token)
+    # TODO: store in the database (not session)
+    # It's kinda general problem it looks like we need
+    # to track syncing tasks in the database (github, s3, etc)
+    session['github_sync_task_id'] = result.task_id
+    return redirect(url_for('github.home'))
+
+
 @github.route('/hook', methods=['POST'])
 def create_job():
 
@@ -71,46 +114,3 @@ def create_job():
     tasks_chain.delay()
 
     return jsonify({'job_id': job_id})
-
-
-@github.route('/repos')
-@login_required
-def repos():
-
-    # Get github syncing status
-    github_sync = False
-    if session.get('github_sync_task_id'):
-        task_id = session['github_sync_task_id']
-        result = sync_user_repositories.AsyncResult(task_id)
-        if result.status == 'PENDING':
-            github_sync = True
-        else:
-            # TODO: cover errors
-            del session['github_sync_task_id']
-
-    # Get github repos
-    github_repos = []
-    if not github_sync:
-        user_id = session['user_id']
-        github_repos = (database['session'].query(GithubRepo).
-            filter(GithubRepo.users.any(id=user_id)).
-            order_by(GithubRepo.owner, GithubRepo.repo).
-            all())
-
-    return render_template('repos.html',
-        github_sync=github_sync,
-        github_repos=github_repos)
-
-
-@github.route('/sync')
-@login_required
-def sync_account():
-    # TODO: cover case when session doens't have github_token
-    user_id = session['user_id']
-    github_token = session['auth_github_token'][0]
-    result = sync_user_repositories.delay(user_id, github_token)
-    # TODO: store in the database (not session)
-    # It's kinda general problem it looks like we need
-    # to track syncing tasks in the database (github, s3, etc)
-    session['github_sync_task_id'] = result.task_id
-    return redirect(url_for('github.repos'))
