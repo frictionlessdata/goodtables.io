@@ -25,7 +25,4 @@ def sync_user_repositories(user_id, token):
         repo.active = repo_data['active']
         repo.updated = datetime.datetime.utcnow(),
         repo.users.append(user)
-        # TODO: remove
-        if repo_data['repo'] == 'example-goodtables.io':
-            break
     database['session'].commit()
