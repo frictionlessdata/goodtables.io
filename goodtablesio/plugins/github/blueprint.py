@@ -14,7 +14,8 @@ from goodtablesio.plugins.github.tasks.jobconf import get_validation_conf
 from goodtablesio.plugins.github.tasks.repos import sync_user_repositories
 from goodtablesio.plugins.github.utils.status import set_commit_status
 from goodtablesio.plugins.github.utils.signature import validate_signature
-from goodtablesio.plugins.github.utils.hook import get_owner_repo_sha_from_hook_payload
+from goodtablesio.plugins.github.utils.hook import (
+    activate_hook, deactivate_hook, get_owner_repo_sha_from_hook_payload)
 
 
 log = logging.getLogger(__name__)
@@ -27,42 +28,72 @@ github = Blueprint('github', __name__, url_prefix='/github', template_folder='te
 def home():
 
     # Get github syncing status
-    github_sync = False
+    sync = False
     if session.get('github_sync_task_id'):
         task_id = session['github_sync_task_id']
         result = sync_user_repositories.AsyncResult(task_id)
         if result.status == 'PENDING':
-            github_sync = True
+            sync = True
         else:
             # TODO: cover errors
             del session['github_sync_task_id']
 
     # Get github repos
-    github_repos = []
-    if not github_sync:
+    repos = []
+    if not sync:
         user_id = session.get('user_id')
         if user_id:
-            github_repos = (database['session'].query(GithubRepo).
+            repos = (database['session'].query(GithubRepo).
                 filter(GithubRepo.users.any(id=user_id)).
                 order_by(GithubRepo.owner, GithubRepo.repo).
                 all())
 
-    return render_template('github_home.html',
-        github_sync=github_sync,
-        github_repos=github_repos)
+    return render_template('github_home.html', sync=sync, repos=repos)
 
 
 @github.route('/sync')
 @login_required
-def sync_account():
-    # TODO: cover case when session doens't have github_token
+def sync():
     user_id = session['user_id']
-    github_token = session['auth_github_token'][0]
-    result = sync_user_repositories.delay(user_id, github_token)
+    # TODO: cover case when session doens't have github token
+    token = session['auth_github_token'][0]
+    result = sync_user_repositories.delay(user_id, token)
     # TODO: store in the database (not session)
     # It's kinda general problem it looks like we need
     # to track syncing tasks in the database (github, s3, etc)
     session['github_sync_task_id'] = result.task_id
+    return redirect(url_for('github.home'))
+
+
+@github.route('/activate/<repo_id>')
+@login_required
+def activate(repo_id):
+    # TODO: cover case when session doens't have github token
+    token = session['auth_github_token'][0]
+    repo = database['session'].query(GithubRepo).get(repo_id)
+    try:
+        activate_hook(token, repo.owner, repo.repo)
+        repo.active = True
+        database['session'].commit()
+    except Exception as exception:
+        log.exception(exception)
+        abort(400)
+    return redirect(url_for('github.home'))
+
+
+@github.route('/deactivate/<repo_id>')
+@login_required
+def deactivate(repo_id):
+    # TODO: cover case when session doens't have github token
+    token = session['auth_github_token'][0]
+    repo = database['session'].query(GithubRepo).get(repo_id)
+    try:
+        deactivate_hook(token, repo.owner, repo.repo)
+        repo.active = False
+        database['session'].commit()
+    except Exception as exception:
+        log.exception(exception)
+        abort(400)
     return redirect(url_for('github.home'))
 
 

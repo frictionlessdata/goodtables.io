@@ -11,9 +11,9 @@
 
   {% if current_user.is_authenticated %}
 
-    {% if github_sync %}
+    {% if sync %}
 
-      <a href="" disable class="btn btn-warning">Syncing account</a>
+      <button disable class="btn btn-warning">Syncing account</button>
       <script>
         window.location.reload(5);
       </script>
@@ -25,12 +25,12 @@
         <strong>Repositories</strong>
       </div>
 
-      {% for repo in github_repos %}
+      {% for repo in repos %}
         <div style="border-bottom: solid 1px #eee;">
           {% if repo.active %}
-            <a href="" class="btn btn-success" style="width:120px;">Deactivate</a>
+            <a href="/github/deactivate/{{ repo.id }}" class="btn btn-success" style="width:120px;">Deactivate</a>
           {% else %}
-            <a class="btn btn-danger" style="width:120px;">Activate</a>
+            <a href="/github/activate/{{ repo.id }}" class="btn btn-danger" style="width:120px;">Activate</a>
           {% endif %}
           <a href="{{ repo.url }}">{{ repo.owner }}/{{ repo.repo }}</a>
         </div>
