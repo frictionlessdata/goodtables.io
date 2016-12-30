@@ -1,12 +1,10 @@
 import logging
 from github3 import GitHub
 from goodtablesio import models, settings
-from goodtablesio.services import database
 from goodtablesio.celery_app import celery_app
 from goodtablesio.utils.jobtask import JobTask
 from goodtablesio.utils.jobconf import create_validation_conf
 log = logging.getLogger(__name__)
-session = database['session']
 
 
 # Module API
