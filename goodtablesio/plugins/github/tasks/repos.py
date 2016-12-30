@@ -8,8 +8,8 @@ from goodtablesio.plugins.github.utils.repos import iter_repos_by_token
 
 # Module API
 
-@celery_app.task(name='goodtablesio.github.collect_user_repositories')
-def sync_user_repositories(user_id, token):
+@celery_app.task(name='goodtablesio.github.sync_user_repos')
+def sync_user_repos(user_id, token):
     """Sync user repositories.
     """
     # TODO: rewrite using sqlalchemy query

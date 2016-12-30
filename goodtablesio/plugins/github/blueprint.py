@@ -11,7 +11,7 @@ from goodtablesio.services import database
 from goodtablesio.tasks.validate import validate
 from goodtablesio.plugins.github.models.repo import GithubRepo
 from goodtablesio.plugins.github.tasks.jobconf import get_validation_conf
-from goodtablesio.plugins.github.tasks.repos import sync_user_repositories
+from goodtablesio.plugins.github.tasks.repos import sync_user_repos
 from goodtablesio.plugins.github.utils.status import set_commit_status
 from goodtablesio.plugins.github.utils.signature import validate_signature
 from goodtablesio.plugins.github.utils.hook import (
@@ -31,7 +31,7 @@ def home():
     sync = False
     if session.get('github_sync_task_id'):
         task_id = session['github_sync_task_id']
-        result = sync_user_repositories.AsyncResult(task_id)
+        result = sync_user_repos.AsyncResult(task_id)
         if result.status == 'PENDING':
             sync = True
         else:
@@ -57,7 +57,7 @@ def sync():
     user_id = session['user_id']
     # TODO: cover case when session doens't have github token
     token = session['auth_github_token'][0]
-    result = sync_user_repositories.delay(user_id, token)
+    result = sync_user_repos.delay(user_id, token)
     # TODO: store in the database (not session)
     # It's kinda general problem it looks like we need
     # to track syncing tasks in the database (github, s3, etc)
