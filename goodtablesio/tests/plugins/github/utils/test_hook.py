@@ -1,7 +1,30 @@
-from goodtablesio.plugins.github.utils.hook import get_owner_repo_sha_from_hook_payload
+import pytest
+from unittest.mock import Mock, patch
+from goodtablesio import settings
+from goodtablesio.plugins.github.utils.hook import (
+    activate_hook, deactivate_hook, get_owner_repo_sha_from_hook_payload)
 
 
 # Tests
+
+def test_activate_hook(GitHub):
+    activate_hook('token', 'owner', 'repo')
+    GitHub.return_value.repository.return_value.create_hook.assert_called_with('web',
+        config={
+            'secret': settings.GITHUB_HOOK_SECRET,
+            'url': '%s/github/hook' % settings.BASE_URL,
+            'content_type': 'json'
+        }, events=['pull_request', 'push'])
+
+
+def test_deactivate_hook(GitHub):
+    hook1 = Mock(config=Mock(get=Mock(return_value='http://goodtables.io')))
+    hook2 = Mock(config=Mock(get=Mock(return_value='http://example.com')))
+    GitHub.return_value.repository.return_value.iter_hooks.return_value = [hook1, hook2]
+    deactivate_hook('token', 'owner', 'repo')
+    assert hook1.delete.called
+    assert not hook2.delete.called
+
 
 def test_get_owner_repo_sha_from_hook_payload_PUSH():
     payload = {
@@ -37,3 +60,12 @@ def test_get_owner_repo_sha_from_hook_payload_bad_payload():
       'key': 'value',
     }
     assert get_owner_repo_sha_from_hook_payload(payload) == (None, None, None)
+
+
+# Fixtures
+
+@pytest.fixture
+def GitHub():
+    GitHub = patch('goodtablesio.plugins.github.utils.hook.GitHub').start()
+    yield GitHub
+    patch.stopall()
