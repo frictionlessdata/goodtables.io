@@ -12,8 +12,6 @@ from goodtablesio.plugins.github.models.repo import GithubRepo
 @pytest.fixture()
 def session_cleanup():
 
-    # TODO: rebase on cascade delete on some level (SA/DB)
-    database['session'].execute('DELETE FROM users_github_repos')
     database['session'].query(Job).delete()
     database['session'].query(User).delete()
     database['session'].query(GithubRepo).delete()

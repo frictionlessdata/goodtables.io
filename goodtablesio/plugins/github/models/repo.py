@@ -20,10 +20,14 @@ class GithubRepo(Base, BaseModelMixin):
     repo = Column(Unicode, nullable=False)
     active = Column(Boolean, nullable=False, default=False)
     updated = Column(DateTime(timezone=True), nullable=False, default=now)
-    users = relationship('User', secondary=Table('users_github_repos', Base.metadata,
-        Column('user_id', Unicode, ForeignKey('users.id')),
-        Column('github_repo_id', Unicode, ForeignKey('github_repos.id')),
-    ))
+    users = relationship('User', backref='github_repos', cascade='all',
+        secondary=Table('github_repos_users', Base.metadata,
+            Column('github_repo_id', Unicode,
+                ForeignKey('github_repos.id', ondelete='CASCADE'),
+                primary_key=True),
+            Column('user_id', Unicode,
+                ForeignKey('users.id', ondelete='CASCADE'),
+                primary_key=True)))
 
     @property
     def url(self):

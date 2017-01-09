@@ -12,11 +12,8 @@ from goodtablesio.plugins.github.utils.repos import iter_repos_by_token
 def sync_user_repos(user_id, token):
     """Sync user repositories.
     """
-    # TODO: rewrite using sqlalchemy query
-    database['session'].execute(
-        'DELETE FROM users_github_repos WHERE user_id = :user_id',
-        {'user_id': user_id})
     user = database['session'].query(User).get(user_id)
+    user.github_repos.clear()
     for repo_data in iter_repos_by_token(token):
         repo = database['session'].query(GithubRepo).get(repo_data['id'])
         if repo is None:
