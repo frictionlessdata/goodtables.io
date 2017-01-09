@@ -13,13 +13,14 @@ def test_activate_hook(GitHub):
         config={
             'secret': settings.GITHUB_HOOK_SECRET,
             'url': '%s/github/hook' % settings.BASE_URL,
-            'content_type': 'json'
+            'content_type': 'json',
+            'is_goodtables_hook': True,
         }, events=['pull_request', 'push'])
 
 
 def test_deactivate_hook(GitHub):
-    hook1 = Mock(config=Mock(get=Mock(return_value='http://goodtables.io')))
-    hook2 = Mock(config=Mock(get=Mock(return_value='http://example.com')))
+    hook1 = Mock(config=Mock(get=Mock(return_value=True)))
+    hook2 = Mock(config=Mock(get=Mock(return_value=False)))
     GitHub.return_value.repository.return_value.iter_hooks.return_value = [hook1, hook2]
     deactivate_hook('token', 'owner', 'repo')
     assert hook1.delete.called

@@ -11,8 +11,7 @@ def iter_repos_by_token(token):
         active = False
         data = repo.to_json()
         for hook in repo.iter_hooks():
-            # TODO: improve this logic?
-            if 'goodtables' in hook.config.get('url', ''):
+            if hook.config.get('is_goodtables_hook'):
                 active = True
         yield {
             'id': str(data['id']),

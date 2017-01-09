@@ -13,6 +13,7 @@ def activate_hook(token, owner, repo):
         'secret': settings.GITHUB_HOOK_SECRET,
         # We can't use url_for here because there is no app context
         'url': '%s/github/hook' % settings.BASE_URL,
+        'is_goodtables_hook': True,
     }
     events = [
         'pull_request',
@@ -29,8 +30,7 @@ def deactivate_hook(token, owner, repo):
     client = GitHub(token=token)
     repo = client.repository(owner, repo)
     for hook in repo.iter_hooks():
-        # TODO: improve this logic?
-        if 'goodtables' in hook.config.get('url', ''):
+        if hook.config.get('is_goodtables_hook'):
             hook.delete()
 
 

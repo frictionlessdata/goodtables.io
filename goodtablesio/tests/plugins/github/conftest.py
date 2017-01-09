@@ -14,7 +14,7 @@ def GitHubForIterRepos():
             'login': 'owner1',
         }
     }))
-    hook1 = Mock(config=Mock(get=Mock(return_value='http://goodtables.io')))
+    hook1 = Mock(config=Mock(get=Mock(return_value=True)))
     repo1.iter_hooks.return_value = [hook1]
     repo2 = Mock(to_json=Mock(return_value={
         'id': 'id2',
@@ -23,7 +23,7 @@ def GitHubForIterRepos():
             'login': 'owner2',
         }
     }))
-    hook2 = Mock(config=Mock(get=Mock(return_value='http://example.com')))
+    hook2 = Mock(config=Mock(get=Mock(return_value=False)))
     repo2.iter_hooks.return_value = [hook2]
     GitHub.return_value.iter_repos.return_value = [repo1, repo2]
     yield GitHub
