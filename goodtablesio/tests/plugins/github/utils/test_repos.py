@@ -1,13 +1,12 @@
-import pytest
-from unittest.mock import Mock, patch
 from goodtablesio.plugins.github.utils.repos import iter_repos_by_token
 
 
 # Tests
 
 def test_iter_repos_by_token(GitHubForIterRepos):
-    repos = list(iter_repos_by_token('TOKEN'))
-    GitHubForIterRepos.assert_called_with(token='TOKEN')
+    token = 'TOKEN'
+    repos = list(iter_repos_by_token(token))
+    GitHubForIterRepos.assert_called_with(token=token)
     assert repos == [
         {
             'id': 'id1',
@@ -22,31 +21,3 @@ def test_iter_repos_by_token(GitHubForIterRepos):
             'active': False,
         },
     ]
-
-
-# Fixtures
-
-@pytest.fixture
-def GitHubForIterRepos():
-    GitHub = patch('goodtablesio.plugins.github.utils.repos.GitHub').start()
-    repo1 = Mock(to_json=Mock(return_value={
-        'id': 'id1',
-        'name': 'repo1',
-        'owner': {
-            'login': 'owner1',
-        }
-    }))
-    hook1 = Mock(config=Mock(get=Mock(return_value='http://goodtables.io')))
-    repo1.iter_hooks.return_value = [hook1]
-    repo2 = Mock(to_json=Mock(return_value={
-        'id': 'id2',
-        'name': 'repo2',
-        'owner': {
-            'login': 'owner2',
-        }
-    }))
-    hook2 = Mock(config=Mock(get=Mock(return_value='http://example.com')))
-    repo2.iter_hooks.return_value = [hook2]
-    GitHub.return_value.iter_repos.return_value = [repo1, repo2]
-    yield GitHub
-    patch.stopall()
