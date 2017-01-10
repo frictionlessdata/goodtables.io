@@ -29,7 +29,7 @@
       </div>
 
       {% for repo in repos %}
-        <div style="border-bottom: solid 1px #eee;">
+        <div {% if not loop.last %}style="border-bottom: solid 1px #eee;"{% endif %}>
           {% if repo.active %}
             <a href="/github/deactivate/{{ repo.id }}" class="btn btn-success" style="width:120px;">Deactivate</a>
           {% else %}
