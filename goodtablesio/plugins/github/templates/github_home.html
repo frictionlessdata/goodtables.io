@@ -13,9 +13,12 @@
 
     {% if sync %}
 
-      <button disable class="btn btn-warning">Syncing account</button>
+      <p><button disable class="btn btn-warning">Syncing account</button></p>
+      <p>Page will be reloaded in 5 seconds...</p>
       <script>
-        window.location.reload(5);
+        setTimeout(function(){
+           window.location.reload(1);
+        }, 5000);
       </script>
 
     {% else %}
