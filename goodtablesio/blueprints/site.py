@@ -15,7 +15,8 @@ def home():
     if user_id:
         # TODO: limit jobs count to show!
         # TODO: here we should filter jobs by user!
-        user_jobs = database['session'].query(models.job.Job).all()
+        user_jobs = (database['session'].query(models.job.Job)
+            .order_by(models.job.Job.created.desc()).all())
     return render_template('home.html', user_jobs=user_jobs)
 
 
