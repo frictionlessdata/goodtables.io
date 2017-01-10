@@ -18,14 +18,14 @@ def test_site_basic(client):
     # TODO: Test actual content when implemented
 
     body = response.get_data(as_text=True)
-    assert 'Good Tables' in body
+    assert 'Dashboard' in body
 
 
 def test_site_get_job(client):
 
     job = factories.Job()
 
-    response = client.get('/job/{0}'.format(job.id))
+    response = client.get('/jobs/{0}'.format(job.id))
 
     # TODO: Test actual content when implemented
 
@@ -36,14 +36,14 @@ def test_site_get_job(client):
 
 def test_site_get_job_not_found(client):
 
-    response = client.get('/job/xxx')
+    response = client.get('/jobs/xxx')
 
     assert response.status_code == 404
 
 
 def test_site_get_jobs(client):
     job = factories.Job()
-    response = client.get('/job')
+    response = client.get('/jobs')
     body = response.get_data(as_text=True)
     assert 'Jobs' in body
     assert job.id in body

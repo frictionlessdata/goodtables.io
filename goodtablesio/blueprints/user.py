@@ -1,7 +1,7 @@
 import logging
 
-from flask import (Blueprint, request, session, redirect, url_for, abort,
-                   jsonify, flash)
+from flask import (Blueprint, request, session, redirect,
+    url_for, abort, flash, render_template)
 from flask_login import login_user, logout_user, login_required
 
 from goodtablesio import models
@@ -10,8 +10,16 @@ from goodtablesio.auth import github_auth
 
 log = logging.getLogger(__name__)
 
-
 user = Blueprint('user', __name__, url_prefix='/user')
+
+
+@user.route('/')
+@login_required
+def home():
+
+    user = models.user.get(session['user_id'])
+
+    return render_template('user.html', user=user)
 
 
 @user.route('/login/<any(github):provider>')
@@ -92,12 +100,3 @@ def authorized(provider):
         login_user(models.user.get(user['id'], as_dict=False))
 
     return redirect(url_for('site.home'))
-
-
-@user.route('/profile')
-@login_required
-def profile():
-
-    user = models.user.get(session['user_id'])
-
-    return jsonify(user)

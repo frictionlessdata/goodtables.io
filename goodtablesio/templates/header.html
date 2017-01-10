@@ -1,5 +1,5 @@
 <nav class="navbar navbar-default">
-  <div class="container-fluid">
+  <div class="container">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -8,7 +8,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="{{ url_for('site.home') }}">GoodTables</a>
+      <a class="navbar-brand" href="{{ url_for('site.home') }}">Good Tables</a>
     </div>
 
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -17,7 +17,7 @@
 		{% if not current_user.is_authenticated %}
           <li><a href="{{ url_for('user.login', provider='github') }}">Login with GitHub</a></li>
 		{% else %}
-        <li><p class="navbar-text">Hello <a href="{{ url_for('user.profile') }}">{{ current_user.display_name }}</a></p></li>
+        <li><p class="navbar-text">Hello <a href="{{ url_for('user.home') }}">{{ current_user.display_name }}</a></p></li>
           <li role="separator" class="divider"></li>
           <li><a href="{{ url_for('user.logout') }}">Logout</a></li>
 		{% endif %}

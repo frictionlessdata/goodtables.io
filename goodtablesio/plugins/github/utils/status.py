@@ -1,17 +1,14 @@
-import hmac
-import hashlib
 import logging
-
 import requests
-
 from goodtablesio import settings
-
 log = logging.getLogger(__name__)
 
 
 # Module API
 
 def set_commit_status(state, owner, repo, sha, job_id):
+    """Set commit status on GitHub.
+    """
 
     url = '{base}/repos/{owner}/{repo}/statuses/{sha}'.format(
         base=settings.GITHUB_API_BASE,
@@ -35,7 +32,7 @@ def set_commit_status(state, owner, repo, sha, job_id):
 
     data = {
       'state': state,
-      'target_url': '{base}/job/{job_id}'.format(
+      'target_url': '{base}/jobs/{job_id}'.format(
            base=settings.BASE_URL, job_id=job_id),
       'description': description,
       'context': 'goodtables.io/push'
@@ -51,16 +48,3 @@ def set_commit_status(state, owner, repo, sha, job_id):
                       url=url, response=response.text,
                       job_id=job_id, state=state))
         return False
-
-
-def create_signature(key, text):
-    if isinstance(key, str):
-        key = key.encode('utf-8')
-    if isinstance(text, str):
-        text = text.encode('utf-8')
-    mac = hmac.new(key, msg=text, digestmod=hashlib.sha1)
-    return 'sha1=%s' % mac.hexdigest()
-
-
-def validate_signature(key, text, signature):
-    return hmac.compare_digest(create_signature(key, text), signature)

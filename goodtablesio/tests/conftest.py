@@ -1,17 +1,20 @@
 import pytest
-
+from goodtablesio.app import app
 from goodtablesio.services import database
 from goodtablesio.models.job import Job
 from goodtablesio.models.user import User
-from goodtablesio.tasks import app as celapp
-from goodtablesio.app import app
+from goodtablesio.celery_app import celery_app as celapp
+from goodtablesio.plugins.github.models.repo import GithubRepo
 
+
+# Fixture
 
 @pytest.fixture()
 def session_cleanup():
 
     database['session'].query(Job).delete()
     database['session'].query(User).delete()
+    database['session'].query(GithubRepo).delete()
 
     yield
 

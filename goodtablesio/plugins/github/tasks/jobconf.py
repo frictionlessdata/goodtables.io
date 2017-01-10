@@ -1,14 +1,9 @@
 import logging
-
 from github3 import GitHub
-
 from goodtablesio import models, settings
-from goodtablesio.tasks import app as celery_app, JobTask
+from goodtablesio.celery_app import celery_app
+from goodtablesio.utils.jobtask import JobTask
 from goodtablesio.utils.jobconf import create_validation_conf
-
-# Register signals
-import goodtablesio.plugins.github.signals  # noqa
-
 log = logging.getLogger(__name__)
 
 

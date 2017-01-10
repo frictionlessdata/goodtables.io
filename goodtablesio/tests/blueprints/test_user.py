@@ -175,31 +175,31 @@ def test_github_login_existing_user_same_email_different_provider(
     assert users[0]['provider_ids'] == {'google': 'abcd', 'github': 123456}
 
 
-def test_profile(client):
+def test_home(client):
 
     user = factories.User()
 
     with client.app.test_request_context():
-        profile_url = url_for('user.profile')
+        home_url = url_for('user.home')
 
     with client.session_transaction() as sess:
         # Mock a user login
         sess['user_id'] = user.id
 
-    response = client.get(profile_url)
+    response = client.get(home_url)
 
     assert response.status_code == 200
 
     # TODO: update when proper content
-    assert user.id in response.get_data(as_text=True)
+    assert user.name in response.get_data(as_text=True)
 
 
-def test_profile_not_authorized(client):
+def test_home_not_authorized(client):
 
     with client.app.test_request_context():
-        profile_url = url_for('user.profile')
+        home_url = url_for('user.home')
 
-    response = client.get(profile_url)
+    response = client.get(home_url)
 
     assert response.status_code == 401
 

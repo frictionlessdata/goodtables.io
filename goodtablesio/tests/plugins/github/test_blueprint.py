@@ -1,13 +1,12 @@
 import json
 from unittest.mock import patch
 from goodtablesio import models, settings
-from goodtablesio.plugins.github.blueprint import _get_owner_repo_sha
-from goodtablesio.plugins.github.utils import create_signature
+from goodtablesio.plugins.github.utils.signature import create_signature
 
 
 # Tests
 
-@patch('goodtablesio.plugins.github.blueprint.set_commit_status')
+@patch('goodtablesio.plugins.github.utils.status.set_commit_status')
 def test_create_job(set_commit_status, client, celery_app):
     data = json.dumps({
         'repository': {
@@ -28,45 +27,3 @@ def test_create_job(set_commit_status, client, celery_app):
     assert job['finished']
     assert job['status'] == 'failure'
     assert job['report']
-
-
-def test_get_owner_repo_sha_PUSH():
-    payload = {
-      'repository': {'name': 'repo', 'owner': {'name': 'owner'}},
-      'head_commit': {'id': 'sha'},
-    }
-    assert _get_owner_repo_sha(payload) == ('owner', 'repo', 'sha')
-
-
-def test_get_owner_repo_sha_PR():
-    payload = {
-      'action': 'opened',
-      'pull_request': {
-          'head': {
-              'repo': {'name': 'repo', 'owner': {'login': 'owner'}},
-              'sha': 'sha',
-          },
-       },
-    }
-    assert _get_owner_repo_sha(payload) == ('owner', 'repo', 'sha')
-
-
-def test_get_owner_repo_sha_PR_other_action():
-    payload = {
-      'action': 'labeled',
-      'pull_request': {},
-    }
-    assert _get_owner_repo_sha(payload) == (None, None, None)
-
-
-def test_get_owner_repo_sha_bad_payload():
-    payload = {
-      'key': 'value',
-    }
-    assert _get_owner_repo_sha(payload) == (None, None, None)
-
-
-# Helpers
-
-def _get_json(response):
-    return json.loads(response.get_data(as_text=True))

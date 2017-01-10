@@ -1,8 +1,7 @@
 from celery import signals
-
 from goodtablesio import models
 from goodtablesio.tasks import validate
-from goodtablesio.plugins.github.utils import set_commit_status
+from goodtablesio.plugins.github.utils.status import set_commit_status
 
 
 # Module API

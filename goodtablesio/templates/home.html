@@ -1,8 +1,34 @@
 {% extends "layout.html" %}
 
 {% block contents %}
-Good Tables
 <div class="container">
-  <p>See all <a href="/job">jobs</a>.</p>
+  <h1>Dashboard</h1>
+
+  <h2>Jobs</h2>
+  {% if not current_user.is_authenticated %}
+    <p>Login to see jobs!</p>
+  {% else %}
+    {% for job in user_jobs %}
+      {% if job.valid %}
+        <a href="/jobs/{{ job.id }}" class="btn btn-success" style="width: 80px;">Valid</a>
+      {% else %}
+        <a href="/jobs/{{ job.id }}" class="btn btn-danger" style="width: 80px;">Invalid</a>
+      {% endif %}
+      <a href="/jobs/{{ job.id }}">
+        {{ job.plugin_conf.repository.owner }}/{{ job.plugin_conf.repository.name }}
+      </a>
+    {% else %}
+      <p>No active or finished jobs.</p>
+    {% endfor %}
+  {% endif %}
+  <hr>
+  <p>See all system <a href="/jobs">jobs</a>.</p>
+
+  <h2>Integrations</h2>
+  <a href="/github" class="btn btn-primary" style="width: 80px;">GitHub</a>
+  <a href="/github" >Configure GitHub integration</a>
+  <hr>
+  <p>See all system <a href="/integrations">integrations</a>.</p>
+
 </div>
 {% endblock %}

@@ -1,11 +1,10 @@
-from unittest import mock
-
 import pytest
-
+from unittest import mock
 from goodtablesio import settings
-from goodtablesio.plugins.github.utils import set_commit_status
-from goodtablesio.plugins.github.utils import create_signature, validate_signature
+from goodtablesio.plugins.github.utils.status import set_commit_status
 
+
+# Tests
 
 def test_set_commit_status_success(mock_post):
     mock_response = mock.MagicMock()
@@ -26,7 +25,7 @@ def test_set_commit_status_success(mock_post):
 
     expected_data = {
       'state': 'success',
-      'target_url': '{base}/job/my-job-id'.format(
+      'target_url': '{base}/jobs/my-job-id'.format(
            base=settings.BASE_URL),
       'description': 'Data is valid',
       'context': 'goodtables.io/push'
@@ -55,7 +54,7 @@ def test_set_commit_status_failure(mock_post):
 
     expected_data = {
       'state': 'failure',
-      'target_url': '{base}/job/my-job-id'.format(
+      'target_url': '{base}/jobs/my-job-id'.format(
            base=settings.BASE_URL),
       'description': 'Data is invalid',
       'context': 'goodtables.io/push'
@@ -84,7 +83,7 @@ def test_set_commit_status_pending(mock_post):
 
     expected_data = {
       'state': 'pending',
-      'target_url': '{base}/job/my-job-id'.format(
+      'target_url': '{base}/jobs/my-job-id'.format(
            base=settings.BASE_URL),
       'description': 'Data validation under way',
       'context': 'goodtables.io/push'
@@ -113,7 +112,7 @@ def test_set_commit_status_error(mock_post):
 
     expected_data = {
       'state': 'error',
-      'target_url': '{base}/job/my-job-id'.format(
+      'target_url': '{base}/jobs/my-job-id'.format(
            base=settings.BASE_URL),
       'description': 'Errors during data validation',
       'context': 'goodtables.io/push'
@@ -133,26 +132,7 @@ def test_set_commit_status_problem(mock_post):
     assert not r
 
 
-def test_create_signature():
-    key = 'key'
-    text = 'text'
-    signature = 'sha1=369e2959eb49450338b212748f77d8ded74847bb'
-    assert create_signature(key, text) == signature
-
-
-def test_validate_signature():
-    key = 'key'
-    text = 'text'
-    signature = 'sha1=369e2959eb49450338b212748f77d8ded74847bb'
-    assert validate_signature(key, text, signature)
-
-
-def test_validate_signature_invalid():
-    key = 'key'
-    text = 'text'
-    signature = 'sha1=369e2959eb49450338b212748f77d8ded74-----'
-    assert not validate_signature(key, text, signature)
-
+# Fixtures
 
 @pytest.fixture
 def mock_post():
