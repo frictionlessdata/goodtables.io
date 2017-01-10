@@ -5,18 +5,22 @@
   <h1>Dashboard</h1>
 
   <h2>Jobs</h2>
-  {% for job in user_jobs %}
-    {% if job.valid %}
-      <a href="/jobs/{{ job.id }}" class="btn btn-success" style="width: 80px;">Valid</a>
-    {% else %}
-      <a href="/jobs/{{ job.id }}" class="btn btn-danger" style="width: 80px;">Invalid</a>
-    {% endif %}
-    <a href="/jobs/{{ job.id }}">
-      {{ job.plugin_conf.repository.owner }}/{{ job.plugin_conf.repository.name }}
-    </a>
-  {% else %}
+  {% if not current_user.is_authenticated %}
     <p>Login to see jobs!</p>
-  {% endfor %}
+  {% else %}
+    {% for job in user_jobs %}
+      {% if job.valid %}
+        <a href="/jobs/{{ job.id }}" class="btn btn-success" style="width: 80px;">Valid</a>
+      {% else %}
+        <a href="/jobs/{{ job.id }}" class="btn btn-danger" style="width: 80px;">Invalid</a>
+      {% endif %}
+      <a href="/jobs/{{ job.id }}">
+        {{ job.plugin_conf.repository.owner }}/{{ job.plugin_conf.repository.name }}
+      </a>
+    {% else %}
+      <p>No active of finished jobs.</p>
+    {% endfor %}
+  {% endif %}
   <hr>
   <p>See all system <a href="/jobs">jobs</a>.</p>
 
