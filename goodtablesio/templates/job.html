@@ -39,7 +39,7 @@
     </thead>
   </table>
 
-  {% if job.finished %}
+  {% if job.status in ['success', 'failure'] %}
   <h2>Files</h2>
   {% endif %}
 

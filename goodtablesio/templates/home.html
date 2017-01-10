@@ -10,14 +10,17 @@
   {% else %}
     {% for job in user_jobs %}
       <div {% if not loop.last %}style="border-bottom: solid 1px #eee;"{% endif %}>
-        {% if job.valid %}
+        {% if job.status == 'success' %}
           <a href="/jobs/{{ job.id }}" class="btn btn-success" style="width: 80px;">Valid</a>
+        {% elif job.status == 'error' %}
+          <a href="/jobs/{{ job.id }}" class="btn btn-warning" style="width: 80px;">Errored</a>
         {% else %}
           <a href="/jobs/{{ job.id }}" class="btn btn-danger" style="width: 80px;">Invalid</a>
         {% endif %}
         <a href="/jobs/{{ job.id }}">
           {{ job.plugin_conf.repository.owner }}/{{ job.plugin_conf.repository.name }}
         </a>
+        <small style="color: #777">({{ job.created.strftime('%Y-%m-%d') }})</small>
       </div>
     {% else %}
       <p>No active or finished jobs.</p>
