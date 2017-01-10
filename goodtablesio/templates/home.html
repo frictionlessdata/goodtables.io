@@ -9,7 +9,7 @@
     <p>Login to see jobs!</p>
   {% else %}
     {% for job in user_jobs %}
-    <div {% if not loop.last %}style="border-bottom: solid 1px #eee;"{% endif %}>
+      <div {% if not loop.last %}style="border-bottom: solid 1px #eee;"{% endif %}>
         {% if job.valid %}
           <a href="/jobs/{{ job.id }}" class="btn btn-success" style="width: 80px;">Valid</a>
         {% else %}
