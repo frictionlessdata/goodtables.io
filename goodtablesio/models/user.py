@@ -18,7 +18,7 @@ class User(Base, BaseModelMixin, UserLoginMixin):
 
     id = Column(Unicode, primary_key=True, default=make_uuid)
     name = Column(Unicode, unique=True, nullable=False)
-    email = Column(Unicode, unique=True, nullable=False)
+    email = Column(Unicode, unique=True, nullable=True)
     display_name = Column(Unicode)
     created = Column(DateTime(timezone=True), default=datetime.datetime.utcnow)
     admin = Column(Boolean, nullable=False, default=False)
