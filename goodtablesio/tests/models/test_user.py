@@ -52,6 +52,32 @@ def test_create_user_stored_in_db():
     assert user.admin is True
 
 
+def test_create_user_stored_in_db_no_email():
+
+    params = {
+        'id': 'my-id',
+        'name': 'my-name-2',
+        'email': None,
+        'admin': True,
+        'display_name': 'Test User'
+    }
+
+    models.user.create(params)
+
+    # Make sure that we are not checking the cached object in the session
+    database['session'].remove()
+
+    user = database['session'].query(models.user.User).get('my-id')
+
+    assert user
+
+    assert user.id == 'my-id'
+    assert user.name == 'my-name-2'
+    assert user.email is None
+    assert user.display_name == 'Test User'
+    assert user.admin is True
+
+
 def test_update_user_outputs_dict():
 
     user = factories.User()

@@ -1,11 +1,15 @@
+import logging
+import sqlalchemy
 from flask import Flask, render_template
 
-from . import settings
-from .auth import oauth, login_manager
-from .blueprints.api import api
-from .blueprints.site import site
-from .blueprints.user import user
-from .plugins.github.blueprint import github
+from goodtablesio import settings
+from goodtablesio.auth import oauth, login_manager
+from goodtablesio.blueprints.api import api
+from goodtablesio.blueprints.site import site
+from goodtablesio.blueprints.user import user
+from goodtablesio.plugins.github.blueprint import github
+from goodtablesio.services import database
+log = logging.getLogger(__name__)
 
 
 # Module API
@@ -41,3 +45,12 @@ def not_found_error(err):
 @app.errorhandler(500)
 def server_error(err):
     return (render_template('error500.html'), 500)
+
+
+@app.errorhandler(sqlalchemy.exc.SQLAlchemyError)
+def error_handler(err):
+    # To prevent session from break because of unhandled error with no rollback
+    # https://github.com/frictionlessdata/goodtables.io/issues/97
+    log.info('Database session rollback by server error handler')
+    database['session'].rollback()
+    raise err
