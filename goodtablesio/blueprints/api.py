@@ -33,6 +33,9 @@ def record_params(setup_state):
 
 @api.app_errorhandler(Exception)
 def handle_api_errors(error):
+    # TODO: this is not really correct way to catch blueprint errors
+    # because flask doesn't support error handlers per blueprint
+    # so this error handler is global for the whole app
     if api.debug:
         raise error
     if not isinstance(error, APIError):

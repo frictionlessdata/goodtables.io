@@ -1,4 +1,5 @@
 import logging
+import sqlalchemy
 from flask import Flask, render_template
 
 from goodtablesio import settings
@@ -46,7 +47,7 @@ def server_error(err):
     return (render_template('error500.html'), 500)
 
 
-@app.errorhandler(Exception)
+@app.errorhandler(sqlalchemy.exc.SQLAlchemyError)
 def error_handler(err):
     # To prevent session from break because of unhandled error with no rollback
     # https://github.com/frictionlessdata/goodtables.io/issues/97

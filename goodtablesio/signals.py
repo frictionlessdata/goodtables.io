@@ -1,4 +1,5 @@
 import logging
+import sqlalchemy
 from celery import signals
 from goodtablesio.utils.database import create_session
 from goodtablesio.services import database
@@ -21,7 +22,9 @@ def shutdown_worker(**kwargs):
 
 @signals.task_failure.connect
 def task_failure(**kwargs):
-    # To prevent session from break because of unhandled error with no rollback
-    # https://github.com/frictionlessdata/goodtables.io/issues/97
-    log.info('Database session rollback by celery error handler')
-    database['session'].rollback()
+    exception = kwargs['exception']
+    if isinstance(exception, sqlalchemy.exc.SQLAlchemyError):
+        # To prevent session from break because of unhandled error with no rollback
+        # https://github.com/frictionlessdata/goodtables.io/issues/97
+        log.info('Database session rollback by celery error handler')
+        database['session'].rollback()
