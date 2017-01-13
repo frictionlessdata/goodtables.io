@@ -162,16 +162,93 @@ def test_get_job_not_found_outputs_none():
     assert models.job.get('not-found') is None
 
 
-def test_get_all():
+def test_find():
     job1 = factories.Job()
     job2 = factories.Job()
     job3 = factories.Job()
 
-    all_jobs = models.job.get_all()
+    jobs = models.job.find()
 
-    assert len(all_jobs) == 3
+    assert len(jobs) == 3
 
-    assert all_jobs == [job3.to_dict(), job2.to_dict(), job1.to_dict()]
+    assert jobs == [job3.to_dict(), job2.to_dict(), job1.to_dict()]
+
+
+def test_find_limit():
+    factories.Job()
+    job2 = factories.Job()
+    job3 = factories.Job()
+
+    jobs = models.job.find(limit=2)
+
+    assert len(jobs) == 2
+
+    assert jobs == [job3.to_dict(), job2.to_dict()]
+
+
+def test_find_default_limit():
+
+    for i in range(0, 15):
+        factories.Job()
+
+    jobs = models.job.find()
+
+    assert len(jobs) == 10
+
+
+def test_find_offset():
+    job1 = factories.Job()
+    job2 = factories.Job()
+    factories.Job()
+
+    jobs = models.job.find(offset=1)
+
+    assert len(jobs) == 2
+
+    assert jobs == [job2.to_dict(), job1.to_dict()]
+
+
+def test_find_limit_and_offset():
+    factories.Job()
+    job2 = factories.Job()
+    job3 = factories.Job()
+    factories.Job()
+    factories.Job()
+
+    jobs = models.job.find(limit=2, offset=2)
+
+    assert len(jobs) == 2
+
+    assert jobs == [job3.to_dict(), job2.to_dict()]
+
+
+def test_find_filter():
+    job1 = factories.Job(plugin_name='test')
+    factories.Job()
+
+    jobs = models.job.find(filters=[models.job.Job.plugin_name == 'test'])
+
+    assert len(jobs) == 1
+
+    assert jobs[0]['id'] == job1.id
+    assert jobs[0]['plugin_name'] == 'test'
+
+
+def test_find_filter_limit_and_offset():
+    factories.Job()
+    job2 = factories.Job(status='success')
+    factories.Job()
+    factories.Job(status='success')
+    factories.Job()
+    factories.Job()
+
+    jobs = models.job.find(
+        filters=[models.job.Job.status == 'success'],
+        limit=2, offset=1)
+
+    assert len(jobs) == 1
+
+    assert jobs == [job2.to_dict()]
 
 
 def test_get_ids():
@@ -179,3 +256,16 @@ def test_get_ids():
     job2 = factories.Job()
 
     assert models.job.get_ids() == [job2.id, job1.id]
+
+
+def test_get_by_plugin():
+    job1 = factories.Job(plugin_name='s3')
+    factories.Job()
+
+    assert models.job.get_by_plugin('s3') == [job1.to_dict()]
+
+
+def test_get_by_plugin_not_found():
+    factories.Job()
+
+    assert models.job.get_by_plugin('not-found') == []

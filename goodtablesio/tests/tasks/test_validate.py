@@ -23,7 +23,7 @@ def test_validate(_inspect):
 
     _inspect.assert_called_with(validation_conf['files'], preset='tables')
 
-    jobs = models.job.get_all()
+    jobs = models.job.find()
 
     assert len(jobs) == 1
 

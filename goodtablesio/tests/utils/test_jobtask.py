@@ -23,7 +23,7 @@ def test_JobTask_on_failure_invalid_job_conf():
     task.s(job_id=job.id).delay()
 
     # Assert errored job
-    jobs = models.job.get_all()
+    jobs = models.job.find()
     assert len(jobs) == 1
 
     updated_job = jobs[0]
@@ -47,7 +47,7 @@ def test_JobTask_on_failure_invalid_validation_conf():
     task.s(job_id=job.id).delay()
 
     # Assert errored job
-    jobs = models.job.get_all()
+    jobs = models.job.find()
     assert len(jobs) == 1
 
     updated_job = jobs[0]

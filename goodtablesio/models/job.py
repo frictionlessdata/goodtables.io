@@ -11,6 +11,9 @@ from goodtablesio.models.base import Base, BaseModelMixin, make_uuid
 log = logging.getLogger(__name__)
 
 
+MAX_JOBS_LIMIT = 100
+
+
 class Job(Base, BaseModelMixin):
 
     __tablename__ = 'jobs'
@@ -110,15 +113,53 @@ def get_ids():
     return [j.id for j in job_ids]
 
 
-def get_all():
-    """Get all jobs in the database as dict.
+def find(filters=None, limit=10, offset=0):
+    """Get a page of jobs in the database as dict, optionally filtered.
 
-    Warning: Use with caution, this should probably only be used in tests
+    Arguments:
+        filters (expr[]): A list of SQL expressions to be applied, eg:
+            filters = [Job.plugin_name == 'github']
+        limit (limit): Maximum results to get. Defaults to 10, there's a hard
+            limit of 100.
+        offset (offset): Offset record from where to start. Defaults to 0.
+
 
     Returns:
         jobs (dict[]): A list of job dicts, sorted by descending creation date.
 
     """
 
-    jobs = database['session'].query(Job).order_by(Job.created.desc()).all()
+    q = database['session'].query(Job)
+
+    limit = limit or MAX_JOBS_LIMIT
+
+    if filters:
+        for _filter in filters:
+            q = q.filter(_filter)
+
+    q = q.order_by(Job.created.desc())
+
+    q = q.limit(limit)
+    if offset:
+        q = q.offset(offset)
+
+    jobs = q.all()
+
     return [j.to_dict() for j in jobs]
+
+
+def get_by_plugin(plugin_name, **kwargs):
+    """Get all jobs in the database for a particular plugin as dict.
+
+    Arguments:
+        plugin_name (str): The name of the plugin to filter jobs from,
+            eg 'github'
+        Supports the rest of the arguments supported by `find()`
+
+
+    Returns:
+        jobs (dict[]): A list of job dicts, sorted by descending creation date.
+
+    """
+
+    return find(filters=[Job.plugin_name == plugin_name], **kwargs)
