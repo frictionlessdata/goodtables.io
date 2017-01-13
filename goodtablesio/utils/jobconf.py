@@ -5,7 +5,7 @@ import requests
 import jsonschema
 from fnmatch import fnmatch
 from tabulator import Stream
-from goodtablesio import exceptions, settings
+from goodtablesio import exceptions
 
 
 # Module API
