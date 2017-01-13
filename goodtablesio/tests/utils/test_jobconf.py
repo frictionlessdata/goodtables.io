@@ -11,6 +11,12 @@ def test_create_validation_conf(load_file):
     job_base = 'http://example.com'
     job_files = [
         'file.csv',
+        'file.json',
+        'file.jsonl',
+        'file.ndjson',
+        'file.tsv',
+        'file.xls',
+        'file.ods',
         'file.pdf',
         'goodtables.yml',
     ]
@@ -22,6 +28,12 @@ def test_create_validation_conf(load_file):
     validation_conf = {
         'files': [
             {'source': 'http://example.com/file.csv'},
+            {'source': 'http://example.com/file.json'},
+            {'source': 'http://example.com/file.jsonl'},
+            {'source': 'http://example.com/file.ndjson'},
+            {'source': 'http://example.com/file.tsv'},
+            {'source': 'http://example.com/file.xls'},
+            {'source': 'http://example.com/file.ods'},
         ],
         'settings': {
             'error_limit': 1,
