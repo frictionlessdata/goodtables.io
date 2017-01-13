@@ -139,8 +139,8 @@ def create_job():
     key = settings.GITHUB_HOOK_SECRET
     text = request.data
     signature = request.headers.get('X-Hub-Signature', '')
-#    if not validate_signature(key, text, signature):
-#        abort(400)
+    if not validate_signature(key, text, signature):
+        abort(400)
 
     # Get payload parameters
     payload = request.get_json()
