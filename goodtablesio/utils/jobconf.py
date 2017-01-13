@@ -4,6 +4,7 @@ import yaml
 import requests
 import jsonschema
 from fnmatch import fnmatch
+from tabulator import Stream
 from goodtablesio import exceptions, settings
 
 
@@ -119,10 +120,7 @@ def _load_file(url):
 
 
 def _is_tabular_file(name):
-    extension = os.path.splitext(name)[1]
-    if extension and extension[1:].lower() in settings.TABULAR_EXTENSIONS:
-        return True
-    return False
+    return Stream.test(name)
 
 
 def _validate(struct, schema):
