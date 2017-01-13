@@ -1,52 +1,24 @@
 {% extends "layout.html" %}
 
+{% import 'macros/jobs_list.html' as jobs_list %}
+
 {% block contents %}
 <div class="container">
 
-  <h1>GitHub</h1>
+  <h1>GitHub Jobs </h1>
 
-  <p>GitHub integration description</p>
-
-  <h2>Repos</h2>
-
-  {% if current_user.is_authenticated %}
-
-    {% if sync %}
-
-      <p><button disable class="btn btn-warning">Syncing account</button></p>
-      <p>Page will be reloaded in 5 seconds...</p>
-      <script>
-        setTimeout(function(){
-           window.location.reload(1);
-        }, 5000);
-      </script>
-
+  {% if org %}
+    {% if repo %}
+      <h2>{{ org }}/{{ repo }}</h2>
     {% else %}
-
-      <div style="border-bottom: solid 1px #eee;">
-        <a href="/github/sync" class="btn btn-primary" style="width:120px;">Sync account</a>
-        <strong>Repositories</strong>
-      </div>
-
-      {% for repo in repos %}
-        <div {% if not loop.last %}style="border-bottom: solid 1px #eee;"{% endif %}>
-          {% if repo.active %}
-            <a href="/github/deactivate/{{ repo.id }}" class="btn btn-success" style="width:120px;">Deactivate</a>
-          {% else %}
-            <a href="/github/activate/{{ repo.id }}" class="btn btn-danger" style="width:120px;">Activate</a>
-          {% endif %}
-          <a href="{{ repo.url }}">{{ repo.owner }}/{{ repo.repo }}</a>
-        </div>
-      {% else %}
-        <p style="margin: 10px 0">There are no synced repositories</p>
-      {% endfor %}
-
+      <h2>{{ org }}</h2>
     {% endif %}
+  {% endif %}
 
+  {% if jobs %}
+    {{ jobs_list.jobs_list(jobs) }}
   {% else %}
-
-    <p>Login to setup repos!</p>
-
+    <p>No active or finished jobs.</p>
   {% endif %}
 
 </div>

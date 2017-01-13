@@ -1,5 +1,7 @@
 {% extends "layout.html" %}
 
+{% import 'macros/jobs_list.html' as jobs_list %}
+
 {% block contents %}
 <div class="container">
   <h1>Dashboard</h1>
@@ -8,30 +10,18 @@
   {% if not current_user.is_authenticated %}
     <p>Login to see jobs!</p>
   {% else %}
-    {% for job in user_jobs %}
-      <div {% if not loop.last %}style="border-bottom: solid 1px #eee;"{% endif %}>
-        {% if job.status == 'success' %}
-          <a href="/jobs/{{ job.id }}" class="btn btn-success" style="width: 80px;">Valid</a>
-        {% elif job.status == 'error' %}
-          <a href="/jobs/{{ job.id }}" class="btn btn-warning" style="width: 80px;">Errored</a>
-        {% else %}
-          <a href="/jobs/{{ job.id }}" class="btn btn-danger" style="width: 80px;">Invalid</a>
-        {% endif %}
-        <a href="/jobs/{{ job.id }}">
-          {{ job.plugin_conf.repository.owner }}/{{ job.plugin_conf.repository.name }}
-        </a>
-        <small style="color: #777">({{ job.created.strftime('%Y-%m-%d') }})</small>
-      </div>
+    {% if user_jobs %}
+      {{ jobs_list.jobs_list(user_jobs) }}
     {% else %}
       <p>No active or finished jobs.</p>
-    {% endfor %}
+    {% endif %}
   {% endif %}
   <hr>
   <p>See all system <a href="/jobs">jobs</a>.</p>
 
   <h2>Integrations</h2>
-  <a href="/github" class="btn btn-primary" style="width: 80px;">GitHub</a>
-  <a href="/github" >Configure GitHub integration</a>
+  <a href="/github" class="btn btn-primary">GitHub Jobs</a>
+  <a href="/github/settings" >Configure GitHub integration</a>
   <hr>
   <p>See all system <a href="/integrations">integrations</a>.</p>
 
