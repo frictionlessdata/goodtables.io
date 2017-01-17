@@ -41,7 +41,7 @@ def test_validate_no_files():
     validation_conf = {'files': [], 'settings': {}}
     validate(validation_conf, job_id=job.id)
 
-    jobs = models.job.get_all()
+    jobs = models.job.find()
 
     assert len(jobs) == 1
 
