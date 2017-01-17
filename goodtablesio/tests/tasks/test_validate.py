@@ -31,3 +31,21 @@ def test_validate(_inspect):
     assert updated_job['id'] == job.id
     assert updated_job['report'] == mock_report
     assert isinstance(updated_job['finished'], datetime.datetime)
+
+
+def test_validate_no_files():
+
+    # We need to save it on the DB so the session used by the tasks can find it
+    job = factories.Job(_save_in_db=True)
+
+    validation_conf = {'files': [], 'settings': {}}
+    validate(validation_conf, job_id=job.id)
+
+    jobs = models.job.get_all()
+
+    assert len(jobs) == 1
+
+    updated_job = jobs[0]
+    assert updated_job['id'] == job.id
+    assert updated_job['error'] == {'message': 'No files to validate'}
+    assert isinstance(updated_job['finished'], datetime.datetime)

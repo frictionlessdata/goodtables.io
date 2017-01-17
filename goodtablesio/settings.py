@@ -19,7 +19,6 @@ log = logging.getLogger(__name__)
 # General
 
 BASE_URL = os.environ['BASE_URL']
-TABULAR_EXTENSIONS = ['csv', 'xls', 'xlsx', 'ods']
 
 # Flask
 
@@ -51,7 +50,6 @@ enable_utc = True
 GITHUB_API_BASE = 'https://api.github.com'
 GITHUB_API_TOKEN = os.environ['GITHUB_API_TOKEN']
 GITHUB_HOOK_SECRET = os.environ['GITHUB_HOOK_SECRET']
-GITHUB_CLONE_DIR = '/tmp'
 
 # OAuth
 
