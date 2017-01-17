@@ -4,26 +4,9 @@
 
 {% block contents %}
 <div class="container">
-  <h1>Dashboard</h1>
+  <h1>Welcome to Goodtables</h1>
 
-  <h2>Jobs</h2>
-  {% if not current_user.is_authenticated %}
-    <p>Login to see jobs!</p>
-  {% else %}
-    {% if user_jobs %}
-      {{ jobs_list.jobs_list(user_jobs) }}
-    {% else %}
-      <p>No active or finished jobs.</p>
-    {% endif %}
-  {% endif %}
-  <hr>
-  <p>See all system <a href="/jobs">jobs</a>.</p>
-
-  <h2>Integrations</h2>
-  <a href="/github" class="btn btn-primary">GitHub Jobs</a>
-  <a href="/github/settings" >Configure GitHub integration</a>
-  <hr>
-  <p>See all system <a href="/integrations">integrations</a>.</p>
+  <p>Please log in to continue</p>
 
 </div>
 {% endblock %}

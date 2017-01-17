@@ -14,7 +14,7 @@
     {% if sync %}
 
       <p><button disable class="btn btn-warning">Syncing account</button></p>
-      <p>Page will be reloaded in 5 seconds...</p>
+      <p>This might take a while. This page will be reloaded in 5 seconds...</p>
       <script>
         setTimeout(function(){
            window.location.reload(1);
@@ -23,19 +23,25 @@
 
     {% else %}
 
-      <div style="border-bottom: solid 1px #eee;">
-        <a href="/github/sync" class="btn btn-primary" style="width:120px;">Sync account</a>
-        <strong>Repositories</strong>
+     <div style="margin-bottom: 30px" class="row">
+        <div style="float: right">
+            <span> Refresh your organizations and repositories</span>
+            <a href="/github/sync" class="btn btn-primary" style="width:120px;">Sync account</a>
+        </div>
       </div>
 
       {% for repo in repos %}
-        <div {% if not loop.last %}style="border-bottom: solid 1px #eee;"{% endif %}>
+        <div {% if not loop.last %}style="border-bottom: solid 1px #eee; padding: 5px 0"{% endif %}>
           {% if repo.active %}
             <a href="/github/deactivate/{{ repo.id }}" class="btn btn-success" style="width:120px;">Deactivate</a>
           {% else %}
             <a href="/github/activate/{{ repo.id }}" class="btn btn-danger" style="width:120px;">Activate</a>
           {% endif %}
-          <a href="{{ repo.url }}">{{ repo.owner }}/{{ repo.repo }}</a>
+          {{ repo.owner }}/{{ repo.repo }} (<a href="{{ repo.url }}">repo</a>)
+
+          {% if repo.active %}
+            - <a href="{{ url_for('github.github_repo', org=repo.owner, repo=repo.repo) }}">View jobs</a>
+          {% endif %}
         </div>
       {% else %}
         <p style="margin: 10px 0">There are no synced repositories</p>

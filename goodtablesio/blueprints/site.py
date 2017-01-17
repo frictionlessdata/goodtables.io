@@ -1,4 +1,4 @@
-from flask import Blueprint, abort, render_template, session
+from flask import Blueprint, abort, render_template, session, redirect
 from goodtablesio.services import database
 from goodtablesio import models
 
@@ -10,20 +10,32 @@ site = Blueprint('site', __name__)
 
 @site.route('/')
 def home():
-    user_jobs = []
+
+    if session.get('user_id'):
+        return redirect('dashboard')
+
+    return render_template('home.html')
+
+
+@site.route('/dashboard')
+def dashboard():
+
     user_id = session.get('user_id')
-    if user_id:
-        # TODO: limit jobs count to show!
-        # TODO: here we should filter jobs by user!
-        user_jobs = (database['session'].query(models.job.Job)
-            .order_by(models.job.Job.created.desc()).all())
-    return render_template('home.html', user_jobs=user_jobs)
+    if not user_id:
+        return redirect('home')
+
+    # TODO: Get most recent job per project
+    github_jobs = models.job.get_by_plugin('github', limit=5)
+    s3_jobs = models.job.get_by_plugin('s3', limit=5)
+
+    return render_template('dashboard.html',
+                           github_jobs=github_jobs, s3_jobs=s3_jobs)
 
 
 @site.route('/jobs')
 def jobs():
-    job_ids = models.job.get_ids()
-    return render_template('jobs.html', job_ids=job_ids)
+    jobs = models.job.find()
+    return render_template('jobs.html', jobs=jobs)
 
 
 @site.route('/jobs/<job_id>')
@@ -32,8 +44,3 @@ def job(job_id):
     if not job:
         abort(404)
     return render_template('job.html', job=job)
-
-
-@site.route('/integrations')
-def integrations():
-    return render_template('integrations.html')

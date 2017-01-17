@@ -80,7 +80,9 @@ def github_settings():
         if user_id:
             repos = (database['session'].query(GithubRepo).
                      filter(GithubRepo.users.any(id=user_id)).
-                     order_by(GithubRepo.owner, GithubRepo.repo).
+                     order_by(GithubRepo.active.desc(),
+                              GithubRepo.owner,
+                              GithubRepo.repo).
                      all())
 
     return render_template('github_settings.html', sync=sync, repos=repos)
@@ -97,7 +99,7 @@ def sync():
     # It's kinda general problem it looks like we need
     # to track syncing tasks in the database (github, s3, etc)
     session['github_sync_task_id'] = result.task_id
-    return redirect(url_for('github.home'))
+    return redirect(url_for('github.github_settings'))
 
 
 @github.route('/activate/<repo_id>')
@@ -113,7 +115,7 @@ def activate(repo_id):
     except Exception as exception:
         log.exception(exception)
         abort(400)
-    return redirect(url_for('github.home'))
+    return redirect(url_for('github.github_settings'))
 
 
 @github.route('/deactivate/<repo_id>')
@@ -129,7 +131,7 @@ def deactivate(repo_id):
     except Exception as exception:
         log.exception(exception)
         abort(400)
-    return redirect(url_for('github.home'))
+    return redirect(url_for('github.github_settings'))
 
 
 @github.route('/hook', methods=['POST'])
