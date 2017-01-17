@@ -25,6 +25,11 @@ github = Blueprint('github', __name__, url_prefix='/github',
                    template_folder='templates')
 
 
+@github.record
+def record_params(setup_state):
+    github.debug = setup_state.app.debug
+
+
 @github.route('/')
 def github_home():
 
@@ -138,11 +143,12 @@ def deactivate(repo_id):
 def create_job():
 
     # Validate signature
-    key = settings.GITHUB_HOOK_SECRET
-    text = request.data
-    signature = request.headers.get('X-Hub-Signature', '')
-    if not validate_signature(key, text, signature):
-        abort(400)
+    if not github.debug:
+        key = settings.GITHUB_HOOK_SECRET
+        text = request.data
+        signature = request.headers.get('X-Hub-Signature', '')
+        if not validate_signature(key, text, signature):
+            abort(400)
 
     # Get payload parameters
     payload = request.get_json()
