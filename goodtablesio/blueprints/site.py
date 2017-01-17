@@ -1,5 +1,4 @@
-from flask import Blueprint, abort, render_template, session, redirect
-from goodtablesio.services import database
+from flask import Blueprint, abort, render_template, session, redirect, url_for
 from goodtablesio import models
 
 
@@ -12,7 +11,7 @@ site = Blueprint('site', __name__)
 def home():
 
     if session.get('user_id'):
-        return redirect('dashboard')
+        return redirect(url_for('site.dashboard'))
 
     return render_template('home.html')
 
@@ -22,7 +21,7 @@ def dashboard():
 
     user_id = session.get('user_id')
     if not user_id:
-        return redirect('home')
+        return redirect(url_for('site.home'))
 
     # TODO: Get most recent job per project
     github_jobs = models.job.get_by_plugin('github', limit=5)
