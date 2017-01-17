@@ -34,6 +34,9 @@ else:
     log.debug('Testing mode')
     DATABASE_URL = os.environ['TEST_DATABASE_URL']
 
+# Maximum limit on all job queries
+MAX_JOBS_LIMIT = 100
+
 # Celery
 
 broker_url = os.environ['BROKER_URL']

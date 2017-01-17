@@ -4,14 +4,12 @@ import datetime
 from sqlalchemy import Column, Unicode, DateTime, update as db_update
 from sqlalchemy.dialects.postgresql import JSONB
 
+from goodtablesio import settings
 from goodtablesio.services import database
 from goodtablesio.models.base import Base, BaseModelMixin, make_uuid
 
 
 log = logging.getLogger(__name__)
-
-
-MAX_JOBS_LIMIT = 100
 
 
 class Job(Base, BaseModelMixin):
@@ -131,7 +129,7 @@ def find(filters=None, limit=10, offset=0):
 
     q = database['session'].query(Job)
 
-    limit = limit or MAX_JOBS_LIMIT
+    limit = limit or settings.MAX_JOBS_LIMIT
 
     if filters:
         for _filter in filters:
