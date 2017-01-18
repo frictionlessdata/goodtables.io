@@ -65,6 +65,7 @@ def github_repo(org, repo):
 
 
 @github.route('/settings')
+@login_required
 def github_settings():
 
     # Get github syncing status
