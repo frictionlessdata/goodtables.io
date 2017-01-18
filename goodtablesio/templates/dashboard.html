@@ -18,10 +18,13 @@
 
     {% if github_jobs %}
       {{ jobs_list.jobs_list(github_jobs) }}
+
+      <div style="margin-top: 20px"><a href="/github">Show more</a></div>
     {% else %}
       <p>No active or finished jobs.</p>
     {% endif %}
 
+  <hr />
   <h3>Amazon S3</h3>
 
    <div style="margin-bottom: 30px" class="row">
@@ -32,6 +35,8 @@
 
     {% if s3_jobs %}
       {{ jobs_list.jobs_list(s3_jobs) }}
+
+      <div><a href="/s3">Show more</a></div>
     {% else %}
       <p>No active or finished jobs.</p>
     {% endif %}

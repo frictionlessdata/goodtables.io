@@ -1,6 +1,6 @@
 {% macro jobs_list(jobs) -%}
   {% for job in jobs %}
-    <div {% if not loop.last %}style="border-bottom: solid 1px #eee; padding: 5px 0"{% endif %}>
+    <div style="{% if not loop.last %}border-bottom: solid 1px #eee; {% endif %}padding: 5px 0">
       {% if job.status == 'success' %}
         <a href="/jobs/{{ job.id }}" class="btn btn-success" style="width: 80px;">Valid</a>
       {% elif job.status == 'error' %}
