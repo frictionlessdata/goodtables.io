@@ -125,11 +125,11 @@ def test_github_login_creates_new_user(
     with client.app.test_request_context():
         authorized_url = url_for('user.authorized', provider='github')
 
-    assert models.user.get_all() == []
+    assert models.user.find() == []
 
     client.get(authorized_url)
 
-    users = models.user.get_all()
+    users = models.user.find()
 
     assert len(users) == 1
 
@@ -149,7 +149,7 @@ def test_github_login_existing_user(
 
     client.get(authorized_url)
 
-    users = models.user.get_all()
+    users = models.user.find()
 
     assert len(users) == 1
 
@@ -167,7 +167,7 @@ def test_github_login_existing_user_same_email_different_provider(
 
     client.get(authorized_url)
 
-    users = models.user.get_all()
+    users = models.user.find()
 
     assert len(users) == 1
 

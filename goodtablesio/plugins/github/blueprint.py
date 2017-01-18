@@ -21,11 +21,51 @@ from goodtablesio.plugins.github.utils.hook import (
 log = logging.getLogger(__name__)
 
 
-github = Blueprint('github', __name__, url_prefix='/github', template_folder='templates')
+github = Blueprint('github', __name__, url_prefix='/github',
+                   template_folder='templates')
+
+
+@github.record
+def record_params(setup_state):
+    github.debug = setup_state.app.debug
 
 
 @github.route('/')
-def home():
+def github_home():
+
+    jobs = models.job.get_by_plugin('github')
+
+    return render_template('github_home.html', jobs=jobs)
+
+
+@github.route('/repo/<org>')
+def github_org(org):
+
+    jobs = models.job.find(
+        filters=[
+            models.job.Job.plugin_name == 'github',
+            models.job.Job.plugin_conf[('repository', 'owner')].astext == org]
+    )
+
+    return render_template('github_home.html', jobs=jobs, org=org)
+
+
+@github.route('/repo/<org>/<repo>')
+def github_repo(org, repo):
+
+    jobs = models.job.find(
+        filters=[
+            models.job.Job.plugin_name == 'github',
+            models.job.Job.plugin_conf[('repository', 'owner')].astext == org,
+            models.job.Job.plugin_conf[('repository', 'name')].astext == repo
+            ]
+    )
+
+    return render_template('github_home.html', jobs=jobs, org=org, repo=repo)
+
+
+@github.route('/settings')
+def github_settings():
 
     # Get github syncing status
     sync = False
@@ -44,11 +84,13 @@ def home():
         user_id = session.get('user_id')
         if user_id:
             repos = (database['session'].query(GithubRepo).
-                filter(GithubRepo.users.any(id=user_id)).
-                order_by(GithubRepo.owner, GithubRepo.repo).
-                all())
+                     filter(GithubRepo.users.any(id=user_id)).
+                     order_by(GithubRepo.active.desc(),
+                              GithubRepo.owner,
+                              GithubRepo.repo).
+                     all())
 
-    return render_template('github_home.html', sync=sync, repos=repos)
+    return render_template('github_settings.html', sync=sync, repos=repos)
 
 
 @github.route('/sync')
@@ -62,7 +104,7 @@ def sync():
     # It's kinda general problem it looks like we need
     # to track syncing tasks in the database (github, s3, etc)
     session['github_sync_task_id'] = result.task_id
-    return redirect(url_for('github.home'))
+    return redirect(url_for('github.github_settings'))
 
 
 @github.route('/activate/<repo_id>')
@@ -78,7 +120,7 @@ def activate(repo_id):
     except Exception as exception:
         log.exception(exception)
         abort(400)
-    return redirect(url_for('github.home'))
+    return redirect(url_for('github.github_settings'))
 
 
 @github.route('/deactivate/<repo_id>')
@@ -94,18 +136,19 @@ def deactivate(repo_id):
     except Exception as exception:
         log.exception(exception)
         abort(400)
-    return redirect(url_for('github.home'))
+    return redirect(url_for('github.github_settings'))
 
 
 @github.route('/hook', methods=['POST'])
 def create_job():
 
     # Validate signature
-    key = settings.GITHUB_HOOK_SECRET
-    text = request.data
-    signature = request.headers.get('X-Hub-Signature', '')
-    if not validate_signature(key, text, signature):
-        abort(400)
+    if not github.debug:
+        key = settings.GITHUB_HOOK_SECRET
+        text = request.data
+        signature = request.headers.get('X-Hub-Signature', '')
+        if not validate_signature(key, text, signature):
+            abort(400)
 
     # Get payload parameters
     payload = request.get_json()

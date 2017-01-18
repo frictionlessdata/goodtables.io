@@ -153,12 +153,12 @@ def test_get_user_not_found_outputs_none():
     assert models.user.get('not-found') is None
 
 
-def test_get_all():
+def test_find():
     user1 = factories.User()
     user2 = factories.User()
     user3 = factories.User()
 
-    all_users = models.user.get_all()
+    all_users = models.user.find()
 
     assert len(all_users) == 3
 

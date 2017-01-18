@@ -162,7 +162,7 @@ def get_ids():
     return [j.id for j in user_ids]
 
 
-def get_all():
+def find():
     """Get all users in the database as dict.
 
     Warning: Use with caution, this should probably only be used in tests

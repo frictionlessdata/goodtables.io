@@ -1,0 +1,21 @@
+{% macro jobs_list(jobs) -%}
+  {% for job in jobs %}
+    <div style="{% if not loop.last %}border-bottom: solid 1px #eee; {% endif %}padding: 5px 0">
+      {% if job.status == 'success' %}
+        <a href="/jobs/{{ job.id }}" class="btn btn-success" style="width: 80px;">Valid</a>
+      {% elif job.status == 'error' %}
+        <a href="/jobs/{{ job.id }}" class="btn btn-warning" style="width: 80px;">Errored</a>
+      {% else %}
+        <a href="/jobs/{{ job.id }}" class="btn btn-danger" style="width: 80px;">Invalid</a>
+      {% endif %}
+        {% if job.plugin_name == 'github' %}
+          <a href="/jobs/{{ job.id }}">{{ job.plugin_conf.repository.owner }}/{{ job.plugin_conf.repository.name }}</a> -
+          (<a href="https://github.com/{{ job.plugin_conf.repository.owner }}/{{ job.plugin_conf.repository.name }}/commit/{{ job.plugin_conf.sha }}">{{ job.plugin_conf.sha[:6] }}</a>)
+        {% elif job.plugin_name == 's3' %}
+          <a href="/jobs/{{ job.id }}">{{ job.plugin_conf.bucket }}</a>
+        {% endif %}
+      </a>
+      <small style="color: #777">({{ job.created.strftime('%Y-%m-%d') }})</small>
+    </div>
+  {% endfor %}
+{%- endmacro %}

@@ -7,9 +7,9 @@
 alembic==0.8.9
 amqp==2.1.4               # via kombu
 billiard==3.5.0.2         # via celery
-cchardet==1.1.1           # via tabulator
+cchardet==1.1.2           # via tabulator
 celery==4.0.0
-click==6.6                # via flask, goodtables, jsontableschema, python-dotenv, tabulator
+click==6.7                # via flask, goodtables, jsontableschema, python-dotenv, tabulator
 datapackage==0.8.5        # via goodtables
 et-xmlfile==1.0.1         # via openpyxl
 ezodf==0.3.2              # via tabulator
@@ -23,13 +23,13 @@ gunicorn==19.6.0
 ijson==2.3                # via tabulator
 itsdangerous==0.24        # via flask
 jdcal==1.3                # via openpyxl
-Jinja2==2.8               # via flask
+Jinja2==2.9.4             # via flask
 jsonlines==1.1.0          # via tabulator
 jsonschema==2.5.1
-jsontableschema==0.8.4    # via datapackage, goodtables
-kombu==4.0.1              # via celery
+jsontableschema==0.9.0
+kombu==4.0.2              # via celery
 linear-tsv==1.0.0         # via tabulator
-lxml==3.7.0               # via tabulator
+lxml==3.7.2               # via tabulator
 Mako==1.0.6               # via alembic
 MarkupSafe==0.23          # via jinja2, mako
 oauthlib==2.0.1           # via flask-oauthlib, requests-oauthlib
@@ -46,10 +46,10 @@ requests==2.11.1
 rfc3986==0.4.1            # via jsontableschema
 six==1.10.0               # via datapackage, goodtables, jsonlines, linear-tsv, python-dateutil, tabulator
 sqlalchemy==1.1.4
-tabulator==0.13.0         # via datapackage, goodtables, jsontableschema
+tabulator==0.13.0
 unicodecsv==0.14.1        # via datapackage, jsontableschema, tabulator
 uritemplate.py==3.0.2     # via github3.py
 uritemplate==3.0.0        # via uritemplate.py
 vine==1.1.3               # via amqp
-Werkzeug==0.11.11         # via flask
+Werkzeug==0.11.15         # via flask
 xlrd==1.0.0               # via tabulator
