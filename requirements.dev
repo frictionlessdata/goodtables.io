@@ -5,4 +5,4 @@ pip-tools
 pytest
 pytest-cov
 pytest-env
-coverage==4.2
+coverage
