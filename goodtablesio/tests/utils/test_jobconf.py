@@ -93,6 +93,7 @@ def test_create_validation_conf_subdir_granular(load_file):
           - source: data/file.csv
             schema: data/schema.json
             delimiter: ';'
+            skipRows: [1, 2, '#', '//']
         settings:
             order_fields: true
     """
@@ -102,6 +103,7 @@ def test_create_validation_conf_subdir_granular(load_file):
                 'source': 'http://example.com/data/file.csv',
                 'schema': 'http://example.com/data/schema.json',
                 'delimiter': ';',
+                'skipRows': [1, 2, '#', '//'],
             },
         ],
         'settings': {
