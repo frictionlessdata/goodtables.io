@@ -49,3 +49,20 @@ def test_validate_no_files():
     assert updated_job['id'] == job.id
     assert updated_job['error'] == {'message': 'No files to validate'}
     assert isinstance(updated_job['finished'], datetime.datetime)
+
+
+def test_validate_skip_rows():
+    source = 'text://a,b\n1,2\n#comment'
+    format = 'csv'
+
+    # Without skip rows
+    job = factories.Job()
+    conf = {'files': [{'source': source, 'format': format}]}
+    job = validate(conf, job_id=job.id)
+    assert job['report']['valid'] is False
+
+    # With skip rows
+    job = factories.Job()
+    conf = {'files': [{'source': source, 'format': format, 'skip_rows': ['#']}]}
+    job = validate(conf, job_id=job.id)
+    assert job['report']['valid'] is True

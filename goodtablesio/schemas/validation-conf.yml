@@ -30,6 +30,8 @@ properties:
           type: string
         encoding:
           type: string
+        skip_rows:
+          type: array
 
         # For csv format
         doublequote:
@@ -68,25 +70,25 @@ properties:
           - schema
 
       # Error limit per table
-      errorLimit:
+      error_limit:
         type: integer
 
       # Table limit per job
-      tableLimit:
+      table_limit:
         type: integer
 
       # Row limit per table
-      rowLimit:
+      row_limit:
         type: integer
 
       # Allow infer schema
-      inferSchema:
+      infer_schema:
         type: boolean
 
       # Allow infer extra fields
-      inferFields:
+      infer_fields:
         type: boolean
 
       # Allow fields ordering
-      orderFields:
+      order_fields:
         type: boolean
