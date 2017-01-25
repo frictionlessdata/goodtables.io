@@ -51,6 +51,15 @@ GITHUB_API_BASE = 'https://api.github.com'
 GITHUB_API_TOKEN = os.environ['GITHUB_API_TOKEN']
 GITHUB_HOOK_SECRET = os.environ['GITHUB_HOOK_SECRET']
 
+
+# S3
+
+S3_GT_ACCESS_KEY_ID = os.environ['S3_GT_ACCESS_KEY_ID']
+S3_GT_SECRET_ACCESS_KEY = os.environ['S3_GT_SECRET_ACCESS_KEY']
+S3_GT_AWS_REGION = os.environ['S3_GT_AWS_REGION']
+S3_GT_ACCOUNT_ID = os.environ['S3_GT_ACCOUNT_ID']
+S3_LAMBDA_ARN = os.environ['S3_LAMBDA_ARN']
+
 # OAuth
 
 GITHUB_CLIENT_ID = os.environ['GITHUB_CLIENT_ID']

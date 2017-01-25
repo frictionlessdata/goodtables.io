@@ -8,6 +8,7 @@ from goodtablesio.blueprints.api import api
 from goodtablesio.blueprints.site import site
 from goodtablesio.blueprints.user import user
 from goodtablesio.plugins.github.blueprint import github
+from goodtablesio.plugins.s3.blueprint import s3
 from goodtablesio.services import database
 log = logging.getLogger(__name__)
 
@@ -33,6 +34,7 @@ app.register_blueprint(user)
 
 # Register plugins
 app.register_blueprint(github)
+app.register_blueprint(s3)
 
 
 # Set error handlers
