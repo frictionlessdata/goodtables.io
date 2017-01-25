@@ -51,7 +51,7 @@ rfc3986==0.4.1            # via jsontableschema
 s3transfer==0.1.10        # via boto3
 six==1.10.0               # via datapackage, goodtables, jsonlines, linear-tsv, python-dateutil, tabulator
 sqlalchemy==1.1.4
-tabulator==0.13.0
+tabulator==0.14.0
 unicodecsv==0.14.1        # via datapackage, jsontableschema, tabulator
 uritemplate.py==3.0.2     # via github3.py
 uritemplate==3.0.0        # via uritemplate.py
