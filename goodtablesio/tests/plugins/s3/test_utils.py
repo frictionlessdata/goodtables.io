@@ -3,7 +3,8 @@ import botocore
 from botocore.stub import Stubber
 
 from goodtablesio import settings
-from goodtablesio.plugins.s3.utils import LambdaClient, S3Client, S3Exception
+from goodtablesio.plugins.s3.utils import LambdaClient, S3Client
+from goodtablesio.plugins.s3.exceptions import S3Exception
 from goodtablesio.tests.plugins.s3 import mock_responses
 
 
