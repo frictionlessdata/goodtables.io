@@ -25,11 +25,11 @@ env:
     - GITHUB_HOOK_SECRET=test-github-hook-secret
     - GITHUB_CLIENT_ID=test-github-client-id
     - GITHUB_CLIENT_SECRET=test-github-client-secret
-	- S3_GT_ACCESS_KEY_ID=test
-	- S3_GT_SECRET_ACCESS_KEY=test
-	- S3_GT_AWS_REGION=test
-	- S3_GT_ACCOUNT_ID=test
-	- S3_LAMBDA_ARN=test
+    - S3_GT_ACCESS_KEY_ID=test
+    - S3_GT_SECRET_ACCESS_KEY=test
+    - S3_GT_AWS_REGION=test
+    - S3_GT_ACCOUNT_ID=test
+    - S3_LAMBDA_ARN=test
 
 install:
   - python setup.py develop
