@@ -42,10 +42,15 @@ class LambdaClient(object):
         except botocore.exceptions.ClientError as e:
             if e.response['Error']['Code'] == 'EndpointConnectionError':
                 raise S3Exception(
-                    'Could not connect to the Lambda endpoint: {}'.format(e))
+                    'Could not connect to the Lambda endpoint: {}'.format(e),
+                    's3-connection-error')
             elif e.response['Error']['Code'] == 'ResourceNotFound':
                 raise S3Exception(
-                    'AWS Lambda function not found: {}'.format(e))
+                    'AWS Lambda function not found: {}'.format(e),
+                    's3-lambda-not-found')
+            elif e.response['Error']['Code'] == 'AccessDeniedException':
+                raise S3Exception(
+                    'Access denied', 's3-access-denied', 'get-function')
             raise e
 
     def get_buckets_with_permissions(self):
@@ -84,7 +89,7 @@ class LambdaClient(object):
             if e.response['Error']['Code'] == 'ResourceConflictException':
                 raise S3Exception(
                     'Bucket alredy has permission on function: {}'.format(
-                        bucket_name))
+                        bucket_name), 's3-bucket-has-already-perm-on-lambda')
             raise e
 
     def remove_permission_to_bucket(self, bucket_name):
@@ -101,5 +106,5 @@ class LambdaClient(object):
         except botocore.exceptions.ClientError as e:
             if e.response['Error']['Code'] == 'ResourceNotFound':
                 raise S3Exception('Permission not found : {0}'.format(
-                    statement_id))
+                    statement_id), 's3-lambda-perm-not-found')
             raise e

@@ -55,17 +55,18 @@ class S3Client(object):
                 Bucket=bucket_name,
                 NotificationConfiguration=conf)
         except botocore.exceptions.ClientError as e:
-            if e.response['Error']['Code'] == 'ResourceNotFound':
+            if e.response['Error']['Code'] == 'NoSuchBucket':
                 raise S3Exception('Bucket not found: {0}'.format(
-                    bucket_name))
+                    bucket_name), 's3-bucket-not-found')
             elif e.response['Error']['Code'] == 'AccessDenied':
                 raise S3Exception(
-                    'Access denied (add notification): {0}'.format(
-                        bucket_name))
+                    'Access denied: {0}'.format(bucket_name),
+                    's3-access-denied',
+                    'put-bucket-notification')
             elif e.response['Error']['Code'] == 'InvalidArgument':
-                raise S3Exception('Bucket does not have permission on lambda '
-                                  'function : {0}'.format(bucket_name))
-
+                raise S3Exception(
+                    'Bucket does not have permission on lambda function : {0}'
+                    ''.format(bucket_name), 's3-no-perms-on-lambda')
             raise e
 
     def _update_conf_to_remove_lambda_notification(self, conf, bucket_name):
@@ -94,13 +95,14 @@ class S3Client(object):
             conf = self.client.get_bucket_notification_configuration(
                 Bucket=bucket_name)
         except botocore.exceptions.ClientError as e:
-            if e.response['Error']['Code'] == 'ResourceNotFound':
+            if e.response['Error']['Code'] == 'NoSuchBucket':
                 raise S3Exception('Bucket not found : {0}'.format(
-                    bucket_name))
+                    bucket_name), 's3-bucket-not-found')
             elif e.response['Error']['Code'] == 'AccessDenied':
                 raise S3Exception(
-                    'Access denied (get notification): {0}'.format(
-                        bucket_name))
+                    'Access denied: {0}'.format(bucket_name),
+                    's3-access-denied',
+                    'get-bucket-notification')
             raise e
 
         if conf:
@@ -114,8 +116,9 @@ class S3Client(object):
             except botocore.exceptions.ClientError as e:
                 if e.response['Error']['Code'] == 'AccessDenied':
                     raise S3Exception(
-                        'Access denied (remove notification): {0}'.format(
-                            bucket_name))
+                        'Access denied: {0}'.format(bucket_name),
+                        's3-access-denied',
+                        'put-bucket-notification')
                 raise e
 
     def get_bucket_policy(self, bucket_name):
@@ -126,13 +129,14 @@ class S3Client(object):
             if e.response['Error']['Code'] == 'NoSuchBucketPolicy':
                 # Bucket has no policy
                 return None
-            elif e.response['Error']['Code'] == 'ResourceNotFound':
+            elif e.response['Error']['Code'] == 'NoSuchBucket':
                 raise S3Exception('Bucket not found : {0}'.format(
-                    bucket_name))
+                    bucket_name), 's3-bucket-not-found')
             elif e.response['Error']['Code'] == 'AccessDenied':
                 raise S3Exception(
-                    'Access denied (get notification): {0}'.format(
-                        bucket_name))
+                   'Access denied: {0}'.format(bucket_name),
+                   's3-access-denied',
+                   'get-bucket-policy')
             raise e
 
         return json.loads(policy['Policy'])
@@ -200,13 +204,14 @@ class S3Client(object):
                 Bucket=bucket_name,
                 Policy=json.dumps(new_policy))
         except botocore.exceptions.ClientError as e:
-            if e.response['Error']['Code'] == 'ResourceNotFound':
+            if e.response['Error']['Code'] == 'NoSuchBucket':
                 raise S3Exception('Bucket not found : {0}'.format(
-                    bucket_name))
+                    bucket_name), 's3-bucket-not-found')
             elif e.response['Error']['Code'] == 'AccessDenied':
                 raise S3Exception(
-                    'Access denied (get notification): {0}'.format(
-                        bucket_name))
+                    'Access denied: {0}'.format(bucket_name),
+                    's3-access-denied',
+                    'put-bucket-policy')
             raise e
 
     def remove_policy_for_lambda(self, bucket_name):
@@ -238,11 +243,12 @@ class S3Client(object):
                     Policy=json.dumps(new_policy))
 
         except botocore.exceptions.ClientError as e:
-            if e.response['Error']['Code'] == 'ResourceNotFound':
+            if e.response['Error']['Code'] == 'NoSuchBucket':
                 raise S3Exception('Bucket not found : {0}'.format(
-                    bucket_name))
+                    bucket_name), 's3-bucket-not-found')
             elif e.response['Error']['Code'] == 'AccessDenied':
                 raise S3Exception(
-                    'Access denied (get notification): {0}'.format(
-                        bucket_name))
+                    'Access denied: {0}'.format(bucket_name),
+                    's3-access-denied',
+                    'put-bucket-policy')
             raise e
