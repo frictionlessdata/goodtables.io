@@ -31,6 +31,95 @@ def test_s3_client_statement_id_for_bucket():
             'goodtablesio_policy_statement_test')
 
 
+def test_s3_client_check_connection():
+
+    client = S3Client('mock_access_key_id', 'mock_secret_access_key')
+
+    with Stubber(client.client) as stubber:
+        stubber.add_response(
+            'get_bucket_policy',
+            mock_responses.s3_get_bucket_policy)
+
+        client.check_connection('test_bucket')
+
+
+def test_s3_client_check_connection_error():
+
+    client = S3Client('mock_access_key_id', 'mock_secret_access_key')
+
+    with Stubber(client.client) as stubber:
+        stubber.add_client_error(
+            'get_bucket_policy', 'EndpointConnectionError')
+
+        with pytest.raises(S3Exception) as exc:
+            client.check_connection('test_bucket')
+
+            assert 'Could not connect' in str(exc)
+
+
+def test_s3_client_check_connection_invalid_key():
+
+    client = S3Client('mock_access_key_id', 'mock_secret_access_key')
+
+    with Stubber(client.client) as stubber:
+        stubber.add_client_error('get_bucket_policy', 'InvalidAccessKeyId')
+
+        with pytest.raises(S3Exception) as exc:
+            client.check_connection('test_bucket')
+
+            assert 'Invalid Access Key' in str(exc)
+
+
+def test_s3_client_check_connection_invalid_signature():
+
+    client = S3Client('mock_access_key_id', 'mock_secret_access_key')
+
+    with Stubber(client.client) as stubber:
+        stubber.add_client_error('get_bucket_policy', 'SignatureDoesNotMatch')
+
+        with pytest.raises(S3Exception) as exc:
+            client.check_connection('test_bucket')
+
+            assert 'Invalid signature' in str(exc)
+
+
+def test_s3_client_check_connection_wrong_arn():
+
+    client = S3Client('mock_access_key_id', 'mock_secret_access_key')
+
+    with Stubber(client.client) as stubber:
+        stubber.add_client_error('get_bucket_policy', 'NoSuchBucket')
+
+        with pytest.raises(S3Exception) as exc:
+            client.check_connection('test_bucket')
+
+            assert 'Bucket not found' in str(exc)
+
+
+def test_s3_client_check_connection_access_denied():
+
+    client = S3Client('mock_access_key_id', 'mock_secret_access_key')
+
+    with Stubber(client.client) as stubber:
+        stubber.add_client_error('get_bucket_policy', 'AccessDeniedException')
+
+        with pytest.raises(S3Exception) as exc:
+            client.check_connection('test_bucket')
+
+            assert 'Access denied' in str(exc)
+
+
+def test_s3_client_check_connection_other_error():
+
+    client = S3Client('mock_access_key_id', 'mock_secret_access_key')
+
+    with Stubber(client.client) as stubber:
+        stubber.add_client_error('get_bucket_policy')
+
+        with pytest.raises(botocore.exceptions.ClientError):
+            client.check_connection('test_bucket')
+
+
 def test_s3_client_add_notification():
 
     client = S3Client('mock_access_key_id', 'mock_secret_access_key')

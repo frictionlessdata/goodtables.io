@@ -44,6 +44,32 @@ def test_lambda_client_check_connection_error():
             assert 'Could not connect' in str(exc)
 
 
+def test_lambda_client_check_connection_invalid_key():
+
+    client = LambdaClient()
+
+    with Stubber(client.client) as stubber:
+        stubber.add_client_error('get_function', 'InvalidAccessKeyId')
+
+        with pytest.raises(S3Exception) as exc:
+            client.check_connection()
+
+            assert 'Invalid Access Key' in str(exc)
+
+
+def test_lambda_client_check_connection_invalid_signature():
+
+    client = LambdaClient()
+
+    with Stubber(client.client) as stubber:
+        stubber.add_client_error('get_function', 'SignatureDoesNotMatch')
+
+        with pytest.raises(S3Exception) as exc:
+            client.check_connection()
+
+            assert 'Invalid signature' in str(exc)
+
+
 def test_lambda_client_check_connection_wrong_arn():
 
     client = LambdaClient()

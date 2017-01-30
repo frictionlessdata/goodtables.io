@@ -36,6 +36,30 @@ class S3Client(object):
     def _statement_id_for_bucket(self, bucket_name):
         return 'goodtablesio_policy_statement_{}'.format(bucket_name)
 
+    def check_connection(self, bucket_name):
+        try:
+            return self.client.get_bucket_policy(Bucket=bucket_name)
+        except botocore.exceptions.ClientError as e:
+            if e.response['Error']['Code'] == 'EndpointConnectionError':
+                raise S3Exception(
+                    'Could not connect to the S3 endpoint: {}'.format(e),
+                    's3-connection-error')
+            elif e.response['Error']['Code'] == 'NoSuchBucket':
+                raise S3Exception(
+                    'Bucket not found: {}'.format(bucket_name),
+                    's3-bucket-not-found')
+            elif e.response['Error']['Code'] == 'InvalidAccessKeyId':
+                raise S3Exception(
+                    'Invalid Access Key', 's3-invalid-access-key')
+            elif e.response['Error']['Code'] == 'SignatureDoesNotMatch':
+                raise S3Exception(
+                    'Invalid signature, please check your secret key',
+                    's3-invalid-signature')
+            elif e.response['Error']['Code'] == 'AccessDeniedException':
+                raise S3Exception(
+                    'Access denied', 's3-access-denied', 'get-bucket-policy')
+            raise e
+
     def add_notification(self, bucket_name):
 
         conf = {

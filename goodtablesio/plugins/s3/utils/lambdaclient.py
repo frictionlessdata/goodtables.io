@@ -44,6 +44,13 @@ class LambdaClient(object):
                 raise S3Exception(
                     'Could not connect to the Lambda endpoint: {}'.format(e),
                     's3-connection-error')
+            elif e.response['Error']['Code'] == 'InvalidAccessKeyId':
+                raise S3Exception(
+                    'Invalid Access Key', 's3-invalid-access-key')
+            elif e.response['Error']['Code'] == 'SignatureDoesNotMatch':
+                raise S3Exception(
+                    'Invalid signature, please check your secret key',
+                    's3-invalid-signature')
             elif e.response['Error']['Code'] == 'ResourceNotFound':
                 raise S3Exception(
                     'AWS Lambda function not found: {}'.format(e),
