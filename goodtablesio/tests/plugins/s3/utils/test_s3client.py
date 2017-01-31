@@ -1,9 +1,11 @@
+from unittest import mock
+
 import pytest
 import botocore
 from botocore.stub import Stubber
 
 from goodtablesio import settings
-from goodtablesio.plugins.s3.utils import LambdaClient, S3Client
+from goodtablesio.plugins.s3.utils import S3Client
 from goodtablesio.plugins.s3.exceptions import S3Exception
 from goodtablesio.tests.plugins.s3 import mock_responses
 
@@ -31,6 +33,117 @@ def test_s3_client_statement_id_for_bucket():
             'goodtablesio_policy_statement_test')
 
 
+def test_s3_client_check_connection():
+
+    client = S3Client('mock_access_key_id', 'mock_secret_access_key')
+
+    with Stubber(client.client) as stubber:
+        stubber.add_response(
+            'get_bucket_policy',
+            mock_responses.s3_get_bucket_policy)
+
+        client.check_connection('test_bucket')
+
+
+def test_s3_client_check_connection_error():
+
+    client = S3Client('mock_access_key_id', 'mock_secret_access_key')
+
+    with Stubber(client.client) as stubber:
+        stubber.add_client_error(
+            'get_bucket_policy', 'EndpointConnectionError')
+
+        with pytest.raises(S3Exception) as exc:
+            client.check_connection('test_bucket')
+
+            assert 'Could not connect' in str(exc)
+
+
+def test_s3_client_check_connection_invalid_bucket_name():
+
+    client = S3Client('mock_access_key_id', 'mock_secret_access_key')
+
+    # Hack: the botocore stubber does not support raising ParamValidationError
+    original = botocore.client.BaseClient._make_api_call
+
+    def mock_make_api_call(self, operation_name, kwarg):
+        if operation_name == 'GetBucketPolicy':
+            raise botocore.exceptions.ParamValidationError(
+                report='Wrong params')
+        return original(self, operation_name, kwarg)
+
+    with mock.patch('botocore.client.BaseClient._make_api_call',
+                    new=mock_make_api_call):
+
+        with pytest.raises(S3Exception) as exc:
+            client.check_connection('test_bucket')
+
+            assert 'Could not connect' in str(exc)
+
+
+def test_s3_client_check_connection_invalid_key():
+
+    client = S3Client('mock_access_key_id', 'mock_secret_access_key')
+
+    with Stubber(client.client) as stubber:
+        stubber.add_client_error('get_bucket_policy', 'InvalidAccessKeyId')
+
+        with pytest.raises(S3Exception) as exc:
+            client.check_connection('test_bucket')
+
+            assert 'Invalid Access Key' in str(exc)
+
+
+def test_s3_client_check_connection_invalid_signature():
+
+    client = S3Client('mock_access_key_id', 'mock_secret_access_key')
+
+    with Stubber(client.client) as stubber:
+        stubber.add_client_error('get_bucket_policy', 'SignatureDoesNotMatch')
+
+        with pytest.raises(S3Exception) as exc:
+            client.check_connection('test_bucket')
+
+            assert 'Invalid signature' in str(exc)
+
+
+def test_s3_client_check_connection_wrong_arn():
+
+    client = S3Client('mock_access_key_id', 'mock_secret_access_key')
+
+    with Stubber(client.client) as stubber:
+        stubber.add_client_error('get_bucket_policy', 'NoSuchBucket')
+
+        with pytest.raises(S3Exception) as exc:
+            client.check_connection('test_bucket')
+
+            assert 'Bucket not found' in str(exc)
+
+
+def test_s3_client_check_connection_access_denied():
+
+    client = S3Client('mock_access_key_id', 'mock_secret_access_key')
+
+    with Stubber(client.client) as stubber:
+        stubber.add_client_error('get_bucket_policy', 'AccessDeniedException')
+
+        with pytest.raises(S3Exception) as exc:
+            client.check_connection('test_bucket')
+
+            assert 'Access denied' in str(exc)
+
+
+def test_s3_client_check_connection_other_error():
+
+    client = S3Client('mock_access_key_id', 'mock_secret_access_key')
+
+    with Stubber(client.client) as stubber:
+        stubber.add_client_error('get_bucket_policy')
+
+        with pytest.raises(botocore.exceptions.ClientError):
+            client.check_connection('test_bucket')
+
+
 def test_s3_client_add_notification():
 
     client = S3Client('mock_access_key_id', 'mock_secret_access_key')
@@ -50,7 +163,7 @@ def test_s3_client_add_notification_bucket_not_found():
     with Stubber(client.client) as stubber:
         stubber.add_client_error(
             'put_bucket_notification_configuration',
-            'ResourceNotFound')
+            'NoSuchBucket')
 
         with pytest.raises(S3Exception) as exc:
             client.add_notification('test-not-found')
@@ -124,7 +237,7 @@ def test_s3_client_remove_notification_bucket_not_found():
     with Stubber(client.client) as stubber:
         stubber.add_client_error(
             'get_bucket_notification_configuration',
-            'ResourceNotFound')
+            'NoSuchBucket')
 
         with pytest.raises(S3Exception) as exc:
             client.remove_notification('test-not-found')
@@ -369,7 +482,7 @@ def test_s3_client_get_bucket_policy_bucket_not_found():
     with Stubber(client.client) as stubber:
         stubber.add_client_error(
             'get_bucket_policy',
-            'ResourceNotFound')
+            'NoSuchBucket')
 
         with pytest.raises(S3Exception) as exc:
             client.get_bucket_policy('test-not-found')
@@ -558,7 +671,7 @@ def test_s3_client_add_policy_bucket_not_found():
 
         stubber.add_client_error(
             'put_bucket_policy',
-            'ResourceNotFound')
+            'NoSuchBucket')
 
         with pytest.raises(S3Exception) as exc:
             client.add_policy_for_lambda('test-not-found')
@@ -725,7 +838,7 @@ def test_s3_client_remove_policy_bucket_not_found():
 
         stubber.add_client_error(
             'delete_bucket_policy',
-            'ResourceNotFound')
+            'NoSuchBucket')
 
         with pytest.raises(S3Exception) as exc:
             client.remove_policy_for_lambda('test-gtio-1')
@@ -767,153 +880,3 @@ def test_s3_client_remove_policy_other_exception():
 
         with pytest.raises(botocore.exceptions.ClientError):
             client.remove_policy_for_lambda('test-gtio-1')
-
-
-def test_lambda_client_init():
-
-    client = LambdaClient()
-
-    assert hasattr(client.client, 'get_function')
-    assert client.client.meta.region_name == settings.S3_GT_AWS_REGION
-
-
-def test_lambda_client_check_connection():
-
-    client = LambdaClient()
-
-    with Stubber(client.client) as stubber:
-        stubber.add_response(
-            'get_function',
-            mock_responses.lambda_get_function)
-
-        function_info = client.check_connection()
-
-    assert (function_info['Configuration']['FunctionArn'] ==
-            settings.S3_LAMBDA_ARN)
-
-
-def test_lambda_client_check_connection_error():
-
-    client = LambdaClient()
-
-    with Stubber(client.client) as stubber:
-        stubber.add_client_error('get_function', 'EndpointConnectionError')
-
-        with pytest.raises(S3Exception) as exc:
-            client.check_connection()
-
-            assert 'Could not connect' in str(exc)
-
-
-def test_lambda_client_check_connection_wrong_arn():
-
-    client = LambdaClient()
-
-    with Stubber(client.client) as stubber:
-        stubber.add_client_error('get_function', 'ResourceNotFound')
-
-        with pytest.raises(S3Exception) as exc:
-            client.check_connection()
-
-            assert 'Lambda function not found' in str(exc)
-
-
-def test_lambda_client_check_connection_other_error():
-
-    client = LambdaClient()
-
-    with Stubber(client.client) as stubber:
-        stubber.add_client_error('get_function')
-
-        with pytest.raises(botocore.exceptions.ClientError):
-            client.check_connection()
-
-
-def test_lambda_client_arn_for_bucket():
-
-    client = LambdaClient()
-
-    assert client._arn_for_bucket('test') == 'arn:aws:s3:::test'
-
-
-def test_lambda_client_get_buckets_with_permissions():
-
-    client = LambdaClient()
-
-    with Stubber(client.client) as stubber:
-        stubber.add_response('get_policy', mock_responses.lambda_get_policy)
-
-        buckets = client.get_buckets_with_permissions()
-
-    assert buckets == ['test-goodtables', 'test-gtio-1']
-
-
-def test_lambda_client_add_permission_to_bucket():
-
-    client = LambdaClient()
-
-    with Stubber(client.client) as stubber:
-        stubber.add_response(
-            'add_permission', mock_responses.lambda_add_permission)
-
-        client.add_permission_to_bucket('test-gtio-2')
-
-
-def test_lambda_client_add_permission_to_bucket_already_exists():
-
-    client = LambdaClient()
-
-    with Stubber(client.client) as stubber:
-        stubber.add_client_error('add_permission', 'ResourceConflictException')
-
-        with pytest.raises(S3Exception) as exc:
-            client.add_permission_to_bucket('test-gtio-2')
-
-            assert 'Bucket already has permission' in str(exc)
-
-
-def test_lambda_client_add_permission_to_bucket_other_exception():
-
-    client = LambdaClient()
-
-    with Stubber(client.client) as stubber:
-        stubber.add_client_error('add_permission', 'EndpointConnectionError')
-
-        with pytest.raises(botocore.exceptions.ClientError):
-            client.add_permission_to_bucket('test-gtio-2')
-
-
-def test_lambda_client_remove_permission_to_bucket():
-
-    client = LambdaClient()
-
-    with Stubber(client.client) as stubber:
-        stubber.add_response('remove_permission',
-                             mock_responses.lambda_remove_permission)
-
-        client.remove_permission_to_bucket('test-gtio-2')
-
-
-def test_lambda_client_remove_permission_to_bucket_doesnt_exist():
-
-    client = LambdaClient()
-
-    with Stubber(client.client) as stubber:
-        stubber.add_client_error('remove_permission', 'ResourceNotFound')
-
-        with pytest.raises(S3Exception) as exc:
-            client.remove_permission_to_bucket('test-gtio-2')
-
-            assert 'Permission not found' in str(exc)
-
-
-def test_lambda_client_remove_permission_to_bucket_other_exception():
-
-    client = LambdaClient()
-
-    with Stubber(client.client) as stubber:
-        stubber.add_client_error('remove_permission',
-                                 'EndpointConnectionError')
-
-        with pytest.raises(botocore.exceptions.ClientError):
-            client.remove_permission_to_bucket('test-gtio-2')

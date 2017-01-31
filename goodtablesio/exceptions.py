@@ -1,7 +1,13 @@
 # General
 
+
 class GoodtablesioException(Exception):
-    pass
+
+    def __init__(self, message=None, code=None):
+
+        super().__init__(message)
+
+        self.code = code
 
 
 # Validation
