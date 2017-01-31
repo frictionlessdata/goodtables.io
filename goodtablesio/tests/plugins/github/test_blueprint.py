@@ -6,6 +6,9 @@ from goodtablesio.plugins.github.utils.signature import create_signature
 
 # Tests
 
+# TODO: this test should not rely on external HTTP calls to GitHub
+
+
 @patch('goodtablesio.plugins.github.utils.status.set_commit_status')
 def test_create_job(set_commit_status, client, celery_app):
     data = json.dumps({
