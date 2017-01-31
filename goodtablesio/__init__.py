@@ -8,5 +8,5 @@ import goodtablesio.tasks.validate
 # Register signals
 import goodtablesio.signals
 
-# Register plugins
-import goodtablesio.plugins.github
+# Register integrations
+import goodtablesio.integrations.github

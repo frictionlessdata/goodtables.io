@@ -18,8 +18,8 @@ class Job(Base, BaseModelMixin):
 
     id = Column(Unicode, primary_key=True, default=make_uuid)
     status = Column(Unicode, default='created')
-    plugin_name = Column(Unicode, default='api')
-    plugin_conf = Column(JSONB)
+    integration_name = Column(Unicode, default='api')
+    integration_conf = Column(JSONB)
     created = Column(DateTime(timezone=True), default=datetime.datetime.utcnow)
     finished = Column(DateTime(timezone=True))
     report = Column(JSONB)
@@ -116,7 +116,7 @@ def find(filters=None, limit=10, offset=0):
 
     Arguments:
         filters (expr[]): A list of SQL expressions to be applied, eg:
-            filters = [Job.plugin_name == 'github']
+            filters = [Job.integration_name == 'github']
         limit (limit): Maximum results to get. Defaults to 10, there's a hard
             limit of 100.
         offset (offset): Offset record from where to start. Defaults to 0.
@@ -146,11 +146,11 @@ def find(filters=None, limit=10, offset=0):
     return [j.to_dict() for j in jobs]
 
 
-def get_by_plugin(plugin_name, **kwargs):
-    """Get all jobs in the database for a particular plugin as dict.
+def get_by_integration(integration_name, **kwargs):
+    """Get all jobs in the database for a particular integration as dict.
 
     Arguments:
-        plugin_name (str): The name of the plugin to filter jobs from,
+        integration_name (str): The name of the integration to filter jobs from,
             eg 'github'
         Supports the rest of the arguments supported by `find()`
 
@@ -160,4 +160,4 @@ def get_by_plugin(plugin_name, **kwargs):
 
     """
 
-    return find(filters=[Job.plugin_name == plugin_name], **kwargs)
+    return find(filters=[Job.integration_name == integration_name], **kwargs)
