@@ -3,105 +3,27 @@
 {% block contents %}
 <div class="container">
 
-  {% set color = 'black' %}
-  {% if job.finished %}
-    {% if job.report.valid %}
-    {% set color = 'green' %}
-    {% else %}
-    {% set color = 'red' %}
-    {% endif %}
+  <div id="app"></div>
+
+  {% if job.report %}
+    <script src="//unpkg.com/whatwg-fetch@2.0.2/fetch.js"></script>
+    <script src="//unpkg.com/vue@2.1.10/dist/vue.js"></script>
+    <script src="//unpkg.com/goodtables-vue/dist/goodtables-vue.js"></script>
+    <script>
+      var app = new Vue({
+        el: '#app',
+        data: {
+          report: {{ job.report | tojson | safe  }},
+        },
+        components: {
+          'goodtables-report': goodtablesVue.Report,
+        },
+        template: '<goodtables-report v-if="report" :report="report" />',
+      })
+    </script>
+  {% else %}
+    <p>There is an error in the job!</p>
   {% endif %}
-
-  <h1>Job</h1>
-
-  <hr>
-
-  <table class="table table-bordered">
-    <thead style="background-color: {{ color }}; color: #fff;">
-      <tr>
-        <td>Job Id</td>
-        <td>Status</td>
-        <td>Valid</td>
-        <td>Errors</td>
-        <td>Tables</td>
-        <td>Time</td>
-      </tr>
-    </thead>
-    <thead>
-      <tr>
-        <td>{{ job.id }}</td>
-        <td>{{ job.status }}</td>
-        <td>{{ job.report.valid }}</td>
-        <td>{{ job.report['error-count'] }}</td>
-        <td>{{ job.report['table-count'] }}</td>
-        <td>{{ job.report.time }}</td>
-      </tr>
-    </thead>
-  </table>
-
-  {% if job.status in ['success', 'failure'] %}
-  <h2>Files</h2>
-  {% endif %}
-
-  {% for table in job.report.tables %}
-
-    {% set color = 'yellow' %}
-    {% if job.report.tables[loop.index0].valid %}
-    {% set color = 'green' %}
-    {% else %}
-    {% set color = 'red' %}
-    {% endif %}
-
-    <hr>
-
-    <h3><a target="_blank" href="{{ table.source }}">{{ table.source|replace('https://raw.githubusercontent.com/', '')}}</a></h3>
-    <table class="table table-bordered">
-      <thead style="background-color: {{ color }}; color: #fff;">
-        <tr>
-          <td>Valid</td>
-          <td>Errors</td>
-          <td>Rows</td>
-          <td>Time</td>
-        </tr>
-      </thead>
-      <thead>
-        <tr>
-          <td>{{ table.valid }}</td>
-          <td>{{ table['error-count'] }}</td>
-          <td>{{ table['row-count'] }}</td>
-          <td>{{ table.time }}</td>
-        </tr>
-      </thead>
-    </table>
-
-    {% if table.errors %}
-
-      <h4>Errors</h4>
-
-      <table class="table table-bordered">
-        <thead style="background-color: {{ color }}; color: #fff;">
-          <tr>
-            <td>Row</td>
-            <td>Column</td>
-            <td>Code</td>
-            <td>Message</td>
-          </tr>
-        </thead>
-        <thead>
-          {% for error in table.errors %}
-          <tr>
-            <td>{{ error['row-number'] or '-' }}</td>
-            <td>{{ error['column-number'] }}</td>
-            <td>{{ error.code }}</td>
-            <td>{{ error.message }}</td>
-          </tr>
-          {% endfor %}
-        </thead>
-      </table>
-
-    {% endif %}
-
-  {% endfor %}
 
 </div>
 {% endblock %}

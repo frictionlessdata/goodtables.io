@@ -66,8 +66,7 @@ def test_site_get_job(client):
     # TODO: Test actual content when implemented
 
     body = response.get_data(as_text=True)
-    assert 'Job' in body
-    assert job.id in body
+    assert 'html' in body
 
 
 def test_site_get_job_not_found(client):
