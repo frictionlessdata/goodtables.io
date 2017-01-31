@@ -1,3 +1,5 @@
+from unittest import mock
+
 import pytest
 import botocore
 from botocore.stub import Stubber
@@ -50,6 +52,28 @@ def test_s3_client_check_connection_error():
     with Stubber(client.client) as stubber:
         stubber.add_client_error(
             'get_bucket_policy', 'EndpointConnectionError')
+
+        with pytest.raises(S3Exception) as exc:
+            client.check_connection('test_bucket')
+
+            assert 'Could not connect' in str(exc)
+
+
+def test_s3_client_check_connection_invalid_bucket_name():
+
+    client = S3Client('mock_access_key_id', 'mock_secret_access_key')
+
+    # Hack: the botocore stubber does not support raising ParamValidationError
+    original = botocore.client.BaseClient._make_api_call
+
+    def mock_make_api_call(self, operation_name, kwarg):
+        if operation_name == 'GetBucketPolicy':
+            raise botocore.exceptions.ParamValidationError(
+                report='Wrong params')
+        return original(self, operation_name, kwarg)
+
+    with mock.patch('botocore.client.BaseClient._make_api_call',
+                    new=mock_make_api_call):
 
         with pytest.raises(S3Exception) as exc:
             client.check_connection('test_bucket')
@@ -856,4 +880,3 @@ def test_s3_client_remove_policy_other_exception():
 
         with pytest.raises(botocore.exceptions.ClientError):
             client.remove_policy_for_lambda('test-gtio-1')
-
