@@ -12,7 +12,7 @@ def test_create_job():
     job = factories.Job()
 
     assert job.status == 'created'
-    assert job.plugin_name == 'api'
+    assert job.integration_name == 'api'
 
     job_db = database['session'].query(Job).get(job.id)
 

@@ -24,8 +24,8 @@ def dashboard():
         return redirect(url_for('site.home'))
 
     # TODO: Get most recent job per project
-    github_jobs = models.job.get_by_plugin('github', limit=5)
-    s3_jobs = models.job.get_by_plugin('s3', limit=5)
+    github_jobs = models.job.get_by_integration('github', limit=5)
+    s3_jobs = models.job.get_by_integration('s3', limit=5)
 
     return render_template('dashboard.html',
                            github_jobs=github_jobs, s3_jobs=s3_jobs)

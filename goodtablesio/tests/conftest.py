@@ -4,7 +4,7 @@ from goodtablesio.services import database
 from goodtablesio.models.job import Job
 from goodtablesio.models.user import User
 from goodtablesio.celery_app import celery_app as celapp
-from goodtablesio.plugins.github.models.repo import GithubRepo
+from goodtablesio.integrations.github.models.repo import GithubRepo
 
 
 # Fixture

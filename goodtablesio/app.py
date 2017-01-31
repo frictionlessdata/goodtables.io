@@ -7,8 +7,8 @@ from goodtablesio.auth import oauth, login_manager
 from goodtablesio.blueprints.api import api
 from goodtablesio.blueprints.site import site
 from goodtablesio.blueprints.user import user
-from goodtablesio.plugins.github.blueprint import github
-from goodtablesio.plugins.s3.blueprint import s3
+from goodtablesio.integrations.github.blueprint import github
+from goodtablesio.integrations.s3.blueprint import s3
 from goodtablesio.services import database
 log = logging.getLogger(__name__)
 
@@ -23,7 +23,7 @@ app.secret_key = settings.FLASK_SECRET_KEY
 app.config['JSONIFY_MIMETYPE'] = 'application/json; charset=utf-8'
 
 
-# Register Flask plugins
+# Register Flask integrations
 oauth.init_app(app)
 login_manager.init_app(app)
 
@@ -32,7 +32,7 @@ app.register_blueprint(api)
 app.register_blueprint(site)
 app.register_blueprint(user)
 
-# Register plugins
+# Register integrations
 app.register_blueprint(github)
 app.register_blueprint(s3)
 
