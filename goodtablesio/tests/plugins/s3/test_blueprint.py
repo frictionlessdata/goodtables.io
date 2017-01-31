@@ -164,4 +164,3 @@ def test_s3_settings_add_bucket_failure_redirects(mock_set_up_bucket, client):
 
     assert response.status_code == 302
     assert response.location == 'http://localhost/s3/settings'
-
