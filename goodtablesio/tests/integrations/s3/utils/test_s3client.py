@@ -56,7 +56,7 @@ def test_s3_client_check_connection_error():
         with pytest.raises(S3Exception) as exc:
             client.check_connection('test_bucket')
 
-            assert 'Could not connect' in str(exc)
+        assert 'Could not connect' in str(exc.value)
 
 
 def test_s3_client_check_connection_invalid_bucket_name():
@@ -64,13 +64,10 @@ def test_s3_client_check_connection_invalid_bucket_name():
     client = S3Client('mock_access_key_id', 'mock_secret_access_key')
 
     # Hack: the botocore stubber does not support raising ParamValidationError
-    original = botocore.client.BaseClient._make_api_call
-
     def mock_make_api_call(self, operation_name, kwarg):
         if operation_name == 'GetBucketPolicy':
             raise botocore.exceptions.ParamValidationError(
                 report='Wrong params')
-        return original(self, operation_name, kwarg)
 
     with mock.patch('botocore.client.BaseClient._make_api_call',
                     new=mock_make_api_call):
@@ -78,7 +75,7 @@ def test_s3_client_check_connection_invalid_bucket_name():
         with pytest.raises(S3Exception) as exc:
             client.check_connection('test_bucket')
 
-            assert 'Could not connect' in str(exc)
+        assert 'Invalid bucket name' in str(exc.value)
 
 
 def test_s3_client_check_connection_invalid_key():
@@ -91,7 +88,7 @@ def test_s3_client_check_connection_invalid_key():
         with pytest.raises(S3Exception) as exc:
             client.check_connection('test_bucket')
 
-            assert 'Invalid Access Key' in str(exc)
+        assert 'Invalid Access Key' in str(exc.value)
 
 
 def test_s3_client_check_connection_invalid_signature():
@@ -104,7 +101,7 @@ def test_s3_client_check_connection_invalid_signature():
         with pytest.raises(S3Exception) as exc:
             client.check_connection('test_bucket')
 
-            assert 'Invalid signature' in str(exc)
+        assert 'Invalid signature' in str(exc.value)
 
 
 def test_s3_client_check_connection_wrong_arn():
@@ -117,7 +114,7 @@ def test_s3_client_check_connection_wrong_arn():
         with pytest.raises(S3Exception) as exc:
             client.check_connection('test_bucket')
 
-            assert 'Bucket not found' in str(exc)
+        assert 'Bucket not found' in str(exc.value)
 
 
 def test_s3_client_check_connection_access_denied():
@@ -130,7 +127,7 @@ def test_s3_client_check_connection_access_denied():
         with pytest.raises(S3Exception) as exc:
             client.check_connection('test_bucket')
 
-            assert 'Access denied' in str(exc)
+        assert 'Access denied' in str(exc.value)
 
 
 def test_s3_client_check_connection_other_error():
@@ -168,7 +165,7 @@ def test_s3_client_add_notification_bucket_not_found():
         with pytest.raises(S3Exception) as exc:
             client.add_notification('test-not-found')
 
-            assert 'Bucket not found' in str(exc)
+        assert 'Bucket not found' in str(exc.value)
 
 
 def test_s3_client_add_notification_access_denied():
@@ -183,7 +180,7 @@ def test_s3_client_add_notification_access_denied():
         with pytest.raises(S3Exception) as exc:
             client.add_notification('test-gtio-2')
 
-            assert 'Access denied' in str(exc)
+        assert 'Access denied' in str(exc.value)
 
 
 def test_s3_client_add_notification_no_perms_on_lamda():
@@ -198,7 +195,7 @@ def test_s3_client_add_notification_no_perms_on_lamda():
         with pytest.raises(S3Exception) as exc:
             client.add_notification('test-gtio-2')
 
-            assert 'Bucket does not have permission on lambda' in str(exc)
+        assert 'Bucket does not have permission on lambda' in str(exc.value)
 
 
 def test_s3_client_add_notification_other_exception():
@@ -242,7 +239,7 @@ def test_s3_client_remove_notification_bucket_not_found():
         with pytest.raises(S3Exception) as exc:
             client.remove_notification('test-not-found')
 
-            assert 'Bucket not found' in str(exc)
+        assert 'Bucket not found' in str(exc.value)
 
 
 def test_s3_client_remove_notification_access_denied_get():
@@ -257,7 +254,7 @@ def test_s3_client_remove_notification_access_denied_get():
         with pytest.raises(S3Exception) as exc:
             client.remove_notification('test-gtio-2')
 
-            assert 'Access denied (get notification)' in str(exc)
+        assert 'Access denied' in str(exc.value)
 
 
 def test_s3_client_remove_notification_other_exception_get():
@@ -289,7 +286,7 @@ def test_s3_client_remove_notification_access_denied_put():
         with pytest.raises(S3Exception) as exc:
             client.remove_notification('test-gtio-2')
 
-            assert 'Access denied (put notification)' in str(exc)
+        assert 'Access denied' in str(exc.value)
 
 
 def test_s3_client_remove_notification_other_exception_put():
@@ -487,7 +484,7 @@ def test_s3_client_get_bucket_policy_bucket_not_found():
         with pytest.raises(S3Exception) as exc:
             client.get_bucket_policy('test-not-found')
 
-            assert 'Bucket not found' in str(exc)
+        assert 'Bucket not found' in str(exc.value)
 
 
 def test_s3_client_get_bucket_policy_access_denied():
@@ -502,7 +499,7 @@ def test_s3_client_get_bucket_policy_access_denied():
         with pytest.raises(S3Exception) as exc:
             client.get_bucket_policy('test-gtio-1')
 
-            assert 'Access denied' in str(exc)
+        assert 'Access denied' in str(exc.value)
 
 
 def test_s3_client_get_bucket_policy_other_error():
@@ -676,7 +673,7 @@ def test_s3_client_add_policy_bucket_not_found():
         with pytest.raises(S3Exception) as exc:
             client.add_policy_for_lambda('test-not-found')
 
-            assert 'Bucket not found' in str(exc)
+        assert 'Bucket not found' in str(exc.value)
 
 
 def test_s3_client_add_policy_access_denied():
@@ -695,7 +692,7 @@ def test_s3_client_add_policy_access_denied():
         with pytest.raises(S3Exception) as exc:
             client.add_policy_for_lambda('test-gtio-2')
 
-            assert 'Access denied' in str(exc)
+        assert 'Access denied' in str(exc.value)
 
 
 def test_s3_client_add_policy_other_exception():
@@ -843,7 +840,7 @@ def test_s3_client_remove_policy_bucket_not_found():
         with pytest.raises(S3Exception) as exc:
             client.remove_policy_for_lambda('test-gtio-1')
 
-            assert 'Bucket not found' in str(exc)
+        assert 'Bucket not found' in str(exc.value)
 
 
 def test_s3_client_remove_policy_access_denied():
@@ -862,7 +859,7 @@ def test_s3_client_remove_policy_access_denied():
         with pytest.raises(S3Exception) as exc:
             client.remove_policy_for_lambda('test-gtio-1')
 
-            assert 'Access denied' in str(exc)
+        assert 'Access denied' in str(exc.value)
 
 
 def test_s3_client_remove_policy_other_exception():

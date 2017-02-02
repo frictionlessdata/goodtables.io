@@ -95,7 +95,7 @@ class LambdaClient(object):
         except botocore.exceptions.ClientError as e:
             if e.response['Error']['Code'] == 'ResourceConflictException':
                 raise S3Exception(
-                    'Bucket alredy has permission on function: {}'.format(
+                    'Bucket already has permission on function: {}'.format(
                         bucket_name), 's3-bucket-has-already-perm-on-lambda')
             raise e
 

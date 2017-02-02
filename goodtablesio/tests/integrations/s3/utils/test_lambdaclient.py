@@ -41,7 +41,7 @@ def test_lambda_client_check_connection_error():
         with pytest.raises(S3Exception) as exc:
             client.check_connection()
 
-            assert 'Could not connect' in str(exc)
+        assert 'Could not connect' in str(exc.value)
 
 
 def test_lambda_client_check_connection_invalid_key():
@@ -54,7 +54,7 @@ def test_lambda_client_check_connection_invalid_key():
         with pytest.raises(S3Exception) as exc:
             client.check_connection()
 
-            assert 'Invalid Access Key' in str(exc)
+        assert 'Invalid Access Key' in str(exc.value)
 
 
 def test_lambda_client_check_connection_invalid_signature():
@@ -67,7 +67,7 @@ def test_lambda_client_check_connection_invalid_signature():
         with pytest.raises(S3Exception) as exc:
             client.check_connection()
 
-            assert 'Invalid signature' in str(exc)
+        assert 'Invalid signature' in str(exc.value)
 
 
 def test_lambda_client_check_connection_wrong_arn():
@@ -80,7 +80,7 @@ def test_lambda_client_check_connection_wrong_arn():
         with pytest.raises(S3Exception) as exc:
             client.check_connection()
 
-            assert 'Lambda function not found' in str(exc)
+        assert 'Lambda function not found' in str(exc.value)
 
 
 def test_lambda_client_check_connection_access_denied():
@@ -93,7 +93,7 @@ def test_lambda_client_check_connection_access_denied():
         with pytest.raises(S3Exception) as exc:
             client.check_connection()
 
-            assert 'Access denied' in str(exc)
+        assert 'Access denied' in str(exc.value)
 
 
 def test_lambda_client_check_connection_other_error():
@@ -147,7 +147,7 @@ def test_lambda_client_add_permission_to_bucket_already_exists():
         with pytest.raises(S3Exception) as exc:
             client.add_permission_to_bucket('test-gtio-2')
 
-            assert 'Bucket already has permission' in str(exc)
+        assert 'Bucket already has permission' in str(exc.value)
 
 
 def test_lambda_client_add_permission_to_bucket_other_exception():
@@ -182,7 +182,7 @@ def test_lambda_client_remove_permission_to_bucket_doesnt_exist():
         with pytest.raises(S3Exception) as exc:
             client.remove_permission_to_bucket('test-gtio-2')
 
-            assert 'Permission not found' in str(exc)
+        assert 'Permission not found' in str(exc.value)
 
 
 def test_lambda_client_remove_permission_to_bucket_other_exception():
