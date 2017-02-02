@@ -23,7 +23,7 @@ def dashboard():
     if not user_id:
         return redirect(url_for('site.home'))
 
-    # TODO: Get most recent job per project
+    # TODO: Get most recent job per source
     github_jobs = models.job.get_by_integration('github', limit=5)
     s3_jobs = models.job.get_by_integration('s3', limit=5)
 

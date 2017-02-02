@@ -1,7 +1,7 @@
-from goodtablesio.models.project import Project
+from goodtablesio.models.source import Source
 
 
-class GithubRepo(Project):
+class GithubRepo(Source):
 
     __mapper_args__ = {
         'polymorphic_identity': 'github'

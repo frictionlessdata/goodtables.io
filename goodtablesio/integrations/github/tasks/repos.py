@@ -1,6 +1,6 @@
 import datetime
 from goodtablesio.models.user import User
-from goodtablesio.models.project import Project
+from goodtablesio.models.source import Source
 from goodtablesio.services import database
 from goodtablesio.celery_app import celery_app
 from goodtablesio.integrations.github.utils.repos import iter_repos_by_token
@@ -13,11 +13,11 @@ def sync_user_repos(user_id, token):
     user = database['session'].query(User).get(user_id)
 
     for repo_data in iter_repos_by_token(token):
-        repo = database['session'].query(Project).filter(
-            Project.conf['github_id'].astext == repo_data['conf']['github_id']
+        repo = database['session'].query(Source).filter(
+            Source.conf['github_id'].astext == repo_data['conf']['github_id']
         ).one_or_none()
         if repo is None:
-            repo = Project(**repo_data)
+            repo = Source(**repo_data)
             database['session'].add(repo)
         repo.active = repo_data['active']
         repo.updated = datetime.datetime.utcnow(),

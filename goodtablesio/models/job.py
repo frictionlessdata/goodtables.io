@@ -27,10 +27,10 @@ class Job(Base, BaseModelMixin):
     integration_name = Column(
         Unicode, ForeignKey('integrations.name'), default='api')
     conf = Column(JSONB)
-    project_id = Column(Unicode, ForeignKey('projects.id'))
+    source_id = Column(Unicode, ForeignKey('sources.id'))
 
-    project = relationship(
-        'Project', primaryjoin='Job.project_id == Project.id')
+    source = relationship(
+        'Source', primaryjoin='Job.source_id == Source.id')
 
 
 def create(params):

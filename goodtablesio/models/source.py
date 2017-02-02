@@ -8,9 +8,9 @@ from sqlalchemy.dialects.postgresql import JSONB
 from goodtablesio.models.base import Base, BaseModelMixin, make_uuid
 
 
-class Project(Base, BaseModelMixin):
+class Source(Base, BaseModelMixin):
 
-    __tablename__ = 'projects'
+    __tablename__ = 'sources'
 
     id = Column(Unicode, primary_key=True, default=make_uuid)
     name = Column(Unicode)
@@ -21,14 +21,14 @@ class Project(Base, BaseModelMixin):
     integration_name = Column(Unicode, ForeignKey('integrations.name'))
     integration = relationship(
         'Integration',
-        primaryjoin='Project.integration_name == Integration.name')
+        primaryjoin='Source.integration_name == Integration.name')
 
     users = relationship(
-        'User', backref='projects', cascade='all',
+        'User', backref='sources', cascade='all',
         secondary=Table(
-            'project_users', Base.metadata,
-            Column('project_id', Unicode,
-                   ForeignKey('projects.id', ondelete='CASCADE'),
+            'source_users', Base.metadata,
+            Column('source_id', Unicode,
+                   ForeignKey('sources.id', ondelete='CASCADE'),
                    primary_key=True),
             Column('user_id', Unicode,
                    ForeignKey('users.id', ondelete='CASCADE'),
@@ -37,5 +37,5 @@ class Project(Base, BaseModelMixin):
 
     __mapper_args__ = {
         'polymorphic_on': integration_name,
-        'polymorphic_identity': 'project'
+        'polymorphic_identity': 'source'
     }

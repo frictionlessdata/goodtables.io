@@ -162,17 +162,17 @@ def create_job():
     # Save job to database
     job_id = str(uuid.uuid4())
 
-    project = database['session'].query(GithubRepo).filter(
+    source = database['session'].query(GithubRepo).filter(
         GithubRepo.name == '{0}/{1}'.format(owner, repo)).one_or_none()
 
-    if not project:
+    if not source:
         log.error('A job was requested on a repository not present in the DB')
         abort(400)
 
     models.job.create({
         'id': job_id,
         'integration_name': 'github',
-        'project_id': project.id,
+        'source_id': source.id,
         'conf': {
             'owner': owner,
             'repo': repo,

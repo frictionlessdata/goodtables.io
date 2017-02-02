@@ -5,7 +5,7 @@ import factory
 
 from goodtablesio.models.job import Job
 from goodtablesio.models.user import User
-from goodtablesio.models.project import Project
+from goodtablesio.models.source import Source
 from goodtablesio.models.integration import Integration
 from goodtablesio.services import database
 from goodtablesio.integrations.github.models.repo import GithubRepo
@@ -72,10 +72,10 @@ class Integration(FactoryBase):
     name = factory.Faker('name')
 
 
-class Project(FactoryBase):
+class Source(FactoryBase):
 
     class Meta:
-        model = Project
+        model = Source
         sqlalchemy_session = database['session']
         exclude = ('integration',)
 
