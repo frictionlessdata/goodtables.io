@@ -14,8 +14,8 @@ def iter_repos_by_token(token):
             if hook.config.get('is_goodtables_hook'):
                 active = True
         yield {
-            'id': str(data['id']),
-            'owner': data['owner']['login'],
-            'repo': data['name'],
-            'active': active,
+            'integration_name': 'github',
+            'name': '{0}/{1}'.format(data['owner']['login'], data['name']),
+            'conf': {'github_id': str(data['id'])},
+            'active': active
         }

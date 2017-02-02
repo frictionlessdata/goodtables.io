@@ -9,15 +9,15 @@ def test_iter_repos_by_token(GitHubForIterRepos):
     GitHubForIterRepos.assert_called_with(token=token)
     assert repos == [
         {
-            'id': 'id1',
-            'owner': 'owner1',
-            'repo': 'repo1',
             'active': True,
+            'conf': {'github_id': 'id1'},
+            'integration_name': 'github',
+            'name': 'owner1/repo1'
         },
         {
-            'id': 'id2',
-            'owner': 'owner2',
-            'repo': 'repo2',
             'active': False,
-        },
+            'conf': {'github_id': 'id2'},
+            'integration_name': 'github',
+            'name': 'owner2/repo2'
+        }
     ]

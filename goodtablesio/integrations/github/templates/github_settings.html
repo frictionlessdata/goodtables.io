@@ -36,7 +36,7 @@
         {% else %}
           <a href="/github/activate/{{ repo.id }}" class="btn btn-danger" style="width:120px;">Activate</a>
         {% endif %}
-        {{ repo.owner }}/{{ repo.repo }} (<a href="{{ repo.url }}">repo</a>)
+        {{ repo.name }} (<a href="{{ repo.url }}">repo</a>)
 
         {% if repo.active %}
           - <a href="{{ url_for('github.github_repo', org=repo.owner, repo=repo.repo) }}">View jobs</a>

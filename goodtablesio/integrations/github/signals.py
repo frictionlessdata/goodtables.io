@@ -20,9 +20,9 @@ def post_task_handler(**kwargs):
     task_state = kwargs['state']
 
     status = job['status']
-    integration_conf = job['integration_conf']
+    conf = job['conf']
 
-    if integration_conf:
+    if conf:
 
         if task_state == 'SUCCESS' and status != 'running':
             github_status = status
@@ -31,7 +31,7 @@ def post_task_handler(**kwargs):
 
         set_commit_status(
            github_status,
-           owner=integration_conf['repository']['owner'],
-           repo=integration_conf['repository']['name'],
-           sha=integration_conf['sha'],
+           owner=conf['owner'],
+           repo=conf['name'],
+           sha=conf['sha'],
            job_id=job['id'])
