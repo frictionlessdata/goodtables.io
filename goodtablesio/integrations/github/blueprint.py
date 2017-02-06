@@ -147,17 +147,22 @@ def create_job():
         text = request.data
         signature = request.headers.get('X-Hub-Signature', '')
         if not validate_signature(key, text, signature):
-            abort(400)
+            msg = 'Wrong signature for GitHub payload'
+            log.error(msg)
+            abort(400, msg)
 
     # Get payload parameters
     payload = request.get_json()
     if not payload:
-        log.error('No payload received')
-        abort(400)
+        msg = 'No payload received'
+        log.error(msg)
+        abort(400, msg)
+
     owner, repo, sha = get_owner_repo_sha_from_hook_payload(payload)
     if not owner:
-        log.error('Wrong payload received')
-        abort(400)
+        msg = 'Wrong payload received'
+        log.error(msg)
+        abort(400, msg)
 
     # Save job to database
     job_id = str(uuid.uuid4())
@@ -166,8 +171,9 @@ def create_job():
         GithubRepo.name == '{0}/{1}'.format(owner, repo)).one_or_none()
 
     if not source:
-        log.error('A job was requested on a repository not present in the DB')
-        abort(400)
+        msg = 'A job was requested on a repository not present in the DB'
+        log.error(msg)
+        abort(400, msg)
 
     models.job.create({
         'id': job_id,
