@@ -48,6 +48,16 @@ def create_bucket(bucket_name, active=True, user=None):
     return bucket
 
 
+def get_user_buckets(user_id):
+
+    buckets = database['session'].query(S3Bucket).filter(
+        S3Bucket.users.any(id=user_id)).order_by(
+            S3Bucket.active.desc(),
+            S3Bucket.name).all()
+
+    return buckets
+
+
 def _check_connection(lambda_client, s3_client, bucket_name):
     try:
         lambda_client.check_connection()

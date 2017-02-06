@@ -1,3 +1,5 @@
+# pylama:ignore=E501
+
 from unittest import mock
 
 import pytest
@@ -6,7 +8,7 @@ from goodtablesio.services import database
 from goodtablesio.integrations.s3.utils.s3client import S3Client
 from goodtablesio.integrations.s3.utils.lambdaclient import LambdaClient
 from goodtablesio.integrations.s3.utils import (
-    set_up_bucket_on_aws, create_bucket)
+    set_up_bucket_on_aws, create_bucket, get_user_buckets)
 from goodtablesio.integrations.s3.models.bucket import S3Bucket
 from goodtablesio.integrations.s3.exceptions import S3Exception
 
@@ -188,6 +190,37 @@ def test_create_bucket_with_user():
     assert buckets[0].name == 'test-bucket-2'
 
     assert buckets[0].users[0] == user
+
+
+@pytest.mark.usefixtures('session_cleanup')
+def test_get_user_buckets():
+
+    user = factories.User()
+
+    factories.S3Bucket(name='test-bucket-1', users=[user])
+    factories.S3Bucket(name='test-bucket-2')
+
+    buckets = get_user_buckets(user.id)
+
+    assert len(buckets) == 1
+
+    assert buckets[0].name == 'test-bucket-1'
+
+
+@pytest.mark.usefixtures('session_cleanup')
+def test_get_user_buckets_two_users():
+
+    user1 = factories.User()
+    factories.User()
+
+    factories.S3Bucket(name='test-bucket-1', users=[user1])
+    factories.S3Bucket(name='test-bucket-2')
+
+    buckets = get_user_buckets(user1.id)
+
+    assert len(buckets) == 1
+
+    assert buckets[0].name == 'test-bucket-1'
 
 
 @pytest.fixture

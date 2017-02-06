@@ -9,6 +9,7 @@ from goodtablesio.models.source import Source
 from goodtablesio.models.integration import Integration
 from goodtablesio.services import database
 from goodtablesio.integrations.github.models.repo import GithubRepo
+from goodtablesio.integrations.s3.models.bucket import S3Bucket
 
 
 class FactoryBase(factory.alchemy.SQLAlchemyModelFactory):
@@ -112,3 +113,20 @@ class GithubRepo(FactoryBase):
     @property
     def repo(self):
         return factory.Faker('name')
+
+
+class S3Bucket(FactoryBase):
+
+    class Meta:
+        model = S3Bucket
+        sqlalchemy_session = database['session']
+        exclude = ('integration',)
+
+    id = factory.Sequence(lambda n: str(uuid.uuid4()))
+    name = factory.Faker('name')
+    updated = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    active = True
+
+    @property
+    def integration(self):
+        return database['session'].query(Integration).get('s3')

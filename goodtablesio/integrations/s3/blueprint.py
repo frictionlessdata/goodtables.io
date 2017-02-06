@@ -27,7 +27,9 @@ def index():
 @login_required
 def settings():
 
-    return render_template('s3_settings.html')
+    buckets = get_user_buckets(current_user.id)
+
+    return render_template('s3_settings.html', buckets=buckets)
 
 
 @s3.route('/settings/add_bucket', methods=['POST'])
