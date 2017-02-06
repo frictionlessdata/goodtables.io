@@ -1,11 +1,12 @@
 import logging
 
 from flask import Blueprint, render_template, flash, request, redirect, url_for
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 from goodtablesio import models
 
-from goodtablesio.integrations.s3.utils import set_up_bucket
+from goodtablesio.integrations.s3.utils import (
+    set_up_bucket_on_aws, create_bucket, get_user_buckets)
 
 
 log = logging.getLogger(__name__)
@@ -42,11 +43,14 @@ def add_bucket():
     if not access_key_id or not secret_access_key or not bucket_name:
         flash('Missing fields', 'danger')
     else:
-        success, message = set_up_bucket(
+        success, message = set_up_bucket_on_aws(
             access_key_id, secret_access_key, bucket_name)
 
         # Redirect and flash message
         if success:
+
+            create_bucket(bucket_name, user=current_user)
+
             flash('Bucket added', 'success')
         else:
             flash('Error setting up bucket integration. {0}'.format(message),

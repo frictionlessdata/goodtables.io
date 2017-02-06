@@ -80,6 +80,13 @@ policy_many_statements = {
     ]
 }
 
+
+s3_get_bucket_location = {
+    'LocationConstraint': 'us-west-2',
+    'ResponseMetadata': response_metadata(200)
+}
+
+
 s3_get_bucket_policy = {
     'Policy': json.dumps(policy),
     'ResponseMetadata': response_metadata(200)
