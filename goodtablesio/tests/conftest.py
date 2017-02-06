@@ -3,18 +3,26 @@ from goodtablesio.app import app
 from goodtablesio.services import database
 from goodtablesio.models.job import Job
 from goodtablesio.models.user import User
+from goodtablesio.models.source import Source
+from goodtablesio.models.integration import Integration
 from goodtablesio.celery_app import celery_app as celapp
-from goodtablesio.integrations.github.models.repo import GithubRepo
 
 
 # Fixture
+
+def pytest_configure(config):
+
+    for integration in ('api', 's3', 'github'):
+        if not database['session'].query(Integration).get(integration):
+            database['session'].add(Integration(name=integration))
+
 
 @pytest.fixture()
 def session_cleanup():
 
     database['session'].query(Job).delete()
     database['session'].query(User).delete()
-    database['session'].query(GithubRepo).delete()
+    database['session'].query(Source).delete()
 
     yield
 

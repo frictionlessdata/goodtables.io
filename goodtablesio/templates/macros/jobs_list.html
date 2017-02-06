@@ -9,10 +9,10 @@
         <a href="/jobs/{{ job.id }}" class="btn btn-danger" style="width: 80px;">Invalid</a>
       {% endif %}
         {% if job.integration_name == 'github' %}
-          <a href="/jobs/{{ job.id }}">{{ job.integration_conf.repository.owner }}/{{ job.integration_conf.repository.name }}</a> -
-          (<a href="https://github.com/{{ job.integration_conf.repository.owner }}/{{ job.integration_conf.repository.name }}/commit/{{ job.integration_conf.sha }}">{{ job.integration_conf.sha[:6] }}</a>)
+          <a href="/jobs/{{ job.id }}">{{ job.conf.owner }}/{{ job.conf.repo }}</a> -
+          (<a href="https://github.com/{{ job.conf.owner }}/{{ job.conf.repo }}/commit/{{ job.conf.sha }}">{{ job.conf.sha[:6] }}</a>)
         {% elif job.integration_name == 's3' %}
-          <a href="/jobs/{{ job.id }}">{{ job.integration_conf.bucket }}</a>
+          <a href="/jobs/{{ job.id }}">{{ job.conf.bucket }}</a>
         {% endif %}
       </a>
       <small style="color: #777">({{ job.created.strftime('%Y-%m-%d') }})</small>

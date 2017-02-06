@@ -44,7 +44,7 @@ def github_org(org):
     jobs = models.job.find(
         filters=[
             models.job.Job.integration_name == 'github',
-            models.job.Job.integration_conf[('repository', 'owner')].astext == org]
+            models.job.Job.conf['owner'].astext == org]
     )
 
     return render_template('github_home.html', jobs=jobs, org=org)
@@ -55,9 +55,8 @@ def github_repo(org, repo):
 
     jobs = models.job.find(
         filters=[
-            models.job.Job.integration_name == 'github',
-            models.job.Job.integration_conf[('repository', 'owner')].astext == org,
-            models.job.Job.integration_conf[('repository', 'name')].astext == repo
+            models.job.Job.conf['owner'].astext == org,
+            models.job.Job.conf['repo'].astext == repo,
             ]
     )
 
@@ -87,8 +86,7 @@ def github_settings():
             repos = (database['session'].query(GithubRepo).
                      filter(GithubRepo.users.any(id=user_id)).
                      order_by(GithubRepo.active.desc(),
-                              GithubRepo.owner,
-                              GithubRepo.repo).
+                              GithubRepo.name).
                      all())
 
     return render_template('github_settings.html', sync=sync, repos=repos)
@@ -154,24 +152,32 @@ def create_job():
     # Get payload parameters
     payload = request.get_json()
     if not payload:
+        log.error('No payload received')
         abort(400)
     owner, repo, sha = get_owner_repo_sha_from_hook_payload(payload)
     if not owner:
+        log.error('Wrong payload received')
         abort(400)
 
     # Save job to database
     job_id = str(uuid.uuid4())
-    integration_conf = {
-        'repository': {
-            'owner': owner,
-            'name': repo,
-            },
-        'sha': sha,
-    }
+
+    source = database['session'].query(GithubRepo).filter(
+        GithubRepo.name == '{0}/{1}'.format(owner, repo)).one_or_none()
+
+    if not source:
+        log.error('A job was requested on a repository not present in the DB')
+        abort(400)
+
     models.job.create({
         'id': job_id,
         'integration_name': 'github',
-        'integration_conf': integration_conf,
+        'source_id': source.id,
+        'conf': {
+            'owner': owner,
+            'repo': repo,
+            'sha': sha,
+        }
     })
 
     # Set GitHub status

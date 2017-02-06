@@ -39,8 +39,8 @@ def test_s3_client_check_connection():
 
     with Stubber(client.client) as stubber:
         stubber.add_response(
-            'get_bucket_policy',
-            mock_responses.s3_get_bucket_policy)
+            'head_bucket',
+            '')
 
         client.check_connection('test_bucket')
 
@@ -51,7 +51,7 @@ def test_s3_client_check_connection_error():
 
     with Stubber(client.client) as stubber:
         stubber.add_client_error(
-            'get_bucket_policy', 'EndpointConnectionError')
+            'head_bucket', 'EndpointConnectionError')
 
         with pytest.raises(S3Exception) as exc:
             client.check_connection('test_bucket')
@@ -65,7 +65,7 @@ def test_s3_client_check_connection_invalid_bucket_name():
 
     # Hack: the botocore stubber does not support raising ParamValidationError
     def mock_make_api_call(self, operation_name, kwarg):
-        if operation_name == 'GetBucketPolicy':
+        if operation_name == 'HeadBucket':
             raise botocore.exceptions.ParamValidationError(
                 report='Wrong params')
 
@@ -83,7 +83,7 @@ def test_s3_client_check_connection_invalid_key():
     client = S3Client('mock_access_key_id', 'mock_secret_access_key')
 
     with Stubber(client.client) as stubber:
-        stubber.add_client_error('get_bucket_policy', 'InvalidAccessKeyId')
+        stubber.add_client_error('head_bucket', 'InvalidAccessKeyId')
 
         with pytest.raises(S3Exception) as exc:
             client.check_connection('test_bucket')
@@ -96,7 +96,8 @@ def test_s3_client_check_connection_invalid_signature():
     client = S3Client('mock_access_key_id', 'mock_secret_access_key')
 
     with Stubber(client.client) as stubber:
-        stubber.add_client_error('get_bucket_policy', 'SignatureDoesNotMatch')
+        stubber.add_client_error(
+            'head_bucket', 'SignatureDoesNotMatch')
 
         with pytest.raises(S3Exception) as exc:
             client.check_connection('test_bucket')
@@ -109,7 +110,7 @@ def test_s3_client_check_connection_wrong_arn():
     client = S3Client('mock_access_key_id', 'mock_secret_access_key')
 
     with Stubber(client.client) as stubber:
-        stubber.add_client_error('get_bucket_policy', 'NoSuchBucket')
+        stubber.add_client_error('head_bucket', 'NoSuchBucket')
 
         with pytest.raises(S3Exception) as exc:
             client.check_connection('test_bucket')
@@ -122,7 +123,8 @@ def test_s3_client_check_connection_access_denied():
     client = S3Client('mock_access_key_id', 'mock_secret_access_key')
 
     with Stubber(client.client) as stubber:
-        stubber.add_client_error('get_bucket_policy', 'AccessDeniedException')
+        stubber.add_client_error(
+            'head_bucket', 'AccessDeniedException')
 
         with pytest.raises(S3Exception) as exc:
             client.check_connection('test_bucket')
@@ -135,7 +137,7 @@ def test_s3_client_check_connection_other_error():
     client = S3Client('mock_access_key_id', 'mock_secret_access_key')
 
     with Stubber(client.client) as stubber:
-        stubber.add_client_error('get_bucket_policy')
+        stubber.add_client_error('head_bucket')
 
         with pytest.raises(botocore.exceptions.ClientError):
             client.check_connection('test_bucket')

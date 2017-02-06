@@ -32,4 +32,4 @@ def get_github_oauth_token():
 
 @login_manager.user_loader
 def load_user(user_id):
-        return models.user.get(user_id, as_dict=False)
+    return models.user.get(user_id, as_dict=False)

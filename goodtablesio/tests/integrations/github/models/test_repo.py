@@ -8,12 +8,13 @@ pytestmark = pytest.mark.usefixtures('session_cleanup')
 # Tests
 
 def test_create():
-    repo = GithubRepo(id='id', owner='owner', repo='repo')
+    repo = GithubRepo(id='id', name='owner/repo')
     database['session'].add(repo)
     database['session'].commit()
     repos = database['session'].query(GithubRepo).all()
     assert len(repos) == 1
     assert repos[0].id == 'id'
+    assert repos[0].name == 'owner/repo'
     assert repos[0].owner == 'owner'
     assert repos[0].repo == 'repo'
     assert repos[0].active is False
@@ -24,7 +25,7 @@ def test_update():
     repo = factories.GithubRepo()
     (database['session'].query(GithubRepo).
         filter_by(id=repo.id).
-        update({'repo': 'new_repo'}))
+        update({'name': 'owner/new_repo'}))
     database['session'].commit()
     repos = database['session'].query(GithubRepo).all()
     assert len(repos) == 1
@@ -33,7 +34,7 @@ def test_update():
 
 def test_user_relationship():
     user = factories.User()
-    repo = GithubRepo(id='id', owner='owner', repo='repo', users=[user])
+    repo = GithubRepo(id='id', name='owner/repo', users=[user])
     database['session'].add(repo)
     database['session'].commit()
     repos = database['session'].query(GithubRepo).all()

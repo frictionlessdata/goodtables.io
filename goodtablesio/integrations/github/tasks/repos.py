@@ -6,16 +6,16 @@ from goodtablesio.integrations.github.models.repo import GithubRepo
 from goodtablesio.integrations.github.utils.repos import iter_repos_by_token
 
 
-# Module API
-
 @celery_app.task(name='goodtablesio.github.sync_user_repos')
 def sync_user_repos(user_id, token):
     """Sync user repositories.
     """
     user = database['session'].query(User).get(user_id)
-    user.github_repos.clear()
+
     for repo_data in iter_repos_by_token(token):
-        repo = database['session'].query(GithubRepo).get(repo_data['id'])
+        repo = database['session'].query(GithubRepo).filter(
+            GithubRepo.conf['github_id'].astext == repo_data['conf']['github_id']
+        ).one_or_none()
         if repo is None:
             repo = GithubRepo(**repo_data)
             database['session'].add(repo)

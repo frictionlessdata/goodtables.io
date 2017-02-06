@@ -2,7 +2,10 @@ from unittest import mock
 
 import pytest
 
+
+from goodtablesio.services import database
 from goodtablesio.tests import factories
+from goodtablesio.integrations.s3.models.bucket import S3Bucket
 
 
 pytestmark = pytest.mark.usefixtures('session_cleanup')
@@ -74,10 +77,10 @@ def test_s3_settings_add_bucket_missing_params(client):
     assert 'Missing fields' in response.get_data(as_text=True)
 
 
-@mock.patch('goodtablesio.integrations.s3.blueprint.set_up_bucket')
-def test_s3_settings_add_bucket_success(mock_set_up_bucket, client):
+@mock.patch('goodtablesio.integrations.s3.blueprint.set_up_bucket_on_aws')
+def test_s3_settings_add_bucket_success(mock_set_up_bucket_on_aws, client):
 
-    mock_set_up_bucket.return_value = (True, '')
+    mock_set_up_bucket_on_aws.return_value = (True, '')
 
     user = factories.User()
 
@@ -96,11 +99,17 @@ def test_s3_settings_add_bucket_success(mock_set_up_bucket, client):
     body = response.get_data(as_text=True)
     assert 'Bucket added' in body, body
 
+    buckets = database['session'].query(S3Bucket).all()
 
-@mock.patch('goodtablesio.integrations.s3.blueprint.set_up_bucket')
-def test_s3_settings_add_bucket_success_redirects(mock_set_up_bucket, client):
+    assert buckets[0].name == 'test'
+    assert buckets[0].users[0] == user
 
-    mock_set_up_bucket.return_value = (True, '')
+
+@mock.patch('goodtablesio.integrations.s3.blueprint.set_up_bucket_on_aws')
+def test_s3_settings_add_bucket_success_redirects(
+     mock_set_up_bucket_on_aws, client):
+
+    mock_set_up_bucket_on_aws.return_value = (True, '')
 
     user = factories.User()
 
@@ -120,10 +129,10 @@ def test_s3_settings_add_bucket_success_redirects(mock_set_up_bucket, client):
     assert response.location == 'http://localhost/s3/settings'
 
 
-@mock.patch('goodtablesio.integrations.s3.blueprint.set_up_bucket')
-def test_s3_settings_add_bucket_failure(mock_set_up_bucket, client):
+@mock.patch('goodtablesio.integrations.s3.blueprint.set_up_bucket_on_aws')
+def test_s3_settings_add_bucket_failure(mock_set_up_bucket_on_aws, client):
 
-    mock_set_up_bucket.return_value = (False, 'Some error happened')
+    mock_set_up_bucket_on_aws.return_value = (False, 'Some error happened')
 
     user = factories.User()
 
@@ -143,10 +152,11 @@ def test_s3_settings_add_bucket_failure(mock_set_up_bucket, client):
     assert 'Some error happened' in body, body
 
 
-@mock.patch('goodtablesio.integrations.s3.blueprint.set_up_bucket')
-def test_s3_settings_add_bucket_failure_redirects(mock_set_up_bucket, client):
+@mock.patch('goodtablesio.integrations.s3.blueprint.set_up_bucket_on_aws')
+def test_s3_settings_add_bucket_failure_redirects(
+     mock_set_up_bucket_on_aws, client):
 
-    mock_set_up_bucket.return_value = (False, 'Some error happened')
+    mock_set_up_bucket_on_aws.return_value = (False, 'Some error happened')
 
     user = factories.User()
 

@@ -1,16 +1,23 @@
 import json
 from unittest.mock import patch
+
+import pytest
+
 from goodtablesio import models, settings
 from goodtablesio.integrations.github.utils.signature import create_signature
+from goodtablesio.tests import factories
 
 
-# Tests
+pytestmark = pytest.mark.usefixtures('session_cleanup')
 
 # TODO: this test should not rely on external HTTP calls to GitHub
 
 
 @patch('goodtablesio.integrations.github.utils.status.set_commit_status')
 def test_create_job(set_commit_status, client, celery_app):
+
+    factories.GithubRepo(name='frictionlessdata/goodtables.io-example')
+
     data = json.dumps({
         'repository': {
             'name': 'goodtables.io-example',

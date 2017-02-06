@@ -17,7 +17,7 @@ def test_create_job_outputs_dict():
     assert job['id'] == 'my-id'
     assert job['status'] == 'created'
     assert job['integration_name'] == 'api'
-    assert job['integration_conf'] is None
+    assert job['conf'] is None
     assert job['created']
     assert job['finished'] is None
     assert job['report'] is None
@@ -28,16 +28,16 @@ def test_create_job_params_outputs_dict():
 
     params = {
         'id': 'my-id',
-        'integration_name': 'my-integration',
-        'integration_conf': {'some': 'conf'}
+        'integration_name': 'api',
+        'conf': {'some': 'conf'}
     }
 
     job = models.job.create(params)
 
     assert job['id'] == 'my-id'
     assert job['status'] == 'created'
-    assert job['integration_name'] == 'my-integration'
-    assert job['integration_conf'] == {'some': 'conf'}
+    assert job['integration_name'] == 'api'
+    assert job['conf'] == {'some': 'conf'}
     assert job['created']
     assert job['finished'] is None
     assert job['report'] is None
@@ -48,8 +48,8 @@ def test_create_job_stored_in_db():
 
     params = {
         'id': 'my-id',
-        'integration_name': 'my-integration',
-        'integration_conf': {'some': 'conf'}
+        'integration_name': 'api',
+        'conf': {'some': 'conf'}
     }
 
     models.job.create(params)
@@ -63,8 +63,8 @@ def test_create_job_stored_in_db():
 
     assert job.id == 'my-id'
     assert job.status == 'created'
-    assert job.integration_name == 'my-integration'
-    assert job.integration_conf == {'some': 'conf'}
+    assert job.integration_name == 'api'
+    assert job.conf == {'some': 'conf'}
     assert job.created
     assert job.finished is None
     assert job.report is None
@@ -89,7 +89,7 @@ def test_update_job_outputs_dict():
     assert updated_job['id'] == job.id
     assert updated_job['status'] == 'success'
     assert updated_job['integration_name'] == 'api'
-    assert updated_job['integration_conf'] is None
+    assert updated_job['conf'] is None
     assert updated_job['created']
     assert updated_job['finished'].replace(tzinfo=None) == finished
     assert updated_job['report'] == report
@@ -121,7 +121,7 @@ def test_update_job_stored_in_db():
     assert updated_job.id == job.id
     assert updated_job.status == 'success'
     assert updated_job.integration_name == 'api'
-    assert updated_job.integration_conf is None
+    assert updated_job.conf is None
     assert updated_job.created
     assert updated_job.finished.replace(tzinfo=None) == finished
     assert updated_job.report == report
@@ -150,7 +150,7 @@ def test_get_job_outputs_dict():
     assert job['id'] == job_db['id']
     assert job['status'] == job_db['status']
     assert job['integration_name'] == job_db['integration_name']
-    assert job['integration_conf'] == job_db['integration_conf']
+    assert job['conf'] == job_db['conf']
     assert job['created'] == job_db['created']
     assert job['finished'] == job_db['finished']
     assert job['report'] == job_db['report']
@@ -223,15 +223,16 @@ def test_find_limit_and_offset():
 
 
 def test_find_filter():
-    job1 = factories.Job(integration_name='test')
+    job1 = factories.Job(integration_name='github')
     factories.Job()
 
-    jobs = models.job.find(filters=[models.job.Job.integration_name == 'test'])
+    jobs = models.job.find(
+        filters=[models.job.Job.integration_name == 'github'])
 
     assert len(jobs) == 1
 
     assert jobs[0]['id'] == job1.id
-    assert jobs[0]['integration_name'] == 'test'
+    assert jobs[0]['integration_name'] == 'github'
 
 
 def test_find_filter_limit_and_offset():

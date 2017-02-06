@@ -5,8 +5,11 @@ import factory
 
 from goodtablesio.models.job import Job
 from goodtablesio.models.user import User
+from goodtablesio.models.source import Source
+from goodtablesio.models.integration import Integration
 from goodtablesio.services import database
 from goodtablesio.integrations.github.models.repo import GithubRepo
+from goodtablesio.integrations.s3.models.bucket import S3Bucket
 
 
 class FactoryBase(factory.alchemy.SQLAlchemyModelFactory):
@@ -61,14 +64,69 @@ class User(FactoryBase):
     admin = False
 
 
+class Integration(FactoryBase):
+
+    class Meta:
+        model = Integration
+        sqlalchemy_session = database['session']
+
+    name = factory.Faker('name')
+
+
+class Source(FactoryBase):
+
+    class Meta:
+        model = Source
+        sqlalchemy_session = database['session']
+        exclude = ('integration',)
+
+    id = factory.Sequence(lambda n: str(uuid.uuid4()))
+    name = factory.Faker('name')
+    updated = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    active = True
+
+    @property
+    def integration(self):
+        return database['session'].query(Integration).get('api')
+
+
 class GithubRepo(FactoryBase):
 
     class Meta:
         model = GithubRepo
         sqlalchemy_session = database['session']
+        exclude = ('owner', 'repo', 'integration',)
 
     id = factory.Sequence(lambda n: str(uuid.uuid4()))
-    owner = factory.Faker('name')
-    repo = factory.Faker('name')
+    name = factory.Faker('name')
     updated = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     active = True
+
+    @property
+    def integration(self):
+        return database['session'].query(Integration).get('github')
+
+    @property
+    def owner(self):
+        return factory.Faker('name')
+
+    @property
+    def repo(self):
+        return factory.Faker('name')
+
+
+class S3Bucket(FactoryBase):
+
+    class Meta:
+        model = S3Bucket
+        sqlalchemy_session = database['session']
+        exclude = ('integration',)
+
+    id = factory.Sequence(lambda n: str(uuid.uuid4()))
+    name = factory.Faker('name')
+    updated = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    active = True
+
+    @property
+    def integration(self):
+        return database['session'].query(Integration).get('s3')

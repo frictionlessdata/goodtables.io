@@ -8,11 +8,15 @@
   <p>Amazon S3 integration description</p>
 
   <h2>Buckets</h2>
-
+    {% if buckets %}
     <ul>
-        <li>Bucket list</li>
+        {% for bucket in buckets %}
+            <li>{{ bucket.name }}</li>
+        {% endfor %}
     </ul>
-
+    {% else %}
+        No buckets configured
+    {% endif %}
   <hr/>
 
   <h2>Add Bucket</h2>

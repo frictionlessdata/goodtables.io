@@ -1,7 +1,9 @@
 import logging
 import datetime
 
-from sqlalchemy import Column, Unicode, DateTime, update as db_update
+from sqlalchemy import (
+    Column, Unicode, DateTime, update as db_update,  ForeignKey)
+from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import JSONB
 
 from goodtablesio import settings
@@ -18,12 +20,17 @@ class Job(Base, BaseModelMixin):
 
     id = Column(Unicode, primary_key=True, default=make_uuid)
     status = Column(Unicode, default='created')
-    integration_name = Column(Unicode, default='api')
-    integration_conf = Column(JSONB)
     created = Column(DateTime(timezone=True), default=datetime.datetime.utcnow)
     finished = Column(DateTime(timezone=True))
     report = Column(JSONB)
     error = Column(JSONB)
+    integration_name = Column(
+        Unicode, ForeignKey('integrations.name'), default='api')
+    conf = Column(JSONB)
+    source_id = Column(Unicode, ForeignKey('sources.id'))
+
+    source = relationship(
+        'Source', primaryjoin='Job.source_id == Source.id')
 
 
 def create(params):
