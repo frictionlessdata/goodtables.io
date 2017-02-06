@@ -24,6 +24,13 @@ def upgrade():
         sa.Column('active', sa.Boolean(), nullable=False),
         sa.PrimaryKeyConstraint('name')
     )
+
+    op.bulk_insert(integrations_table, [
+        {'name': 'api', 'description': '', 'active': True},
+        {'name': 'github', 'description': '', 'active': True},
+        {'name': 's3', 'description': '', 'active': True},
+    ])
+
     op.create_table(
         'integration_users',
         sa.Column('integration_name', sa.Unicode(), nullable=False),
@@ -73,12 +80,6 @@ def upgrade():
 
     op.alter_column('jobs', 'integration_conf', new_column_name='conf')
     # ### end Alembic commands ###
-
-    op.bulk_insert(integrations_table, [
-        {'name': 'api', 'description': '', 'active': True},
-        {'name': 'github', 'description': '', 'active': True},
-        {'name': 's3', 'description': '', 'active': True},
-    ])
 
 
 def downgrade():
