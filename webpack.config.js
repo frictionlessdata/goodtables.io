@@ -8,7 +8,7 @@ const ENV = process.env.NODE_ENV;
 const webpackConfig = {
   entry: './frontend/index.js',
   output: {
-    path: path.resolve(__dirname, './static'),
+    path: path.resolve(__dirname, './public'),
     publicPath: '/static/',
     filename: (ENV === 'production') ? 'bundle.min.js' : 'bundle.js',
     library: 'frontend',
@@ -34,7 +34,7 @@ const webpackConfig = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        exclude: /node_modules/
+        exclude: /node_modules/,
       },
       {
         test: /\.json$/,
@@ -49,6 +49,11 @@ const webpackConfig = {
         }
       },
     ]
+  },
+  resolve: {
+    alias: {
+      'vue$': 'vue/dist/vue.common.js'
+    }
   },
   devServer: {
     historyApiFallback: true,

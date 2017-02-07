@@ -64,3 +64,5 @@ rules:
     - off
   import/newline-after-import:
     - off
+  import/no-extraneous-dependencies:
+    - off
