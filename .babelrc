@@ -13,7 +13,7 @@
   ],
   "env": {
     "testing": {
-      "plugins": [ "istanbul" ]
+      "plugins": ["istanbul"]
     }
   }
 }

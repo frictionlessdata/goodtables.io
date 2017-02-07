@@ -5,6 +5,9 @@ export default {
 </script>
 
 <template>
+<p>
+  App
+</p>
 </template>
 
 <style src="../styles.css"></style>
