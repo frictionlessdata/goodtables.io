@@ -32,16 +32,16 @@ env:
     - S3_LAMBDA_ARN=test
 
 install:
-  - python setup.py develop
-  - make install
-  - pip install coveralls
+  - npm run init
   - psql -c 'create database goodtables_test;' -U postgres
   - make migrate
 
 script:
-  - make test
+  - npm run test
+  - npm run spec
 
 after_success:
+  - pip install coveralls
   - coveralls
 
 cache:
