@@ -38,7 +38,7 @@ before_install:
 install:
   - npm run init
   - psql -c 'create database goodtables_test;' -U postgres
-  - make migrate
+  - npm run migrate
 
 script:
   - npm run test
