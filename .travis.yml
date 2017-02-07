@@ -31,6 +31,10 @@ env:
     - S3_GT_ACCOUNT_ID=test
     - S3_LAMBDA_ARN=test
 
+before_install:
+  - nvm install 6
+  - nvm use 6
+
 install:
   - npm run init
   - psql -c 'create database goodtables_test;' -U postgres
