@@ -22,7 +22,7 @@
     "pretest": "npm run lint",
     "server:dev": "FLASK_APP=goodtablesio/app.py FLASK_DEBUG=1 flask run",
     "server:prod": "make migrate && gunicorn --access-logfile - --log-file - goodtablesio.app:app",
-    "spec": "NODE_ENV=testing node runespec.js",
+    "spec": "NODE_ENV=testing node runspec.js",
     "test": "npm run test:back && npm run test:front",
     "test:back": "py.test --cov goodtablesio --cov-report term-missing",
     "test:front": "NODE_ENV=testing karma start"

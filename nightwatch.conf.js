@@ -5,7 +5,7 @@ const chromedriver = require('chromedriver')
 // Base
 
 let nightwatchConfig = {
-  src_folders: ['e2e'],
+  src_folders: ['specs'],
   output_folder: false,
 }
 

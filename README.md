@@ -4,6 +4,7 @@
 [![Coveralls](http://img.shields.io/coveralls/frictionlessdata/goodtables.io.svg?branch=master)](https://coveralls.io/r/frictionlessdata/goodtables.io?branch=master)
 [![Gitter](https://img.shields.io/gitter/room/frictionlessdata/chat.svg)](https://gitter.im/frictionlessdata/chat)
 
+[![Saucelabs](https://saucelabs.com/browser-matrix/goodtables.io.svg)](https://saucelabs.com/u/goodtables.io)
 
 **Good Tables == Good Times!**
 
