@@ -1,2 +1,4 @@
-export Header from './components/Header.vue'
-export Footer from './components/Footer.vue'
+import Vue from 'vue'
+import App from './components/App.vue'
+import Header from './components/Header.vue'
+import Footer from './components/Footer.vue'

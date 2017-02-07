@@ -5,7 +5,6 @@ export default {
 </script>
 
 <template>
-<p>
-  Header
-</p>
 </template>
+
+<style src="../styles.css"></style>
