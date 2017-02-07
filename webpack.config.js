@@ -6,12 +6,12 @@ const ENV = process.env.NODE_ENV;
 // Base
 
 const webpackConfig = {
-  entry: './src/index.js',
+  entry: './frontend/index.js',
   output: {
-    path: path.resolve(__dirname, './dist'),
-    publicPath: '/dist/',
-    filename: (ENV === 'production') ? 'goodtables-vue.min.js' : 'goodtables-vue.js',
-    library: 'goodtablesVue',
+    path: path.resolve(__dirname, './static'),
+    publicPath: '/static/',
+    filename: (ENV === 'production') ? 'bundle.min.js' : 'bundle.js',
+    library: 'frontend',
     libraryTarget: 'var',
   },
   module: {
@@ -49,11 +49,6 @@ const webpackConfig = {
         }
       },
     ]
-  },
-  resolve: {
-    alias: {
-      'vue$': 'vue/dist/vue.common.js'
-    }
   },
   devServer: {
     historyApiFallback: true,
