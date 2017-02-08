@@ -1,17 +1,20 @@
+import uuid
 import logging
 
 from flask import (
     Blueprint, render_template, flash, request, redirect,
     url_for, abort, jsonify)
 from flask_login import login_required, current_user
+from celery import chain
 
 from goodtablesio import models
 from goodtablesio.services import database
+from goodtablesio.tasks.validate import validate
 from goodtablesio.integrations.s3.models.bucket import S3Bucket
 from goodtablesio.integrations.s3.utils import (
     set_up_bucket_on_aws, create_bucket, get_user_buckets,
-    disable_bucket_on_aws, inactivate_bucket)
-
+    get_bucket_from_hook_payload, disable_bucket_on_aws, inactivate_bucket)
+from goodtablesio.integrations.s3.tasks.jobconf import get_validation_conf
 
 log = logging.getLogger(__name__)
 
@@ -108,3 +111,55 @@ def remove_bucket(bucket_name):
                   'danger')
 
     return redirect(url_for('s3.settings'))
+
+
+@s3.route('/hook', methods=['POST'])
+def create_job():
+
+    # Validate signature
+    # TODO
+    if not s3.debug:
+        pass
+
+    # Get payload parameters
+    payload = request.get_json()
+    if not payload:
+        msg = 'No payload received'
+        log.error(msg)
+        abort(400, msg)
+
+    bucket = get_bucket_from_hook_payload(payload)
+    if not bucket:
+        msg = 'Wrong payload received'
+        log.error(msg)
+        abort(400, msg)
+
+    # Check bucket exists
+    source = database['session'].query(S3Bucket).filter(
+        S3Bucket.name == bucket).one_or_none()
+
+    if not source:
+        msg = ('A job was requested on a bucket not present '
+               'in the DB: {}'.format(bucket))
+        log.error(msg)
+        abort(400, msg)
+
+    # Save job to database
+    job_id = str(uuid.uuid4())
+
+    models.job.create({
+        'id': job_id,
+        'integration_name': 's3',
+        'source_id': source.id,
+        'conf': {
+            'bucket': bucket
+        }
+    })
+
+    # Run validation
+    tasks_chain = chain(
+        get_validation_conf.s(bucket, job_id=job_id),
+        validate.s(job_id=job_id))
+    tasks_chain.delay()
+
+    return jsonify({'job_id': job_id})

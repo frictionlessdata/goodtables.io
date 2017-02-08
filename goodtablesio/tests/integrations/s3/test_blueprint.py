@@ -260,4 +260,3 @@ def test_s3_settings_remove_bucket_not_found(client):
 
     body = response.get_data(as_text=True)
     assert 'Unknown bucket' in body, body
-

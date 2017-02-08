@@ -8,4 +8,5 @@ celery_app = Celery('tasks')
 celery_app.config_from_object(settings)
 
 # TODO: automate
-celery_app.autodiscover_tasks(['goodtablesio.integrations.github'])
+celery_app.autodiscover_tasks(['goodtablesio.integrations.github',
+                               'goodtablesio.integrations.s3'])
