@@ -112,9 +112,6 @@ class S3Client(object):
             if new_lambda_confs:
                 conf['LambdaFunctionConfigurations'] = new_lambda_confs
 
-        if conf == {}:
-            conf = None
-
         return conf
 
     def remove_notification(self, bucket_name):
@@ -136,7 +133,6 @@ class S3Client(object):
         if conf:
             new_conf = self._update_conf_to_remove_lambda_notification(
                 conf, bucket_name)
-
             try:
                 self.client.put_bucket_notification_configuration(
                     Bucket=bucket_name,

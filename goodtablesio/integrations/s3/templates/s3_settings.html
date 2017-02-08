@@ -11,7 +11,7 @@
     {% if buckets %}
     <ul>
         {% for bucket in buckets %}
-            <li>{{ bucket.name }}</li>
+            <li>{{ bucket.name }} (<a href="{{ url_for('s3.remove_bucket', bucket_name=bucket.name) }}">remove</a>)</li>
         {% endfor %}
     </ul>
     {% else %}

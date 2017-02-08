@@ -6,6 +6,3 @@ from goodtablesio import settings
 
 celery_app = Celery('tasks')
 celery_app.config_from_object(settings)
-
-# TODO: automate
-celery_app.autodiscover_tasks(['goodtablesio.integrations.github'])

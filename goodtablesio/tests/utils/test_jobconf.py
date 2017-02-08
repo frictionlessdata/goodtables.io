@@ -1,13 +1,13 @@
 import pytest
 from unittest.mock import patch
 from goodtablesio import exceptions
-from goodtablesio.utils.jobconf import create_validation_conf
+from goodtablesio.utils.jobconf import make_validation_conf, parse_job_conf
 from goodtablesio.utils.jobconf import verify_validation_conf, verify_job_conf
 
 
 # Tests
 
-def test_create_validation_conf(load_file):
+def test_create_validation_conf():
     job_base = 'http://example.com'
     job_files = [
         'file.csv',
@@ -20,11 +20,14 @@ def test_create_validation_conf(load_file):
         'file.pdf',
         'goodtables.yml',
     ]
-    job_conf_text = """
-        files: '*'
-        settings:
-            error_limit: 1
-    """
+
+    job_conf = {
+        'files': '*',
+        'settings': {
+            'error_limit': 1
+        }
+    }
+
     validation_conf = {
         'files': [
             {'source': 'http://example.com/file.csv'},
@@ -39,48 +42,90 @@ def test_create_validation_conf(load_file):
             'error_limit': 1,
         }
     }
-    load_file.return_value = job_conf_text
-    assert create_validation_conf(job_base, job_files) == validation_conf
+    assert make_validation_conf(
+        job_files, job_conf, job_base) == validation_conf
 
 
-def test_create_validation_conf_subdir(load_file):
+def test_create_validation_conf_no_base():
+    job_files = [
+        'file.csv',
+        'file.json',
+        'file.jsonl',
+        'file.ndjson',
+        'file.tsv',
+        'file.xls',
+        'file.ods',
+        'file.pdf',
+        'goodtables.yml',
+    ]
+
+    job_conf = {
+        'files': '*',
+        'settings': {
+            'error_limit': 1
+        }
+    }
+
+    validation_conf = {
+        'files': [
+            {'source': 'file.csv'},
+            {'source': 'file.json'},
+            {'source': 'file.jsonl'},
+            {'source': 'file.ndjson'},
+            {'source': 'file.tsv'},
+            {'source': 'file.xls'},
+            {'source': 'file.ods'},
+        ],
+        'settings': {
+            'error_limit': 1,
+        }
+    }
+    assert make_validation_conf(
+        job_files, job_conf) == validation_conf
+
+
+def test_create_validation_conf_subdir():
     job_base = 'http://example.com'
     job_files = [
         'data/file.csv',
         'file.pdf',
     ]
-    job_conf_text = """
-        files: '*'
-    """
+    job_conf = {
+        'files': '*'
+    }
+
     validation_conf = {
         'files': [
             {'source': 'http://example.com/data/file.csv'},
         ]
     }
-    load_file.return_value = job_conf_text
-    assert create_validation_conf(job_base, job_files) == validation_conf
+
+    assert make_validation_conf(
+        job_files, job_conf, job_base) == validation_conf
 
 
-def test_create_validation_conf_subdir_config(load_file):
+def test_create_validation_conf_subdir_config():
     job_base = 'http://example.com'
     job_files = [
         'data/file.csv',
         'file.ods',
         'file.pdf',
     ]
-    job_conf_text = """
-        files: 'data/*'
-    """
+    job_conf = {
+        'files': 'data/*'
+        }
+
     validation_conf = {
         'files': [
             {'source': 'http://example.com/data/file.csv'},
         ]
     }
-    load_file.return_value = job_conf_text
-    assert create_validation_conf(job_base, job_files) == validation_conf
+
+    assert make_validation_conf(
+        job_files, job_conf, job_base) == validation_conf
 
 
-def test_create_validation_conf_subdir_granular(load_file):
+def test_create_validation_conf_subdir_granular():
     job_base = 'http://example.com'
     job_files = [
         'data/file.csv',
@@ -88,15 +133,21 @@ def test_create_validation_conf_subdir_granular(load_file):
         'file.ods',
         'file.pdf',
     ]
-    job_conf_text = """
-        files:
-          - source: data/file.csv
-            schema: data/schema.json
-            delimiter: ';'
-            skip_rows: [1, 2, '#', '//']
-        settings:
-            order_fields: true
-    """
+
+    job_conf = {
+        'files': [
+            {
+                'source': 'data/file.csv',
+                'schema': 'data/schema.json',
+                'delimiter': ';',
+                'skip_rows': [1, 2, '#', '//']
+            }
+        ],
+        'settings': {
+            'order_fields': True
+        }
+    }
+
     validation_conf = {
         'files': [
             {
@@ -110,35 +161,103 @@ def test_create_validation_conf_subdir_granular(load_file):
             'order_fields': True,
         }
     }
-    load_file.return_value = job_conf_text
-    assert create_validation_conf(job_base, job_files) == validation_conf
+
+    assert make_validation_conf(
+        job_files, job_conf, job_base) == validation_conf
 
 
-def test_create_validation_conf_invalid(load_file):
-    job_base = 'http://example.com'
-    job_conf_text = """
-        files: {}
-    """
-    load_file.return_value = job_conf_text
-    with pytest.raises(exceptions.InvalidJobConfiguration):
-        assert create_validation_conf(job_base, [])
-
-
-def test_create_validation_conf_goodtables_yml_not_found(load_file):
+def test_create_validation_conf_default_job_conf():
     job_base = 'http://example.com'
     job_files = [
         'file1.csv',
         'file2.csv',
         'file.pdf',
     ]
+
+    job_conf = None
+
     validation_conf = {
         'files': [
             {'source': 'http://example.com/file1.csv'},
             {'source': 'http://example.com/file2.csv'},
         ]
     }
-    load_file.return_value = None
-    assert create_validation_conf(job_base, job_files) == validation_conf
+
+    assert make_validation_conf(
+        job_files, job_conf, job_base) == validation_conf
+
+
+def test_parse_job_conf():
+    job_conf_text = """
+        files: '*'
+        settings:
+            error_limit: 1
+    """
+
+    job_conf = {
+        'files': '*',
+        'settings': {
+            'error_limit': 1
+        }
+    }
+
+    assert parse_job_conf(job_conf_text) == job_conf
+
+
+def test_parse_job_conf_invalid():
+    job_conf_text = """
+        files: {}
+    """
+    with pytest.raises(exceptions.InvalidJobConfiguration):
+        assert parse_job_conf(job_conf_text)
+
+
+def test_parse_job_conf_invalid_text():
+    job_conf_text = """
+        aaa
+    """
+    with pytest.raises(exceptions.InvalidJobConfiguration):
+        assert parse_job_conf(job_conf_text)
+
+
+def test_parse_job_conf_invalid_yml():
+    job_conf_text = """
+        files: ][
+    """
+    with pytest.raises(exceptions.InvalidJobConfiguration):
+        assert parse_job_conf(job_conf_text)
+
+
+def test_parse_job_conf_invalid_none():
+    job_conf_text = None
+    assert parse_job_conf(job_conf_text) is None
+
+
+def test_parse_job_conf_files_settings():
+    job_conf_text = """
+        files:
+          - source: data/file.csv
+            schema: data/schema.json
+            delimiter: ';'
+            skip_rows: [1, 2, '#', '//']
+        settings:
+            order_fields: true
+    """
+    job_conf = {
+        'files': [
+            {
+                'source': 'data/file.csv',
+                'schema': 'data/schema.json',
+                'delimiter': ';',
+                'skip_rows': [1, 2, '#', '//']
+            }
+        ],
+        'settings': {
+            'order_fields': True
+        }
+    }
+
+    assert parse_job_conf(job_conf_text) == job_conf
 
 
 def test_verify_job_conf():

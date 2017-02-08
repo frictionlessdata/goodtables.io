@@ -164,9 +164,7 @@ def create_job():
         log.error(msg)
         abort(400, msg)
 
-    # Save job to database
-    job_id = str(uuid.uuid4())
-
+    # Check repo exists
     source = database['session'].query(GithubRepo).filter(
         GithubRepo.name == '{0}/{1}'.format(owner, repo)).one_or_none()
 
@@ -174,6 +172,9 @@ def create_job():
         msg = 'A job was requested on a repository not present in the DB'
         log.error(msg)
         abort(400, msg)
+
+    # Save job to database
+    job_id = str(uuid.uuid4())
 
     models.job.create({
         'id': job_id,

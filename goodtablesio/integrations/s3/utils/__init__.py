@@ -3,4 +3,6 @@
 from goodtablesio.integrations.s3.utils.s3client import S3Client
 from goodtablesio.integrations.s3.utils.lambdaclient import LambdaClient
 from goodtablesio.integrations.s3.utils.bucket import (
-    set_up_bucket_on_aws, get_user_buckets, create_bucket)
+    set_up_bucket_on_aws, disable_bucket_on_aws, get_user_buckets,
+    create_bucket, inactivate_bucket)
+from goodtablesio.integrations.s3.utils.hook import get_bucket_from_hook_payload

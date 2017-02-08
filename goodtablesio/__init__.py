@@ -12,3 +12,4 @@ import goodtablesio.signals
 
 # Register integrations
 import goodtablesio.integrations.github
+import goodtablesio.integrations.s3
