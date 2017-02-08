@@ -1,6 +1,10 @@
 sudo:
   false
 
+addons:
+  postgresql: '9.4'
+  sauce_connect: true
+
 language:
   python
 
@@ -10,9 +14,6 @@ python:
 services:
   - postgresql
   - redis-server
-
-addons:
-  postgresql: '9.4'
 
 env:
   global:
@@ -31,30 +32,35 @@ env:
     - S3_GT_ACCOUNT_ID=test
     - S3_LAMBDA_ARN=test
 
+before_install:
+  - nvm install 6
+  - nvm use 6
+
 install:
-  - python setup.py develop
-  - make install
-  - pip install coveralls
+  - npm run init
   - psql -c 'create database goodtables_test;' -U postgres
-  - make migrate
+  - npm run migrate
 
 script:
-  - make test
+  - npm run test
+  - npm run spec
 
 after_success:
+  - pip install coveralls
   - coveralls
 
 cache:
   directories:
     - $HOME/.cache/pip
 
-deploy:
-  on:
-    branch: master
-  provider: deis
-  controller: deis.oklabs.org
-  app: goodtables
-  cli_version: v2.8.0
-  username: ekarev
-  password:
-    secure: YZDt5MrYCoHjhAlHI4uCqoY4bi4Jw/qoh0PdYT1RQS9pJGGCs1K1EIESCRBkqGzECx450fLGUzIpnJkcwRo/AIkvQl/OimUrBDRXTzyNk29lrXOcphN41PMkeUdBzXmwB5wP12ugOSlzIebNGgyyDRWBGMbc9xsu78TxcqaFun3sgaGemHCWUFoAWFdBhIA2OCv0eHBNUMzugd0Z2Faktj5IbxVIAID1m6c2jgjwHH9z6a6wdrP8YSVpg1vDLkzqKi/9lE+DG3q1AhHjEcdRImO+PlcglfjxspLzSGQ8QbQ+uDypNmI+0j6O+bYxcQJVL0yXRcvCFHSWYw6Bw/+TJ0UMY8e6Ifw8cknyqTqkvmqZfdhKF8+8uVOEYiKG/B6bjMjGTuVFQ7BAKYx6ulXfhBAyfhRNgMD3bGvRAvU3q8J9Fs8TI3ER3ndFN1h/yTPot5Y6Mf3ih9pDt9ut7MVc4F2XJ8hMdCT0pCWmOe7ugJZD1CqZbj0BinAcdGSpNE2LpgUX3PAg5bARuL2ds4v9J2oIrp+C7UX1est7C+Wqep5z6irNAnj462sDKx8qzlLwOYSMcPtI0XglRJuSlXzhMUQFugrhxIIwZplp/gkN4+nsmNaRfHVy3tC7rdNRLZuZjHBLXC3arXdOPydoRyGP1A0M2hNWmkkZTJVzf69MFfc=
+# TODO: recover
+# deploy:
+  # on:
+    # branch: master
+  # provider: deis
+  # controller: deis.oklabs.org
+  # app: goodtables
+  # cli_version: v2.8.0
+  # username: ekarev
+  # password:
+    # secure: YZDt5MrYCoHjhAlHI4uCqoY4bi4Jw/qoh0PdYT1RQS9pJGGCs1K1EIESCRBkqGzECx450fLGUzIpnJkcwRo/AIkvQl/OimUrBDRXTzyNk29lrXOcphN41PMkeUdBzXmwB5wP12ugOSlzIebNGgyyDRWBGMbc9xsu78TxcqaFun3sgaGemHCWUFoAWFdBhIA2OCv0eHBNUMzugd0Z2Faktj5IbxVIAID1m6c2jgjwHH9z6a6wdrP8YSVpg1vDLkzqKi/9lE+DG3q1AhHjEcdRImO+PlcglfjxspLzSGQ8QbQ+uDypNmI+0j6O+bYxcQJVL0yXRcvCFHSWYw6Bw/+TJ0UMY8e6Ifw8cknyqTqkvmqZfdhKF8+8uVOEYiKG/B6bjMjGTuVFQ7BAKYx6ulXfhBAyfhRNgMD3bGvRAvU3q8J9Fs8TI3ER3ndFN1h/yTPot5Y6Mf3ih9pDt9ut7MVc4F2XJ8hMdCT0pCWmOe7ugJZD1CqZbj0BinAcdGSpNE2LpgUX3PAg5bARuL2ds4v9J2oIrp+C7UX1est7C+Wqep5z6irNAnj462sDKx8qzlLwOYSMcPtI0XglRJuSlXzhMUQFugrhxIIwZplp/gkN4+nsmNaRfHVy3tC7rdNRLZuZjHBLXC3arXdOPydoRyGP1A0M2hNWmkkZTJVzf69MFfc=

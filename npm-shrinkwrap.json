@@ -1,0 +1,11 @@
+{
+  "name": "goodtables.io",
+  "version": "0.1.0",
+  "dependencies": {
+    "vue": {
+      "version": "2.1.10",
+      "from": "vue@>=2.1.0 <3.0.0",
+      "resolved": "https://registry.npmjs.org/vue/-/vue-2.1.10.tgz"
+    }
+  }
+}
