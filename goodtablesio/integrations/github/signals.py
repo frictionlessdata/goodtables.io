@@ -1,10 +1,9 @@
 from celery import signals
+
 from goodtablesio import models
-from goodtablesio.tasks import validate
+from goodtablesio.tasks.validate import validate
 from goodtablesio.integrations.github.utils.status import set_commit_status
 
-
-# Module API
 
 @signals.task_postrun.connect(sender=validate)
 def post_task_handler(**kwargs):
@@ -32,6 +31,6 @@ def post_task_handler(**kwargs):
         set_commit_status(
            github_status,
            owner=conf['owner'],
-           repo=conf['name'],
+           repo=conf['repo'],
            sha=conf['sha'],
            job_id=job['id'])
