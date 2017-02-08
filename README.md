@@ -10,21 +10,29 @@
 
 Continuous data validation as a service.
 
-
 Preliminary designs and specifications can be found in the [wiki](https://github.com/frictionlessdata/goodtables.io/wiki).
 
-## Development installation
+## Development
+
+### Installation
 
 We currently use Redis as a broker:
 
-    sudo apt-get install redis-server
+```bash
+sudo apt-get install redis-server
+```
 
-Install the Python package:
+Prepare Python and Node virtual environments:
 
-    git clone git@github.com:frictionlessdata/goodtables.io.git
-    cd goodtables.io
-    pip install -r requirements.txt
-    python setup.py develop
+```bash
+git clone git@github.com:frictionlessdata/goodtables.io.git
+cd goodtables.io
+virtualenv .python -p python3.5
+source .python/bin/activate
+nvm install 6
+nvm use 6
+npm run init
+```
 
 Create `.env` file with environment variables:
 
@@ -34,18 +42,19 @@ $ editor .env # edit your vars
 
 ```
 
-Migrations:
-- migrate - `make migrate`
+### Migrations
+
+- migrate - `npm run migrate`
 - downgrade - `alembic downgrade -1`
 - add migration - `alembic revision -m '<name>'`
 
-## Quickstart
+### Running the app
 
 Start the Celery worker and dev server:
 
 ```bash
-bash1$ make celery-dev
-bash2$ make server-dev
+bash1$ npm run celery:dev
+bash2$ npm run server:dev
 ```
 
 Now developmet server runs on `localhost:5000`. We could send github repo for validation getting job identifiers as a response:
@@ -116,7 +125,45 @@ Now developmet server runs on `localhost:5000`. We could send github repo for va
 }
 ```
 
-# Set up (MVP version)
+## Frontend building
+
+To build frontend files to `public` directory:
+
+```bash
+npm run build:dev
+# npm run build:prod
+
+```
+
+## Dependencies locking
+
+To lock the dependencies:
+
+```bash
+npm run deps
+# npm run deps:back
+# npm run deps:front
+```
+
+### Unit testing
+
+To run unit tests for the whole application with linting and coverage:
+
+```bash
+npm run test
+# npm run test:back
+# npm run test:front
+```
+
+### E2E testing
+
+To run user acceptance end-to-end tests for the whole application:
+
+```bash
+npm run spec
+```
+
+## Set up (MVP version)
 
 As of now, the process to set up validation on a GitHub repo is the following:
 
@@ -131,6 +178,3 @@ From this moment, once you start pushing to the master branch you should see the
 The statuses link to the full report on the prototype app.
 
 Support for PRs, custom branches and proper authorisation is coming.
-
-
-
