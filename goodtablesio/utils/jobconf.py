@@ -1,7 +1,9 @@
+
+# pylama:ignore=C901
+
 import io
 import os
 import yaml
-import requests
 import jsonschema
 from fnmatch import fnmatch
 from tabulator import Stream
@@ -10,27 +12,31 @@ from goodtablesio import exceptions
 
 # Module API
 
-def create_validation_conf(job_base, job_files):
-    """Create validation configuration from job base url and file paths.
+
+def parse_job_conf(contents):
+    """Parse and validate the contents of a goodtables.yml file
 
     Args:
-        job_base (url): url base for job file paths
-        job_files (str[]): relative to base job file paths
+        contents (str): goodtables.yml contents
 
     Raises:
         exceptions.InvalidJobConfiguration
 
     Returns:
-        validation_conf (dict): Configuration object to be used by the
-            validation task
-
-    This function is pure to make testing easier.
+        job_conf (dict) A dictionary with the validated job configuration
 
     """
-    job_conf = _load_job_conf(job_base)
-    verify_job_conf(job_conf)
-    validation_conf = _make_validation_conf(job_base, job_files, job_conf)
-    return validation_conf
+    job_conf = None
+    if contents:
+        try:
+            job_conf = yaml.safe_load(contents)
+        except yaml.YAMLError as e:
+            raise exceptions.InvalidJobConfiguration(
+                'Invalid YAML file: {}'.format(e))
+
+        verify_job_conf(job_conf)
+
+    return job_conf
 
 
 def verify_job_conf(job_conf):
@@ -65,21 +71,26 @@ def verify_validation_conf(validation_conf):
         raise exceptions.InvalidValidationConfiguration()
 
 
-# Internal
+def make_validation_conf(job_files, job_conf, job_base=None):
+    """Given a list of files and a job configuration (goodtables.yml),
+        return the validation configuratio to be used by the validation
+        task (goodtables)
 
-def _load_job_conf(job_base):
-    job_conf = {'files': '*'}
-    url = '/'.join([job_base, 'goodtables.yml'])
-    text = _load_file(url)
-    if text is not None:
-        try:
-            job_conf = yaml.safe_load(text)
-        except Exception:
-            raise exceptions.InvalidJobConfiguration()
-    return job_conf
+    Args:
+        job_files (str[]): List of file paths, relative to
+            job_base
+        job_conf (dict): The job configuration object (the parsed contents
+            of the goodtables.yml file
+        job_base (url): Base URL for file paths (optional)
 
+    Returns:
+        validation_conf (dict): Configuration object to be used by the
+            validation task
+    """
 
-def _make_validation_conf(job_base, job_files, job_conf):
+    if not job_conf:
+        job_conf = {'files': '*'}
+
     validation_conf = {}
 
     # Wild-card syntax
@@ -90,7 +101,10 @@ def _make_validation_conf(job_base, job_files, job_conf):
             if not _is_tabular_file(name):
                 continue
             if fnmatch(name, pattern):
-                source = '/'.join([job_base, name])
+                if job_base:
+                    source = '/'.join([job_base, name])
+                else:
+                    source = name
                 validation_conf['files'].append({
                     'source': source,
                 })
@@ -100,9 +114,11 @@ def _make_validation_conf(job_base, job_files, job_conf):
         for item in job_conf['files']:
             if item['source'] in job_files:
                 item['source'] = '/'.join([job_base, item['source']])
-                if 'schema' in item:
-                    if not item['schema'].startswith('http'):
-                        item['schema'] = '/'.join([job_base, item['schema']])
+                if ('schema' in item
+                        and not item['schema'].startswith('http')
+                        and job_base):
+                    item['schema'] = '/'.join(
+                        [job_base, item['schema']])
                 validation_conf['files'].append(item)
 
     # Copy settings
@@ -112,11 +128,7 @@ def _make_validation_conf(job_base, job_files, job_conf):
     return validation_conf
 
 
-def _load_file(url):
-    response = requests.get(url)
-    if response.status_code == 200:
-        return response.text
-    return None
+# Internal
 
 
 def _is_tabular_file(name):

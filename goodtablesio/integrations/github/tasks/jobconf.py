@@ -1,9 +1,12 @@
 import logging
+
+import requests
 from github3 import GitHub
+
 from goodtablesio import models, settings
 from goodtablesio.celery_app import celery_app
 from goodtablesio.utils.jobtask import JobTask
-from goodtablesio.utils.jobconf import create_validation_conf
+from goodtablesio.utils.jobconf import make_validation_conf, parse_job_conf
 log = logging.getLogger(__name__)
 
 
@@ -23,7 +26,10 @@ def get_validation_conf(owner, repo, sha, job_id):
     # Get validation conf
     job_base = _get_job_base(owner, repo, sha)
     job_files = _get_job_files(owner, repo, sha)
-    validation_conf = create_validation_conf(job_base, job_files)
+    job_conf = _load_job_conf(job_base)
+
+    validation_conf = make_validation_conf(
+        job_files, job_conf, job_base=job_base)
 
     return validation_conf
 
@@ -83,5 +89,20 @@ def _get_job_files_contents_api(repo_api, sha, contents=None):
             files.append(item.path)
         elif item.type == 'dir':
             dir_contents = repo_api.contents(item.path, sha)
-            files.extend(_get_job_files_contents_api(repo_api, sha, dir_contents))
+            files.extend(
+                _get_job_files_contents_api(repo_api, sha, dir_contents))
     return files
+
+
+def _load_job_conf(job_base):
+    job_conf = {'files': '*'}
+    url = '/'.join([job_base, 'goodtables.yml'])
+    text = _load_file(url)
+    return parse_job_conf(text) or job_conf
+
+
+def _load_file(url):
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.text
+    return None
