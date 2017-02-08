@@ -125,7 +125,7 @@ Now developmet server runs on `localhost:5000`. We could send github repo for va
 }
 ```
 
-## Frontend building
+### Frontend building
 
 To build frontend files to `public` directory:
 
@@ -135,7 +135,7 @@ npm run build:dev
 
 ```
 
-## Dependencies locking
+### Dependencies locking
 
 To lock the dependencies:
 
