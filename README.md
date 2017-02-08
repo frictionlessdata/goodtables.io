@@ -44,9 +44,11 @@ $ editor .env # edit your vars
 
 ### Migrations
 
-- migrate - `npm run migrate`
-- downgrade - `alembic downgrade -1`
-- add migration - `alembic revision -m '<name>'`
+```bash
+npm run migrate # migrate
+alembic downgrade -1 # downgrade
+alembic revision -m '<name>' # add a migration
+```
 
 ### Running the app
 
