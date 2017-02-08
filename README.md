@@ -163,7 +163,7 @@ To run user acceptance end-to-end tests for the whole application:
 npm run spec
 ```
 
-## Set up (MVP version)
+## MVP version
 
 As of now, the process to set up validation on a GitHub repo is the following:
 
