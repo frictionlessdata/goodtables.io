@@ -177,7 +177,8 @@ def test_lambda_client_remove_permission_to_bucket_doesnt_exist():
     client = LambdaClient()
 
     with Stubber(client.client) as stubber:
-        stubber.add_client_error('remove_permission', 'ResourceNotFound')
+        stubber.add_client_error('remove_permission',
+                                 'ResourceNotFoundException')
 
         with pytest.raises(S3Exception) as exc:
             client.remove_permission_to_bucket('test-gtio-2')

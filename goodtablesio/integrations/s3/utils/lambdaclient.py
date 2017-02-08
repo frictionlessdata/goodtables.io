@@ -111,7 +111,7 @@ class LambdaClient(object):
             log.debug('Removed permission for bucket {0} on lambda'.format(
                 bucket_name))
         except botocore.exceptions.ClientError as e:
-            if e.response['Error']['Code'] == 'ResourceNotFound':
+            if e.response['Error']['Code'] == 'ResourceNotFoundException':
                 raise S3Exception('Permission not found : {0}'.format(
                     statement_id), 's3-lambda-perm-not-found')
             raise e

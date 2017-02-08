@@ -425,7 +425,7 @@ def test_s3_remove_notification_conf_lambda_empty():
         'LambdaFunctionConfigurations': []
     }
 
-    expected_conf = None
+    expected_conf = {}
 
     new_conf = client._update_conf_to_remove_lambda_notification(
         conf, 'test-gtio-1')
@@ -439,7 +439,7 @@ def test_s3_remove_notification_conf_lambda_empty_dict():
     conf = {
     }
 
-    expected_conf = None
+    expected_conf = {}
 
     new_conf = client._update_conf_to_remove_lambda_notification(
         conf, 'test-gtio-1')

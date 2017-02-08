@@ -129,6 +129,27 @@ def test_s3_settings_add_bucket_success_redirects(
     assert response.location == 'http://localhost/s3/settings'
 
 
+def test_s3_settings_add_bucket_already_exists(client):
+
+    bucket = factories.S3Bucket()
+    user = factories.User()
+
+    with client.session_transaction() as sess:
+        # Mock a user login
+        sess['user_id'] = user.id
+
+    data = {
+        'access-key-id': 'test',
+        'secret-access-key': 'test',
+        'bucket-name': bucket.name
+    }
+    response = client.post(
+        '/s3/settings/add_bucket', data=data, follow_redirects=True)
+
+    body = response.get_data(as_text=True)
+    assert 'Bucket already exists' in body, body
+
+
 @mock.patch('goodtablesio.integrations.s3.blueprint.set_up_bucket_on_aws')
 def test_s3_settings_add_bucket_failure(mock_set_up_bucket_on_aws, client):
 
@@ -174,3 +195,69 @@ def test_s3_settings_add_bucket_failure_redirects(
 
     assert response.status_code == 302
     assert response.location == 'http://localhost/s3/settings'
+
+
+@mock.patch('goodtablesio.integrations.s3.blueprint.disable_bucket_on_aws')
+def test_s3_settings_remove_bucket_success(mock_disable_bucket_on_aws, client):
+
+    bucket = factories.S3Bucket(
+        conf={'access_key_id': 'test', 'secret_access_key': 'test'})
+
+    mock_disable_bucket_on_aws.return_value = (True, '')
+
+    user = factories.User()
+
+    with client.session_transaction() as sess:
+        # Mock a user login
+        sess['user_id'] = user.id
+
+    response = client.get(
+        '/s3/settings/remove_bucket/{}'.format(bucket.name),
+        follow_redirects=True)
+
+    body = response.get_data(as_text=True)
+    assert 'Bucket removed' in body, body
+
+    buckets = database['session'].query(S3Bucket).all()
+
+    assert buckets[0].name == bucket.name
+    assert buckets[0].active is False
+
+
+@mock.patch('goodtablesio.integrations.s3.blueprint.disable_bucket_on_aws')
+def test_s3_settings_remove_bucket_failure(mock_disable_bucket_on_aws, client):
+
+    bucket = factories.S3Bucket(
+        conf={'access_key_id': 'test', 'secret_access_key': 'test'})
+
+    mock_disable_bucket_on_aws.return_value = (False, 'Some error happened')
+
+    user = factories.User()
+
+    with client.session_transaction() as sess:
+        # Mock a user login
+        sess['user_id'] = user.id
+
+    response = client.get(
+        '/s3/settings/remove_bucket/{}'.format(bucket.name),
+        follow_redirects=True)
+
+    body = response.get_data(as_text=True)
+    assert 'Some error happened' in body, body
+
+
+def test_s3_settings_remove_bucket_not_found(client):
+
+    user = factories.User()
+
+    with client.session_transaction() as sess:
+        # Mock a user login
+        sess['user_id'] = user.id
+
+    response = client.get(
+        '/s3/settings/remove_bucket/not_found',
+        follow_redirects=True)
+
+    body = response.get_data(as_text=True)
+    assert 'Unknown bucket' in body, body
+
