@@ -1,5 +1,4 @@
 import pytest
-from unittest.mock import patch
 from goodtablesio import exceptions
 from goodtablesio.utils.jobconf import make_validation_conf, parse_job_conf
 from goodtablesio.utils.jobconf import verify_validation_conf, verify_job_conf
@@ -284,11 +283,3 @@ def test_verify_validation_conf_invalid():
         assert verify_validation_conf({
             'files': ['*'],
         })
-
-
-# Fixtures
-
-@pytest.fixture
-def load_file():
-    yield patch('goodtablesio.utils.jobconf._load_file').start()
-    patch.stopall()
