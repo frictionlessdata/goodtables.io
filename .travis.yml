@@ -43,6 +43,7 @@ install:
   - npm run migrate
 
 script:
+  - npm run build:dev
   - npm run test
   - npm run spec
 
