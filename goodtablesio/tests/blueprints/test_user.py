@@ -38,13 +38,15 @@ def test_github_login_basic(client):
 
 def test_github_login_already_logged_in(client):
 
+    user = factories.User()
+
     with client.app.test_request_context():
         login_url = url_for('user.login', provider='github')
         home_url = url_for('site.home', _external=True)
 
     with client.session_transaction() as sess:
         # Mock a user login
-        sess['user_id'] = 'some-user-id'
+        sess['user_id'] = user.id
 
     response = client.get(login_url)
 
@@ -54,13 +56,15 @@ def test_github_login_already_logged_in(client):
 
 def test_logout(client):
 
+    user = factories.User()
+
     with client.app.test_request_context():
         logout_url = url_for('user.logout')
         home_url = url_for('site.home', _external=True)
 
     with client.session_transaction() as sess:
         # Mock a user login
-        sess['user_id'] = 'some-user-id'
+        sess['user_id'] = user.id
 
     response = client.get(logout_url)
 

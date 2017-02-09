@@ -1,8 +1,12 @@
 import logging
 
-from flask import (Blueprint, request, session, redirect,
-    url_for, abort, flash, render_template)
-from flask_login import login_user, logout_user, login_required
+from flask import (
+    Blueprint, request, session, redirect, url_for, abort, flash,
+    render_template
+)
+from flask_login import (
+    login_user, logout_user, login_required, current_user
+)
 
 from goodtablesio import models
 from goodtablesio.auth import github_auth
@@ -24,7 +28,7 @@ def home():
 
 @user.route('/login/<any(github):provider>')
 def login(provider):
-    if session.get('user_id'):
+    if current_user.is_authenticated:
         flash('You are already logged in. Please log out if you want to ' +
               'log in with a different account', 'warning')
         return redirect(url_for('site.home'))
@@ -40,9 +44,8 @@ def login(provider):
 @user.route('/logout')
 def logout():
 
-    # Remove any auth related keys
-
-    session.pop('auth_github_token', None)
+    # Clear user session
+    session.clear()
 
     # Logout user with Flask-Login
     logout_user()
