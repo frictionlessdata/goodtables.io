@@ -4,7 +4,7 @@ export default {
     job: Object,
   },
   components: {
-    'app-report': goodtablesVue.Report,
+    'app-report': goodtablesVue.Report,  // eslint-disable-line no-undef
   },
 }
 </script>

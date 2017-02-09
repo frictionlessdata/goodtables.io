@@ -49,7 +49,6 @@ def s3_settings():
     })
 
 
-
 @s3.route('/settings/add_bucket', methods=['POST'])
 @login_required
 def add_bucket():
