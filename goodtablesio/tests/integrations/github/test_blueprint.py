@@ -4,7 +4,7 @@ from unittest.mock import patch
 import pytest
 
 from goodtablesio import models, settings
-from goodtablesio.integrations.github.utils.signature import create_signature
+from goodtablesio.utils.signature import create_signature
 from goodtablesio.tests import factories
 
 
@@ -26,7 +26,8 @@ def test_create_job(set_commit_status, client, celery_app):
         'head_commit': {'id': 'd5be243487d9882d7f762e7fa04b36b900164a59'},
     })
     sig = create_signature(settings.GITHUB_HOOK_SECRET, data)
-    res = client.post('/github/hook',
+    res = client.post(
+        '/github/hook',
         headers={'X-Hub-Signature': sig},
         content_type='application/json',
         data=data)

@@ -9,11 +9,11 @@ from flask_login import login_required
 from goodtablesio import models, settings
 from goodtablesio.services import database
 from goodtablesio.tasks.validate import validate
+from goodtablesio.utils.signature import validate_signature
 from goodtablesio.integrations.github.models.repo import GithubRepo
 from goodtablesio.integrations.github.tasks.jobconf import get_validation_conf
 from goodtablesio.integrations.github.tasks.repos import sync_user_repos
 from goodtablesio.integrations.github.utils.status import set_commit_status
-from goodtablesio.integrations.github.utils.signature import validate_signature
 from goodtablesio.integrations.github.utils.hook import (
     activate_hook, deactivate_hook, get_owner_repo_sha_from_hook_payload)
 
