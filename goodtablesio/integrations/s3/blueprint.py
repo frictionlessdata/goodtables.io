@@ -7,9 +7,10 @@ from flask import (
 from flask_login import login_required, current_user
 from celery import chain
 
-from goodtablesio import models
+from goodtablesio import models, settings
 from goodtablesio.services import database
 from goodtablesio.tasks.validate import validate
+from goodtablesio.utils.signature import validate_signature
 from goodtablesio.integrations.s3.models.bucket import S3Bucket
 from goodtablesio.integrations.s3.utils import (
     set_up_bucket_on_aws, create_bucket, get_user_buckets,
@@ -37,7 +38,7 @@ def index():
 
 @s3.route('/settings')
 @login_required
-def settings():
+def s3_settings():
 
     buckets = get_user_buckets(current_user.id)
 
@@ -62,7 +63,7 @@ def add_bucket():
             S3Bucket.name == bucket_name).one_or_none()
         if source and source.active:
             flash('Bucket already exists', 'danger')
-            return redirect(url_for('s3.settings'))
+            return redirect(url_for('s3.s3_settings'))
 
         success, message = set_up_bucket_on_aws(
             access_key_id, secret_access_key, bucket_name)
@@ -79,7 +80,7 @@ def add_bucket():
             flash('Error setting up bucket integration. {0}'.format(message),
                   'danger')
 
-    return redirect(url_for('s3.settings'))
+    return redirect(url_for('s3.s3_settings'))
 
 
 @s3.route('/settings/remove_bucket/<bucket_name>')
@@ -110,16 +111,21 @@ def remove_bucket(bucket_name):
             flash('Error removing bucket integration. {0}'.format(message),
                   'danger')
 
-    return redirect(url_for('s3.settings'))
+    return redirect(url_for('s3.s3_settings'))
 
 
 @s3.route('/hook', methods=['POST'])
 def create_job():
 
     # Validate signature
-    # TODO
     if not s3.debug:
-        pass
+        key = settings.S3_LAMBDA_HOOK_SECRET
+        text = request.data
+        signature = request.headers.get('X-GoodTables-Signature', '')
+        if not validate_signature(key, text, signature):
+            msg = 'Wrong signature for AWS payload'
+            log.error(msg)
+            abort(400, msg)
 
     # Get payload parameters
     payload = request.get_json()
