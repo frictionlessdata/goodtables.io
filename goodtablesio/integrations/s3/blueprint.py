@@ -114,6 +114,14 @@ def remove_bucket(bucket_name):
     return redirect(url_for('s3.s3_settings'))
 
 
+def _run_validation(bucket, job_id):
+    # Run validation
+    tasks_chain = chain(
+        get_validation_conf.s(bucket, job_id=job_id),
+        validate.s(job_id=job_id))
+    tasks_chain.delay()
+
+
 @s3.route('/hook', methods=['POST'])
 def create_job():
 
@@ -162,10 +170,6 @@ def create_job():
         }
     })
 
-    # Run validation
-    tasks_chain = chain(
-        get_validation_conf.s(bucket, job_id=job_id),
-        validate.s(job_id=job_id))
-    tasks_chain.delay()
+    _run_validation(bucket, job_id)
 
     return jsonify({'job_id': job_id})

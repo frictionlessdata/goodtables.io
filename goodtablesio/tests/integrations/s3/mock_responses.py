@@ -1,3 +1,5 @@
+import io
+import datetime
 import json
 
 from goodtablesio import settings
@@ -106,6 +108,80 @@ s3_put_bucket_policy = {
 
 s3_delete_bucket_policy = {
     'ResponseMetadata': response_metadata(204)
+}
+
+goodtables_yml = '''
+files: '*'
+settings:
+  error_limit: 1
+'''
+
+s3_get_object = {
+    'AcceptRanges': 'bytes',
+    'Body': io.StringIO(goodtables_yml),
+    'ContentLength': 38,
+    'ContentType': 'application/octet-stream',
+    'ETag': '"af07230272ead6bef63ffc10f24fb685"',
+    'LastModified': datetime.datetime(2017, 2, 7, 14, 30, 51),
+    'Metadata': {},
+    'ResponseMetadata': response_metadata(200)
+}
+
+
+s3_list_objects = {
+    'Contents': [
+        {
+            'ETag': '"2391d7ddb6850eb8f77c4717c0600f84"',
+            'Key': 'councillors-address-3.csv',
+            'LastModified': datetime.datetime(2017, 1, 12, 10, 16, 8),
+            'Owner': {
+                'DisplayName': 'amercadero',
+                 'ID': '3154f69d9784540a09efb2b938054fdb7caebfe442acdf038963bed0dffcfcd9'
+            },
+            'Size': 11232,
+            'StorageClass': 'STANDARD'
+        },
+        {
+            'ETag': '"2391d7ddb6850eb8f77c4717c0600f84"',
+            'Key': 'councillors-address2.csv',
+            'LastModified': datetime.datetime(2017, 2, 6, 16, 42, 10),
+            'Owner': {
+                'DisplayName': 'amercadero',
+                'ID': '3154f69d9784540a09efb2b938054fdb7caebfe442acdf038963bed0dffcfcd9'
+            },
+            'Size': 11232,
+            'StorageClass': 'STANDARD'
+        },
+        {
+            'ETag': '"244a8c0a0926c411671d522f2a6adea8"',
+            'Key': 'dmesg.png',
+            'LastModified': datetime.datetime(2017, 2, 6, 16, 43, 4),
+            'Owner': {
+                'DisplayName': 'amercadero',
+                'ID': '3154f69d9784540a09efb2b938054fdb7caebfe442acdf038963bed0dffcfcd9'
+            },
+            'Size': 127658,
+            'StorageClass': 'STANDARD'
+        },
+        {
+            'ETag': '"d41d8cd98f00b204e9800998ecf8427e"',
+            'Key': 'my_data/',
+            'LastModified': datetime.datetime(2017, 2, 7, 11, 11, 18),
+            'Owner': {
+                'DisplayName': 'amercadero',
+                'ID': '3154f69d9784540a09efb2b938054fdb7caebfe442acdf038963bed0dffcfcd9'
+            },
+            'Size': 0,
+            'StorageClass': 'STANDARD'
+        }
+    ],
+    'EncodingType': 'url',
+    'IsTruncated': False,
+    'Marker': '',
+    'MaxKeys': 1000,
+    'Name': 'test-gtio-1',
+    'Prefix': '',
+    'ResponseMetadata': response_metadata(200)
 }
 
 
