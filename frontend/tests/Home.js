@@ -1,20 +1,20 @@
 import Vue from 'vue'
-import App from '../components/App.vue'
+import Home from '../components/Home.vue'
 const assert = require('chai').assert
 
 // Tests
 
-describe('App', () => {
+describe('Home', () => {
 
   it('should render', () => {
     const vm = new Vue({
-      template: '<div><app /></div>',
+      template: '<div><app-home /></div>',
       components: {
-        app: App,
+        'app-home': Home,
       },
     }).$mount()
     const html = vm.$el.innerHTML
-    assert.include(html, 'App')
+    assert.include(html, 'Home')
   })
 
 })
