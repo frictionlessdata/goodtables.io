@@ -1,3 +1,4 @@
+import os
 import logging
 import sqlalchemy
 from flask import Flask, render_template
@@ -16,12 +17,10 @@ log = logging.getLogger(__name__)
 # Module API
 
 # Create instance
-app = Flask(__name__)
-
+app = Flask(__name__,
+    static_folder=os.path.join(os.path.dirname(__file__), '..', 'public'))
 app.secret_key = settings.FLASK_SECRET_KEY
-
 app.config['JSONIFY_MIMETYPE'] = 'application/json; charset=utf-8'
-
 
 # Register Flask integrations
 oauth.init_app(app)
