@@ -26,8 +26,8 @@ export default {
     </div>
   </div>
 
-  <template v-if="githubJobs">
-    <app-joblist :jobs="githubJobs">
+  <template v-if="githubJobs.length">
+    <app-joblist :jobs="githubJobs" />
     <div style="margin-top: 20px"><a href="/github">Show more</a></div>
   </template>
 
@@ -45,8 +45,8 @@ export default {
     </div>
   </div>
 
-  <template v-if="s3Jobs">
-    <app-joblist :jobs="s3Jobs">
+  <template v-if="s3Jobs.length">
+    <app-joblist :jobs="s3Jobs" />
     <div style="margin-top: 20px"><a href="/s3">Show more</a></div>
   </template>
 

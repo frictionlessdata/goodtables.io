@@ -1,6 +1,12 @@
-{% extends "layout.html" %}
+<script>
+export default {
+  props: {
+    buckets: Array,
+  },
+}
+</script>
 
-{% block contents %}
+<template>
 <div class="container">
 
   <h1>Amazon S3</h1>
@@ -8,19 +14,16 @@
   <p>Amazon S3 integration description</p>
 
   <h2>Buckets</h2>
-    {% if buckets %}
-    <ul>
-        {% for bucket in buckets %}
-            <li>{{ bucket.name }} (<a href="{{ url_for('s3.remove_bucket', bucket_name=bucket.name) }}">remove</a>)</li>
-        {% endfor %}
-    </ul>
-    {% else %}
-        No buckets configured
-    {% endif %}
-  <hr/>
+  <ul v-if="buckets.length">
+    <li v-for="bucket of buckets">{{ bucket.name }}
+      (<a :href="`/s3/settigs/remove_bucket/${bucket.name}`">remove</a>)
+    </li>
+  </ul>
+  <p v-else>No buckets configured</p>
+
+  <hr>
 
   <h2>Add Bucket</h2>
-
 
   <form action="/s3/settings/add_bucket" method="POST" >
     <div class="form-group">
@@ -38,6 +41,8 @@
 	<button type="submit" class="btn btn-default">Submit</button>
   </form>
 
-
 </div>
-{% endblock %}
+</template>
+
+<style scoped>
+</style>

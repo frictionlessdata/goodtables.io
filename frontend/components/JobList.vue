@@ -1,12 +1,8 @@
 <script>
-import JobList from './JobList.vue'
 
 export default {
   props: {
     jobs: Array,
-  },
-  components: {
-    'app-job-list': JobList,
   },
 }
 </script>
