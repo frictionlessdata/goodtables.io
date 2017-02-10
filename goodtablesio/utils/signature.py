@@ -5,7 +5,7 @@ import hashlib
 # Module API
 
 def create_signature(key, text):
-    """Create GitHub signature for text.
+    """Create signature for text.
     """
     if isinstance(key, str):
         key = key.encode('utf-8')

@@ -16,16 +16,16 @@ log = logging.getLogger(__name__)
 @celery_app.task(name='goodtablesio.s3.get_validation_conf', base=JobTask)
 def get_validation_conf(bucket, job_id):
 
+    job = database['session'].query(models.job.Job).get(job_id)
+
+    if not job:
+        return None
+
     # Update job
     models.job.update({
         'id': job_id,
         'status': 'running'
     })
-
-    job = database['session'].query(models.job.Job).get(job_id)
-
-    if not job:
-        return None
 
     access_key_id = job.source.conf['access_key_id']
     secret_access_key = job.source.conf['secret_access_key']

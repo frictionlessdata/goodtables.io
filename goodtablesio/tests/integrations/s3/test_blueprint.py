@@ -1,9 +1,12 @@
+import json
 from unittest import mock
 
 import pytest
 
-
+from goodtablesio import settings
 from goodtablesio.services import database
+from goodtablesio.models.job import Job
+from goodtablesio.utils.signature import create_signature
 from goodtablesio.tests import factories
 from goodtablesio.integrations.s3.models.bucket import S3Bucket
 
@@ -260,3 +263,79 @@ def test_s3_settings_remove_bucket_not_found(client):
 
     body = response.get_data(as_text=True)
     assert 'Unknown bucket' in body, body
+
+
+def test_s3_hook_wrong_signature(client):
+
+    response = client.post(
+        '/s3/hook', headers={'X-GoodTables-Signature': 'no'})
+
+    assert response.status_code == 400
+    body = response.get_data(as_text=True)
+    assert 'Wrong signature' in body, body
+
+
+def test_s3_hook_no_payload(client):
+
+    data = 'aa'
+    sig = create_signature(settings.S3_LAMBDA_HOOK_SECRET, data)
+
+    response = client.post(
+        '/s3/hook', data=data, headers={'X-GoodTables-Signature': sig})
+
+    assert response.status_code == 400
+    body = response.get_data(as_text=True)
+    assert 'No payload' in body, body
+
+
+def test_s3_hook_wrong_payload(client):
+
+    data = {'aa': '2'}
+    sig = create_signature(settings.S3_LAMBDA_HOOK_SECRET, json.dumps(data))
+
+    response = client.post(
+        '/s3/hook', data=json.dumps(data),
+        content_type='application/json',
+        headers={'X-GoodTables-Signature': sig})
+
+    assert response.status_code == 400
+    body = response.get_data(as_text=True)
+    assert 'Wrong payload' in body, body
+
+
+def test_s3_hook_bucket_does_not_exist(client):
+
+    data = {'Records': [{'s3': {'bucket': {'name': 'test-bucket'}}}]}
+    sig = create_signature(settings.S3_LAMBDA_HOOK_SECRET, json.dumps(data))
+
+    response = client.post(
+        '/s3/hook', data=json.dumps(data),
+        content_type='application/json',
+        headers={'X-GoodTables-Signature': sig})
+
+    assert response.status_code == 400
+    body = response.get_data(as_text=True)
+    assert 'bucket not present' in body, body
+
+
+@mock.patch('goodtablesio.integrations.s3.blueprint._run_validation')
+def test_s3_hook_bucket_success(mock_1, client):
+
+    factories.S3Bucket(name='test-bucket')
+
+    data = {'Records': [{'s3': {'bucket': {'name': 'test-bucket'}}}]}
+    sig = create_signature(settings.S3_LAMBDA_HOOK_SECRET, json.dumps(data))
+
+    response = client.post(
+        '/s3/hook', data=json.dumps(data),
+        content_type='application/json',
+        headers={'X-GoodTables-Signature': sig})
+
+    assert response.status_code == 200
+    body = response.get_data(as_text=True)
+
+    job_id = json.loads(body)['job_id']
+
+    jobs = database['session'].query(Job).all()
+
+    assert jobs[0].id == job_id
