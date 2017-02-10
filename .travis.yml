@@ -3,7 +3,6 @@ sudo:
 
 addons:
   postgresql: '9.4'
-  sauce_connect: true
 
 language:
   python
@@ -32,22 +31,9 @@ env:
     - S3_GT_ACCOUNT_ID=test
     - S3_LAMBDA_ARN=test
 
-before_install:
-  - nvm install 6
-  - nvm use 6
-
-install:
-  - npm run init
-  - psql -c 'create database goodtables_test;' -U postgres
-  - npm run migrate
 
 script:
-  - npm run test
-  - npm run spec
-
-after_success:
-  - pip install coveralls
-  - coveralls
+  - echo "test!!!"
 
 cache:
   directories:
@@ -55,7 +41,7 @@ cache:
 
 deploy:
   on:
-    branch: master
+    branch: fix-travis-deployment
   provider: deis
   controller: deis.oklabs.org
   app: goodtables
