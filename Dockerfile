@@ -3,7 +3,7 @@ FROM gliderlabs/alpine:3.4
 MAINTAINER Paul Walsh <paulywalsh@gmail.com>
 
 ENV LANG=en_US.UTF-8 \
-    APP_DIR=/srv/app \
+    APP_DIR=/srv/app
 
 COPY . ${APP_DIR}
 
