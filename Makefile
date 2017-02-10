@@ -14,6 +14,7 @@ install: ## install the dependencies for the app
 
 install-dev: ## install the additional development dependencies for the app
 	pip3 install --upgrade --no-cache-dir pylama tox
+	npm install
 
 release: ## tag a release from master and push to origin
 	bash -c '[[ -z `git status -s` ]]'
@@ -31,6 +32,9 @@ push: ## push the latest Docker image to DockerHub
 
 migrate: ## run database migrations for the app
 	alembic upgrade head
+
+frontend: ## compile the frontend assets
+        npm run build:prod
 
 server: ## serve the app with gunicorn
 	gunicorn --access-logfile - --log-file - goodtablesio.app:app
