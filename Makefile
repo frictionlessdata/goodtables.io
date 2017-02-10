@@ -9,11 +9,11 @@ help: # http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 install: ## install the dependencies for the app
-	pip install --upgrade pip honcho
-	pip install --upgrade --no-cache-dir --exists-action w -r requirements.txt
+	pip3 install --upgrade pip honcho
+	pip3 install --upgrade --no-cache-dir --exists-action w -r requirements.txt
 
 install-dev: ## install the additional development dependencies for the app
-	pip install --upgrade --no-cache-dir pylama tox
+	pip3 install --upgrade --no-cache-dir pylama tox
 
 release: ## tag a release from master and push to origin
 	bash -c '[[ -z `git status -s` ]]'

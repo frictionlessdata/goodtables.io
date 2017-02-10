@@ -12,6 +12,7 @@ WORKDIR ${APP_DIR}
 RUN apk add --no-cache --virtual build-dependencies \
     build-base \
     linux-headers \
+    python3-dev \
     openssl-dev \
     readline-dev \
     git \
@@ -19,6 +20,9 @@ RUN apk add --no-cache --virtual build-dependencies \
     postgresql-dev \
     libpng-dev \
     libjpeg-turbo-dev \
+    libxml2-dev \
+    libxslt-dev \
+    libstdc++ \
  && apk add --no-cache \
     python3 \
     bzip2 \
