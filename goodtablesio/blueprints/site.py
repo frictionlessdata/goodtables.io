@@ -1,4 +1,5 @@
 from flask import Blueprint, abort, render_template, session, redirect, url_for
+from flask_login import current_user
 from goodtablesio import models
 
 
@@ -11,7 +12,9 @@ site = Blueprint('site', __name__)
 def home():
     if session.get('user_id'):
         return redirect(url_for('site.dashboard'))
-    return render_template('index.html', route='Home')
+    return render_template('index.html', route='Home', props={
+        'userName': getattr(current_user, 'display_name', None),
+    })
 
 
 @site.route('/dashboard')
@@ -23,8 +26,9 @@ def dashboard():
     github_jobs = models.job.get_by_integration('github', limit=5)
     s3_jobs = models.job.get_by_integration('s3', limit=5)
     return render_template('index.html', route='Dashboard', props={
-      'githubJobs': github_jobs,
-      's3Jobs': s3_jobs,
+        'userName': getattr(current_user, 'display_name', None),
+        'githubJobs': github_jobs,
+        's3Jobs': s3_jobs,
     })
 
 
@@ -32,7 +36,8 @@ def dashboard():
 def jobs():
     jobs = models.job.find()
     return render_template('index.html', route='Jobs', props={
-      'jobs': jobs,
+        'userName': getattr(current_user, 'display_name', None),
+        'jobs': jobs,
     })
 
 
@@ -42,5 +47,6 @@ def job(job_id):
     if not job:
         abort(404)
     return render_template('index.html', route='Job', props={
-      'job': job,
+        'userName': getattr(current_user, 'display_name', None),
+        'job': job,
     })

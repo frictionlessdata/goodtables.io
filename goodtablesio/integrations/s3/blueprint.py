@@ -30,22 +30,20 @@ def record_params(setup_state):
 
 @s3.route('/')
 def index():
-
     jobs = models.job.get_by_integration('s3')
-
     return render_template('index.html', route='S3Home', props={
-      'jobs': jobs,
+        'userName': getattr(current_user, 'display_name', None),
+        'jobs': jobs,
     })
 
 
 @s3.route('/settings')
 @login_required
 def s3_settings():
-
     buckets = get_user_buckets(current_user.id)
-
     return render_template('index.html', route='S3Settings', props={
-      'buckets': buckets,
+        'userName': getattr(current_user, 'display_name', None),
+        'buckets': buckets,
     })
 
 

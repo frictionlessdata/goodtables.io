@@ -4,7 +4,7 @@ import logging
 from celery import chain
 from flask import Blueprint, request, abort, session
 from flask import render_template, jsonify, redirect, url_for
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 from goodtablesio import models, settings
 from goodtablesio.services import database
@@ -35,7 +35,8 @@ def github_home():
     jobs = models.job.get_by_integration('github')
 
     return render_template('index.html', route='GithubHome', props={
-      'jobs': jobs,
+        'userName': getattr(current_user, 'display_name', None),
+        'jobs': jobs,
     })
 
 
@@ -49,8 +50,9 @@ def github_org(org):
     )
 
     return render_template('index.html', route='GithubHome', props={
-      'org': org,
-      'jobs': jobs,
+        'userName': getattr(current_user, 'display_name', None),
+        'org': org,
+        'jobs': jobs,
     })
 
 
@@ -65,9 +67,10 @@ def github_repo(org, repo):
     )
 
     return render_template('index.html', route='GithubHome', props={
-      'org': org,
-      'repo': repo,
-      'jobs': jobs,
+        'userName': getattr(current_user, 'display_name', None),
+        'org': org,
+        'repo': repo,
+        'jobs': jobs,
     })
 
 
@@ -98,8 +101,9 @@ def github_settings():
                      all())
 
     return render_template('index.html', route='GithubSettings', props={
-      'sync': sync,
-      'repos': repos,
+        'userName': getattr(current_user, 'display_name', None),
+        'sync': sync,
+        'repos': repos,
     })
 
 
