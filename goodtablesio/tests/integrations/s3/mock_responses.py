@@ -135,8 +135,8 @@ s3_list_objects = {
             'Key': 'councillors-address-3.csv',
             'LastModified': datetime.datetime(2017, 1, 12, 10, 16, 8),
             'Owner': {
-                'DisplayName': 'amercadero',
-                 'ID': '3154f69d9784540a09efb2b938054fdb7caebfe442acdf038963bed0dffcfcd9'
+                        'DisplayName': 'amercadero',
+                        'ID': '3154f69d9784540a09efb2b938054fdb7caebfe442acdf038963bed0dffcfcd9'
             },
             'Size': 11232,
             'StorageClass': 'STANDARD'
@@ -146,8 +146,8 @@ s3_list_objects = {
             'Key': 'councillors-address2.csv',
             'LastModified': datetime.datetime(2017, 2, 6, 16, 42, 10),
             'Owner': {
-                'DisplayName': 'amercadero',
-                'ID': '3154f69d9784540a09efb2b938054fdb7caebfe442acdf038963bed0dffcfcd9'
+                        'DisplayName': 'amercadero',
+                        'ID': '3154f69d9784540a09efb2b938054fdb7caebfe442acdf038963bed0dffcfcd9'
             },
             'Size': 11232,
             'StorageClass': 'STANDARD'
@@ -157,9 +157,9 @@ s3_list_objects = {
             'Key': 'dmesg.png',
             'LastModified': datetime.datetime(2017, 2, 6, 16, 43, 4),
             'Owner': {
-                'DisplayName': 'amercadero',
-                'ID': '3154f69d9784540a09efb2b938054fdb7caebfe442acdf038963bed0dffcfcd9'
-            },
+                        'DisplayName': 'amercadero',
+                        'ID': '3154f69d9784540a09efb2b938054fdb7caebfe442acdf038963bed0dffcfcd9'
+                    },
             'Size': 127658,
             'StorageClass': 'STANDARD'
         },
@@ -168,8 +168,8 @@ s3_list_objects = {
             'Key': 'my_data/',
             'LastModified': datetime.datetime(2017, 2, 7, 11, 11, 18),
             'Owner': {
-                'DisplayName': 'amercadero',
-                'ID': '3154f69d9784540a09efb2b938054fdb7caebfe442acdf038963bed0dffcfcd9'
+                        'DisplayName': 'amercadero',
+                        'ID': '3154f69d9784540a09efb2b938054fdb7caebfe442acdf038963bed0dffcfcd9'
             },
             'Size': 0,
             'StorageClass': 'STANDARD'
