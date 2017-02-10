@@ -1,10 +1,11 @@
 <script>
+const Report = (typeof goodtablesVue !== 'undefined') ? goodtablesVue.Report : null  // eslint-disable-line no-undef
 export default {
   props: {
     job: Object,
   },
   components: {
-    'app-report': goodtablesVue.Report,  // eslint-disable-line no-undef
+    'app-report': Report,
   },
 }
 </script>
