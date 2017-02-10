@@ -3,7 +3,6 @@
 .DEFAULT_GOAL := help
 
 PACKAGE := $(shell grep '^PACKAGE =' setup.py | cut -d "'" -f2)
-VERSION := $(shell head -n 1 $(PACKAGE)/VERSION)
 REPOSITORY := 'frictionlessdata/goodtables.io'
 
 help: # http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
@@ -23,9 +22,6 @@ release: ## tag a release from master and push to origin
 
 test: ## run the tests for the app
 	tox
-
-version: ## show the current version of the app
-	@echo $(VERSION)
 
 build: ## build the Docker image for this app
 	docker build --tag $(REPOSITORY) --rm=false .
