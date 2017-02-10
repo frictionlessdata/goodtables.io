@@ -38,7 +38,7 @@ install:
   - npm run migrate
 
 script:
-  - npm run test
+    - npm run test:back
 
 after_success:
   - pip install coveralls
