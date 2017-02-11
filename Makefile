@@ -34,7 +34,7 @@ migrate: ## run database migrations for the app
 	alembic upgrade head
 
 frontend: ## compile the frontend assets
-        npm run build:prod
+	npm run build:prod
 
 server: ## serve the app with gunicorn
 	gunicorn --access-logfile - --log-file - goodtablesio.app:app
