@@ -46,11 +46,12 @@ install:
 script:
   - make test
 
-after_success:
-  - make build
-  - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASSWORD
-  - make push
+deploy:
+  provider: script
+  script:
+    - make build
+    - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASSWORD
+    - make push
+  on:
+    branch: feature/docker
 
-cache:
-  directories:
-    - $HOME/.cache/pip
