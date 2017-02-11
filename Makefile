@@ -22,7 +22,7 @@ release: ## tag a release from master and push to origin
 	git push --tags
 
 test: ## run the tests for the app
-	tox
+	py.test --cov goodtablesio --cov-report term-missing
 
 build: ## build the Docker image for this app
 	docker build --tag $(REPOSITORY) --rm=false .
