@@ -43,4 +43,4 @@ RUN apk add --no-cache --virtual build-dependencies \
 
 EXPOSE 5000
 
-CMD make server
+CMD make server queue_mode=$QUEUE_MODE
