@@ -45,10 +45,3 @@ install:
 
 script:
   - make test
-
-deploy:
-  provider: script
-  script: make deploy
-  on:
-    branch: feature/docker
-    

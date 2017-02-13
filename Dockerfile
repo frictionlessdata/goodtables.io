@@ -17,6 +17,7 @@ RUN apk add --no-cache --virtual build-dependencies \
     readline-dev \
     git \
     curl \
+    nodejs \
     postgresql-dev \
     libpng-dev \
     libjpeg-turbo-dev \
@@ -39,6 +40,7 @@ RUN apk add --no-cache --virtual build-dependencies \
  && make install \
  && make install-frontend \
  && make frontend \
+ && rm -rf node_modules \
  && apk del build-dependencies
 
 EXPOSE 5000
