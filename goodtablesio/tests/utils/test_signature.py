@@ -1,4 +1,4 @@
-from goodtablesio.integrations.github.utils.signature import (
+from goodtablesio.utils.signature import (
     create_signature, validate_signature)
 
 

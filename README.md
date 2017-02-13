@@ -165,18 +165,29 @@ To run user acceptance end-to-end tests for the whole application:
 npm run spec
 ```
 
-## MVP version
+## Alpha version
 
-As of now, the process to set up validation on a GitHub repo is the following:
+**Note**: the current site is in an early alpha version and things are bound to break and change.
 
-* Choose a repository that contains tabular data files *inside the frictionlessdata organization*
-* Go to *Settings* > *Webhooks*. Click on *Add Webhook*
-* On *Payload URL*, enter: http://goodtables.oklabs.org/github/hook (leave the rest of fields as they are)
+The current alpha version supports adding two data sources, GitHub repositories and Amazon S3 buckets.
 
-From this moment, once you start pushing to the master branch you should see the validation status next to the commit messages:
+To try it out, go to http://goodtables.oklabs.org and log in with your GitHub account
+
+To add a Github Repo:
+
+* Click on the "Add Repository" button from the dashboard.
+* If you don't see a list of your repositories, click on the "Sync account" button. This might take a while.
+* Once the list of repositories appears, click "Activate" on the repository that you want to validate.
+* From now on, every time you push to that repository a validation job will be run on goodtables.io.
+* You also should see the validation status next to the commit messages and pull requests (note that this only works on repositories in the `frictionlessdata` organization due to #132):
 
 ![dealwithit 1](https://cloud.githubusercontent.com/assets/200230/20802449/001ee8c4-b7e4-11e6-9e8b-b88390a659c7.png)
 
 The statuses link to the full report on the prototype app.
 
-Support for PRs, custom branches and proper authorisation is coming.
+
+To add an S3 Bucket:
+
+* Click on the "Add Bucket" button from the dashboard.
+* Enter an AWS Access Key Id and a Secret Access Key pair, and the name of the bucket. Your keys should allow reading the contents of the bucket, as well as creating notification events on it. Click on "Add bucket"
+* From now on, every time you update a file on the S3 bucket (upload or delete) a validation job will be run on goodtables.io.
