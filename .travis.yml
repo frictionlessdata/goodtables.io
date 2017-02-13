@@ -39,7 +39,6 @@ before_install:
   - pip install tox
 
 install:
-  - npm run init
   - psql -c 'create database goodtables_test;' -U postgres
   - npm run migrate
 
