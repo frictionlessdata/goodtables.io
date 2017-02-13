@@ -39,17 +39,9 @@ before_install:
 
 install:
   - make install
-  - make install-dev
-  - make frontend
+  - make install-test
   - psql -c 'create database goodtables_test;' -U postgres
   - make migrate
 
 script:
   - make test
-
-deploy:
-  provider: script
-  script: make deploy
-  on:
-    branch: feature/docker
-

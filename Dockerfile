@@ -37,8 +37,10 @@ RUN apk add --no-cache --virtual build-dependencies \
     make \
  && update-ca-certificates \
  && make install \
+ && make install-frontend \
+ && make frontend \
  && apk del build-dependencies
 
 EXPOSE 5000
 
-CMD honcho start
+CMD make server queue_mode=$QUEUE_MODE
