@@ -1,4 +1,6 @@
+from urllib.parse import urlparse
 import logging
+
 import sqlalchemy
 from flask import Flask, render_template
 
@@ -20,6 +22,8 @@ app = Flask(__name__)
 
 app.secret_key = settings.FLASK_SECRET_KEY
 
+url_parts = urlparse(settings.BASE_URL)
+app.config['SERVER_NAME'] = url_parts.netloc
 app.config['JSONIFY_MIMETYPE'] = 'application/json; charset=utf-8'
 
 
