@@ -1,5 +1,7 @@
 import os
+from urllib.parse import urlparse
 import logging
+
 import sqlalchemy
 from flask import Flask, render_template
 
@@ -17,9 +19,15 @@ log = logging.getLogger(__name__)
 # Module API
 
 # Create instance
-app = Flask(__name__, template_folder='',
-    static_folder=os.path.join(os.path.dirname(__file__), '..', 'public'))
+app = Flask(
+    __name__,
+    template_folder='',
+    static_folder=os.path.join(os.path.dirname(__file__), '..', 'public')
+)
 app.secret_key = settings.FLASK_SECRET_KEY
+
+url_parts = urlparse(settings.BASE_URL)
+app.config['SERVER_NAME'] = url_parts.netloc
 app.config['JSONIFY_MIMETYPE'] = 'application/json; charset=utf-8'
 
 # Register Flask integrations

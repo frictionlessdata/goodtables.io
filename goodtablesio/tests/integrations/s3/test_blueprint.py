@@ -131,7 +131,7 @@ def test_s3_settings_add_bucket_success_redirects(
         '/s3/settings/add_bucket', data=data)
 
     assert response.status_code == 302
-    assert response.location == 'http://localhost/s3/settings'
+    assert response.location == 'http://localhost:5000/s3/settings'
 
 
 def test_s3_settings_add_bucket_already_exists(client):
@@ -201,7 +201,7 @@ def test_s3_settings_add_bucket_failure_redirects(
         '/s3/settings/add_bucket', data=data)
 
     assert response.status_code == 302
-    assert response.location == 'http://localhost/s3/settings'
+    assert response.location == 'http://localhost:5000/s3/settings'
 
 
 @mock.patch('goodtablesio.integrations.s3.blueprint.disable_bucket_on_aws')

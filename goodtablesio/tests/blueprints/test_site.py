@@ -30,7 +30,7 @@ def test_site_home_logged_in(client):
     response = client.get('/')
 
     assert response.status_code == 302
-    assert response.headers['Location'] == 'http://localhost/dashboard'
+    assert response.headers['Location'] == 'http://localhost:5000/dashboard'
 
 
 def test_site_dashboard_not_logged_in(client):
@@ -38,7 +38,7 @@ def test_site_dashboard_not_logged_in(client):
     response = client.get('/dashboard')
 
     assert response.status_code == 302
-    assert response.headers['Location'] == 'http://localhost/'
+    assert response.headers['Location'] == 'http://localhost:5000/'
 
 
 def test_site_dashboard_logged_in(client):
