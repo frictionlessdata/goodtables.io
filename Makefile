@@ -13,7 +13,7 @@ install: ## install the dependencies for the app
 	pip3 install --upgrade --no-cache-dir --exists-action w -r requirements.txt
 
 install-dev: ## install the additional development dependencies for the app
-	pip3 install --upgrade --no-cache-dir pylama tox
+	pip3 install --upgrade --no-cache-dir -r requirements.dev
 	npm install
 
 release: ## tag a release from master and push to origin
