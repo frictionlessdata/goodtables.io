@@ -6,7 +6,6 @@
 
 [![Saucelabs](https://saucelabs.com/browser-matrix/goodtables.io.svg)](https://saucelabs.com/u/goodtables.io)
 
-
 **Good Tables == Good Times!**
 
 Continuous data validation as a service.
