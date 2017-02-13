@@ -39,7 +39,7 @@ before_install:
 
 install:
   - make install
-  - make install-test
+  - make install-dev
   - psql -c 'create database goodtables_test;' -U postgres
   - make migrate
 
