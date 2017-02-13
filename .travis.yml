@@ -36,6 +36,7 @@ env:
 before_install:
   - nvm install 6
   - nvm use 6
+  - pip install tox
 
 install:
   - npm run init
