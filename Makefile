@@ -33,6 +33,9 @@ push: ## push the latest Docker image to DockerHub
 shell: ## run an interactive bash session in the container
 	docker run -it $(REPOSITORY) /bin/bash
 
+run: ## run the container
+	docker run $(REPOSITORY)
+
 migrate: ## run database migrations for the app
 	alembic upgrade head
 
