@@ -48,10 +48,6 @@ script:
 
 deploy:
   provider: script
-  script:
-    - make build
-    - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASSWORD
-    - make push
+  script: make deploy
   on:
     branch: feature/docker
-

@@ -27,6 +27,9 @@ test: ## run the tests for the app
 build: ## build the Docker image for this app
 	docker build --tag $(REPOSITORY) --rm=false .
 
+login: ## Login to docker hub
+	docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASSWORD
+
 push: ## push the latest Docker image to DockerHub
 	docker push $(REPOSITORY)
 
@@ -35,6 +38,8 @@ shell: ## run an interactive bash session in the container
 
 run: ## run the container
 	docker run $(REPOSITORY)
+
+make deploy: build login push
 
 migrate: ## run database migrations for the app
 	alembic upgrade head
