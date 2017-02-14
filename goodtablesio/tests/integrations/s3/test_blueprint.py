@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-import json
-=======
 # pylama:skip=1
->>>>>>> fixed tests, badge
+import json
 from unittest import mock
 
 import pytest
