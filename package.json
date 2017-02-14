@@ -24,7 +24,7 @@
     "server:prod": "make migrate && gunicorn --access-logfile - --log-file - goodtablesio.app:app",
     "spec": "NODE_ENV=testing node runspec.js",
     "test": "npm run test:back && npm run test:front",
-    "test:back": "tox",
+    "test:back": "py.test --cov goodtablesio --cov-report term-missing",
     "test:front": "NODE_ENV=testing karma start"
   },
   "dependencies": {
