@@ -44,7 +44,7 @@ def test_s3_settings_logged_in(client):
     body = response.get_data(as_text=True)
 
     # TODO: improve when final UI is in place
-    # assert 'Add Bucket' in body
+    assert "const component = 'S3Settings'" in body
 
 
 def test_s3_settings_not_logged_in(client):
