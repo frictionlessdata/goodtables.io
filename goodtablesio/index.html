@@ -27,7 +27,7 @@
   <script src="/public/bundle.js"></script>
   <script>
     // jinja2
-    const route = '{{ route }}'
+    const component = '{{ component }}'
     const props = {{ (props or {}) | tojson | safe }}
     // vue.js
     new frontend.Vue({
@@ -35,7 +35,7 @@
       render(createElement) {
         return createElement('div', null, [
           createElement(frontend.Header, {props}),
-          createElement(frontend[route], {props}),
+          createElement(frontend[component], {props}),
           createElement(frontend.Footer, {props}),
         ])
       },

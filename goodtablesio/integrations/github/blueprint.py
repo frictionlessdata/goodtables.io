@@ -34,7 +34,7 @@ def github_home():
 
     jobs = models.job.get_by_integration('github')
 
-    return render_template('index.html', route='GithubHome', props={
+    return render_template('index.html', component='GithubHome', props={
         'userName': getattr(current_user, 'display_name', None),
         'jobs': jobs,
     })
@@ -49,7 +49,7 @@ def github_org(org):
             models.job.Job.conf['owner'].astext == org]
     )
 
-    return render_template('index.html', route='GithubHome', props={
+    return render_template('index.html', component='GithubHome', props={
         'userName': getattr(current_user, 'display_name', None),
         'org': org,
         'jobs': jobs,
@@ -66,7 +66,7 @@ def github_repo(org, repo):
             ]
     )
 
-    return render_template('index.html', route='GithubHome', props={
+    return render_template('index.html', component='GithubHome', props={
         'userName': getattr(current_user, 'display_name', None),
         'org': org,
         'repo': repo,
@@ -100,10 +100,10 @@ def github_settings():
                               GithubRepo.name).
                      all())
 
-    return render_template('index.html', route='GithubSettings', props={
+    return render_template('index.html', component='GithubSettings', props={
         'userName': getattr(current_user, 'display_name', None),
         'sync': sync,
-        'repos': repos,
+        'repos': [repo.to_dict() for repo in repos],
     })
 
 

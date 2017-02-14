@@ -40,12 +40,12 @@ app.register_blueprint(s3)
 
 @app.errorhandler(404)
 def not_found_error(err):
-    return (render_template('index.html', route='Error404'), 404)
+    return (render_template('index.html', component='Error404'), 404)
 
 
 @app.errorhandler(500)
 def server_error(err):
-    return (render_template('index.html', route='Error500'), 500)
+    return (render_template('index.html', component='Error500'), 500)
 
 
 @app.errorhandler(sqlalchemy.exc.SQLAlchemyError)

@@ -20,7 +20,7 @@ user = Blueprint('user', __name__, url_prefix='/user')
 @user.route('/')
 @login_required
 def home():
-    return render_template('index.html', route='User', props={
+    return render_template('index.html', component='User', props={
         'userName': getattr(current_user, 'display_name', None),
         'userEmail': getattr(current_user, 'email', None),
     })

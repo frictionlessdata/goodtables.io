@@ -12,7 +12,7 @@ site = Blueprint('site', __name__)
 def home():
     if session.get('user_id'):
         return redirect(url_for('site.dashboard'))
-    return render_template('index.html', route='Home', props={
+    return render_template('index.html', component='Home', props={
         'userName': getattr(current_user, 'display_name', None),
     })
 
@@ -25,7 +25,7 @@ def dashboard():
     # TODO: Get most recent job per source
     github_jobs = models.job.get_by_integration('github', limit=5)
     s3_jobs = models.job.get_by_integration('s3', limit=5)
-    return render_template('index.html', route='Dashboard', props={
+    return render_template('index.html', component='Dashboard', props={
         'userName': getattr(current_user, 'display_name', None),
         'githubJobs': github_jobs,
         's3Jobs': s3_jobs,
@@ -35,7 +35,7 @@ def dashboard():
 @site.route('/jobs')
 def jobs():
     jobs = models.job.find()
-    return render_template('index.html', route='Jobs', props={
+    return render_template('index.html', component='Jobs', props={
         'userName': getattr(current_user, 'display_name', None),
         'jobs': jobs,
     })
@@ -46,7 +46,7 @@ def job(job_id):
     job = models.job.get(job_id)
     if not job:
         abort(404)
-    return render_template('index.html', route='Job', props={
+    return render_template('index.html', component='Job', props={
         'userName': getattr(current_user, 'display_name', None),
         'job': job,
     })
