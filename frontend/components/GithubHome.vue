@@ -18,7 +18,7 @@ export default {
 
   <h1>GitHub Jobs</h1>
 
-  <h2 v-if="org">{{ org }}<span v-if="repo">{{ repo }}</span></h2>
+  <h2 v-if="org">{{ org }}<span v-if="repo">/{{ repo }}</span></h2>
 
   <div v-if="!repo" style="margin-bottom: 30px" class="row">
     <div style="float: right">

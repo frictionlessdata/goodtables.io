@@ -46,7 +46,7 @@ def github_org(org):
     jobs = models.job.find(
         filters=[
             models.job.Job.integration_name == 'github',
-            models.job.Job.conf['owner'].astext == org]
+            models.job.Job.conf['repository']['owner'].astext == org]
     )
 
     return render_template('index.html', component='GithubHome', props={
@@ -61,8 +61,8 @@ def github_repo(org, repo):
 
     jobs = models.job.find(
         filters=[
-            models.job.Job.conf['owner'].astext == org,
-            models.job.Job.conf['repo'].astext == repo,
+            models.job.Job.conf['repository']['owner'].astext == org,
+            models.job.Job.conf['repository']['name'].astext == repo,
             ]
     )
 
