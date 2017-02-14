@@ -15,8 +15,8 @@ export default {
     <a v-else :href="`/jobs/${job.id}`" class="btn btn-danger">Invalid</a>
 
     <template v-if="job.integration_name === 'github'">
-      <a :href="`/jobs/${job.id}`">{{ job.conf.owner }}/{{ job.conf.repo }}</a> -
-      (<a :href="`https://github.com/${job.conf.owner}/${job.conf.repo}/commit/${job.conf.sha}`">{{ job.conf.sha.slice(0, 6) }}</a>)
+      <a :href="`/jobs/${job.id}`">{{ job.conf.repository.owner }}/{{ job.conf.repository.name }}</a> -
+      (<a :href="`https://github.com/${job.conf.repository.owner}/${job.conf.repository.name}/commit/${job.conf.sha}`">{{ job.conf.sha.slice(0, 6) }}</a>)
     </template>
 
     <template v-else-if="job.integration_name === 's3'">
