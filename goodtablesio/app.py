@@ -1,3 +1,4 @@
+import os
 import logging
 import sqlalchemy
 from flask import Flask, render_template
@@ -16,12 +17,10 @@ log = logging.getLogger(__name__)
 # Module API
 
 # Create instance
-app = Flask(__name__)
-
+app = Flask(__name__, template_folder='',
+    static_folder=os.path.join(os.path.dirname(__file__), '..', 'public'))
 app.secret_key = settings.FLASK_SECRET_KEY
-
 app.config['JSONIFY_MIMETYPE'] = 'application/json; charset=utf-8'
-
 
 # Register Flask integrations
 oauth.init_app(app)
@@ -41,12 +40,12 @@ app.register_blueprint(s3)
 
 @app.errorhandler(404)
 def not_found_error(err):
-    return (render_template('error404.html'), 404)
+    return (render_template('index.html', component='Error404'), 404)
 
 
 @app.errorhandler(500)
 def server_error(err):
-    return (render_template('error500.html'), 500)
+    return (render_template('index.html', component='Error500'), 500)
 
 
 @app.errorhandler(sqlalchemy.exc.SQLAlchemyError)

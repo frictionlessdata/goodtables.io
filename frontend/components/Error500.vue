@@ -6,13 +6,10 @@ export default {
 
 <template>
 <div class="container">
-  Open Knowledge International, 2017
+  <h1>Error 500</h1>
+  <p>Internal error</p>
 </div>
 </template>
 
 <style scoped>
-.container {
-  margin-top: 2em;
-  color: #ccc;
-}
 </style>

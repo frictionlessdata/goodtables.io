@@ -7,14 +7,8 @@ const assert = require('chai').assert
 describe('Footer', () => {
 
   it('should render', () => {
-    const vm = new Vue({
-      template: '<div><app-footer /></div>',
-      components: {
-        'app-footer': Footer,
-      },
-    }).$mount()
-    const html = vm.$el.innerHTML
-    assert.include(html, 'Footer')
+    const test = new Vue({render(h) {return h(Footer)}}).$mount()
+    assert.include(test.$el.innerHTML, 'Open Knowledge International')
   })
 
 })

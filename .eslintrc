@@ -55,6 +55,8 @@ rules:
     - off
   global-require:
     - off
+  block-spacing:
+    - off
   no-restricted-syntax:
     - error
     - WithStatement

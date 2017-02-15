@@ -195,7 +195,7 @@ def test_home(client):
     assert response.status_code == 200
 
     # TODO: update when proper content
-    assert user.name in response.get_data(as_text=True)
+    assert user.display_name in response.get_data(as_text=True)
 
 
 def test_home_not_authorized(client):

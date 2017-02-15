@@ -43,7 +43,7 @@ def test_s3_settings_logged_in(client):
     body = response.get_data(as_text=True)
 
     # TODO: improve when final UI is in place
-    assert 'Add Bucket' in body
+    assert "const component = 'S3Settings'" in body
 
 
 def test_s3_settings_not_logged_in(client):
@@ -77,6 +77,7 @@ def test_s3_settings_add_bucket_missing_params(client):
     response = client.post(
         '/s3/settings/add_bucket', follow_redirects=True)
 
+    # TODO: improve when final UI is in place
     assert 'Missing fields' in response.get_data(as_text=True)
 
 
@@ -99,6 +100,7 @@ def test_s3_settings_add_bucket_success(mock_set_up_bucket_on_aws, client):
     response = client.post(
         '/s3/settings/add_bucket', data=data, follow_redirects=True)
 
+    # TODO: improve when final UI is in place
     body = response.get_data(as_text=True)
     assert 'Bucket added' in body, body
 
@@ -149,6 +151,7 @@ def test_s3_settings_add_bucket_already_exists(client):
     response = client.post(
         '/s3/settings/add_bucket', data=data, follow_redirects=True)
 
+    # TODO: improve when final UI is in place
     body = response.get_data(as_text=True)
     assert 'Bucket already exists' in body, body
 
@@ -172,6 +175,7 @@ def test_s3_settings_add_bucket_failure(mock_set_up_bucket_on_aws, client):
     response = client.post(
         '/s3/settings/add_bucket', data=data, follow_redirects=True)
 
+    # TODO: improve when final UI is in place
     body = response.get_data(as_text=True)
     assert 'Some error happened' in body, body
 
@@ -218,6 +222,7 @@ def test_s3_settings_remove_bucket_success(mock_disable_bucket_on_aws, client):
         '/s3/settings/remove_bucket/{}'.format(bucket.name),
         follow_redirects=True)
 
+    # TODO: improve when final UI is in place
     body = response.get_data(as_text=True)
     assert 'Bucket removed' in body, body
 
@@ -245,6 +250,7 @@ def test_s3_settings_remove_bucket_failure(mock_disable_bucket_on_aws, client):
         '/s3/settings/remove_bucket/{}'.format(bucket.name),
         follow_redirects=True)
 
+    # TODO: improve when final UI is in place
     body = response.get_data(as_text=True)
     assert 'Some error happened' in body, body
 
@@ -261,6 +267,7 @@ def test_s3_settings_remove_bucket_not_found(client):
         '/s3/settings/remove_bucket/not_found',
         follow_redirects=True)
 
+    # TODO: improve when final UI is in place
     body = response.get_data(as_text=True)
     assert 'Unknown bucket' in body, body
 

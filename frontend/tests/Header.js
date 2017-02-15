@@ -7,14 +7,8 @@ const assert = require('chai').assert
 describe('Header', () => {
 
   it('should render', () => {
-    const vm = new Vue({
-      template: '<div><app-header /></div>',
-      components: {
-        'app-header': Header,
-      },
-    }).$mount()
-    const html = vm.$el.innerHTML
-    assert.include(html, 'Header')
+    const test = new Vue({render(h) {return h(Header)}}).$mount()
+    assert.include(test.$el.innerHTML, 'Login')
   })
 
 })

@@ -20,7 +20,7 @@ from goodtablesio.integrations.s3.tasks.jobconf import get_validation_conf
 log = logging.getLogger(__name__)
 
 
-s3 = Blueprint('s3', __name__, url_prefix='/s3', template_folder='templates')
+s3 = Blueprint('s3', __name__, url_prefix='/s3')
 
 
 @s3.record
@@ -30,19 +30,21 @@ def record_params(setup_state):
 
 @s3.route('/')
 def index():
-
     jobs = models.job.get_by_integration('s3')
-
-    return render_template('s3_home.html', jobs=jobs)
+    return render_template('index.html', component='S3Home', props={
+        'userName': getattr(current_user, 'display_name', None),
+        'jobs': jobs,
+    })
 
 
 @s3.route('/settings')
 @login_required
 def s3_settings():
-
     buckets = get_user_buckets(current_user.id)
-
-    return render_template('s3_settings.html', buckets=buckets)
+    return render_template('index.html', component='S3Settings', props={
+        'userName': getattr(current_user, 'display_name', None),
+        'buckets': [{'name': bucket.name} for bucket in buckets],
+    })
 
 
 @s3.route('/settings/add_bucket', methods=['POST'])
