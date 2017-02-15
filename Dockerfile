@@ -24,6 +24,7 @@ RUN apk add --no-cache --virtual build-dependencies \
     libxml2-dev \
     libxslt-dev \
     libstdc++ \
+    libstdc++6 \  
  && apk add --no-cache \
     python3 \
     bzip2 \
