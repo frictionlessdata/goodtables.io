@@ -16,7 +16,7 @@ export default {
   <h2>Buckets</h2>
   <ul v-if="buckets.length">
     <li v-for="bucket of buckets">{{ bucket.name }}
-      (<a :href="`/s3/settigs/remove_bucket/${bucket.name}`">remove</a>)
+      (<a :href="`/s3/settings/remove_bucket/${bucket.name}`">remove</a>)
     </li>
   </ul>
   <p v-else>No buckets configured</p>

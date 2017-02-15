@@ -43,7 +43,7 @@ def s3_settings():
     buckets = get_user_buckets(current_user.id)
     return render_template('index.html', component='S3Settings', props={
         'userName': getattr(current_user, 'display_name', None),
-        'buckets': [bucket.to_dict() for bucket in buckets],
+        'buckets': [{'name': bucket.name} for bucket in buckets],
     })
 
 
