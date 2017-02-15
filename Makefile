@@ -51,7 +51,7 @@ frontend: ## compile the frontend assets
 	npm run build:prod
 
 app: ## serve the app with gunicorn
-	gunicorn --bind 127.0.0.1:5000 --access-logfile - --log-file - goodtablesio.app:app
+	gunicorn --bind 0.0.0.0:5000 --access-logfile - --log-file - goodtablesio.app:app
 
 app-debug: ## serve the app with werkzueg
 	FLASK_APP=goodtablesio/app.py FLASK_DEBUG=1 flask run
