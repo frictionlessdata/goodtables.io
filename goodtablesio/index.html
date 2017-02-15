@@ -29,12 +29,14 @@
     // jinja2
     const component = '{{ component }}'
     const props = {{ (props or {}) | tojson | safe }}
+    props.messages = {{ get_flashed_messages(with_categories=True) | tojson | safe }}
     // vue.js
     new frontend.Vue({
       el: '#app',
       render(createElement) {
         return createElement('div', null, [
           createElement(frontend.Header, {props}),
+          createElement(frontend.Messages, {props}),
           createElement(frontend[component], {props}),
           createElement(frontend.Footer, {props}),
         ])
