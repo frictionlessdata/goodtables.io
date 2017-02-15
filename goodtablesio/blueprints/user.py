@@ -1,4 +1,5 @@
 import logging
+from urllib.parse import urlparse
 
 from flask import (
     Blueprint, request, session, redirect, url_for, abort, flash,
@@ -8,7 +9,7 @@ from flask_login import (
     login_user, logout_user, login_required, current_user
 )
 
-from goodtablesio import models
+from goodtablesio import models, settings
 from goodtablesio.auth import github_auth
 
 
@@ -34,9 +35,9 @@ def login(provider):
         return redirect(url_for('site.home'))
 
     # TODO: redirect to "next"
-
+    url_parts = urlparse(settings.BASE_URL)
     callback_url = url_for('user.authorized', provider=provider,
-                           _external=True)
+                           _external=True, _scheme=url_parts.scheme)
     if provider == 'github':
         return github_auth.authorize(callback=callback_url)
 
