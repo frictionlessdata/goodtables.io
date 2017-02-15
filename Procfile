@@ -1,2 +1,2 @@
-web: make server
-worker: make celery
+web: make migrate && make server
+worker: make queue
