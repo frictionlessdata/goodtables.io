@@ -23,9 +23,8 @@ RUN apk add --no-cache --virtual build-dependencies \
     libjpeg-turbo-dev \
     libxml2-dev \
     libxslt-dev \
+ && apk add --no-cache --update \
     libstdc++ \
-    libstdc++6 \  
- && apk add --no-cache \
     python3 \
     bzip2 \
     bash \
