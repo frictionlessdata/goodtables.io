@@ -92,5 +92,6 @@ server: ## Command to run the app as queue or server
 	@if [ $(queue_mode) ]; then \
 		make queue; \
 	else \
+		make migrate; \
 		make app; \
 	fi
