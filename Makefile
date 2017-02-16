@@ -1,4 +1,4 @@
-.PHONY: help frontend app-e2e
+.PHONY: help frontend
 
 .DEFAULT_GOAL := help
 
