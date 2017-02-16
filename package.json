@@ -6,26 +6,12 @@
   "scripts": {
     "build:dev": "webpack --output-pathinfo --progress --hide-modules",
     "build:prod": "NODE_ENV=production webpack --progress --hide-modules",
-    "celery:dev": "celery -A goodtablesio.celery_app worker --loglevel=debug",
-    "celery:prod": "celery -A goodtablesio.celery_app worker --loglevel=info",
-    "deps": "npm run deps:back && npm run deps:front",
-    "deps:back": "pip-compile > requirements.txt",
-    "deps:front": "npm shrinkwrap",
-    "init": "npm run init:back && npm run init:front",
-    "init:back": "pip install --upgrade -r requirements.dev",
-    "init:front": "npm install",
-    "lint": "npm run lint:back && npm run lint:front",
-    "lint:back": "pylama goodtablesio",
-    "lint:front": "eslint --ext js,vue frontend",
-    "migrate": "alembic upgrade head",
+    "deps": "npm shrinkwrap",
+    "lint": "eslint --ext js,vue frontend",
     "prepush": "npm run test && npm run spec",
     "pretest": "npm run lint",
-    "server:dev": "FLASK_APP=goodtablesio/app.py FLASK_DEBUG=1 flask run",
-    "server:prod": "make migrate && gunicorn --access-logfile - --log-file - goodtablesio.app:app",
     "spec": "NODE_ENV=testing node runspec.js",
-    "test": "npm run test:back && npm run test:front",
-    "test:back": "py.test --cov goodtablesio --cov-report term-missing",
-    "test:front": "NODE_ENV=testing karma start"
+    "test": "NODE_ENV=testing karma start"
   },
   "dependencies": {
     "vue": "^2.1.0"
