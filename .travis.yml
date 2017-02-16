@@ -3,7 +3,6 @@ sudo:
 
 addons:
   postgresql: '9.4'
-  sauce_connect: true
 
 language:
   python
@@ -46,7 +45,6 @@ install:
 
 script:
   - make test
-  - make spec
 
 after_success:
   - pip install coveralls
