@@ -9,7 +9,7 @@ const webpackConfig = {
   entry: './frontend/index.js',
   output: {
     path: path.resolve(__dirname, './public'),
-    publicPath: '/static/',
+    publicPath: '/public/',
     filename: (ENV === 'production') ? 'bundle.min.js' : 'bundle.js',
     library: 'frontend',
     libraryTarget: 'var',

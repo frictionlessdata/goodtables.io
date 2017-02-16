@@ -1,4 +1,4 @@
-.PHONY: help frontend
+.PHONY: help frontend app-e2e
 
 .DEFAULT_GOAL := help
 
@@ -23,16 +23,18 @@ install-frontend: ## Install the dependencies for frontend development and compi
 
 install: install-backend install-frontend ## Install backend and frontend dependencies
 
-test-backend: ## Run the tests for the backend app
+test-unit-backend: ## Run the unit tests for the backend app
 	py.test --cov goodtablesio --cov-report term-missing
 
-test-frontend: ## Run the tests for the frontend app
+test-unit-frontend: ## Run the unit tests for the frontend app
 	NODE_ENV=testing ./node_modules/.bin/karma start
 
-test: test-backend test-frontend ## Run all tests
+test-unit: test-unit-backend test-unit-frontend ## Run all tests
 
-spec: ## Run end to end tests
-	NODE_ENV=testing node runspec.js
+test-e2e: ## Run end to end tests
+	NODE_ENV=testing node rune2e.js
+
+test: test-unit test-e2e ## Run all tests
 
 lint-backend: ## Run lint checker on the backend app
 	pylama goodtablesio
@@ -75,7 +77,10 @@ app: ## Serve the app with Gunicorn
 	gunicorn goodtablesio.app:app --config server.py
 
 app-dev: ## Serve the app with Werkzeug
-	FLASK_APP=goodtablesio/app.py FLASK_DEBUG=1 flask run
+	FLASK_APP=goodtablesio/app.py FLASK_DEBUG=1 flask run -p 5000
+
+app-e2e: ## Serve the app for e2e with Werkzeug
+	FLASK_APP=goodtablesio/app.py FLASK_DEBUG=1 flask run -p 9999
 
 queue: ## Run celery for production
 	celery -A goodtablesio.celery_app worker --loglevel=WARNING
