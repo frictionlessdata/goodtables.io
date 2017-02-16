@@ -37,13 +37,14 @@ before_install:
   - nvm use 6
 
 install:
-  - npm run init
+  - make install
+  - make install-dev
   - psql -c 'create database goodtables_test;' -U postgres
-  - npm run migrate
+  - make migrate
+  - make frontend-dev
 
 script:
-  - npm run build:dev
-  - npm run test
+  - make test
 
 after_success:
   - pip install coveralls

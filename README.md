@@ -29,12 +29,13 @@ git clone git@github.com:frictionlessdata/goodtables.io.git
 cd goodtables.io
 virtualenv .python -p python3.5
 source .python/bin/activate
+make install-dev
 nvm install 6
 nvm use 6
-npm run init
+npm install
 ```
 
-Create `.env` file with environment variables:
+Create `.env` file with the required environment variables:
 
 ```bash
 $ cp .env.example .env
@@ -55,85 +56,26 @@ alembic revision -m '<name>' # add a migration
 Start the Celery worker and dev server:
 
 ```bash
-bash1$ npm run celery:dev
-bash2$ npm run server:dev
+bash1$ make app
+bash2$ npm queue
+```
+For development you probably want:
+
+```bash
+bash1$ make app-dev
+bash2$ npm queue-dev
 ```
 
-Now developmet server runs on `localhost:5000`. We could send github repo for validation getting job identifiers as a response:
 
-> POST localhost:5000/github/hook/
-
-```json
-{
-  "repository": {
-      "clone_url": "https://github.com/roll/goodtables-example.git"
-    }
-}
----
-693f40f0-fcad-416e-b2c7-a5beebff4f44
-```
-
-> GET localhost:5000/api/job/693f40f0-fcad-416e-b2c7-a5beebff4f44
-
-```json
-{
-  "report": {
-    "created": "Mon, 14 Nov 2016 12:42:41 GMT",
-    "finished": "Mon, 14 Nov 2016 12:42:43 GMT",
-    "report": {
-      "error-count": 1,
-      "errors": [],
-      "table-count": 2,
-      "tables": [
-        {
-          "error-count": 1,
-          "errors": [
-            {
-              "code": "blank-header",
-              "column-number": 3,
-              "message": "Header in column 3 is blank",
-              "row": null,
-              "row-number": null
-            }
-          ],
-          "headers": [
-            "id",
-            "name",
-            "",
-            "name"
-          ],
-          "row-count": 2,
-          "time": 0.964,
-          "valid": false
-        },
-        {
-          "error-count": 0,
-          "errors": [],
-          "headers": [
-            "id",
-            "name"
-          ],
-          "row-count": 3,
-          "time": 0.945,
-          "valid": true
-        }
-      ],
-      "time": 0.981,
-      "valid": false
-    },
-    "id": "693f40f0-fcad-416e-b2c7-a5beebff4f44"
-  },
-  "status": "SUCCESS"
-}
-```
+The development server runs on `http://localhost:5000`.
 
 ### Frontend building
 
 To build frontend files to `public` directory:
 
 ```bash
-npm run build:dev
-# npm run build:prod
+make frontend-dev
+# make frontend
 
 ```
 
@@ -142,19 +84,19 @@ npm run build:dev
 To lock the dependencies:
 
 ```bash
-npm run deps
-# npm run deps:back
-# npm run deps:front
+make deps
+# make deps-backend
+# make deps-frontend
 ```
 
 ### Unit testing
 
-To run unit tests for the whole application with linting and coverage:
+To run unit tests for the whole application with coverage:
 
 ```bash
-npm run test
-# npm run test:back
-# npm run test:front
+make test
+# make test-back
+# make test-front
 ```
 
 ### E2E testing
@@ -162,7 +104,7 @@ npm run test
 To run user acceptance end-to-end tests for the whole application:
 
 ```bash
-npm run spec
+make spec
 ```
 
 ## Alpha version
