@@ -10,7 +10,7 @@ const webpackConfig = {
   output: {
     path: path.resolve(__dirname, './public'),
     publicPath: '/public/',
-    filename: (ENV === 'production') ? 'bundle.min.js' : 'bundle.js',
+    filename: (ENV === 'production') ? 'build.min.js' : 'build.js',
     library: 'frontend',
     libraryTarget: 'var',
   },
