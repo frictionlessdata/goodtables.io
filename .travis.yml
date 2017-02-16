@@ -3,7 +3,6 @@ sudo:
 
 addons:
   postgresql: '9.4'
-  sauce_connect: true
 
 language:
   python
@@ -45,7 +44,6 @@ install:
 script:
   - npm run build:dev
   - npm run test
-  - npm run spec
 
 after_success:
   - pip install coveralls
