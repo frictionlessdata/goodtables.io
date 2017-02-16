@@ -38,7 +38,7 @@ RUN apk add --no-cache --virtual build-dependencies \
     make \
  && update-ca-certificates \
  && make install \
- && make frontend \
+ && make frontend-dev \
  && rm -rf node_modules \
  && apk del build-dependencies
 
