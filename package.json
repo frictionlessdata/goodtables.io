@@ -1,18 +1,8 @@
 {
   "name": "goodtables.io",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "description": "Continuous data validation, as a service.",
   "license": "AGPL-3.0",
-  "scripts": {
-    "build:dev": "webpack --output-pathinfo --progress --hide-modules",
-    "build:prod": "NODE_ENV=production webpack --progress --hide-modules",
-    "deps": "npm shrinkwrap",
-    "lint": "eslint --ext js,vue frontend",
-    "prepush": "npm run test && npm run spec",
-    "pretest": "npm run lint",
-    "spec": "NODE_ENV=testing node runspec.js",
-    "test": "NODE_ENV=testing karma start"
-  },
   "dependencies": {
     "vue": "^2.1.0"
   },
@@ -42,7 +32,6 @@
     "eslint-plugin-react": "^6.8.0",
     "file-loader": "^0.9.0",
     "http-server": "^0.9.0",
-    "husky": "^0.13.1",
     "json-loader": "^0.5.4",
     "karma": "^1.4.1",
     "karma-coverage": "^1.1.1",

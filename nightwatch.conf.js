@@ -5,7 +5,7 @@ const chromedriver = require('chromedriver')
 // Base
 
 let nightwatchConfig = {
-  src_folders: ['specs'],
+  src_folders: ['tests'],
   output_folder: false,
 }
 
@@ -26,7 +26,7 @@ if (!process.env.TRAVIS) {
     test_settings: {
       default: {
         silent: true,
-        launch_url: 'http://localhost:9090',
+        launch_url: 'http://localhost:9999',
         selenium_port: 4444,
         selenium_host: 'localhost',
         desiredCapabilities: {
@@ -67,7 +67,7 @@ if (!process.env.TRAVIS) {
     test_settings: {
       default: {
         silent: true,
-        launch_url: 'http://localhost:9090',
+        launch_url: 'http://localhost:9999',
         selenium_port: 80,
         selenium_host: 'ondemand.saucelabs.com',
         username : process.env.SAUCE_USERNAME,
