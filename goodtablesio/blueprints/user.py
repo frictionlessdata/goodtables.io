@@ -20,10 +20,10 @@ user = Blueprint('user', __name__, url_prefix='/user')
 @user.route('/')
 @login_required
 def home():
-
-    user = models.user.get(session['user_id'])
-
-    return render_template('user.html', user=user)
+    return render_template('index.html', component='User', props={
+        'userName': getattr(current_user, 'display_name', None),
+        'userEmail': getattr(current_user, 'email', None),
+    })
 
 
 @user.route('/login/<any(github):provider>')

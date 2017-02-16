@@ -18,7 +18,7 @@ def test_site_home_not_logged_in(client):
     # TODO: Test actual content when implemented
 
     body = response.get_data(as_text=True)
-    assert 'Welcome' in body
+    assert "const component = 'Home'" in body
 
 
 def test_site_home_logged_in(client):

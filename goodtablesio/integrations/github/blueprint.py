@@ -4,7 +4,7 @@ import logging
 from celery import chain
 from flask import Blueprint, request, abort, session
 from flask import render_template, jsonify, redirect, url_for
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 from goodtablesio import models, settings
 from goodtablesio.services import database
@@ -21,8 +21,7 @@ from goodtablesio.integrations.github.utils.hook import (
 log = logging.getLogger(__name__)
 
 
-github = Blueprint('github', __name__, url_prefix='/github',
-                   template_folder='templates')
+github = Blueprint('github', __name__, url_prefix='/github')
 
 
 @github.record
@@ -35,7 +34,10 @@ def github_home():
 
     jobs = models.job.get_by_integration('github')
 
-    return render_template('github_home.html', jobs=jobs)
+    return render_template('index.html', component='GithubHome', props={
+        'userName': getattr(current_user, 'display_name', None),
+        'jobs': jobs,
+    })
 
 
 @github.route('/repo/<org>')
@@ -44,10 +46,14 @@ def github_org(org):
     jobs = models.job.find(
         filters=[
             models.job.Job.integration_name == 'github',
-            models.job.Job.conf['owner'].astext == org]
+            models.job.Job.conf['repository']['owner'].astext == org]
     )
 
-    return render_template('github_home.html', jobs=jobs, org=org)
+    return render_template('index.html', component='GithubHome', props={
+        'userName': getattr(current_user, 'display_name', None),
+        'org': org,
+        'jobs': jobs,
+    })
 
 
 @github.route('/repo/<org>/<repo>')
@@ -55,12 +61,17 @@ def github_repo(org, repo):
 
     jobs = models.job.find(
         filters=[
-            models.job.Job.conf['owner'].astext == org,
-            models.job.Job.conf['repo'].astext == repo,
+            models.job.Job.conf['repository']['owner'].astext == org,
+            models.job.Job.conf['repository']['name'].astext == repo,
             ]
     )
 
-    return render_template('github_home.html', jobs=jobs, org=org, repo=repo)
+    return render_template('index.html', component='GithubHome', props={
+        'userName': getattr(current_user, 'display_name', None),
+        'org': org,
+        'repo': repo,
+        'jobs': jobs,
+    })
 
 
 @github.route('/settings')
@@ -89,7 +100,11 @@ def github_settings():
                               GithubRepo.name).
                      all())
 
-    return render_template('github_settings.html', sync=sync, repos=repos)
+    return render_template('index.html', component='GithubSettings', props={
+        'userName': getattr(current_user, 'display_name', None),
+        'sync': sync,
+        'repos': [repo.to_dict() for repo in repos],
+    })
 
 
 @github.route('/sync')

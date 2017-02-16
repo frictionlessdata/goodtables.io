@@ -6,13 +6,10 @@ export default {
 
 <template>
 <div class="container">
-  Open Knowledge International, 2017
+  <h1>Error 404</h1>
+  <p>Page is not found</p>
 </div>
 </template>
 
 <style scoped>
-.container {
-  margin-top: 2em;
-  color: #ccc;
-}
 </style>

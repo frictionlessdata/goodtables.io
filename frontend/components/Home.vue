@@ -6,13 +6,10 @@ export default {
 
 <template>
 <div class="container">
-  Open Knowledge International, 2017
+  <h1>Welcome to Goodtables</h1>
+  <p>Please log in to continue</p>
 </div>
 </template>
 
 <style scoped>
-.container {
-  margin-top: 2em;
-  color: #ccc;
-}
 </style>
