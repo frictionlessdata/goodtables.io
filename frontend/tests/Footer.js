@@ -9,7 +9,8 @@ describe('Footer', () => {
 
   it('should contain correct text', () => {
     const wrapper = mount(Footer)
-    wrapper.text().should.include('Open Knowledge International, 2017')
+    wrapper.text()
+      .should.include('Open Knowledge International, 2017')
   })
 
 })
