@@ -9,8 +9,7 @@ describe('Header', () => {
 
   it('should contain link to home', () => {
     const wrapper = mount(Header)
-    wrapper.find('[href="/"]')[0].text()
-      .should.equal('goodtables.io')
+    wrapper.find('[href="/"]')[0].text().should.equal('goodtables.io')
   })
 
   it('should contain login with github link', () => {
@@ -24,15 +23,13 @@ describe('Header', () => {
     it('should contain userName', () => {
       const propsData = {userName: 'userName'}
       const wrapper = mount(Header, {propsData})
-      wrapper.text()
-        .should.include(propsData.userName)
+      wrapper.text().should.include(propsData.userName)
     })
 
     it('should contain logout link', () => {
       const propsData = {userName: 'userName'}
       const wrapper = mount(Header, {propsData})
-      wrapper.find('[href="/user/logout"]')[0].text()
-        .should.equal('Logout')
+      wrapper.find('[href="/user/logout"]')[0].text().should.equal('Logout')
     })
 
   })
