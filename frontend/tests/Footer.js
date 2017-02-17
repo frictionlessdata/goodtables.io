@@ -1,14 +1,14 @@
-import Vue from 'vue'
+import {mount} from 'avoriaz'
+import {should} from 'chai'; should()
 import Footer from '../components/Footer.vue'
-const assert = require('chai').assert
 
 // Tests
 
 describe('Footer', () => {
 
-  it('should render', () => {
-    const test = new Vue({render(h) {return h(Footer)}}).$mount()
-    assert.include(test.$el.innerHTML, 'Open Knowledge International')
+  it('should contain correct text', () => {
+    const wrapper = mount(Footer)
+    wrapper.text().trim().should.equal('Open Knowledge International, 2017')
   })
 
 })
