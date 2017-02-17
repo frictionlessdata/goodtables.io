@@ -29,10 +29,9 @@ git clone git@github.com:frictionlessdata/goodtables.io.git
 cd goodtables.io
 virtualenv .python -p python3.5
 source .python/bin/activate
-make install-dev
 nvm install 6
 nvm use 6
-npm install
+make install
 ```
 
 Create `.env` file with the required environment variables:
@@ -46,7 +45,7 @@ $ editor .env # edit your vars
 ### Migrations
 
 ```bash
-npm run migrate # migrate
+make migrate # migrate
 alembic downgrade -1 # downgrade
 alembic revision -m '<name>' # add a migration
 ```
@@ -57,13 +56,13 @@ Start the Celery worker and dev server:
 
 ```bash
 bash1$ make app
-bash2$ npm queue
+bash2$ make queue
 ```
 For development you probably want:
 
 ```bash
 bash1$ make app-dev
-bash2$ npm queue-dev
+bash2$ make queue-dev
 ```
 
 
@@ -74,37 +73,39 @@ The development server runs on `http://localhost:5000`.
 To build frontend files to `public` directory:
 
 ```bash
+make frontend
 make frontend-dev
-# make frontend
 
 ```
 
-### Dependencies locking
+### Testing
 
-To lock the dependencies:
-
-```bash
-make deps
-# make deps-backend
-# make deps-frontend
-```
-
-### Unit testing
-
-To run unit tests for the whole application with coverage:
+To run all checks:
 
 ```bash
 make test
-# make test-back
-# make test-front
 ```
 
-### E2E testing
+To run linting:
+
+```bash
+make lint
+# make lint-backend
+# make lint-frontend
+```
+
+To run unit tests with coverage:
+
+```bash
+make test-unit
+# make test-unit-backend
+# make test-unit-frontend
+```
 
 To run user acceptance end-to-end tests for the whole application:
 
 ```bash
-make spec
+make test-e2e
 ```
 
 ## Alpha version

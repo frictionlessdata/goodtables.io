@@ -2,6 +2,8 @@
 
 .DEFAULT_GOAL := help
 
+export PATH := $(PATH):./node_modules/.bin
+
 PACKAGE := $(shell grep '^PACKAGE =' setup.py | cut -d "'" -f2)
 REPOSITORY := 'frictionlessdata/goodtables.io'
 SHELL := /bin/bash
@@ -23,26 +25,26 @@ install-frontend: ## Install the dependencies for frontend development and compi
 
 install: install-backend install-frontend ## Install backend and frontend dependencies
 
+lint-backend: ## Run lint checker on the backend app
+	pylama goodtablesio
+
+lint-frontend: ## Run lint checker on frontend app
+	eslint --ext js,vue frontend
+
+lint: lint-backend lint-frontend ## Run all lint checkers
+
 test-unit-backend: ## Run the unit tests for the backend app
 	py.test --cov goodtablesio --cov-report term-missing
 
 test-unit-frontend: ## Run the unit tests for the frontend app
-	NODE_ENV=testing ./node_modules/.bin/karma start
+	NODE_ENV=testing karma start
 
 test-unit: test-unit-backend test-unit-frontend ## Run all tests
 
 test-e2e: ## Run end to end tests
 	NODE_ENV=testing node rune2e.js
 
-test: test-unit test-e2e ## Run all tests
-
-lint-backend: ## Run lint checker on the backend app
-	pylama goodtablesio
-
-lint-frontend: ## Run lint checker on frontend app
-	./node_modules/.bin/eslint --ext js,vue frontend
-
-lint: lint-backend lint-frontend ## Run all lint checkers
+test: lint test-unit test-e2e ## Run all tests
 
 deps: ## Freeze dependencies for the backend app
 	py.deps --cov goodtablesio --cov-report term-missing
@@ -68,10 +70,10 @@ migrate: ## Run database migrations for the app
 	alembic upgrade head
 
 frontend: ## Compile the frontend assets
-	NODE_ENV=production ./node_modules/.bin/webpack --progress --hide-modules
+	NODE_ENV=production webpack --progress --hide-modules
 
 frontend-dev: ## Compile the frontend assets for development
-	./node_modules/.bin/webpack --output-pathinfo --progress --hide-modules
+	webpack --output-pathinfo --progress --hide-modules
 
 app: ## Serve the app with Gunicorn
 	gunicorn goodtablesio.app:app --config server.py
