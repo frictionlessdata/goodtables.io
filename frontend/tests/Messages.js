@@ -13,7 +13,7 @@ describe('Messages', () => {
     wrapper.find('div')[0].isEmpty().should.be.true
   })
 
-  describe('#messages', () => {
+  describe('[with messages]', () => {
 
     it('should contain messages', () => {
       const propsData = {messages: [

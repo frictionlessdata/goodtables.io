@@ -18,7 +18,7 @@ describe('Header', () => {
       .should.equal('Login with GitHub')
   })
 
-  describe('#userName', () => {
+  describe('[with user]', () => {
 
     it('should contain userName', () => {
       const propsData = {userName: 'userName'}
