@@ -12,16 +12,20 @@ describe('User', () => {
     wrapper.find('h1')[0].text().should.include('User')
   })
 
-  it('should contain userName', () => {
-    const propsData = {userName: 'userName'}
-    const wrapper = mount(User, {propsData})
-    wrapper.text().should.include(propsData.userName)
-  })
+  describe('[with user]', () => {
 
-  it('should contain userEmail', () => {
-    const propsData = {userEmail: 'userEmail'}
-    const wrapper = mount(User, {propsData})
-    wrapper.text().should.include(propsData.userEmail)
+    it('should contain userName', () => {
+      const propsData = {userName: 'userName'}
+      const wrapper = mount(User, {propsData})
+      wrapper.text().should.include(propsData.userName)
+    })
+
+    it('should contain userEmail', () => {
+      const propsData = {userEmail: 'userEmail'}
+      const wrapper = mount(User, {propsData})
+      wrapper.text().should.include(propsData.userEmail)
+    })
+
   })
 
 })

@@ -2,11 +2,12 @@
 import JobList from './JobList.vue'
 
 export default {
+  name: 'S3Home',
   props: {
     jobs: Array,
   },
   components: {
-    'app-joblist': JobList,
+    'app-job-list': JobList,
   },
 }
 </script>
@@ -23,7 +24,7 @@ export default {
   </div>
 
   <template v-if="jobs">
-    <app-joblist :jobs="jobs" />
+    <app-job-list :jobs="jobs" />
   </template>
 
   <template v-else>

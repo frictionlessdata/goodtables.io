@@ -1,5 +1,6 @@
 <script>
 export default {
+  name: 'S3Settings',
   props: {
     buckets: Array,
   },

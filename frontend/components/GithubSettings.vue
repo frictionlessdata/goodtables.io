@@ -1,5 +1,6 @@
 <script>
 export default {
+  name: 'GithubSettings',
   props: {
     sync: Boolean,
     repos: Array,
