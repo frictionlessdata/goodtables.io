@@ -1,6 +1,7 @@
+import {should} from 'chai'
 import {mount} from 'avoriaz'
-import {should} from 'chai'; should()
 import Footer from '../components/Footer.vue'
+should()
 
 // Tests
 
@@ -8,7 +9,7 @@ describe('Footer', () => {
 
   it('should contain correct text', () => {
     const wrapper = mount(Footer)
-    wrapper.text().trim().should.equal('Open Knowledge International, 2017')
+    wrapper.text().should.include('Open Knowledge International, 2017')
   })
 
 })
