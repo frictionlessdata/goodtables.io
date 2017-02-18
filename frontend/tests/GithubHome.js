@@ -9,24 +9,19 @@ should()
 describe('GithubHome', () => {
 
   it('should contain headings', () => {
-    const propsData = {
-      s3Jobs: [],
-    }
+    const propsData = {}
     const wrapper = mount(GithubHome, {propsData})
     wrapper.find('h1')[0].text().should.equal('GitHub Jobs')
   })
 
   it('should have no jobs', () => {
-    const propsData = {
-      s3Jobs: [],
-    }
+    const propsData = {}
     const wrapper = mount(GithubHome, {propsData})
     wrapper.text().should.include('No active or finished jobs.')
   })
 
   it('should contain org', () => {
     const propsData = {
-      s3Jobs: [],
       org: 'org1',
     }
     const wrapper = mount(GithubHome, {propsData})
@@ -35,7 +30,6 @@ describe('GithubHome', () => {
 
   it('should contain org/repo', () => {
     const propsData = {
-      s3Jobs: [],
       org: 'org1',
       repo: 'repo1',
     }

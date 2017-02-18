@@ -15,7 +15,7 @@ export default {
 <template>
 <div class="container">
 
-  <h1>Amazon S3 Jobs </h1>
+  <h1>Amazon S3 Jobs</h1>
 
   <div style="margin-bottom: 30px" class="row">
     <div style="float: right">
