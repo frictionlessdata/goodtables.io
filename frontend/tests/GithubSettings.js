@@ -9,25 +9,20 @@ should()
 describe('GithubSettings', () => {
 
   it('should contain headings', () => {
-    const propsData = {
-      repos: [],
-    }
+    const propsData = {}
     const wrapper = mount(GithubSettings, {propsData})
     wrapper.find('h1')[0].text().should.equal('GitHub')
     wrapper.find('h2')[0].text().should.equal('Repos')
   })
 
   it('should have no repositories', () => {
-    const propsData = {
-      repos: [],
-    }
+    const propsData = {repos: []}
     const wrapper = mount(GithubSettings, {propsData})
     wrapper.text().should.include('There are no synced repositories')
   })
 
   it('should work with sync true', () => {
     const propsData = {
-      repos: [],
       sync: true,
     }
     const wrapper = mount(GithubSettings, {propsData})

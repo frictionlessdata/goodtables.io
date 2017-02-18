@@ -15,7 +15,7 @@ export default {
   <p>Amazon S3 integration description</p>
 
   <h2>Buckets</h2>
-  <ul v-if="buckets.length">
+  <ul v-if="buckets && buckets.length">
     <li v-for="bucket of buckets">{{ bucket.name }}
       (<a :href="`/s3/settings/remove_bucket/${bucket.name}`">remove</a>)
     </li>
