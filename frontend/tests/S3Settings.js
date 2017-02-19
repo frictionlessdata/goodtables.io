@@ -1,6 +1,5 @@
 import {should} from 'chai'
 import {mount} from 'avoriaz'
-import JobList from '../components/JobList.vue'
 import S3Settings from '../components/S3Settings.vue'
 should()
 

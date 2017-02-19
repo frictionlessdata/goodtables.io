@@ -10,7 +10,7 @@ export default {
 
 <template>
 <div class="container">
-  <div v-for="job of jobs" class="row">
+  <div v-for="job of (jobs || [])" class="row">
     <a v-if="job.status === 'success'" :href="`/jobs/${job.id}`" class="btn btn-success">Valid</a>
     <a v-else-if="job.status === 'error'" :href="`/jobs/${job.id}`" class="btn btn-warning">Errored</a>
     <a v-else :href="`/jobs/${job.id}`" class="btn btn-danger">Invalid</a>

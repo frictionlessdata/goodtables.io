@@ -1,6 +1,5 @@
 import {should} from 'chai'
 import {mount} from 'avoriaz'
-import JobList from '../components/JobList.vue'
 import GithubSettings from '../components/GithubSettings.vue'
 should()
 
