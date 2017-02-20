@@ -2,12 +2,13 @@
 import JobList from './JobList.vue'
 
 export default {
+  name: 'Dashboard',
   props: {
     githubJobs: Array,
     s3Jobs: Array,
   },
   components: {
-    'app-joblist': JobList,
+    'app-job-list': JobList,
   },
 }
 </script>
@@ -27,7 +28,7 @@ export default {
   </div>
 
   <template v-if="githubJobs.length">
-    <app-joblist :jobs="githubJobs" />
+    <app-job-list :jobs="githubJobs" />
     <div style="margin-top: 20px"><a href="/github">Show more</a></div>
   </template>
 
@@ -46,7 +47,7 @@ export default {
   </div>
 
   <template v-if="s3Jobs.length">
-    <app-joblist :jobs="s3Jobs" />
+    <app-job-list :jobs="s3Jobs" />
     <div style="margin-top: 20px"><a href="/s3">Show more</a></div>
   </template>
 

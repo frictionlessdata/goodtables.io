@@ -1,5 +1,6 @@
 <script>
 export default {
+  name: 'User',
   props: {
     userName: String,
     userEmail: String,

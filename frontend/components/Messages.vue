@@ -1,5 +1,6 @@
 <script>
 export default {
+  name: 'Messages',
   props: {
     messages: Array,
   },

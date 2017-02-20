@@ -1,5 +1,6 @@
 <script>
 export default {
+  name: 'Error500',
   props: {},
 }
 </script>

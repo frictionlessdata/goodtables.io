@@ -2,11 +2,12 @@
 import JobList from './JobList.vue'
 
 export default {
+  name: 'Jobs',
   props: {
     jobs: Array,
   },
   components: {
-    'app-joblist': JobList,
+    'app-job-list': JobList,
   },
 }
 </script>
@@ -16,7 +17,7 @@ export default {
   <h1>All Jobs</h1>
 
   <template v-if="jobs">
-    <app-joblist :jobs="jobs" />
+    <app-job-list :jobs="jobs" />
   </template>
 
   <template v-else>

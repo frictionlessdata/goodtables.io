@@ -1,14 +1,15 @@
-import Vue from 'vue'
+import {should} from 'chai'
+import {mount} from 'avoriaz'
 import Home from '../components/Home.vue'
-const assert = require('chai').assert
+should()
 
 // Tests
 
 describe('Home', () => {
 
-  it('should render', () => {
-    const test = new Vue({render(h) {return h(Home)}}).$mount()
-    assert.include(test.$el.innerHTML, 'Welcome')
+  it('should contain correct text', () => {
+    const wrapper = mount(Home)
+    wrapper.find('h1')[0].text().should.include('Welcome to Goodtables')
   })
 
 })
