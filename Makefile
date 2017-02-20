@@ -47,7 +47,7 @@ test-e2e: ## Run end to end tests
 test: lint test-unit test-e2e ## Run all tests
 
 deps: ## Freeze dependencies for the backend app
-	py.deps --cov goodtablesio --cov-report term-missing
+	pip-compile > requirements.txt
 
 build: ## Build the Docker image for this app
 	docker build --tag $(REPOSITORY) --rm=false .
