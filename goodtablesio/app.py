@@ -4,6 +4,7 @@ import logging
 
 import sqlalchemy
 from flask import Flask, render_template
+from raven.contrib.flask import Sentry
 
 from goodtablesio import settings
 from goodtablesio.auth import oauth, login_manager
@@ -33,6 +34,8 @@ app.config['JSONIFY_MIMETYPE'] = 'application/json; charset=utf-8'
 # Register Flask integrations
 oauth.init_app(app)
 login_manager.init_app(app)
+if settings.SENTRY_DSN:
+    Sentry(app, dsn=settings.SENTRY_DSN)
 
 # Register blueprints
 app.register_blueprint(api)

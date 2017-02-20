@@ -8,10 +8,11 @@ alembic==0.8.9
 amqp==2.1.4               # via kombu
 billiard==3.5.0.2         # via celery
 boto3==1.4.4
-botocore==1.5.7           # via boto3, s3transfer
+botocore==1.5.14          # via boto3, s3transfer
 cchardet==1.1.2           # via tabulator
 celery==4.0.0
 click==6.7                # via flask, goodtables, jsontableschema, python-dotenv, tabulator
+contextlib2==0.5.4        # via raven
 datapackage==0.8.6        # via goodtables
 docutils==0.13.1          # via botocore
 et-xmlfile==1.0.1         # via openpyxl
@@ -33,7 +34,7 @@ jsonschema==2.5.1
 jsontableschema==0.9.0
 kombu==4.0.2              # via celery
 linear-tsv==1.0.0         # via tabulator
-lxml==3.7.2               # via tabulator
+lxml==3.7.3               # via tabulator
 Mako==1.0.6               # via alembic
 MarkupSafe==0.23          # via jinja2, mako
 oauthlib==2.0.1           # via flask-oauthlib, requests-oauthlib
@@ -44,8 +45,9 @@ python-dotenv==0.6.0
 python-editor==1.0.3      # via alembic
 pytz==2016.10             # via celery
 pyyaml==3.12.0
+raven==6.0.0
 redis==2.10.5
-requests-oauthlib==0.7.0  # via flask-oauthlib
+requests-oauthlib==0.8.0  # via flask-oauthlib
 requests==2.11.1
 rfc3986==0.4.1            # via jsontableschema
 s3transfer==0.1.10        # via boto3
