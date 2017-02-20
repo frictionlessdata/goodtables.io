@@ -8,10 +8,11 @@ from goodtablesio import settings
 class Celery(celery.Celery):
 
     def on_configure(self):
-        client = raven.Client(settings.SENTRY_DSN)
-        register_logger_signal(client)  # defaults to logging.ERROR
-        register_signal(client)
+        if settings.SENTRY_DSN:
+            client = raven.Client(settings.SENTRY_DSN)
+            register_logger_signal(client)  # defaults to logging.ERROR
+            register_signal(client)
 
 
-app = Celery(__name__)
-app.config_from_object(settings)
+celery_app = Celery(__name__)
+celery_app.config_from_object(settings)

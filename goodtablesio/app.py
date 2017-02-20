@@ -34,6 +34,8 @@ app.config['JSONIFY_MIMETYPE'] = 'application/json; charset=utf-8'
 # Register Flask integrations
 oauth.init_app(app)
 login_manager.init_app(app)
+if settings.SENTRY_DSN:
+    Sentry(app, dsn=settings.SENTRY_DSN)
 
 # Register blueprints
 app.register_blueprint(api)
@@ -44,8 +46,6 @@ app.register_blueprint(user)
 app.register_blueprint(github)
 app.register_blueprint(s3)
 
-# Set exception logging
-Sentry(app, dsn=settings.SENTRY_DSN)
 
 # Set error handlers
 

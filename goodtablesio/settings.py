@@ -68,4 +68,4 @@ GITHUB_CLIENT_SECRET = os.environ['GITHUB_CLIENT_SECRET']
 
 # Sentry
 
-SENTRY_DSN = os.environ['SENTRY_DSN']
+SENTRY_DSN = os.environ.get('SENTRY_DSN')
