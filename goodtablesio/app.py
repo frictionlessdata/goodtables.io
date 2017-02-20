@@ -4,6 +4,7 @@ import logging
 
 import sqlalchemy
 from flask import Flask, render_template
+from raven.contrib.flask import Sentry
 
 from goodtablesio import settings
 from goodtablesio.auth import oauth, login_manager
@@ -43,6 +44,8 @@ app.register_blueprint(user)
 app.register_blueprint(github)
 app.register_blueprint(s3)
 
+# Set exception logging
+Sentry(app, dsn=settings.SENTRY_DSN)
 
 # Set error handlers
 
