@@ -4,8 +4,10 @@ from unittest import mock
 from flask import url_for, session
 import pytest
 
-from goodtablesio import models, settings, auth
+from goodtablesio import settings, auth
 from goodtablesio.tests import factories
+from goodtablesio.services import database
+from goodtablesio.models.user import User
 
 
 # Clean up DB on all this module's tests
@@ -129,18 +131,18 @@ def test_github_login_creates_new_user(
     with client.app.test_request_context():
         authorized_url = url_for('user.authorized', provider='github')
 
-    assert models.user.find() == []
+    assert database['session'].query(User).all() == []
 
     client.get(authorized_url)
 
-    users = models.user.find()
+    users = database['session'].query(User).all()
 
     assert len(users) == 1
 
-    assert users[0]['name'] == 'test-user-from-github'
-    assert users[0]['display_name'] == 'Test User from GitHub'
-    assert users[0]['email'] == 'test-from-github@example.com'
-    assert users[0]['provider_ids'] == {'github': 123456}
+    assert users[0].name == 'test-user-from-github'
+    assert users[0].display_name == 'Test User from GitHub'
+    assert users[0].email == 'test-from-github@example.com'
+    assert users[0].provider_ids == {'github': 123456}
 
 
 def test_github_login_existing_user(
@@ -153,11 +155,11 @@ def test_github_login_existing_user(
 
     client.get(authorized_url)
 
-    users = models.user.find()
+    users = database['session'].query(User).all()
 
     assert len(users) == 1
 
-    assert users[0]['provider_ids'] == {'github': 123456}
+    assert users[0].provider_ids == {'github': 123456}
 
 
 def test_github_login_existing_user_same_email_different_provider(
@@ -171,12 +173,12 @@ def test_github_login_existing_user_same_email_different_provider(
 
     client.get(authorized_url)
 
-    users = models.user.find()
+    users = database['session'].query(User).all()
 
     assert len(users) == 1
 
-    assert users[0]['email'] == 'test-from-github@example.com'
-    assert users[0]['provider_ids'] == {'google': 'abcd', 'github': 123456}
+    assert users[0].email == 'test-from-github@example.com'
+    assert users[0].provider_ids == {'google': 'abcd', 'github': 123456}
 
 
 def test_home(client):
