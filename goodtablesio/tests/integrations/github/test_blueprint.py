@@ -16,7 +16,10 @@ pytestmark = pytest.mark.usefixtures('session_cleanup')
 @patch('goodtablesio.integrations.github.utils.status.set_commit_status')
 def test_create_job(set_commit_status, client, celery_app):
 
-    factories.GithubRepo(name='frictionlessdata/goodtables.io-example')
+    # TODO: refactor to not use actual calls!
+    user = factories.User(github_oauth_token=settings.GITHUB_API_TOKEN)
+    factories.GithubRepo(name='frictionlessdata/goodtables.io-example',
+                         users=[user])
 
     data = json.dumps({
         'repository': {

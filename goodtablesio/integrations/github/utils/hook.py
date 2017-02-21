@@ -58,3 +58,8 @@ def get_owner_repo_sha_from_hook_payload(payload):
         return None, None, None
 
     return owner, repo, sha
+
+
+def get_tokens_for_job(job):
+    return [user.github_oauth_token
+            for user in job.source.users if user.github_oauth_token]

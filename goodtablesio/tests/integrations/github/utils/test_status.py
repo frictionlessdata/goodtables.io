@@ -11,7 +11,10 @@ def test_set_commit_status_success(mock_post):
     mock_response.status_code = 201
     mock_post.return_value = mock_response
 
-    r = set_commit_status('success', 'my-org', 'my-repo', 'abcde', 'my-job-id')
+    tokens = ['my-token']
+
+    r = set_commit_status(
+        'success', 'my-org', 'my-repo', 'abcde', 'my-job-id', tokens)
 
     assert r
 
@@ -20,7 +23,7 @@ def test_set_commit_status_success(mock_post):
     )
 
     expected_headers = {
-        'Authorization': 'token {0}'.format(settings.GITHUB_API_TOKEN),
+        'Authorization': 'token my-token'
     }
 
     expected_data = {
@@ -40,7 +43,10 @@ def test_set_commit_status_failure(mock_post):
     mock_response.status_code = 201
     mock_post.return_value = mock_response
 
-    r = set_commit_status('failure', 'my-org', 'my-repo', 'abcde', 'my-job-id')
+    tokens = ['my-token']
+
+    r = set_commit_status(
+        'failure', 'my-org', 'my-repo', 'abcde', 'my-job-id', tokens)
 
     assert r
 
@@ -49,7 +55,7 @@ def test_set_commit_status_failure(mock_post):
     )
 
     expected_headers = {
-        'Authorization': 'token {0}'.format(settings.GITHUB_API_TOKEN),
+        'Authorization': 'token my-token'
     }
 
     expected_data = {
@@ -69,7 +75,10 @@ def test_set_commit_status_pending(mock_post):
     mock_response.status_code = 201
     mock_post.return_value = mock_response
 
-    r = set_commit_status('pending', 'my-org', 'my-repo', 'abcde', 'my-job-id')
+    tokens = ['my-token']
+
+    r = set_commit_status(
+        'pending', 'my-org', 'my-repo', 'abcde', 'my-job-id', tokens)
 
     assert r
 
@@ -78,7 +87,7 @@ def test_set_commit_status_pending(mock_post):
     )
 
     expected_headers = {
-        'Authorization': 'token {0}'.format(settings.GITHUB_API_TOKEN),
+        'Authorization': 'token my-token'
     }
 
     expected_data = {
@@ -98,7 +107,10 @@ def test_set_commit_status_error(mock_post):
     mock_response.status_code = 201
     mock_post.return_value = mock_response
 
-    r = set_commit_status('error', 'my-org', 'my-repo', 'abcde', 'my-job-id')
+    tokens = ['my-token']
+
+    r = set_commit_status(
+        'error', 'my-org', 'my-repo', 'abcde', 'my-job-id', tokens)
 
     assert r
 
@@ -107,7 +119,7 @@ def test_set_commit_status_error(mock_post):
     )
 
     expected_headers = {
-        'Authorization': 'token {0}'.format(settings.GITHUB_API_TOKEN),
+        'Authorization': 'token my-token'
     }
 
     expected_data = {
@@ -127,7 +139,10 @@ def test_set_commit_status_problem(mock_post):
     mock_response.status_code = 400
     mock_post.return_value = mock_response
 
-    r = set_commit_status('success', 'my-org', 'my-repo', 'abcde', 'my-job-id')
+    tokens = ['my-token']
+
+    r = set_commit_status(
+        'success', 'my-org', 'my-repo', 'abcde', 'my-job-id', tokens)
 
     assert not r
 
