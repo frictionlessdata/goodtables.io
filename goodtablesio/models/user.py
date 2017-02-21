@@ -23,7 +23,7 @@ class User(Base, BaseModelMixin, UserLoginMixin):
     created = Column(DateTime(timezone=True), default=datetime.datetime.utcnow)
     admin = Column(Boolean, nullable=False, default=False)
     provider_ids = Column(MutableDict.as_mutable(JSONB))
-    conf = Column(JSONB)
+    conf = Column(MutableDict.as_mutable(JSONB))
 
     def get_id(self):
         """This method is required by Flask-Login"""

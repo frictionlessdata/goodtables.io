@@ -91,3 +91,22 @@ def test_update_user_stored_in_db():
     user = database['session'].query(User).get('my-id')
 
     assert user.email == 'a@a.com'
+
+
+def test_json_fields_mutable():
+
+    user = factories.User(id='my-id', provider_ids={'github': 123456},
+                          conf={'a': '1'}, _save_in_db=True)
+
+    user.provider_ids.update({'google': 'abcd'})
+    user.conf.update({'b': '2'})
+
+    database['session'].add(user)
+    database['session'].commit()
+
+    database['session'].remove()
+
+    user = database['session'].query(User).get('my-id')
+
+    assert user.provider_ids == {'google': 'abcd', 'github': 123456}
+    assert user.conf == {'a': '1', 'b': '2'}
