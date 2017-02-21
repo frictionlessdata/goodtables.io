@@ -7,6 +7,7 @@
 alembic==0.8.9
 amqp==2.1.4               # via kombu
 billiard==3.5.0.2         # via celery
+blinker==1.4              # via raven
 boto3==1.4.4
 botocore==1.5.14          # via boto3, s3transfer
 cchardet==1.1.2           # via tabulator
@@ -45,7 +46,7 @@ python-dotenv==0.6.0
 python-editor==1.0.3      # via alembic
 pytz==2016.10             # via celery
 pyyaml==3.12.0
-raven==6.0.0
+raven[flask]==6.0.0
 redis==2.10.5
 requests-oauthlib==0.8.0  # via flask-oauthlib
 requests==2.11.1
