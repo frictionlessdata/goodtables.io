@@ -2,7 +2,7 @@ import uuid
 import logging
 
 from celery import chain
-from flask import Blueprint, request, abort, session
+from flask import Blueprint, request, abort, session, flash
 from flask import render_template, jsonify, redirect, url_for
 from flask_login import login_required, current_user
 
@@ -111,8 +111,12 @@ def github_settings():
 @login_required
 def sync():
     user_id = session['user_id']
-    # TODO: cover case when session doens't have github token
-    token = session['auth_github_token'][0]
+
+    token = current_user.github_oauth_token
+    if not token:
+        flash('No valid GitHub token found', 'danger')
+        return redirect(url_for('github.github_settings'))
+
     result = sync_user_repos.delay(user_id, token)
     # TODO: store in the database (not session)
     # It's kinda general problem it looks like we need
@@ -124,8 +128,12 @@ def sync():
 @github.route('/activate/<repo_id>')
 @login_required
 def activate(repo_id):
-    # TODO: cover case when session doens't have github token
-    token = session['auth_github_token'][0]
+
+    token = current_user.github_oauth_token
+    if not token:
+        flash('No valid GitHub token found', 'danger')
+        return redirect(url_for('github.github_settings'))
+
     repo = database['session'].query(GithubRepo).get(repo_id)
     try:
         activate_hook(token, repo.owner, repo.repo)
@@ -140,8 +148,12 @@ def activate(repo_id):
 @github.route('/deactivate/<repo_id>')
 @login_required
 def deactivate(repo_id):
-    # TODO: cover case when session doens't have github token
-    token = session['auth_github_token'][0]
+
+    token = current_user.github_oauth_token
+    if not token:
+        flash('No valid GitHub token found', 'danger')
+        return redirect(url_for('github.github_settings'))
+
     repo = database['session'].query(GithubRepo).get(repo_id)
     try:
         deactivate_hook(token, repo.owner, repo.repo)

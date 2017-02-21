@@ -68,9 +68,8 @@ def authorized(provider):
             ))
             abort(401, 'There was a problem logging in')
 
-        session['auth_github_token'] = (response['access_token'], '')
-
-        oauth_user = github_auth.get('user')
+        oauth_user = github_auth.get('user',
+                                     token=(response['access_token'], ''))
         if oauth_user.status != 200:
             abort(401, 'Error logging in: could not get user details')
         oauth_user = oauth_user.data
@@ -86,7 +85,8 @@ def authorized(provider):
                 user['provider_ids'].update({provider: provider_id})
                 user = models.user.update({
                     'id': user['id'],
-                    'provider_ids': user['provider_ids']})
+                    'provider_ids': user['provider_ids'],
+                    })
 
         # User does not exist, create it
         if not user:
@@ -96,6 +96,13 @@ def authorized(provider):
                 'email': oauth_user['email'],
                 'provider_ids': {'github': oauth_user['id']},
             })
+
+        if not user.get('conf'):
+            user['conf'] = {}
+        user['conf'].update({'github_oauth_token': response['access_token']})
+        user = models.user.update({
+            'id': user['id'],
+            'conf': user['conf']})
 
         # TODO: check github scopes
 
