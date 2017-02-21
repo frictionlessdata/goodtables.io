@@ -16,6 +16,7 @@ def test_create_user_outputs_dict():
         'email': 'my-email@example.com',
         'admin': True,
         'provider_ids': {'github': '123'},
+        'conf': {'some_token': 'xxx'},
     })
 
     assert user['id'] == 'my-id'
@@ -24,6 +25,7 @@ def test_create_user_outputs_dict():
     assert user['admin'] is True
     assert user['created']
     assert user['provider_ids']['github'] == '123'
+    assert user['conf']['some_token'] == 'xxx'
 
 
 def test_create_user_stored_in_db():
