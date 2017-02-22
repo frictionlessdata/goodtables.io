@@ -27,8 +27,8 @@ def get_validation_conf(bucket, job_id):
         'status': 'running'
     })
 
-    access_key_id = job.source.conf['access_key_id']
-    secret_access_key = job.source.conf['secret_access_key']
+    access_key_id = job.source.access_key_id
+    secret_access_key = job.source.secret_access_key
     bucket_name = job.source.name
 
     client = boto3.client(
