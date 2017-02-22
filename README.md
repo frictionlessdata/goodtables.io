@@ -78,7 +78,7 @@ make frontend-dev
 
 ```
 
-To work on frontend run watch command:
+To work on frontend run the watch command:
 
 ```bash
 make frontend-watch
