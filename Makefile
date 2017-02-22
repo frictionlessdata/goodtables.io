@@ -75,6 +75,9 @@ frontend: ## Compile the frontend assets
 frontend-dev: ## Compile the frontend assets for development
 	webpack --output-pathinfo --progress --hide-modules
 
+frontend-watch: ## Compile the frontend assets for development
+	webpack --output-pathinfo --progress --hide-modules --watch
+
 app: ## Serve the app with Gunicorn
 	gunicorn goodtablesio.app:app --config server.py
 

@@ -78,6 +78,15 @@ make frontend-dev
 
 ```
 
+To work on frontend run watch command:
+
+```bash
+make frontend-watch
+```
+
+If you have `app` running in dev mode frontend components will be automatically updated
+after every source code change. Web page should be reloaded manually.
+
 ### Testing
 
 To run all checks:
