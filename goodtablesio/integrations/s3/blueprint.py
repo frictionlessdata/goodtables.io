@@ -1,9 +1,7 @@
 import uuid
 import logging
 
-from flask import (
-    Blueprint, render_template, flash, request, redirect,
-    url_for, abort, jsonify)
+from flask import Blueprint, flash, request, redirect, url_for, abort, jsonify
 from flask_login import login_required, current_user
 from celery import chain
 
@@ -11,6 +9,7 @@ from goodtablesio import models, settings
 from goodtablesio.services import database
 from goodtablesio.tasks.validate import validate
 from goodtablesio.utils.signature import validate_signature
+from goodtablesio.utils.frontend import render_component
 from goodtablesio.integrations.s3.models.bucket import S3Bucket
 from goodtablesio.integrations.s3.utils import (
     set_up_bucket_on_aws, create_bucket, get_user_buckets,
@@ -31,7 +30,7 @@ def record_params(setup_state):
 @s3.route('/')
 def index():
     jobs = models.job.get_by_integration('s3')
-    return render_template('index.html', component='S3Home', props={
+    return render_component('S3Home', props={
         'userName': getattr(current_user, 'display_name', None),
         'jobs': jobs,
     })
@@ -41,7 +40,7 @@ def index():
 @login_required
 def s3_settings():
     buckets = get_user_buckets(current_user.id)
-    return render_template('index.html', component='S3Settings', props={
+    return render_component('S3Settings', props={
         'userName': getattr(current_user, 'display_name', None),
         'buckets': [{'name': bucket.name} for bucket in buckets],
     })
