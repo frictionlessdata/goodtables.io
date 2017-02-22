@@ -14,7 +14,6 @@ from goodtablesio.services import database
 from goodtablesio.models.user import User
 from goodtablesio.auth import github_auth
 
-
 log = logging.getLogger(__name__)
 
 user = Blueprint('user', __name__, url_prefix='/user')
@@ -110,7 +109,7 @@ def authorized(provider):
 
         # Update these values
         user.provider_ids.update({provider:  provider_id})
-        user.conf.update({'github_oauth_token': response['access_token']})
+        user.github_oauth_token = response['access_token']
 
         database['session'].add(user)
         database['session'].commit()

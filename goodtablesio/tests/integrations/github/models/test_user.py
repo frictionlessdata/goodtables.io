@@ -8,9 +8,16 @@ pytestmark = pytest.mark.usefixtures('session_cleanup')
 
 def test_github_oauth_token_get():
 
-    user = factories.User(conf={'github_oauth_token': 'xxx'})
+    user = factories.User(github_oauth_token='xxx')
 
     assert user.github_oauth_token == 'xxx'
+
+
+def test_github_oauth_token_get_unencrypted():
+
+    user = factories.User(conf={'github_oauth_token': 'xxx'})
+
+    assert user.github_oauth_token is None
 
 
 def test_github_oauth_token_set():
@@ -19,7 +26,8 @@ def test_github_oauth_token_set():
 
     user.github_oauth_token = 'xxx'
 
-    assert user.conf['github_oauth_token'] == 'xxx'
+    # Encrypted
+    assert user.conf['github_oauth_token'].startswith('gAAA')
 
     database['session'].commit()
     user_db = database['session'].query(User).first()
