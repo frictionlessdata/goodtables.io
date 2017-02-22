@@ -1,7 +1,7 @@
 from flask_oauthlib.client import OAuth
 from flask_login import LoginManager, current_user
 
-from goodtablesio import settings, models
+from goodtablesio import settings
 from goodtablesio.services import database
 from goodtablesio.models.user import User
 
