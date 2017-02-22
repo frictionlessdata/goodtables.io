@@ -6,6 +6,5 @@ debug = os.getenv('DEBUG')
 bind = "0.0.0.0:5000"
 accesslog = '-'
 errorlog = '-'
-loglevel = 'error'
+loglevel = 'warning'
 workers = 8
-

@@ -76,7 +76,7 @@ frontend-dev: ## Compile the frontend assets for development
 	webpack --output-pathinfo --progress --hide-modules
 
 app: ## Serve the app with Gunicorn
-	gunicorn goodtablesio.app:app --config server.py --loglevel warning
+	gunicorn goodtablesio.app:app --config gunicorn_settings.py
 
 app-dev: ## Serve the app with Werkzeug
 	FLASK_APP=goodtablesio/app.py FLASK_DEBUG=1 flask run
