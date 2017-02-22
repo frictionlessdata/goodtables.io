@@ -19,6 +19,7 @@ log = logging.getLogger(__name__)
 # General
 
 BASE_URL = os.environ['BASE_URL']
+GTIO_SECRET_KEY = os.environ['GTIO_SECRET_KEY']
 
 # Flask
 
