@@ -85,7 +85,7 @@ app-dev: ## Serve the app with Werkzeug
 	FLASK_APP=goodtablesio/app.py FLASK_DEBUG=1 flask run
 
 app-e2e: ## Serve the app for e2e with Werkzeug
-	FLASK_APP=goodtablesio/app.py FLASK_DEBUG=1 BASE_URL=http://localhost:9999 flask run -p 9999
+	FLASK_APP=goodtablesio/app.py BASE_URL=http://localhost:9999 flask run -p 9999
 
 queue: ## Run celery for production
 	celery -A goodtablesio.celery_app worker --loglevel=WARNING
