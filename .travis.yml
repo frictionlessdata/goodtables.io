@@ -23,7 +23,7 @@ env:
     - BROKER_URL=redis://localhost:6379/10
     - RESULT_BACKEND=redis://localhost:6379/11
     - FLASK_SECRET_KEY=test-key
-    - GTIO_SECRET_KEY=test-key
+    - "GTIO_SECRET_KEY=g2PKWio2rEmNiM1X8mpgCt40wunLJti0SMOT-MfIYjU="
     - GITHUB_HOOK_SECRET=test-github-hook-secret
     - GITHUB_CLIENT_ID=test-github-client-id
     - GITHUB_CLIENT_SECRET=test-github-client-secret
