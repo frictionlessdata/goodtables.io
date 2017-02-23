@@ -75,14 +75,17 @@ frontend: ## Compile the frontend assets
 frontend-dev: ## Compile the frontend assets for development
 	webpack --output-pathinfo --progress --hide-modules
 
+frontend-watch: ## Compile the frontend assets for development using watch mode
+	webpack --output-pathinfo --progress --hide-modules --watch
+
 app: ## Serve the app with Gunicorn
-	gunicorn goodtablesio.app:app --config server.py
+	gunicorn goodtablesio.app:app --config gunicorn_settings.py
 
 app-dev: ## Serve the app with Werkzeug
 	FLASK_APP=goodtablesio/app.py FLASK_DEBUG=1 flask run
 
 app-e2e: ## Serve the app for e2e with Werkzeug
-	FLASK_APP=goodtablesio/app.py FLASK_DEBUG=1 BASE_URL=http://localhost:9999 flask run -p 9999
+	FLASK_APP=goodtablesio/app.py BASE_URL=http://localhost:9999 flask run -p 9999
 
 queue: ## Run celery for production
 	celery -A goodtablesio.celery_app worker --loglevel=WARNING

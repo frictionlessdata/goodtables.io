@@ -1,18 +1,14 @@
 import logging
 from urllib.parse import urlparse
 
-from flask import (
-    Blueprint, request, session, redirect, url_for, abort, flash,
-    render_template
-)
-from flask_login import (
-    login_user, logout_user, login_required, current_user
-)
+from flask import Blueprint, request, session, redirect, url_for, abort, flash
+from flask_login import login_user, logout_user, login_required, current_user
 
 from goodtablesio import settings
 from goodtablesio.services import database
 from goodtablesio.models.user import User
 from goodtablesio.auth import github_auth
+from goodtablesio.utils.frontend import render_component
 
 log = logging.getLogger(__name__)
 
@@ -22,7 +18,7 @@ user = Blueprint('user', __name__, url_prefix='/user')
 @user.route('/')
 @login_required
 def home():
-    return render_template('index.html', component='User', props={
+    return render_component('User', props={
         'userName': getattr(current_user, 'display_name', None),
         'userEmail': getattr(current_user, 'email', None),
     })

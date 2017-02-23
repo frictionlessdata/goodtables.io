@@ -3,7 +3,7 @@ from urllib.parse import urlparse
 import logging
 
 import sqlalchemy
-from flask import Flask, render_template
+from flask import Flask
 from raven.contrib.flask import Sentry
 
 from goodtablesio import settings
@@ -13,6 +13,7 @@ from goodtablesio.blueprints.site import site
 from goodtablesio.blueprints.user import user
 from goodtablesio.integrations.github.blueprint import github
 from goodtablesio.integrations.s3.blueprint import s3
+from goodtablesio.utils.frontend import render_component
 from goodtablesio.services import database
 log = logging.getLogger(__name__)
 
@@ -22,8 +23,8 @@ log = logging.getLogger(__name__)
 # Create instance
 app = Flask(
     __name__,
-    template_folder='',
-    static_folder=os.path.join(os.path.dirname(__file__), '..', 'public')
+    static_folder=os.path.join(os.path.dirname(__file__), '..', 'public'),
+    template_folder=os.path.join(os.path.dirname(__file__), '..', 'public')
 )
 app.secret_key = settings.FLASK_SECRET_KEY
 
@@ -51,12 +52,12 @@ app.register_blueprint(s3)
 
 @app.errorhandler(404)
 def not_found_error(err):
-    return (render_template('index.html', component='Error404'), 404)
+    return (render_component('Error404'), 404)
 
 
 @app.errorhandler(500)
 def server_error(err):
-    return (render_template('index.html', component='Error500'), 500)
+    return (render_component('Error500'), 500)
 
 
 @app.errorhandler(sqlalchemy.exc.SQLAlchemyError)

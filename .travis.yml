@@ -43,7 +43,7 @@ install:
   - make install-dev
   - psql -c 'create database goodtables_test;' -U postgres
   - make migrate
-  - make frontend-dev
+  - make frontend
 
 script:
   - make test

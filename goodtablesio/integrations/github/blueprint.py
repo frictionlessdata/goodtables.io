@@ -2,8 +2,10 @@ import uuid
 import logging
 
 from celery import chain
-from flask import Blueprint, request, abort, session, flash
-from flask import render_template, jsonify, redirect, url_for
+from flask import (
+    Blueprint, request, abort, session, jsonify, redirect,
+    url_for, flash
+)
 from flask_login import login_required, current_user
 
 from goodtablesio import models, settings
@@ -11,6 +13,7 @@ from goodtablesio.services import database
 from goodtablesio.models.job import Job
 from goodtablesio.tasks.validate import validate
 from goodtablesio.utils.signature import validate_signature
+from goodtablesio.utils.frontend import render_component
 from goodtablesio.integrations.github.models.repo import GithubRepo
 from goodtablesio.integrations.github.tasks.jobconf import get_validation_conf
 from goodtablesio.integrations.github.tasks.repos import sync_user_repos
@@ -36,7 +39,7 @@ def github_home():
 
     jobs = models.job.get_by_integration('github')
 
-    return render_template('index.html', component='GithubHome', props={
+    return render_component('GithubHome', props={
         'userName': getattr(current_user, 'display_name', None),
         'jobs': jobs,
     })
@@ -51,7 +54,7 @@ def github_org(org):
             models.job.Job.conf['owner'].astext == org]
     )
 
-    return render_template('index.html', component='GithubHome', props={
+    return render_component('GithubHome', props={
         'userName': getattr(current_user, 'display_name', None),
         'org': org,
         'jobs': jobs,
@@ -68,7 +71,7 @@ def github_repo(org, repo):
             ]
     )
 
-    return render_template('index.html', component='GithubHome', props={
+    return render_component('GithubHome', props={
         'userName': getattr(current_user, 'display_name', None),
         'org': org,
         'repo': repo,
@@ -102,7 +105,7 @@ def github_settings():
                               GithubRepo.name).
                      all())
 
-    return render_template('index.html', component='GithubSettings', props={
+    return render_component('GithubSettings', props={
         'userName': getattr(current_user, 'display_name', None),
         'sync': sync,
         'repos': [repo.to_dict() for repo in repos],

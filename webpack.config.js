@@ -1,6 +1,7 @@
 const path = require('path')
 const webpack = require('webpack')
 const autoprefixer = require('autoprefixer')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ENV = process.env.NODE_ENV;
 
 // Base
@@ -10,7 +11,7 @@ const webpackConfig = {
   output: {
     path: path.resolve(__dirname, './public'),
     publicPath: '/public/',
-    filename: (ENV === 'production') ? 'build.min.js' : 'build.js',
+    filename: (ENV === 'production') ? 'bundle.min.[hash].js' : 'bundle.[hash].js',
     library: 'frontend',
     libraryTarget: 'var',
   },
@@ -63,6 +64,13 @@ const webpackConfig = {
     hints: false
   },
   devtool: '#eval-source-map',
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: 'frontend/index.html',
+      filename: (ENV === 'production') ? 'index.min.html' : 'index.html',
+      inject: 'head',
+    }),
+  ],
 }
 
 // Production
