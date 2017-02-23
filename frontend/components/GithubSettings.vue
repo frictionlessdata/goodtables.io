@@ -23,13 +23,13 @@ export default {
   </template>
 
   <template v-else>
-    <template v-if="repos && repos.length">
-      <div style="margin-bottom: 30px" class="row">
-        <div style="float: right">
-          <span> Refresh your organizations and repositories</span>
-          <a href="/github/sync" class="btn btn-primary" style="width:120px;">Sync account</a>
-        </div>
+    <div style="margin-bottom: 30px" class="row">
+      <div style="float: right">
+        <span> Refresh your organizations and repositories</span>
+        <a href="/github/sync" class="btn btn-primary" style="width:120px;">Sync account</a>
       </div>
+    </div>
+    <template v-if="repos && repos.length">
       <div v-for="repo of repos" class="row" >
         <a v-if="repo.active" :href="`/github/deactivate/${repo.id}`" class="btn btn-success">Deactivate</a>
         <a v-else :href="`/github/activate/${repo.id}`" class="btn btn-danger">Activate</a>

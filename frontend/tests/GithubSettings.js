@@ -20,6 +20,12 @@ describe('GithubSettings', () => {
     wrapper.text().should.include('There are no synced repositories')
   })
 
+  it('should have sync account button', () => {
+    const propsData = {repos: []}
+    const wrapper = mount(GithubSettings, {propsData})
+    wrapper.find('[href="/github/sync"]')[0].text().should.equal('Sync account')
+  })
+
   it('should work with sync true', () => {
     const propsData = {
       sync: true,
