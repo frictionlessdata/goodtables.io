@@ -5,6 +5,7 @@ from sqlalchemy import (
     Column, Unicode, DateTime, update as db_update,  ForeignKey)
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.ext.mutable import MutableDict
 
 from goodtablesio import settings
 from goodtablesio.services import database
@@ -26,7 +27,7 @@ class Job(Base, BaseModelMixin):
     error = Column(JSONB)
     integration_name = Column(
         Unicode, ForeignKey('integrations.name'), default='api')
-    conf = Column(JSONB)
+    conf = Column(MutableDict.as_mutable(JSONB))
     source_id = Column(Unicode, ForeignKey('sources.id'))
 
     source = relationship(

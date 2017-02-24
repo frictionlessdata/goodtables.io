@@ -3,6 +3,7 @@ import datetime
 import pytest
 
 from goodtablesio import models
+from goodtablesio.models.job import Job
 from goodtablesio.tests import factories
 from goodtablesio.services import database
 
@@ -270,3 +271,19 @@ def test_get_by_integration_not_found():
     factories.Job()
 
     assert models.job.get_by_integration('not-found') == []
+
+
+def test_json_fields_mutable():
+
+    job = factories.Job(id='my-id', conf={'a': '1'}, _save_in_db=True)
+
+    job.conf.update({'b': '2'})
+
+    database['session'].add(job)
+    database['session'].commit()
+
+    database['session'].remove()
+
+    job = database['session'].query(Job).get('my-id')
+
+    assert job.conf == {'a': '1', 'b': '2'}

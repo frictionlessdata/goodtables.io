@@ -3,29 +3,36 @@ import logging
 import requests
 from github3 import GitHub
 
-from goodtablesio import models, settings
+from goodtablesio.services import database
+from goodtablesio.models.job import Job
 from goodtablesio.celery_app import celery_app
 from goodtablesio.utils.jobtask import JobTask
 from goodtablesio.utils.jobconf import make_validation_conf, parse_job_conf
+from goodtablesio.integrations.github.utils.hook import get_tokens_for_job
+
+
 log = logging.getLogger(__name__)
 
-
-# Module API
 
 @celery_app.task(name='goodtablesio.github.get_validation_conf', base=JobTask)
 def get_validation_conf(owner, repo, sha, job_id):
     """Celery tast to get validation conf.
     """
 
-    # Update job
-    models.job.update({
-        'id': job_id,
-        'status': 'running'
-    })
+    job = database['session'].query(Job).get(job_id)
+
+    job.status = 'running'
+    database['session'].add(job)
+    database['session'].commit()
+
+    tokens = get_tokens_for_job(job)
+    if not tokens:
+        log.error('No GitHub tokens available to perform the job')
+        return {}
 
     # Get validation conf
     job_base = _get_job_base(owner, repo, sha)
-    job_files = _get_job_files(owner, repo, sha)
+    job_files = _get_job_files(owner, repo, sha, tokens)
     job_conf = _load_job_conf(job_base)
 
     validation_conf = make_validation_conf(
@@ -47,10 +54,11 @@ def _get_job_base(owner, repo, sha):
     return baseurl
 
 
-def _get_job_files(owner, repo, sha):
+def _get_job_files(owner, repo, sha, tokens):
     """Get job's files.
     """
-    github_api = GitHub(token=settings.GITHUB_API_TOKEN)
+    # TODO: use other tokens if first fails
+    github_api = GitHub(token=tokens[0])
     repo_api = github_api.repository(owner, repo)
     # First attempt - use GitHub Tree API
     files = _get_job_files_tree_api(repo_api, sha)

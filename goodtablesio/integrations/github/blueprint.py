@@ -2,11 +2,15 @@ import uuid
 import logging
 
 from celery import chain
-from flask import Blueprint, request, abort, session, jsonify, redirect, url_for
+from flask import (
+    Blueprint, request, abort, session, jsonify, redirect,
+    url_for, flash
+)
 from flask_login import login_required, current_user
 
 from goodtablesio import models, settings
 from goodtablesio.services import database
+from goodtablesio.models.job import Job
 from goodtablesio.tasks.validate import validate
 from goodtablesio.utils.signature import validate_signature
 from goodtablesio.utils.frontend import render_component
@@ -15,7 +19,8 @@ from goodtablesio.integrations.github.tasks.jobconf import get_validation_conf
 from goodtablesio.integrations.github.tasks.repos import sync_user_repos
 from goodtablesio.integrations.github.utils.status import set_commit_status
 from goodtablesio.integrations.github.utils.hook import (
-    activate_hook, deactivate_hook, get_owner_repo_sha_from_hook_payload)
+    activate_hook, deactivate_hook, get_owner_repo_sha_from_hook_payload,
+    get_tokens_for_job)
 
 
 log = logging.getLogger(__name__)
@@ -110,10 +115,8 @@ def github_settings():
 @github.route('/sync')
 @login_required
 def sync():
-    user_id = session['user_id']
-    # TODO: cover case when session doens't have github token
-    token = session['auth_github_token'][0]
-    result = sync_user_repos.delay(user_id, token)
+
+    result = sync_user_repos.delay(current_user.id)
     # TODO: store in the database (not session)
     # It's kinda general problem it looks like we need
     # to track syncing tasks in the database (github, s3, etc)
@@ -124,8 +127,12 @@ def sync():
 @github.route('/activate/<repo_id>')
 @login_required
 def activate(repo_id):
-    # TODO: cover case when session doens't have github token
-    token = session['auth_github_token'][0]
+
+    token = current_user.github_oauth_token
+    if not token:
+        flash('No valid GitHub token found', 'danger')
+        return redirect(url_for('github.github_settings'))
+
     repo = database['session'].query(GithubRepo).get(repo_id)
     try:
         activate_hook(token, repo.owner, repo.repo)
@@ -140,8 +147,12 @@ def activate(repo_id):
 @github.route('/deactivate/<repo_id>')
 @login_required
 def deactivate(repo_id):
-    # TODO: cover case when session doens't have github token
-    token = session['auth_github_token'][0]
+
+    token = current_user.github_oauth_token
+    if not token:
+        flash('No valid GitHub token found', 'danger')
+        return redirect(url_for('github.github_settings'))
+
     repo = database['session'].query(GithubRepo).get(repo_id)
     try:
         deactivate_hook(token, repo.owner, repo.repo)
@@ -190,8 +201,7 @@ def create_job():
 
     # Save job to database
     job_id = str(uuid.uuid4())
-
-    models.job.create({
+    params = {
         'id': job_id,
         'integration_name': 'github',
         'source_id': source.id,
@@ -200,7 +210,14 @@ def create_job():
             'repo': repo,
             'sha': sha,
         }
-    })
+    }
+    job = Job(**params)
+    job.source = source
+
+    database['session'].add(job)
+    database['session'].commit()
+
+    tokens = get_tokens_for_job(job)
 
     # Set GitHub status
     set_commit_status(
@@ -208,7 +225,8 @@ def create_job():
         owner=owner,
         repo=repo,
         sha=sha,
-        job_id=job_id)
+        job_id=job_id,
+        tokens=tokens)
 
     # Run validation
     tasks_chain = chain(

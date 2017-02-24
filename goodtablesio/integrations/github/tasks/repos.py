@@ -7,10 +7,12 @@ from goodtablesio.integrations.github.utils.repos import iter_repos_by_token
 
 
 @celery_app.task(name='goodtablesio.github.sync_user_repos')
-def sync_user_repos(user_id, token):
+def sync_user_repos(user_id):
     """Sync user repositories.
     """
     user = database['session'].query(User).get(user_id)
+
+    token = user.github_oauth_token
 
     for repo_data in iter_repos_by_token(token):
         repo = database['session'].query(GithubRepo).filter(

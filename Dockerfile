@@ -23,6 +23,7 @@ RUN apk add --no-cache --virtual build-dependencies \
     libjpeg-turbo-dev \
     libxml2-dev \
     libxslt-dev \
+    libffi-dev \
  && apk add --no-cache --update \
     libstdc++ \
     python3 \

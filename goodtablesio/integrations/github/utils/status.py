@@ -6,17 +6,21 @@ log = logging.getLogger(__name__)
 
 # Module API
 
-def set_commit_status(state, owner, repo, sha, job_id):
+def set_commit_status(state, owner, repo, sha, job_id, tokens):
     """Set commit status on GitHub.
     """
+
+    if not tokens:
+        return False
 
     url = '{base}/repos/{owner}/{repo}/statuses/{sha}'.format(
         base=settings.GITHUB_API_BASE,
         owner=owner, repo=repo, sha=sha,
     )
 
+    # TODO: use other tokens if first fails
     headers = {
-        'Authorization': 'token {0}'.format(settings.GITHUB_API_TOKEN),
+        'Authorization': 'token {0}'.format(tokens[0]),
     }
 
     if state == 'pending':

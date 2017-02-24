@@ -65,7 +65,8 @@ def disable_bucket_on_aws(access_key_id, secret_access_key, bucket_name):
     return True, ''
 
 
-def create_bucket(bucket_name, user=None, conf=None):
+def create_bucket(bucket_name, access_key_id=None, secret_access_key=None,
+                  user=None):
 
     bucket = database['session'].query(S3Bucket).filter(
         S3Bucket.name == bucket_name).one_or_none()
@@ -76,11 +77,13 @@ def create_bucket(bucket_name, user=None, conf=None):
         bucket = S3Bucket(name=bucket_name)
 
     bucket.active = True
+    if access_key_id:
+        bucket.access_key_id = access_key_id
+    if secret_access_key:
+        bucket.secret_access_key = secret_access_key
 
     if user:
         bucket.users.append(user)
-    if conf:
-        bucket.conf = conf
 
     database['session'].add(bucket)
     database['session'].commit()

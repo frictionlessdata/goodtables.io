@@ -4,10 +4,11 @@ from urllib.parse import urlparse
 from flask import Blueprint, request, session, redirect, url_for, abort, flash
 from flask_login import login_user, logout_user, login_required, current_user
 
-from goodtablesio import models, settings
+from goodtablesio import settings
+from goodtablesio.services import database
+from goodtablesio.models.user import User
 from goodtablesio.auth import github_auth
 from goodtablesio.utils.frontend import render_component
-
 
 log = logging.getLogger(__name__)
 
@@ -50,6 +51,17 @@ def logout():
     return redirect(url_for('site.home'))
 
 
+def _get_user_by_provider_id(provider_name, provider_id):
+    return database['session'].query(User).filter(
+        User.provider_ids[provider_name].astext == str(provider_id)
+        ).one_or_none()
+
+
+def _get_user_by_email(email):
+    return database['session'].query(User).filter_by(
+        email=email).one_or_none()
+
+
 @user.route('/login/<any(github):provider>/authorized')
 def authorized(provider):
 
@@ -64,9 +76,8 @@ def authorized(provider):
             ))
             abort(401, 'There was a problem logging in')
 
-        session['auth_github_token'] = (response['access_token'], '')
-
-        oauth_user = github_auth.get('user')
+        oauth_user = github_auth.get('user',
+                                     token=(response['access_token'], ''))
         if oauth_user.status != 200:
             abort(401, 'Error logging in: could not get user details')
         oauth_user = oauth_user.data
@@ -74,29 +85,34 @@ def authorized(provider):
 
         # Check if user exists, first by provider id, then by email
 
-        user = models.user.get_by_provider_id(provider, provider_id)
+        user = _get_user_by_provider_id(provider, provider_id)
         if not user:
-            user = models.user.get_by_email(oauth_user['email'])
-            if user:
-                # User exists, but she had logged in with another provider
-                user['provider_ids'].update({provider: provider_id})
-                user = models.user.update({
-                    'id': user['id'],
-                    'provider_ids': user['provider_ids']})
+            # User exists, but she had logged in with another provider
+            user = _get_user_by_email(oauth_user['email'])
 
-        # User does not exist, create it
         if not user:
-            user = models.user.create({
-                'name': oauth_user['login'],
-                'display_name': oauth_user['name'],
-                'email': oauth_user['email'],
-                'provider_ids': {'github': oauth_user['id']},
-            })
+            # User does not exist, create it
+            user = User(
+                name=oauth_user['login'],
+                display_name=oauth_user['name'],
+                email=oauth_user['email']
+            )
+
+        if user.provider_ids is None:
+            user.provider_ids = {}
+        if user.conf is None:
+            user.conf = {}
+
+        # Update these values
+        user.provider_ids.update({provider:  provider_id})
+        user.github_oauth_token = response['access_token']
+
+        database['session'].add(user)
+        database['session'].commit()
 
         # TODO: check github scopes
 
         # Login user with Flask-Login
-        # (we need the actual model object)
-        login_user(models.user.get(user['id'], as_dict=False))
+        login_user(user)
 
     return redirect(url_for('site.home'))

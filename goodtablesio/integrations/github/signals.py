@@ -1,36 +1,36 @@
 from celery import signals
 
-from goodtablesio import models
+from goodtablesio.services import database
+from goodtablesio.models.job import Job
 from goodtablesio.tasks.validate import validate
 from goodtablesio.integrations.github.utils.status import set_commit_status
+from goodtablesio.integrations.github.utils.hook import get_tokens_for_job
 
 
 @signals.task_postrun.connect(sender=validate)
 def post_task_handler(**kwargs):
 
-    job = kwargs['retval']
-    if isinstance(kwargs['retval'], Exception):
-        job_id = kwargs['kwargs']['job_id']
-        job = models.job.get(job_id)
+    job_id = kwargs['kwargs']['job_id']
+    job = database['session'].query(Job).get(job_id)
 
-    if job.get('integration_name') != 'github':
+    if job.integration_name != 'github':
         return
 
     task_state = kwargs['state']
 
-    status = job['status']
-    conf = job['conf']
+    if job.conf:
 
-    if conf:
-
-        if task_state == 'SUCCESS' and status != 'running':
-            github_status = status
+        if task_state == 'SUCCESS' and job.status != 'running':
+            github_status = job.status
         else:
             github_status = 'error'
 
+        tokens = get_tokens_for_job(job)
+
         set_commit_status(
            github_status,
-           owner=conf['owner'],
-           repo=conf['repo'],
-           sha=conf['sha'],
-           job_id=job['id'])
+           owner=job.conf['owner'],
+           repo=job.conf['repo'],
+           sha=job.conf['sha'],
+           job_id=job.id,
+           tokens=tokens)

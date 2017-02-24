@@ -72,9 +72,8 @@ def add_bucket():
         # Redirect and flash message
         if success:
 
-            conf = {'access_key_id': access_key_id,
-                    'secret_access_key': secret_access_key}
-            create_bucket(bucket_name, user=current_user, conf=conf)
+            create_bucket(bucket_name, access_key_id, secret_access_key,
+                          user=current_user)
 
             flash('Bucket added', 'success')
         else:
@@ -96,11 +95,8 @@ def remove_bucket(bucket_name):
 
     else:
 
-        access_key_id = source.conf['access_key_id']
-        secret_access_key = source.conf['secret_access_key']
-
         success, message = disable_bucket_on_aws(
-            access_key_id, secret_access_key, bucket_name)
+            source.access_key_id, source.secret_access_key, bucket_name)
 
         # Redirect and flash message
         if success:

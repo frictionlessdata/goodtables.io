@@ -178,10 +178,10 @@ def test_set_up_bucket_on_aws_lambda_add_notification_fails_second_revert_also_f
         b.assert_called_once_with('test_bucket')
 
 
-# def test_disable_bucket_on_aws(mock_s3_client, mock_lambda_client):
-#
-#     args = ('mock_access_key_id', 'mock_secret_access_key', 'test_bucket')
-#     assert disable_bucket_on_aws(*args) == (True, '')
+def test_disable_bucket_on_aws(mock_s3_client, mock_lambda_client):
+
+    args = ('mock_access_key_id', 'mock_secret_access_key', 'test_bucket')
+    assert disable_bucket_on_aws(*args) == (True, '')
 
 
 def test_disable_bucket_on_aws_s3_connection_error(mock_lambda_client):
@@ -332,11 +332,11 @@ def test_inactivate_bucket():
 
 
 @pytest.mark.usefixtures('session_cleanup')
-def test_create_bucket_with_conf():
+def test_create_bucket_with_keys():
 
-    conf = {'a': 'b'}
-
-    create_bucket('test-bucket-2', conf=conf)
+    create_bucket('test-bucket-2',
+                  access_key_id='some-key',
+                  secret_access_key='some-secret')
 
     buckets = database['session'].query(S3Bucket).all()
 
@@ -344,7 +344,12 @@ def test_create_bucket_with_conf():
 
     assert buckets[0].name == 'test-bucket-2'
 
-    assert buckets[0].conf == conf
+    assert buckets[0].access_key_id == 'some-key'
+    assert buckets[0].secret_access_key == 'some-secret'
+
+    # Encrypted
+    assert buckets[0].conf['access_key_id'].startswith('gAA')
+    assert buckets[0].conf['secret_access_key'].startswith('gAA')
 
 
 @pytest.mark.usefixtures('session_cleanup')
