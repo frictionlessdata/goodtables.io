@@ -1,7 +1,19 @@
+import pytest
 from cryptography.fernet import Fernet
 
 from goodtablesio import settings
 from goodtablesio.crypto import encrypt_string, decrypt_string
+
+
+def test_incorrect_key_encrypt():
+
+    value = b'some-text'
+    key = b'incorrect-key'
+
+    with pytest.raises(ValueError) as exc:
+        encrypt_string(value, key=key)
+
+        assert 'Wrong secret key' in str(exc)
 
 
 def test_encrypt_string():
@@ -37,6 +49,17 @@ def test_encrypt_string_transforms_to_bytes():
     token = encrypt_string(value, key=key)
 
     assert f.decrypt(token.encode('utf-8')) == value.encode('utf-8')
+
+
+def test_incorrect_key_decrypt():
+
+    token = b'some-token'
+    key = b'incorrect-key'
+
+    with pytest.raises(ValueError) as exc:
+        decrypt_string(token, key=key)
+
+        assert 'Wrong secret key' in str(exc)
 
 
 def test_decrypt_string():
