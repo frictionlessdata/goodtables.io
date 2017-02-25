@@ -83,17 +83,6 @@ def github_repo(org, repo):
 @login_required
 def github_settings():
 
-    # Get github syncing status
-    sync = False
-    if session.get('github_sync_task_id'):
-        task_id = session['github_sync_task_id']
-        result = sync_user_repos.AsyncResult(task_id)
-        if result.status == 'PENDING':
-            sync = True
-        else:
-            # TODO: cover errors
-            del session['github_sync_task_id']
-
     # Get github repos
     repos = []
     if not sync:
@@ -107,7 +96,6 @@ def github_settings():
 
     return render_component('GithubSettings', props={
         'userName': getattr(current_user, 'display_name', None),
-        'sync': sync,
         'repos': [repo.to_dict() for repo in repos],
     })
 
@@ -235,3 +223,43 @@ def create_job():
     tasks_chain.delay()
 
     return jsonify({'job_id': job_id})
+
+
+# API
+
+# TODO:
+# it should be synced with general
+# approach we use for API (see api blueprint)
+
+@github.route('/api/sync_account')
+@login_required
+def api_sync_account():
+    try:
+        user_id = session['user_id']
+        # TODO: cover case when session doens't have github token
+        token = session['auth_github_token'][0]
+        result = sync_user_repos.delay(user_id, token)
+        # TODO: store in the database (not session)
+        # It's kinda general problem it looks like we need
+        # to track syncing tasks in the database (github, s3, etc)
+        session['github_sync_task_id'] = result.task_id
+        sync = True
+    except Exception as exception:
+        log.exception(exception)
+        sync = False
+    return jsonify({'is_syncing_account': sync})
+
+
+@github.route('/api/is_syncing_account')
+@login_required
+def api_is_syncing_account():
+    sync = False
+    if session.get('github_sync_task_id'):
+        task_id = session['github_sync_task_id']
+        result = sync_user_repos.AsyncResult(task_id)
+        if result.status == 'PENDING':
+            sync = True
+        else:
+            # TODO: cover errors
+            del session['github_sync_task_id']
+    return jsonify({'is_syncing_account': sync})

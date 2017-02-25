@@ -5,6 +5,11 @@ export default {
     sync: Boolean,
     repos: Array,
   },
+  data: () => {
+    return {
+      isSyncingAccount: false,
+    }
+  },
 }
 </script>
 
@@ -17,7 +22,7 @@ export default {
 
   <h2>Repos</h2>
 
-  <template v-if="sync">
+  <template v-if="isSyncingAccount">
     <p><button disable class="btn btn-warning">Syncing account</button></p>
     <p>Please refresh the page after some time...</p>
   </template>

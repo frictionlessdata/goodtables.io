@@ -27,10 +27,10 @@ describe('GithubSettings', () => {
   })
 
   it('should work with sync true', () => {
-    const propsData = {
-      sync: true,
+    const data = {
+      isSyncingAccount: true,
     }
-    const wrapper = mount(GithubSettings, {propsData})
+    const wrapper = mount(GithubSettings, {data})
     wrapper.text().should.include('Syncing account')
   })
 
