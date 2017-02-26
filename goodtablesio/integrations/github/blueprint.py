@@ -85,14 +85,13 @@ def github_settings():
 
     # Get github repos
     repos = []
-    if not sync:
-        user_id = session.get('user_id')
-        if user_id:
-            repos = (database['session'].query(GithubRepo).
-                     filter(GithubRepo.users.any(id=user_id)).
-                     order_by(GithubRepo.active.desc(),
-                              GithubRepo.name).
-                     all())
+    user_id = session.get('user_id')
+    if user_id:
+        repos = (database['session'].query(GithubRepo).
+                 filter(GithubRepo.users.any(id=user_id)).
+                 order_by(GithubRepo.active.desc(),
+                          GithubRepo.name).
+                 all())
 
     return render_component('GithubSettings', props={
         'userName': getattr(current_user, 'display_name', None),
@@ -236,9 +235,7 @@ def create_job():
 def api_sync_account():
     try:
         user_id = session['user_id']
-        # TODO: cover case when session doens't have github token
-        token = session['auth_github_token'][0]
-        result = sync_user_repos.delay(user_id, token)
+        result = sync_user_repos.delay(user_id)
         # TODO: store in the database (not session)
         # It's kinda general problem it looks like we need
         # to track syncing tasks in the database (github, s3, etc)

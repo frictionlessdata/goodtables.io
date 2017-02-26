@@ -12,6 +12,7 @@ def sync_user_repos(user_id):
     """
     user = database['session'].query(User).get(user_id)
 
+    # TODO: handle no token situation
     token = user.github_oauth_token
 
     for repo_data in iter_repos_by_token(token):
