@@ -14,11 +14,7 @@ export default {
   created() {
     axios.get('/github/api/is_syncing_account')
       .then(res => {
-        console.log(res)
         this.isSyncingAccount = res.data.is_syncing_account
-      })
-      .catch(err => {
-        console.log(err)
       })
   },
 }
