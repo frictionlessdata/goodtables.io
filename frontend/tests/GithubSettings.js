@@ -13,8 +13,9 @@ describe('GithubSettings', () => {
 
   beforeEach(() => {
     mockAxios = new AxiosMockAdapter(axios)
-    mockAxios.onGet('/github/api/is_syncing_account').reply(200, {
-      is_syncing_account: false,
+    mockAxios.onGet('/github/api/repo').reply(200, {
+      syncing: false,
+      repos: [],
     })
   })
 
@@ -23,8 +24,7 @@ describe('GithubSettings', () => {
   })
 
   it('should contain headings', (done) => {
-    const propsData = {}
-    const wrapper = mount(GithubSettings, {propsData})
+    const wrapper = mount(GithubSettings)
     setTimeout(() => {
       wrapper.find('h1')[0].text().should.equal('GitHub')
       wrapper.find('h2')[0].text().should.equal('Repos')
@@ -33,8 +33,7 @@ describe('GithubSettings', () => {
   })
 
   it('should have no repositories', (done) => {
-    const propsData = {repos: []}
-    const wrapper = mount(GithubSettings, {propsData})
+    const wrapper = mount(GithubSettings)
     setTimeout(() => {
       wrapper.text().should.include('There are no synced repositories')
       done()
@@ -42,8 +41,7 @@ describe('GithubSettings', () => {
   })
 
   it('should have sync account button', (done) => {
-    const propsData = {repos: []}
-    const wrapper = mount(GithubSettings, {propsData})
+    const wrapper = mount(GithubSettings)
     setTimeout(() => {
       wrapper.find('.btn')[0].text().should.equal('Sync account')
       done()
@@ -60,8 +58,9 @@ describe('GithubSettings', () => {
 
   it('should have syncing account message on syncing', (done) => {
     mockAxios.reset()
-    mockAxios.onGet('/github/api/is_syncing_account').reply(200, {
-      is_syncing_account: true,
+    mockAxios.onGet('/github/api/repo').reply(200, {
+      syncing: true,
+      repos: [],
     })
     const wrapper = mount(GithubSettings)
     setTimeout(() => {
@@ -75,16 +74,18 @@ describe('GithubSettings', () => {
   describe('[with repos]', () => {
 
     it('should contain repos', (done) => {
-      const propsData = {
+      mockAxios.reset()
+      mockAxios.onGet('/github/api/repo').reply(200, {
+        syncing: false,
         repos: [
           {id: 'id1', name: 'name1', active: true},
           {id: 'id2', name: 'name2', active: false},
         ],
-      }
-      const wrapper = mount(GithubSettings, {propsData})
+      })
+      const wrapper = mount(GithubSettings)
       setTimeout(() => {
-        wrapper.find('[href="https://github.com/name1"]').should.has.length(1)
-        wrapper.find('[href="https://github.com/name2"]').should.has.length(1)
+        wrapper.text().should.include('name1')
+        wrapper.text().should.include('name2')
         done()
       })
     })
