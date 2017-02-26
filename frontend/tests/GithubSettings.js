@@ -43,7 +43,7 @@ describe('GithubSettings', () => {
   it('should have sync account button', (done) => {
     const wrapper = mount(GithubSettings)
     setTimeout(() => {
-      wrapper.find('.btn')[0].text().should.equal('Sync account')
+      wrapper.find('.sync>.btn')[0].text().should.equal('Sync account')
       done()
     })
   })
@@ -71,25 +71,72 @@ describe('GithubSettings', () => {
     })
   })
 
-  describe('[with repos]', () => {
-
-    it('should contain repos', (done) => {
-      mockAxios.reset()
-      mockAxios.onGet('/github/api/repo').reply(200, {
-        syncing: false,
-        repos: [
-          {id: 'id1', name: 'name1', active: true},
-          {id: 'id2', name: 'name2', active: false},
-        ],
-      })
-      const wrapper = mount(GithubSettings)
-      setTimeout(() => {
-        wrapper.text().should.include('name1')
-        wrapper.text().should.include('name2')
-        done()
-      })
+  it('should show existent repos after loading', (done) => {
+    mockAxios.reset()
+    mockAxios.onGet('/github/api/repo').reply(200, {
+      syncing: false,
+      repos: [
+        {id: 'id1', name: 'name1', active: true},
+        {id: 'id2', name: 'name2', active: false},
+      ],
     })
+    const wrapper = mount(GithubSettings)
+    wrapper.text().should.include('Loading repos. Please wait..')
+    setTimeout(() => {
+      wrapper.text().should.include('name1')
+      wrapper.text().should.include('name2')
+      done()
+    })
+  })
 
+  it('should show error on sync account click error', (done) => {
+    mockAxios.onGet('/github/api/sync_account').replyOnce(200, {
+      error: 'Sync account error',
+    })
+    const wrapper = mount(GithubSettings)
+    wrapper.find('.sync>.btn')[0].simulate('click')
+    setTimeout(() => {
+      wrapper.find(Messages).should.has.length(1)
+      wrapper.find(Messages)[0].propsData().messages
+        .should.deep.equal([['danger', 'Sync account error']])
+      done()
+    })
+  })
+
+  it('should work on sync account click success', (done) => {
+    mockAxios.reset()
+    mockAxios.onGet('/github/api/repo').replyOnce(200, {
+      syncing: false,
+      repos: [],
+    })
+    mockAxios.onGet('/github/api/repo').replyOnce(200, {
+      syncing: true,
+      repos: [],
+    })
+    mockAxios.onGet('/github/api/repo').replyOnce(200, {
+      syncing: false,
+      repos: [
+        {id: 'id1', name: 'name1', active: true},
+        {id: 'id2', name: 'name2', active: false},
+      ],
+    })
+    mockAxios.onGet('/github/api/sync_account').replyOnce(200, {
+      error: null,
+    })
+    // TODO: use fake timer from sinon.js
+    const wrapper = mount(GithubSettings)
+    wrapper.find('.sync>.btn')[0].simulate('click')
+    setTimeout(() => {
+      wrapper.find(Messages).should.has.length(1)
+      wrapper.find(Messages)[0].propsData().messages
+        .should.deep.equal([['warning', 'Syncing account. Please wait..']])
+      done()
+    }, 500)
+    setTimeout(() => {
+      wrapper.text().should.include('name1')
+      wrapper.text().should.include('name2')
+      done()
+    }, 1500)
   })
 
 })
