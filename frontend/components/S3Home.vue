@@ -7,7 +7,7 @@ export default {
     jobs: Array,
   },
   components: {
-    'app-job-list': JobList,
+    JobList,
   },
 }
 </script>
@@ -24,7 +24,7 @@ export default {
   </div>
 
   <template v-if="jobs">
-    <app-job-list :jobs="jobs" />
+    <JobList :jobs="jobs" />
   </template>
 
   <template v-else>

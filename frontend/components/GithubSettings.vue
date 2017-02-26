@@ -8,7 +8,7 @@ export default {
     repos: Array,
   },
   components: {
-    'app-messages': Messages,
+    Messages,
   },
   data() {
     return {
@@ -35,6 +35,7 @@ export default {
           const interval = setInterval(() => {
             this.updateIsSyncingAccount()
             if (!this.isSyncingAccount) {
+              // TODO: update repos!
               clearInterval(interval)
             }
           }, 1000)
@@ -50,8 +51,8 @@ export default {
 <template>
 <div>
 
-  <app-messages v-if="error" :messages="[['danger', error]]" />
-  <app-messages v-if="isSyncingAccount" :messages="[['warning', 'Syncing account. Please wait..']]" />
+  <Messages v-if="error" :messages="[['danger', error]]" />
+  <Messages v-if="isSyncingAccount" :messages="[['warning', 'Syncing account. Please wait..']]" />
 
   <div class="container">
 
