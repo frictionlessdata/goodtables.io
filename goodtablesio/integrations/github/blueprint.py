@@ -254,12 +254,14 @@ def api_repo_list():
 @github.route('/api/repo/<repo_id>')
 def api_repo(repo_id):
     try:
+        code = 200
         repo = database['session'].query(GithubRepo).get(repo_id).to_api()
         error = None
     except Exception:
+        code = 404
         repo = None
         error = 'Not Found'
-    return jsonify({
+    return (jsonify({
         'repo': repo,
         'error': error,
-    })
+    }), code)
