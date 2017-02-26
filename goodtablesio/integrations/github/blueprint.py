@@ -260,3 +260,22 @@ def api_is_syncing_account():
             # TODO: cover errors
             del session['github_sync_task_id']
     return jsonify({'is_syncing_account': sync})
+
+
+@github.route('/api/repo')
+@login_required
+def api_repos():
+    repos = (
+        database['session'].query(GithubRepo).
+        filter(GithubRepo.users.any(id=current_user.id)).
+        order_by(GithubRepo.active.desc(), GithubRepo.name).
+        all())
+    return jsonify({'repos': [repo.to_api() for repo in repos]})
+
+
+@github.route('/api/repo/<repo_id>')
+def api_repo(repo_id):
+    repo = database['session'].query(GithubRepo).get(repo_id)
+    if not repo:
+        return (jsonify({'error': 'Not Found'}), 404)
+    return jsonify({'repo': repo.to_api()})
