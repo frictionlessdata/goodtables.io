@@ -49,7 +49,15 @@ describe('GithubSettings', () => {
     })
   })
 
-  it('should work while syncing account', (done) => {
+  it('should not show syncing account', (done) => {
+    const wrapper = mount(GithubSettings)
+    setTimeout(() => {
+      wrapper.text().should.not.include('Syncing account')
+      done()
+    })
+  })
+
+  it('should show syncing account on syncing', (done) => {
     mockAxios.reset()
     mockAxios.onGet('/github/api/is_syncing_account').reply(200, {
       is_syncing_account: true,
