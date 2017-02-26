@@ -31,14 +31,14 @@ export default {
 
   <template v-if="isSyncingAccount">
     <p><button disable class="btn btn-warning">Syncing account</button></p>
-    <p>Please refresh the page after some time...</p>
+    <p>Please wait the page will be refreshed automatically...</p>
   </template>
 
   <template v-else>
     <div style="margin-bottom: 30px" class="row">
       <div style="float: right">
         <span> Refresh your organizations and repositories</span>
-        <a href="/github/sync" class="btn btn-primary" style="width:120px;">Sync account</a>
+        <a href="/github/sync" class="btn btn-primary">Sync account</a>
       </div>
     </div>
     <template v-if="repos && repos.length">

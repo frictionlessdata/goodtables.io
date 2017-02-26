@@ -61,7 +61,7 @@ describe('GithubSettings', () => {
     mockAxios.reset()
     mockAxios.onGet('/github/api/is_syncing_account').reply(200, {
       is_syncing_account: true,
-    });
+    })
     const wrapper = mount(GithubSettings)
     setTimeout(() => {
       wrapper.text().should.include('Syncing account')
