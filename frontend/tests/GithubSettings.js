@@ -2,6 +2,7 @@ import axios from 'axios'
 import {should} from 'chai'
 import {mount} from 'avoriaz'
 import AxiosMockAdapter from 'axios-mock-adapter'
+import Messages from '../components/Messages.vue'
 import GithubSettings from '../components/GithubSettings.vue'
 should()
 
@@ -44,27 +45,29 @@ describe('GithubSettings', () => {
     const propsData = {repos: []}
     const wrapper = mount(GithubSettings, {propsData})
     setTimeout(() => {
-      wrapper.find('[href="/github/sync"]')[0].text().should.equal('Sync account')
+      wrapper.find('.btn')[0].text().should.equal('Sync account')
       done()
     })
   })
 
-  it('should not show syncing account', (done) => {
+  it('should not have syncing account message', (done) => {
     const wrapper = mount(GithubSettings)
     setTimeout(() => {
-      wrapper.text().should.not.include('Syncing account')
+      wrapper.find(Messages).should.has.length(0)
       done()
     })
   })
 
-  it('should show syncing account on syncing', (done) => {
+  it('should have syncing account message on syncing', (done) => {
     mockAxios.reset()
     mockAxios.onGet('/github/api/is_syncing_account').reply(200, {
       is_syncing_account: true,
     })
     const wrapper = mount(GithubSettings)
     setTimeout(() => {
-      wrapper.text().should.include('Syncing account')
+      wrapper.find(Messages).should.has.length(1)
+      wrapper.find(Messages)[0].propsData().messages
+        .should.deep.equal([['warning', 'Syncing account. Please wait..']])
       done()
     })
   })
