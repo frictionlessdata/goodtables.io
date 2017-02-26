@@ -39,6 +39,9 @@ test-unit-backend: ## Run the unit tests for the backend app
 test-unit-frontend: ## Run the unit tests for the frontend app
 	NODE_ENV=testing karma start
 
+test-unit-frontend-watch: ## Run the unit tests for the frontend app
+	NODE_ENV=testing karma start --auto-watch --no-single-run
+
 test-unit: test-unit-backend test-unit-frontend ## Run all tests
 
 test-e2e: ## Run end to end tests
