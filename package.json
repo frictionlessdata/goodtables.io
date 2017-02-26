@@ -4,11 +4,13 @@
   "description": "Continuous data validation, as a service.",
   "license": "AGPL-3.0",
   "dependencies": {
+    "axios": "^0.15.3",
     "vue": "^2.1.0"
   },
   "devDependencies": {
     "autoprefixer": "^6.7.2",
     "avoriaz": "^1.6.0",
+    "axios-mock-adapter": "^1.7.1",
     "babel-core": "^6.0.0",
     "babel-eslint": "^7.1.1",
     "babel-loader": "^6.0.0",

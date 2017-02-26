@@ -1,14 +1,25 @@
 <script>
+import axios from 'axios'
+
 export default {
   name: 'GithubSettings',
   props: {
-    sync: Boolean,
     repos: Array,
   },
-  data: () => {
+  data() {
     return {
       isSyncingAccount: false,
     }
+  },
+  created() {
+    axios.get('/github/api/is_syncing_account')
+      .then(res => {
+        console.log(res)
+        this.isSyncingAccount = res.data.is_syncing_account
+      })
+      .catch(err => {
+        console.log(err)
+      })
   },
 }
 </script>
