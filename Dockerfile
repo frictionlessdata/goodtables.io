@@ -21,11 +21,11 @@ RUN apk add --no-cache --virtual build-dependencies \
     postgresql-dev \
     libpng-dev \
     libjpeg-turbo-dev \
-    libxml2-dev \
-    libxslt-dev \
     libffi-dev \
  && apk add --no-cache --update \
     libstdc++ \
+    libxml2-dev \
+    libxslt-dev \
     python3 \
     bzip2 \
     bash \
