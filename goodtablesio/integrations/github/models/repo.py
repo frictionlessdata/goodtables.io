@@ -7,6 +7,13 @@ class GithubRepo(Source):
         'polymorphic_identity': 'github'
     }
 
+    def to_api(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'active': self.active,
+        }
+
     @property
     def url(self):
 

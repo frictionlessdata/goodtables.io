@@ -13,6 +13,8 @@ pytestmark = pytest.mark.usefixtures('session_cleanup')
 # TODO: this test should not rely on external HTTP calls to GitHub
 
 
+# Tests
+
 @patch('goodtablesio.integrations.github.utils.status.set_commit_status')
 def test_create_job(set_commit_status, client, celery_app):
 
@@ -28,16 +30,60 @@ def test_create_job(set_commit_status, client, celery_app):
         },
         'head_commit': {'id': 'd5be243487d9882d7f762e7fa04b36b900164a59'},
     })
-    sig = create_signature(settings.GITHUB_HOOK_SECRET, data)
-    res = client.post(
+    signature = create_signature(settings.GITHUB_HOOK_SECRET, data)
+    response = client.post(
         '/github/hook',
-        headers={'X-Hub-Signature': sig},
+        headers={'X-Hub-Signature': signature},
         content_type='application/json',
         data=data)
-    job_id = json.loads(res.get_data(as_text=True))['job_id']
+    job_id = get_response_data(response)['job_id']
     job = models.job.get(job_id)
     assert job['id'] == job_id
     assert job['created']
     assert job['finished']
     assert job['status'] == 'failure'
     assert job['report']
+
+
+def test_api_repo_list(client):
+    user = factories.User(github_oauth_token='token')
+    repo1 = factories.GithubRepo(name='name1', users=[user])
+    repo2 = factories.GithubRepo(name='name2', users=[user])
+    with client.session_transaction() as session:
+        session['user_id'] = user.id
+    response = client.get('/github/api/repo')
+    assert response.status_code == 200
+    assert get_response_data(response) == {
+        'repos': [
+            {'id': repo1.id, 'name': repo1.name, 'active': repo1.active},
+            {'id': repo2.id, 'name': repo2.name, 'active': repo2.active},
+        ],
+        'syncing': False,
+        'error': None,
+    }
+
+
+def test_api_repo(client):
+    user = factories.User(github_oauth_token='token')
+    repo1 = factories.GithubRepo(name='name1', users=[user])
+    response = client.get('/github/api/repo/%s' % repo1.id)
+    assert response.status_code == 200
+    assert get_response_data(response) == {
+        'repo': {'id': repo1.id, 'name': repo1.name, 'active': repo1.active},
+        'error': None,
+    }
+
+
+def test_api_repo_not_found(client):
+    response = client.get('/github/api/repo/not-found')
+    assert response.status_code == 404
+    assert get_response_data(response) == {
+        'repo': None,
+        'error': 'Not Found',
+    }
+
+
+# Helpers
+
+def get_response_data(response):
+    return json.loads(response.get_data(as_text=True))

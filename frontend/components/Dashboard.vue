@@ -8,7 +8,7 @@ export default {
     s3Jobs: Array,
   },
   components: {
-    'app-job-list': JobList,
+    JobList,
   },
 }
 </script>
@@ -28,7 +28,7 @@ export default {
   </div>
 
   <template v-if="githubJobs.length">
-    <app-job-list :jobs="githubJobs" />
+    <JobList :jobs="githubJobs" />
     <div style="margin-top: 20px"><a href="/github">Show more</a></div>
   </template>
 
@@ -47,7 +47,7 @@ export default {
   </div>
 
   <template v-if="s3Jobs.length">
-    <app-job-list :jobs="s3Jobs" />
+    <JobList :jobs="s3Jobs" />
     <div style="margin-top: 20px"><a href="/s3">Show more</a></div>
   </template>
 

@@ -43,8 +43,7 @@ rules:
     - error
     - except-parens
   arrow-parens:
-    - error
-    - as-needed
+    - off
   no-underscore-dangle:
     - off
   class-methods-use-this:

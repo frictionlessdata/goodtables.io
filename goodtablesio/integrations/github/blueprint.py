@@ -82,46 +82,9 @@ def github_repo(org, repo):
 @github.route('/settings')
 @login_required
 def github_settings():
-
-    # Get github syncing status
-    sync = False
-    if session.get('github_sync_task_id'):
-        task_id = session['github_sync_task_id']
-        result = sync_user_repos.AsyncResult(task_id)
-        if result.status == 'PENDING':
-            sync = True
-        else:
-            # TODO: cover errors
-            del session['github_sync_task_id']
-
-    # Get github repos
-    repos = []
-    if not sync:
-        user_id = session.get('user_id')
-        if user_id:
-            repos = (database['session'].query(GithubRepo).
-                     filter(GithubRepo.users.any(id=user_id)).
-                     order_by(GithubRepo.active.desc(),
-                              GithubRepo.name).
-                     all())
-
     return render_component('GithubSettings', props={
         'userName': getattr(current_user, 'display_name', None),
-        'sync': sync,
-        'repos': [repo.to_dict() for repo in repos],
     })
-
-
-@github.route('/sync')
-@login_required
-def sync():
-
-    result = sync_user_repos.delay(current_user.id)
-    # TODO: store in the database (not session)
-    # It's kinda general problem it looks like we need
-    # to track syncing tasks in the database (github, s3, etc)
-    session['github_sync_task_id'] = result.task_id
-    return redirect(url_for('github.github_settings'))
 
 
 @github.route('/activate/<repo_id>')
@@ -235,3 +198,70 @@ def create_job():
     tasks_chain.delay()
 
     return jsonify({'job_id': job_id})
+
+
+# API
+
+# TODO:
+# it should be synced with general
+# approach we use for API (see api blueprint)
+
+@github.route('/api/sync_account')
+@login_required
+def api_sync_account():
+    error = None
+    try:
+        user_id = session['user_id']
+        result = sync_user_repos.delay(user_id)
+        # TODO: store in the database (not session)
+        # It's kinda general problem it looks like we need
+        # to track syncing tasks in the database (github, s3, etc)
+        session['github_sync_task_id'] = result.task_id
+    except Exception as exception:
+        log.exception(exception)
+        error = 'Sync account error'
+    return jsonify({
+        'error': error,
+    })
+
+
+@github.route('/api/repo')
+@login_required
+def api_repo_list():
+    error = None
+    repos = (
+        database['session'].query(GithubRepo).
+        filter(GithubRepo.users.any(id=current_user.id)).
+        order_by(GithubRepo.active.desc(), GithubRepo.name).
+        all())
+    repos = [repo.to_api() for repo in repos]
+    syncing = False
+    if session.get('github_sync_task_id'):
+        task_id = session['github_sync_task_id']
+        result = sync_user_repos.AsyncResult(task_id)
+        if result.status == 'PENDING':
+            syncing = True
+        else:
+            # TODO: cover errors
+            del session['github_sync_task_id']
+    return jsonify({
+        'repos': repos,
+        'syncing': syncing,
+        'error': error,
+    })
+
+
+@github.route('/api/repo/<repo_id>')
+def api_repo(repo_id):
+    try:
+        code = 200
+        repo = database['session'].query(GithubRepo).get(repo_id).to_api()
+        error = None
+    except Exception:
+        code = 404
+        repo = None
+        error = 'Not Found'
+    return (jsonify({
+        'repo': repo,
+        'error': error,
+    }), code)

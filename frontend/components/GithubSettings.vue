@@ -1,50 +1,97 @@
 <script>
+import axios from 'axios'
+import Messages from './Messages.vue'
+
 export default {
   name: 'GithubSettings',
-  props: {
-    sync: Boolean,
-    repos: Array,
+  components: {
+    Messages,
+  },
+  data() {
+    return {
+      ready: false,
+      error: null,
+      syncing: false,
+      repos: [],
+    }
+  },
+  methods: {
+    updateRepos() {
+      axios.get('/github/api/repo')
+        .then(res => {
+          this.ready = true
+          this.error = res.data.error
+          this.syncing = res.data.syncing
+          this.repos = res.data.repos
+        })
+    },
+    syncAccount() {
+      if (this.syncing) return
+      axios.get('/github/api/sync_account')
+        .then(res => {
+          this.error = res.data.error
+          if (!this.error) {
+            this.syncing = true
+            const interval = setInterval(() => {
+              this.updateRepos()
+              if (!this.syncing) {
+                clearInterval(interval)
+              }
+            }, 3000)
+          }
+        })
+    },
+  },
+  created() {
+    this.updateRepos()
   },
 }
 </script>
 
 <template>
-<div class="container">
+<div>
 
-  <h1>GitHub</h1>
+  <Messages v-if="error" :messages="[['danger', error]]" />
+  <Messages v-if="syncing" :messages="[['warning', 'Syncing account. Please wait..']]" />
 
-  <p>GitHub integration description</p>
+  <div class="container">
 
-  <h2>Repos</h2>
+    <h1>GitHub</h1>
 
-  <template v-if="sync">
-    <p><button disable class="btn btn-warning">Syncing account</button></p>
-    <p>Please refresh the page after some time...</p>
-  </template>
+    <p>GitHub integration description</p>
 
-  <template v-else>
+    <h2>Repos</h2>
+
+    <div class="sync">
+      <span> Refresh your organizations and repositories</span>
+      <button @click="syncAccount()" :disabled="!ready || syncing" class="btn btn-primary">Sync account</button>
+    </div>
+
     <template v-if="repos && repos.length">
-      <div style="margin-bottom: 30px" class="row">
-        <div style="float: right">
-          <span> Refresh your organizations and repositories</span>
-          <a href="/github/sync" class="btn btn-primary" style="width:120px;">Sync account</a>
-        </div>
-      </div>
-      <div v-for="repo of repos" class="row" >
+      <div v-for="repo of repos" class="repo">
         <a v-if="repo.active" :href="`/github/deactivate/${repo.id}`" class="btn btn-success">Deactivate</a>
         <a v-else :href="`/github/activate/${repo.id}`" class="btn btn-danger">Activate</a>
         {{ repo.name }} (<a :href="`https://github.com/${repo.name}`">repo</a>)
         <a v-if="repo.active" :href="`/github/repo/${repo.name}`">View jobs</a>
       </div>
     </template>
+    <p v-else-if="!ready" class="empty">Loading repos. Please wait..</p>
     <p v-else class="empty">There are no synced repositories</p>
-  </template>
+
+  </div>
 
 </div>
 </template>
 
 <style scoped>
-.row {
+.sync {
+  margin-bottom: 10px;
+  border-bottom: solid 1px #eee;
+  padding-bottom: 10px;
+  text-align: right;
+}
+
+.repo {
   border-bottom: solid 1px #eee;
   padding: 5px 0;
 }
