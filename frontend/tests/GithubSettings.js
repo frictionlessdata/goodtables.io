@@ -131,12 +131,12 @@ describe('GithubSettings', () => {
       wrapper.find(Messages)[0].propsData().messages
         .should.deep.equal([['warning', 'Syncing account. Please wait..']])
       done()
-    }, 500)
+    }, 2000)
     setTimeout(() => {
       wrapper.text().should.include('name1')
       wrapper.text().should.include('name2')
       done()
-    }, 1500)
+    }, 4000)
   })
 
 })

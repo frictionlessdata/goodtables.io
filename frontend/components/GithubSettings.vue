@@ -37,7 +37,7 @@ export default {
               if (!this.syncing) {
                 clearInterval(interval)
               }
-            }, 1000)
+            }, 3000)
           }
         })
     },
