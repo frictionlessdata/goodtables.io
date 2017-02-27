@@ -43,7 +43,7 @@ describe('GithubSettings', () => {
   it('should have sync account button', (done) => {
     const wrapper = mount(GithubSettings)
     setTimeout(() => {
-      wrapper.find('.sync>.btn')[0].text().should.equal('Sync account')
+      wrapper.find('.sync>.btn')[0].text().should.include('Sync account')
       done()
     })
   })

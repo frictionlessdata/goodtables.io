@@ -15,7 +15,7 @@ pytestmark = pytest.mark.usefixtures('session_cleanup')
 
 # Tests
 
-@patch('goodtablesio.integrations.github.utils.status.set_commit_status')
+@patch('goodtablesio.integrations.github.blueprint.set_commit_status')
 def test_create_job(set_commit_status, client, celery_app):
 
     # TODO: refactor to not use actual calls!
