@@ -97,6 +97,20 @@ def test_api_repo_activate(activate_hook, client):
     }
 
 
+@patch('goodtablesio.integrations.github.blueprint.deactivate_hook')
+def test_api_repo_deactivate(deactivate_hook, client):
+    user = factories.User(github_oauth_token='token')
+    repo = factories.GithubRepo(name='owner/repo', users=[user])
+    with client.session_transaction() as session:
+        session['user_id'] = user.id
+    response = client.get('/github/api/repo/%s/deactivate' % repo.id)
+    deactivate_hook.assert_called_with('token', 'owner', 'repo')
+    assert response.status_code == 200
+    assert get_response_data(response) == {
+        'error': None,
+    }
+
+
 # Helpers
 
 def get_response_data(response):
