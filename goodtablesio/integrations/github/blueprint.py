@@ -2,10 +2,7 @@ import uuid
 import logging
 
 from celery import chain
-from flask import (
-    Blueprint, request, abort, session, jsonify, redirect,
-    url_for, flash
-)
+from flask import Blueprint, request, abort, session, jsonify
 from flask_login import login_required, current_user
 
 from goodtablesio import models, settings
@@ -85,46 +82,6 @@ def github_settings():
     return render_component('GithubSettings', props={
         'userName': getattr(current_user, 'display_name', None),
     })
-
-
-@github.route('/activate/<repo_id>')
-@login_required
-def activate(repo_id):
-
-    token = current_user.github_oauth_token
-    if not token:
-        flash('No valid GitHub token found', 'danger')
-        return redirect(url_for('github.github_settings'))
-
-    repo = database['session'].query(GithubRepo).get(repo_id)
-    try:
-        activate_hook(token, repo.owner, repo.repo)
-        repo.active = True
-        database['session'].commit()
-    except Exception as exception:
-        log.exception(exception)
-        abort(400)
-    return redirect(url_for('github.github_settings'))
-
-
-@github.route('/deactivate/<repo_id>')
-@login_required
-def deactivate(repo_id):
-
-    token = current_user.github_oauth_token
-    if not token:
-        flash('No valid GitHub token found', 'danger')
-        return redirect(url_for('github.github_settings'))
-
-    repo = database['session'].query(GithubRepo).get(repo_id)
-    try:
-        deactivate_hook(token, repo.owner, repo.repo)
-        repo.active = False
-        database['session'].commit()
-    except Exception as exception:
-        log.exception(exception)
-        abort(400)
-    return redirect(url_for('github.github_settings'))
 
 
 @github.route('/hook', methods=['POST'])
@@ -265,3 +222,43 @@ def api_repo(repo_id):
         'repo': repo,
         'error': error,
     }), code)
+
+
+@github.route('/api/repo/<repo_id>/activate')
+@login_required
+def api_activate(repo_id):
+    error = None
+    token = current_user.github_oauth_token
+    if not token:
+        error = 'No valid GitHub token found'
+    repo = database['session'].query(GithubRepo).get(repo_id)
+    try:
+        activate_hook(token, repo.owner, repo.repo)
+        repo.active = True
+        database['session'].commit()
+    except Exception as exception:
+        log.exception(exception)
+        error = 'Repo activation error'
+    return jsonify({
+        'error': error,
+    })
+
+
+@github.route('/api/repo/<repo_id>/deactivate')
+@login_required
+def api_deactivate(repo_id):
+    error = None
+    token = current_user.github_oauth_token
+    if not token:
+        error = 'No valid GitHub token found'
+    repo = database['session'].query(GithubRepo).get(repo_id)
+    try:
+        deactivate_hook(token, repo.owner, repo.repo)
+        repo.active = False
+        database['session'].commit()
+    except Exception as exception:
+        log.exception(exception)
+        error = 'Repo deactivation error'
+    return jsonify({
+        'error': error,
+    })

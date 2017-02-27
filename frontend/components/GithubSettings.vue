@@ -41,6 +41,31 @@ export default {
           }
         })
     },
+    activateRepo(repoId) {
+      axios.get(`/github/api/repo/${repoId}/activate`)
+        .then(res => {
+          this.error = res.data.error
+          if (!this.error) {
+            this.changeRepoActiveStatus(repoId, true)
+          }
+        })
+    },
+    deactivateRepo(repoId) {
+      axios.get(`/github/api/repo/${repoId}/deactivate`)
+        .then(res => {
+          this.error = res.data.error
+          if (!this.error) {
+            this.changeRepoActiveStatus(repoId, false)
+          }
+        })
+    },
+    changeRepoActiveStatus(repoId, active) {
+      this.repos.forEach((repo) => {
+        if (repo.id === repoId) {
+          repo.active = active
+        }
+      })
+    },
   },
   created() {
     this.updateRepos()
@@ -64,14 +89,21 @@ export default {
 
     <div class="sync">
       <span> Refresh your organizations and repositories</span>
-      <button @click="syncAccount()" :disabled="!ready || syncing" class="btn btn-primary">Sync account</button>
+      <button @click="syncAccount()" :disabled="!ready || syncing" class="btn btn-primary">
+        Sync account
+      </button>
     </div>
 
     <template v-if="repos && repos.length">
       <div v-for="repo of repos" class="repo">
-        <a v-if="repo.active" :href="`/github/deactivate/${repo.id}`" class="btn btn-success">Deactivate</a>
-        <a v-else :href="`/github/activate/${repo.id}`" class="btn btn-danger">Activate</a>
-        {{ repo.name }} (<a :href="`https://github.com/${repo.name}`">repo</a>)
+        <button v-if="repo.active" @click="deactivateRepo(repo.id)" class="btn btn-success">
+          Deactivate
+        </button>
+        <button v-else @click="activateRepo(repo.id)" class="btn btn-danger">
+          Activate
+        </button>
+        {{ repo.name }}
+        (<a :href="`https://github.com/${repo.name}`">repo</a>)
         <a v-if="repo.active" :href="`/github/repo/${repo.name}`">View jobs</a>
       </div>
     </template>
