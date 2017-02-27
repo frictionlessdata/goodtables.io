@@ -226,7 +226,7 @@ def api_repo(repo_id):
 
 @github.route('/api/repo/<repo_id>/activate')
 @login_required
-def api_activate(repo_id):
+def api_repo_activate(repo_id):
     error = None
     token = current_user.github_oauth_token
     if not token:
@@ -246,7 +246,7 @@ def api_activate(repo_id):
 
 @github.route('/api/repo/<repo_id>/deactivate')
 @login_required
-def api_deactivate(repo_id):
+def api_repo_deactivate(repo_id):
     error = None
     token = current_user.github_oauth_token
     if not token:

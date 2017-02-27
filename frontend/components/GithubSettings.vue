@@ -41,30 +41,23 @@ export default {
           }
         })
     },
-    activateRepo(repoId) {
-      axios.get(`/github/api/repo/${repoId}/activate`)
+    activateRepo(repo) {
+      axios.get(`/github/api/repo/${repo.id}/activate`)
         .then(res => {
           this.error = res.data.error
           if (!this.error) {
-            this.changeRepoActiveStatus(repoId, true)
+            repo.active = true
           }
         })
     },
-    deactivateRepo(repoId) {
-      axios.get(`/github/api/repo/${repoId}/deactivate`)
+    deactivateRepo(repo) {
+      axios.get(`/github/api/repo/${repo.id}/deactivate`)
         .then(res => {
           this.error = res.data.error
           if (!this.error) {
-            this.changeRepoActiveStatus(repoId, false)
+            repo.active = false
           }
         })
-    },
-    changeRepoActiveStatus(repoId, active) {
-      this.repos.forEach((repo) => {
-        if (repo.id === repoId) {
-          repo.active = active
-        }
-      })
     },
   },
   created() {
@@ -96,10 +89,10 @@ export default {
 
     <template v-if="repos && repos.length">
       <div v-for="repo of repos" class="repo">
-        <button v-if="repo.active" @click="deactivateRepo(repo.id)" class="btn btn-success">
+        <button v-if="repo.active" @click="deactivateRepo(repo)" class="btn btn-success">
           Deactivate
         </button>
-        <button v-else @click="activateRepo(repo.id)" class="btn btn-danger">
+        <button v-else @click="activateRepo(repo)" class="btn btn-danger">
           Activate
         </button>
         {{ repo.name }}

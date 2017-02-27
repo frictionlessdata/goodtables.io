@@ -65,11 +65,11 @@ def test_api_repo_list(client):
 
 def test_api_repo(client):
     user = factories.User(github_oauth_token='token')
-    repo1 = factories.GithubRepo(name='name1', users=[user])
-    response = client.get('/github/api/repo/%s' % repo1.id)
+    repo = factories.GithubRepo(name='name', users=[user])
+    response = client.get('/github/api/repo/%s' % repo.id)
     assert response.status_code == 200
     assert get_response_data(response) == {
-        'repo': {'id': repo1.id, 'name': repo1.name, 'active': repo1.active},
+        'repo': {'id': repo.id, 'name': repo.name, 'active': repo.active},
         'error': None,
     }
 
@@ -80,6 +80,20 @@ def test_api_repo_not_found(client):
     assert get_response_data(response) == {
         'repo': None,
         'error': 'Not Found',
+    }
+
+
+@patch('goodtablesio.integrations.github.blueprint.activate_hook')
+def test_api_repo_activate(activate_hook, client):
+    user = factories.User(github_oauth_token='token')
+    repo = factories.GithubRepo(name='owner/repo', users=[user])
+    with client.session_transaction() as session:
+        session['user_id'] = user.id
+    response = client.get('/github/api/repo/%s/activate' % repo.id)
+    activate_hook.assert_called_with('token', 'owner', 'repo')
+    assert response.status_code == 200
+    assert get_response_data(response) == {
+        'error': None,
     }
 
 
