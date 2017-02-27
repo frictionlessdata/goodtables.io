@@ -64,7 +64,7 @@ export default {
 
     <div class="sync">
       <span> Refresh your organizations and repositories</span>
-      <a @click="syncAccount()" class="btn btn-primary">Sync account</a>
+      <button @click="syncAccount()" :disabled="!ready || syncing" class="btn btn-primary">Sync account</button>
     </div>
 
     <template v-if="repos && repos.length">
