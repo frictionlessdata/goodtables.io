@@ -10,22 +10,10 @@ class S3Bucket(Source):
         'polymorphic_identity': 's3'
     }
 
-    def _get_encrypted(self, key):
-        token = self.conf.get(key)
-        if token:
-            try:
-                token = decrypt_string(token)
-            except cryptography.fernet.InvalidToken:
-                # This happens if someone sets the key directly
-                # on the conf property (ie it should never happen)
-                token = None
-
-        return token
-
-    def _set_encrypted(self, key, value):
-        if not self.conf:
-            self.conf = {}
-        self.conf[key] = encrypt_string(value)
+    def to_api(self):
+        return {
+            'name': self.name,
+        }
 
     @property
     def access_key_id(self):
@@ -50,3 +38,22 @@ class S3Bucket(Source):
     @secret_access_key.deleter
     def secret_access_key(self):
         del self.conf['secret_access_key']
+
+    # Private
+
+    def _get_encrypted(self, key):
+        token = self.conf.get(key)
+        if token:
+            try:
+                token = decrypt_string(token)
+            except cryptography.fernet.InvalidToken:
+                # This happens if someone sets the key directly
+                # on the conf property (ie it should never happen)
+                token = None
+
+        return token
+
+    def _set_encrypted(self, key, value):
+        if not self.conf:
+            self.conf = {}
+        self.conf[key] = encrypt_string(value)

@@ -39,84 +39,9 @@ def index():
 @s3.route('/settings')
 @login_required
 def s3_settings():
-    buckets = get_user_buckets(current_user.id)
     return render_component('S3Settings', props={
         'userName': getattr(current_user, 'display_name', None),
-        'buckets': [{'name': bucket.name} for bucket in buckets],
     })
-
-
-@s3.route('/settings/add_bucket', methods=['POST'])
-@login_required
-def add_bucket():
-
-    # Get params and validate them
-
-    access_key_id = request.form.get('access-key-id')
-    secret_access_key = request.form.get('secret-access-key')
-    bucket_name = request.form.get('bucket-name')
-
-    if not access_key_id or not secret_access_key or not bucket_name:
-        flash('Missing fields', 'danger')
-    else:
-
-        source = database['session'].query(S3Bucket).filter(
-            S3Bucket.name == bucket_name).one_or_none()
-        if source and source.active:
-            flash('Bucket already exists', 'danger')
-            return redirect(url_for('s3.s3_settings'))
-
-        success, message = set_up_bucket_on_aws(
-            access_key_id, secret_access_key, bucket_name)
-
-        # Redirect and flash message
-        if success:
-
-            create_bucket(bucket_name, access_key_id, secret_access_key,
-                          user=current_user)
-
-            flash('Bucket added', 'success')
-        else:
-            flash('Error setting up bucket integration. {0}'.format(message),
-                  'danger')
-
-    return redirect(url_for('s3.s3_settings'))
-
-
-@s3.route('/settings/remove_bucket/<bucket_name>')
-@login_required
-def remove_bucket(bucket_name):
-
-    # Get params and validate them
-    source = database['session'].query(S3Bucket).filter(
-        S3Bucket.name == bucket_name).one_or_none()
-    if not source:
-        flash('Unknown bucket', 'danger')
-
-    else:
-
-        success, message = disable_bucket_on_aws(
-            source.access_key_id, source.secret_access_key, bucket_name)
-
-        # Redirect and flash message
-        if success:
-
-            inactivate_bucket(bucket_name)
-
-            flash('Bucket removed', 'success')
-        else:
-            flash('Error removing bucket integration. {0}'.format(message),
-                  'danger')
-
-    return redirect(url_for('s3.s3_settings'))
-
-
-def _run_validation(bucket, job_id):
-    # Run validation
-    tasks_chain = chain(
-        get_validation_conf.s(bucket, job_id=job_id),
-        validate.s(job_id=job_id))
-    tasks_chain.delay()
 
 
 @s3.route('/hook', methods=['POST'])
@@ -170,3 +95,129 @@ def create_job():
     _run_validation(bucket, job_id)
 
     return jsonify({'job_id': job_id})
+
+
+# API
+
+# TODO:
+# it should be synced with general
+# approach we use for API (see api blueprint)
+
+@s3.route('/api/bucket')
+@login_required
+def api_bucket_list():
+    error = None
+    buckets = get_user_buckets(current_user.id)
+    buckets = [bucket.to_api() for bucket in buckets]
+    return jsonify({
+        'buckets': buckets,
+        'error': error,
+    })
+
+
+@s3.route('/api/bucket/<bucket_name>')
+@login_required
+def api_bucket(bucket_name):
+    try:
+        code = 200
+        buckets = get_user_buckets(current_user.id)
+        bucket = filter(lambda bucket: bucket.name == bucket_name, buckets)[0].to_api()
+        error = None
+    except Exception:
+        code = 404
+        repo = None
+        error = 'Not Found'
+    return (jsonify({
+        'repo': repo,
+        'error': error,
+    }), code)
+
+
+@s3.route('/api/bucket', methods=['POST'])
+@login_required
+def api_bucket_add():
+    error = None
+    payload = request.get_json()
+    access_key_id = payload.get('access-key-id')
+    secret_access_key = payload.get('secret-access-key')
+    bucket_name = payload.get('bucket-name')
+
+    # Check input fields
+    if not access_key_id or not secret_access_key or not bucket_name:
+        error = 'Missing fields'
+
+    # Get bucket
+    if not error:
+        source = database['session'].query(S3Bucket).filter(
+            S3Bucket.name == bucket_name).one_or_none()
+        if source and source.active:
+            error = 'Bucket already exists'
+
+    # Setup bucket on aws
+    if not error:
+        try:
+            # TODO: catch all errors inside util function
+            success, message = set_up_bucket_on_aws(
+                access_key_id, secret_access_key, bucket_name)
+            if not success:
+                error = 'Error setting up bucket integration. {0}'.format(message)
+        except Exception:
+            error = 'Error setting up bucket integration'
+
+    # Create bucket in db
+    if not error:
+        try:
+            create_bucket(
+                bucket_name, access_key_id,
+                secret_access_key, user=current_user)
+        except Exception:
+            error = 'Internal error'
+
+    return jsonify({
+        'error': error,
+    })
+
+
+# TODO: for s3 we could have the same concept as for github - activate/deactive
+@s3.route('/api/bucket/<bucket_name>/remove')
+@login_required
+def api_bucket_remove(bucket_name):
+    error = None
+
+    # Get bucket
+    source = database['session'].query(S3Bucket).filter(
+        S3Bucket.name == bucket_name).one_or_none()
+    if not source:
+        error = 'Unknown bucket'
+
+    # Disable bucket on aws
+    if not error:
+        try:
+            # TODO: catch all errors inside util function
+            success, message = disable_bucket_on_aws(
+                source.access_key_id, source.secret_access_key, bucket_name)
+            if not success:
+                error = 'Error removing bucket integration. {0}'.format(message)
+        except Exception:
+            error = 'Error removing bucket integration'
+
+    # Inactivate bucket in db
+    if not error:
+        try:
+            inactivate_bucket(bucket_name)
+        except Exception:
+            error = 'Internal error'
+
+    return jsonify({
+        'error': error,
+    })
+
+
+# Internal
+
+def _run_validation(bucket, job_id):
+    # Run validation
+    tasks_chain = chain(
+        get_validation_conf.s(bucket, job_id=job_id),
+        validate.s(job_id=job_id))
+    tasks_chain.delay()
