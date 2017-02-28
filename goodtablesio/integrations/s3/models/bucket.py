@@ -12,7 +12,9 @@ class S3Bucket(Source):
 
     def to_api(self):
         return {
+            'id': self.id,
             'name': self.name,
+            'active': self.active,
         }
 
     @property

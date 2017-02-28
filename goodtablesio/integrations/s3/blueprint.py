@@ -121,14 +121,14 @@ def api_bucket(bucket_name):
     try:
         code = 200
         buckets = get_user_buckets(current_user.id)
-        bucket = filter(lambda bucket: bucket.name == bucket_name, buckets)[0].to_api()
+        bucket = [item for item in buckets if item.name == bucket_name][0].to_api()
         error = None
     except Exception:
         code = 404
-        repo = None
+        bucket = None
         error = 'Not Found'
     return (jsonify({
-        'repo': repo,
+        'bucket': bucket,
         'error': error,
     }), code)
 
