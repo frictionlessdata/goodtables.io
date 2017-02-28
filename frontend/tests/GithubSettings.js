@@ -139,7 +139,8 @@ describe('GithubSettings', () => {
     }, 4000)
   })
 
-  // TODO: It can't find elements after repos loading - avoriaz bug?
+  // TODO: recover this test after:
+  // https://github.com/eddyerburgh/avoriaz/issues/6
   it.skip('should work on activate/deactivate repo click', (done) => {
     mockAxios.reset()
     mockAxios.onGet('/github/api/repo').reply(200, {
