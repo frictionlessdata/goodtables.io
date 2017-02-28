@@ -1,7 +1,7 @@
 import uuid
 import logging
 
-from flask import Blueprint, flash, request, redirect, url_for, abort, jsonify
+from flask import Blueprint, request, abort, jsonify
 from flask_login import login_required, current_user
 from celery import chain
 
