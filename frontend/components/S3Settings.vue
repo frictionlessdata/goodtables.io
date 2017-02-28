@@ -83,7 +83,7 @@ export default {
 
     <h2>Add Bucket</h2>
 
-    <form>
+    <form @submit.prevent="addBucket()">
       <div class="form-group">
         <label for="access-key-id">Access Key Id</label>
         <input v-model="accessKeyId" type="text" class="form-control" id="access-key-id" />
@@ -96,7 +96,7 @@ export default {
         <label for="bucket-name">Bucket Name</label>
         <input v-model="bucketName" type="text" class="form-control" id="bucket-name" />
       </div>
-      <button @click.prevent="addBucket()" class="btn btn-default">Submit</button>
+      <button type="submit" class="btn btn-default">Submit</button>
     </form>
 
   </div>

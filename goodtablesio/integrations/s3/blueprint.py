@@ -178,6 +178,7 @@ def api_bucket_add():
     })
 
 
+# TODO: should we use bucket_id instead of bucket_name?
 # TODO: for s3 we could have the same concept as for github - activate/deactive
 @s3.route('/api/bucket/<bucket_name>/remove')
 @login_required

@@ -57,4 +57,46 @@ describe('S3Settings', () => {
     })
   })
 
+  it('should have submit button', (done) => {
+    const wrapper = mount(S3Settings)
+    setTimeout(() => {
+      wrapper.find('button')[0].text().should.include('Submit')
+      done()
+    })
+  })
+
+  it('should add bucket after submit button click', (done) => {
+    mockAxios.onPost('/s3/api/bucket').replyOnce(200, {
+      error: null,
+    })
+    const wrapper = mount(S3Settings)
+    wrapper.vm.bucketName = 'bucket-name'
+    wrapper.find('button')[0].simulate('click')
+    setTimeout(() => {
+      wrapper.text().should.include('bucket-name')
+      done()
+    })
+  })
+
+  it('should show error on submit button click error ', (done) => {
+    mockAxios.onPost('/s3/api/bucket').replyOnce(200, {
+      error: 'Bucket error',
+    })
+    const wrapper = mount(S3Settings)
+    wrapper.vm.bucketName = 'bucket-name'
+    wrapper.find('button')[0].simulate('click')
+    setTimeout(() => {
+      wrapper.find(Messages).should.has.length(1)
+      wrapper.find(Messages)[0].propsData().messages
+        .should.deep.equal([['danger', 'Bucket error']])
+      done()
+    })
+  })
+
+  // TODO: write this test after:
+  // https://github.com/eddyerburgh/avoriaz/issues/6
+  it.skip('should remove bucket after remove button click', (done) => {
+    // ...
+  })
+
 })
