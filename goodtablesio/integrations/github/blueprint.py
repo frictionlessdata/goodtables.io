@@ -182,16 +182,43 @@ def api_sync_account():
     })
 
 
+@github.route('/api/repo/<repo_id>')
+@login_required
+def api_repo(repo_id):
+    error = None
+    repo_data = None
+
+    # Get repo
+    try:
+        repo = (database['session'].query(GithubRepo).
+            filter(GithubRepo.users.any(id=current_user.id)).
+            filter(GithubRepo.id == repo_id).
+            one())
+        repo_data = repo.to_api()
+    except Exception as exception:
+        log.exception(exception)
+        abort(403)
+
+    return jsonify({
+        'repo': repo_data,
+        'error': error,
+    })
+
+
 @github.route('/api/repo')
 @login_required
 def api_repo_list():
     error = None
+
+    # Get repos
     repos = (
         database['session'].query(GithubRepo).
         filter(GithubRepo.users.any(id=current_user.id)).
         order_by(GithubRepo.active.desc(), GithubRepo.name).
         all())
-    repos = [repo.to_api() for repo in repos]
+    repos_data = [repos.to_api() for repos in repos]
+
+    # Get syncing status
     syncing = False
     if session.get('github_sync_task_id'):
         task_id = session['github_sync_task_id']
@@ -201,44 +228,45 @@ def api_repo_list():
         else:
             # TODO: cover errors
             del session['github_sync_task_id']
+
     return jsonify({
-        'repos': repos,
+        'repos': repos_data,
         'syncing': syncing,
         'error': error,
     })
-
-
-@github.route('/api/repo/<repo_id>')
-def api_repo(repo_id):
-    try:
-        code = 200
-        repo = database['session'].query(GithubRepo).get(repo_id).to_api()
-        error = None
-    except Exception:
-        code = 404
-        repo = None
-        error = 'Not Found'
-    return (jsonify({
-        'repo': repo,
-        'error': error,
-    }), code)
 
 
 @github.route('/api/repo/<repo_id>/activate')
 @login_required
 def api_repo_activate(repo_id):
     error = None
+
+    # Get token
     token = current_user.github_oauth_token
     if not token:
         error = 'No valid GitHub token found'
-    repo = database['session'].query(GithubRepo).get(repo_id)
-    try:
-        activate_hook(token, repo.owner, repo.repo)
-        repo.active = True
-        database['session'].commit()
-    except Exception as exception:
-        log.exception(exception)
-        error = 'Repo activation error'
+
+    # Get repo
+    if not error:
+        try:
+            repo = (database['session'].query(GithubRepo).
+                filter(GithubRepo.users.any(id=current_user.id)).
+                filter(GithubRepo.id == repo_id).
+                one())
+        except Exception as exception:
+            log.exception(exception)
+            abort(403)
+
+    # Activate repo
+    if not error:
+        try:
+            activate_hook(token, repo.owner, repo.repo)
+            repo.active = True
+            database['session'].commit()
+        except Exception as exception:
+            error = 'Repo activation error'
+            log.exception(exception)
+
     return jsonify({
         'error': error,
     })
@@ -248,17 +276,33 @@ def api_repo_activate(repo_id):
 @login_required
 def api_repo_deactivate(repo_id):
     error = None
+
+    # Get token
     token = current_user.github_oauth_token
     if not token:
         error = 'No valid GitHub token found'
-    repo = database['session'].query(GithubRepo).get(repo_id)
-    try:
-        deactivate_hook(token, repo.owner, repo.repo)
-        repo.active = False
-        database['session'].commit()
-    except Exception as exception:
-        log.exception(exception)
-        error = 'Repo deactivation error'
+
+    # Get repo
+    if not error:
+        try:
+            repo = (database['session'].query(GithubRepo).
+                filter(GithubRepo.users.any(id=current_user.id)).
+                filter(GithubRepo.id == repo_id).
+                one())
+        except Exception as exception:
+            log.exception(exception)
+            abort(403)
+
+    # Deactivate repo
+    if not error:
+        try:
+            deactivate_hook(token, repo.owner, repo.repo)
+            repo.active = False
+            database['session'].commit()
+        except Exception as exception:
+            log.exception(exception)
+            error = 'Repo deactivation error'
+
     return jsonify({
         'error': error,
     })

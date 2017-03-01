@@ -24,6 +24,9 @@ export default {
           this.syncing = res.data.syncing
           this.repos = res.data.repos
         })
+        .catch(() => {
+          this.error = 'Unknown Error'
+        })
     },
     syncAccount() {
       if (this.syncing) return
@@ -40,6 +43,9 @@ export default {
             }, 3000)
           }
         })
+        .catch(() => {
+          this.error = 'Unknown Error'
+        })
     },
     activateRepo(repo) {
       axios.get(`/github/api/repo/${repo.id}/activate`)
@@ -49,6 +55,9 @@ export default {
             repo.active = true
           }
         })
+        .catch(() => {
+          this.error = 'Unknown Error'
+        })
     },
     deactivateRepo(repo) {
       axios.get(`/github/api/repo/${repo.id}/deactivate`)
@@ -57,6 +66,9 @@ export default {
           if (!this.error) {
             repo.active = false
           }
+        })
+        .catch(() => {
+          this.error = 'Unknown Error'
         })
     },
   },
