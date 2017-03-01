@@ -13,7 +13,8 @@ from goodtablesio.utils.frontend import render_component
 from goodtablesio.integrations.s3.models.bucket import S3Bucket
 from goodtablesio.integrations.s3.utils import (
     set_up_bucket_on_aws, create_bucket, get_user_buckets,
-    get_bucket_from_hook_payload, disable_bucket_on_aws, inactivate_bucket)
+    get_bucket_from_hook_payload, disable_bucket_on_aws,
+    activate_bucket, deactivate_bucket)
 from goodtablesio.integrations.s3.tasks.jobconf import get_validation_conf
 
 log = logging.getLogger(__name__)
@@ -103,40 +104,49 @@ def create_job():
 # it should be synced with general
 # approach we use for API (see api blueprint)
 
+
+@s3.route('/api/bucket/<bucket_id>')
+@login_required
+def api_bucket(bucket_id):
+    error = None
+    bucket_data = None
+
+    # Get bucket
+    try:
+        bucket = (database['session'].query(S3Bucket).
+            filter(S3Bucket.users.any(id=current_user.id)).
+            filter(S3Bucket.id == bucket_id).
+            one())
+        bucket_data = bucket.to_api()
+    except Exception as exception:
+        log.exception(exception)
+        abort(403)
+
+    return jsonify({
+        'bucket': bucket_data,
+        'error': error,
+    })
+
+
 @s3.route('/api/bucket')
 @login_required
 def api_bucket_list():
     error = None
     buckets = get_user_buckets(current_user.id)
-    buckets = [bucket.to_api() for bucket in buckets]
+    buckets_data = [bucket.to_api() for bucket in buckets]
     return jsonify({
-        'buckets': buckets,
+        'buckets': buckets_data,
         'error': error,
     })
-
-
-@s3.route('/api/bucket/<bucket_name>')
-@login_required
-def api_bucket(bucket_name):
-    try:
-        code = 200
-        buckets = get_user_buckets(current_user.id)
-        bucket = [item for item in buckets if item.name == bucket_name][0].to_api()
-        error = None
-    except Exception:
-        code = 404
-        bucket = None
-        error = 'Not Found'
-    return (jsonify({
-        'bucket': bucket,
-        'error': error,
-    }), code)
 
 
 @s3.route('/api/bucket', methods=['POST'])
 @login_required
 def api_bucket_add():
     error = None
+    bucket_data = None
+
+    # Get input fields
     payload = request.get_json()
     access_key_id = payload.get('access-key-id')
     secret_access_key = payload.get('secret-access-key')
@@ -148,66 +158,131 @@ def api_bucket_add():
 
     # Get bucket
     if not error:
-        source = database['session'].query(S3Bucket).filter(
+        bucket = database['session'].query(S3Bucket).filter(
             S3Bucket.name == bucket_name).one_or_none()
-        if source and source.active:
+        if bucket and bucket.active:
             error = 'Bucket already exists'
 
     # Setup bucket on aws
     if not error:
-        try:
-            # TODO: catch all errors inside util function
-            success, message = set_up_bucket_on_aws(
-                access_key_id, secret_access_key, bucket_name)
-            if not success:
-                error = 'Error setting up bucket integration. {0}'.format(message)
-        except Exception:
-            error = 'Error setting up bucket integration'
+        success, message = set_up_bucket_on_aws(
+            access_key_id, secret_access_key, bucket_name)
+        if not success:
+            error = 'Error setting up bucket integration. {0}'.format(message)
 
     # Create bucket in db
     if not error:
-        try:
-            create_bucket(
-                bucket_name, access_key_id,
-                secret_access_key, user=current_user)
-        except Exception:
-            error = 'Internal error'
+        bucket = create_bucket(
+            bucket_name, access_key_id,
+            secret_access_key, user=current_user)
+        bucket_data = bucket.to_api()
+
+    return jsonify({
+        'bucket': bucket_data,
+        'error': error,
+    })
+
+
+@s3.route('/api/bucket/<bucket_id>/activate')
+@login_required
+def api_bucket_activate(bucket_id):
+    error = None
+
+    # Get bucket
+    try:
+        bucket = (database['session'].query(S3Bucket).
+            filter(S3Bucket.users.any(id=current_user.id)).
+            filter(S3Bucket.id == bucket_id).
+            one())
+    except Exception as exception:
+        log.exception(exception)
+        abort(403)
+
+    # Setup bucket on aws
+    if not error:
+        success, message = set_up_bucket_on_aws(
+            bucket.access_key_id,
+            bucket.secret_access_key,
+            bucket.name)
+        if not success:
+            error = 'Error setting up bucket integration. {0}'.format(message)
+
+    # Activate bucket in db
+    if not error:
+        # TODO:
+        # here we have additional select query because
+        # we use procedural helper instead of model helper bucket.activate()
+        activate_bucket(bucket.name)
 
     return jsonify({
         'error': error,
     })
 
 
-# TODO: should we use bucket_id instead of bucket_name?
-# TODO: for s3 we could have the same concept as for github - activate/deactive
-@s3.route('/api/bucket/<bucket_name>/remove')
+@s3.route('/api/bucket/<bucket_id>/deactivate')
 @login_required
-def api_bucket_remove(bucket_name):
+def api_bucket_deactivate(bucket_id):
     error = None
 
     # Get bucket
-    source = database['session'].query(S3Bucket).filter(
-        S3Bucket.name == bucket_name).one_or_none()
-    if not source:
-        error = 'Unknown bucket'
+    try:
+        bucket = (database['session'].query(S3Bucket).
+            filter(S3Bucket.users.any(id=current_user.id)).
+            filter(S3Bucket.id == bucket_id).
+            one())
+    except Exception as exception:
+        log.exception(exception)
+        abort(403)
 
     # Disable bucket on aws
     if not error:
-        try:
-            # TODO: catch all errors inside util function
-            success, message = disable_bucket_on_aws(
-                source.access_key_id, source.secret_access_key, bucket_name)
-            if not success:
-                error = 'Error removing bucket integration. {0}'.format(message)
-        except Exception:
-            error = 'Error removing bucket integration'
+        success, message = disable_bucket_on_aws(
+            bucket.access_key_id,
+            bucket.secret_access_key,
+            bucket.name)
+        if not success:
+            error = 'Error removing bucket integration. {0}'.format(message)
 
-    # Inactivate bucket in db
+    # Deactivate bucket in db
     if not error:
-        try:
-            inactivate_bucket(bucket_name)
-        except Exception:
-            error = 'Internal error'
+        # TODO:
+        # here we have additional select query because
+        # we use procedural helper instead of model helper bucket.deactivate()
+        deactivate_bucket(bucket.name)
+
+    return jsonify({
+        'error': error,
+    })
+
+
+@s3.route('/api/bucket/<bucket_id>', methods=['DELETE'])
+@login_required
+def api_bucket_remove(bucket_id):
+    error = None
+
+    # Get bucket
+    try:
+        bucket = (database['session'].query(S3Bucket).
+            filter(S3Bucket.users.any(id=current_user.id)).
+            filter(S3Bucket.id == bucket_id).
+            one())
+    except Exception as exception:
+        log.exception(exception)
+        abort(403)
+
+    # Disable bucket on aws
+    if not error:
+        success, message = disable_bucket_on_aws(
+            bucket.access_key_id,
+            bucket.secret_access_key,
+            bucket.name)
+        if not success:
+            error = 'Error removing bucket integration. {0}'.format(message)
+
+    # Delete bucket in db
+    if not error:
+        database['session'].delete(bucket)
+        database['session'].commit()
 
     return jsonify({
         'error': error,

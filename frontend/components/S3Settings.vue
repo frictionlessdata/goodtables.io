@@ -25,6 +25,9 @@ export default {
           this.error = res.data.error
           this.buckets = res.data.buckets
         })
+        .catch(() => {
+          this.error = 'Unknown Error'
+        })
     },
     addBucket() {
       const payload = {
@@ -36,19 +39,47 @@ export default {
         .then(res => {
           this.error = res.data.error
           if (!this.error) {
-            this.buckets = [...this.buckets, {
-              name: payload['bucket-name'],
-            }]
+            this.buckets = [...this.buckets, res.data.bucket]
           }
+        })
+        .catch(() => {
+          this.error = 'Unknown Error'
+        })
+    },
+    activateBucket(bucket) {
+      axios.get(`/s3/api/bucket/${bucket.id}/activate`)
+        .then(res => {
+          this.error = res.data.error
+          if (!this.error) {
+            bucket.active = true
+          }
+        })
+        .catch(() => {
+          this.error = 'Unknown Error'
+        })
+    },
+    deactivateBucket(bucket) {
+      axios.get(`/s3/api/bucket/${bucket.id}/deactivate`)
+        .then(res => {
+          this.error = res.data.error
+          if (!this.error) {
+            bucket.active = false
+          }
+        })
+        .catch(() => {
+          this.error = 'Unknown Error'
         })
     },
     removeBucket(bucket) {
-      axios.get(`/s3/api/bucket/${bucket.name}/remove`)
+      axios.delete(`/s3/api/bucket/${bucket.id}`)
         .then(res => {
           this.error = res.data.error
           if (!this.error) {
             this.buckets = this.buckets.filter(item => item !== bucket)
           }
+        })
+        .catch(() => {
+          this.error = 'Unknown Error'
         })
     },
   },
@@ -72,8 +103,14 @@ export default {
     <h2>Buckets</h2>
     <div v-if="buckets && buckets.length">
       <div v-for="bucket of buckets" class="bucket">
-        <button @click="removeBucket(bucket)" class="btn btn-success">Remove</button>
+        <button v-if="bucket.active" @click="deactivateBucket(bucket)" class="btn btn-success">
+          Deactivate
+        </button>
+        <button v-else @click="activateBucket(bucket)" class="btn btn-danger">
+          Activate
+        </button>
         {{ bucket.name }}
+        (<a @click.prevent="removeBucket(bucket)" href="">remove</a>)
       </div>
     </div>
     <p v-else-if="!ready" class="empty">Loading buckets. Please wait..</p>

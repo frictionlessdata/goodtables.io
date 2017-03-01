@@ -131,29 +131,12 @@ def test_s3_hook_bucket_success(mock_1, client):
     assert jobs[0].id == job_id
 
 
-def test_s3_api_bucket_list(client):
-    user = factories.User()
-    bucket1 = factories.S3Bucket(name='name1', users=[user])
-    bucket2 = factories.S3Bucket(name='name2', users=[user])
-    with client.session_transaction() as session:
-        session['user_id'] = user.id
-    response = client.get('/s3/api/bucket')
-    assert response.status_code == 200
-    assert get_response_data(response) == {
-        'buckets': [
-            {'id': bucket1.id, 'name': bucket1.name, 'active': bucket1.active},
-            {'id': bucket2.id, 'name': bucket2.name, 'active': bucket2.active},
-        ],
-        'error': None,
-    }
-
-
 def test_s3_api_bucket(client):
     user = factories.User()
     bucket = factories.S3Bucket(name='name', users=[user])
     with client.session_transaction() as session:
         session['user_id'] = user.id
-    response = client.get('/s3/api/bucket/%s' % bucket.name)
+    response = client.get('/s3/api/bucket/%s' % bucket.id)
     assert response.status_code == 200
     assert get_response_data(response) == {
         'bucket': {
@@ -168,10 +151,23 @@ def test_s3_api_bucket_not_found(client):
     with client.session_transaction() as session:
         session['user_id'] = user.id
     response = client.get('/s3/api/bucket/not-found')
-    assert response.status_code == 404
+    assert response.status_code == 403
+
+
+def test_s3_api_bucket_list(client):
+    user = factories.User()
+    bucket1 = factories.S3Bucket(name='name1', users=[user])
+    bucket2 = factories.S3Bucket(name='name2', users=[user])
+    with client.session_transaction() as session:
+        session['user_id'] = user.id
+    response = client.get('/s3/api/bucket')
+    assert response.status_code == 200
     assert get_response_data(response) == {
-        'bucket': None,
-        'error': 'Not Found',
+        'buckets': [
+            {'id': bucket1.id, 'name': bucket1.name, 'active': bucket1.active},
+            {'id': bucket2.id, 'name': bucket2.name, 'active': bucket2.active},
+        ],
+        'error': None,
     }
 
 
@@ -194,6 +190,11 @@ def test_s3_api_bucket_add(mock_set_up_bucket_on_aws, client):
     assert buckets[0].name == 'name'
     assert buckets[0].users[0] == user
     assert get_response_data(response) == {
+        'bucket': {
+            'id': mock.ANY,
+            'name': 'name',
+            'active': True,
+        },
         'error': None,
     }
 
@@ -212,6 +213,7 @@ def test_s3_api_bucket_add_missing_fields(client):
         data=json.dumps({}))
     assert response.status_code == 200
     assert get_response_data(response) == {
+        'bucket': None,
         'error': 'Missing fields',
     }
 
@@ -229,7 +231,9 @@ def test_s3_api_bucket_add_already_exists(client):
             'bucket-name': bucket.name
         })
     )
+    assert response.status_code == 200
     assert get_response_data(response) == {
+        'bucket': None,
         'error': 'Bucket already exists',
     }
 
@@ -248,49 +252,100 @@ def test_s3_api_bucket_add_failure(mock_set_up_bucket_on_aws, client):
             'bucket-name': 'test',
         })
     )
+    assert response.status_code == 200
     assert get_response_data(response) == {
+        'bucket': None,
         'error': 'Error setting up bucket integration. Some error happened',
     }
 
 
-@mock.patch('goodtablesio.integrations.s3.blueprint.disable_bucket_on_aws')
-def test_s3_api_bucket_remove(mock_disable_bucket_on_aws, client):
+@mock.patch('goodtablesio.integrations.s3.blueprint.set_up_bucket_on_aws')
+def test_s3_api_bucket_activate(mock_set_up_bucket_on_aws, client):
     user = factories.User()
     bucket = factories.S3Bucket(
+        users=[user], active=False,
         conf={'access_key_id': 'test', 'secret_access_key': 'test'})
-    mock_disable_bucket_on_aws.return_value = (True, '')
+    mock_set_up_bucket_on_aws.return_value = (True, '')
     with client.session_transaction() as session:
         session['user_id'] = user.id
-    response = client.get('/s3/api/bucket/{}/remove'.format(bucket.name))
+    response = client.get('/s3/api/bucket/{}/activate'.format(bucket.id))
     buckets = database['session'].query(S3Bucket).all()
     assert buckets[0].name == bucket.name
-    assert buckets[0].active is False
+    assert buckets[0].active is True
+    assert response.status_code == 200
     assert get_response_data(response) == {
         'error': None,
     }
 
 
 @mock.patch('goodtablesio.integrations.s3.blueprint.disable_bucket_on_aws')
-def test_s3_api_bucket_remove_failure(mock_disable_bucket_on_aws, client):
+def test_s3_api_bucket_deactivate(mock_disable_bucket_on_aws, client):
     user = factories.User()
     bucket = factories.S3Bucket(
+        users=[user], active=True,
+        conf={'access_key_id': 'test', 'secret_access_key': 'test'})
+    mock_disable_bucket_on_aws.return_value = (True, '')
+    with client.session_transaction() as session:
+        session['user_id'] = user.id
+    response = client.get('/s3/api/bucket/{}/deactivate'.format(bucket.id))
+    buckets = database['session'].query(S3Bucket).all()
+    assert buckets[0].name == bucket.name
+    assert buckets[0].active is False
+    assert response.status_code == 200
+    assert get_response_data(response) == {
+        'error': None,
+    }
+
+
+@mock.patch('goodtablesio.integrations.s3.blueprint.disable_bucket_on_aws')
+def test_s3_api_bucket_deactivate_failure(mock_disable_bucket_on_aws, client):
+    user = factories.User()
+    bucket = factories.S3Bucket(
+        users=[user], active=True,
         conf={'access_key_id': 'test', 'secret_access_key': 'test'})
     mock_disable_bucket_on_aws.return_value = (False, 'Some error happened')
     with client.session_transaction() as session:
         session['user_id'] = user.id
-    response = client.get('/s3/api/bucket/{}/remove'.format(bucket.name))
+    response = client.get('/s3/api/bucket/{}/deactivate'.format(bucket.id))
+    assert response.status_code == 200
     assert get_response_data(response) == {
         'error': 'Error removing bucket integration. Some error happened',
     }
 
 
-def test_s3_api_bucket_remove_not_found(client):
+def test_s3_api_bucket_deactivate_no_access_to_bucket(client):
+    user = factories.User()
+    bucket = factories.S3Bucket(
+        conf={'access_key_id': 'test', 'secret_access_key': 'test'})
+    with client.session_transaction() as session:
+        session['user_id'] = user.id
+    response = client.get('/s3/api/bucket/{}/deactivate'.format(bucket.id))
+    assert response.status_code == 403
+
+
+def test_s3_api_bucket_deactivate_not_found(client):
     user = factories.User()
     with client.session_transaction() as session:
         session['user_id'] = user.id
-    response = client.get('/s3/api/bucket/not-found/remove')
+    response = client.get('/s3/api/bucket/not-found/deactivate')
+    assert response.status_code == 403
+
+
+@mock.patch('goodtablesio.integrations.s3.blueprint.disable_bucket_on_aws')
+def test_s3_api_bucket_delete(mock_disable_bucket_on_aws, client):
+    user = factories.User()
+    bucket = factories.S3Bucket(
+        users=[user], active=True,
+        conf={'access_key_id': 'test', 'secret_access_key': 'test'})
+    mock_disable_bucket_on_aws.return_value = (True, '')
+    with client.session_transaction() as session:
+        session['user_id'] = user.id
+    response = client.delete('/s3/api/bucket/{}'.format(bucket.id))
+    buckets = database['session'].query(S3Bucket).all()
+    assert len(buckets) == 0
+    assert response.status_code == 200
     assert get_response_data(response) == {
-        'error': 'Unknown bucket',
+        'error': None,
     }
 
 

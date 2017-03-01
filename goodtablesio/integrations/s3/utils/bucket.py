@@ -91,7 +91,19 @@ def create_bucket(bucket_name, access_key_id=None, secret_access_key=None,
     return bucket
 
 
-def inactivate_bucket(bucket_name):
+def activate_bucket(bucket_name):
+
+    bucket = database['session'].query(S3Bucket).filter(
+        S3Bucket.name == bucket_name).one_or_none()
+    if bucket:
+        bucket.active = True
+        database['session'].add(bucket)
+        database['session'].commit()
+
+    return bucket
+
+
+def deactivate_bucket(bucket_name):
 
     bucket = database['session'].query(S3Bucket).filter(
         S3Bucket.name == bucket_name).one_or_none()
@@ -106,8 +118,7 @@ def inactivate_bucket(bucket_name):
 def get_user_buckets(user_id):
 
     buckets = database['session'].query(S3Bucket).filter(
-        S3Bucket.users.any(id=user_id),
-        S3Bucket.active == 't').order_by(
+        S3Bucket.users.any(id=user_id)).order_by(
             S3Bucket.active.desc(),
             S3Bucket.name).all()
 

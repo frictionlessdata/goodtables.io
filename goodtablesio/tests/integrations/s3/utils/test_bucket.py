@@ -9,7 +9,7 @@ from goodtablesio.integrations.s3.utils.s3client import S3Client
 from goodtablesio.integrations.s3.utils.lambdaclient import LambdaClient
 from goodtablesio.integrations.s3.utils import (
     set_up_bucket_on_aws, disable_bucket_on_aws, create_bucket,
-    get_user_buckets, inactivate_bucket)
+    get_user_buckets, activate_bucket, deactivate_bucket)
 from goodtablesio.integrations.s3.models.bucket import S3Bucket
 from goodtablesio.integrations.s3.exceptions import S3Exception
 
@@ -316,11 +316,27 @@ def test_create_bucket_with_user():
 
 
 @pytest.mark.usefixtures('session_cleanup')
-def test_inactivate_bucket():
+def test_activate_bucket():
+
+    factories.S3Bucket(name='test-bucket-2', active=False)
+
+    activate_bucket('test-bucket-2')
+
+    buckets = database['session'].query(S3Bucket).all()
+
+    assert len(buckets) == 1
+
+    assert buckets[0].name == 'test-bucket-2'
+
+    assert buckets[0].active is True
+
+
+@pytest.mark.usefixtures('session_cleanup')
+def test_deactivate_bucket():
 
     factories.S3Bucket(name='test-bucket-2', active=True)
 
-    inactivate_bucket('test-bucket-2')
+    deactivate_bucket('test-bucket-2')
 
     buckets = database['session'].query(S3Bucket).all()
 

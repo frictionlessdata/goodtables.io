@@ -67,13 +67,18 @@ describe('S3Settings', () => {
 
   it('should add bucket after submit button click', (done) => {
     mockAxios.onPost('/s3/api/bucket').replyOnce(200, {
+      bucket: {
+        id: 'id',
+        name: 'name',
+        active: true,
+      },
       error: null,
     })
     const wrapper = mount(S3Settings)
-    wrapper.vm.bucketName = 'bucket-name'
+    wrapper.vm.bucketName = 'name'
     wrapper.find('button')[0].simulate('click')
     setTimeout(() => {
-      wrapper.text().should.include('bucket-name')
+      wrapper.text().should.include('name')
       done()
     })
   })
@@ -95,7 +100,7 @@ describe('S3Settings', () => {
 
   // TODO: write this test after:
   // https://github.com/eddyerburgh/avoriaz/issues/6
-  it.skip('should remove bucket after remove button click', (done) => {
+  it.skip('should remove bucket after remove button click', () => {
     // ...
   })
 
