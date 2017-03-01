@@ -24,6 +24,9 @@ export default {
           this.syncing = res.data.syncing
           this.repos = res.data.repos
         })
+        .catch(() => {
+          this.error = 'Unknown Error'
+        })
     },
     syncAccount() {
       if (this.syncing) return
@@ -39,6 +42,33 @@ export default {
               }
             }, 3000)
           }
+        })
+        .catch(() => {
+          this.error = 'Unknown Error'
+        })
+    },
+    activateRepo(repo) {
+      axios.get(`/github/api/repo/${repo.id}/activate`)
+        .then(res => {
+          this.error = res.data.error
+          if (!this.error) {
+            repo.active = true
+          }
+        })
+        .catch(() => {
+          this.error = 'Unknown Error'
+        })
+    },
+    deactivateRepo(repo) {
+      axios.get(`/github/api/repo/${repo.id}/deactivate`)
+        .then(res => {
+          this.error = res.data.error
+          if (!this.error) {
+            repo.active = false
+          }
+        })
+        .catch(() => {
+          this.error = 'Unknown Error'
         })
     },
   },
@@ -64,14 +94,21 @@ export default {
 
     <div class="sync">
       <span> Refresh your organizations and repositories</span>
-      <button @click="syncAccount()" :disabled="!ready || syncing" class="btn btn-primary">Sync account</button>
+      <button @click="syncAccount()" :disabled="!ready || syncing" class="btn btn-primary">
+        Sync account
+      </button>
     </div>
 
     <template v-if="repos && repos.length">
       <div v-for="repo of repos" class="repo">
-        <a v-if="repo.active" :href="`/github/deactivate/${repo.id}`" class="btn btn-success">Deactivate</a>
-        <a v-else :href="`/github/activate/${repo.id}`" class="btn btn-danger">Activate</a>
-        {{ repo.name }} (<a :href="`https://github.com/${repo.name}`">repo</a>)
+        <button v-if="repo.active" @click="deactivateRepo(repo)" class="btn btn-success">
+          Deactivate
+        </button>
+        <button v-else @click="activateRepo(repo)" class="btn btn-danger">
+          Activate
+        </button>
+        {{ repo.name }}
+        (<a :href="`https://github.com/${repo.name}`">repo</a>)
         <a v-if="repo.active" :href="`/github/repo/${repo.name}`">View jobs</a>
       </div>
     </template>

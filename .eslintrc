@@ -38,7 +38,7 @@ rules:
   no-unused-vars:
     - warn
   no-param-reassign:
-    - warn
+    - off
   no-cond-assign:
     - error
     - except-parens

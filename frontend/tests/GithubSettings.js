@@ -43,7 +43,7 @@ describe('GithubSettings', () => {
   it('should have sync account button', (done) => {
     const wrapper = mount(GithubSettings)
     setTimeout(() => {
-      wrapper.find('.sync>.btn')[0].text().should.equal('Sync account')
+      wrapper.find('.sync>.btn')[0].text().should.include('Sync account')
       done()
     })
   })
@@ -137,6 +137,37 @@ describe('GithubSettings', () => {
       wrapper.text().should.include('name2')
       done()
     }, 4000)
+  })
+
+  // TODO: recover this test after:
+  // https://github.com/eddyerburgh/avoriaz/issues/6
+  it.skip('should work on activate/deactivate repo click', (done) => {
+    mockAxios.reset()
+    mockAxios.onGet('/github/api/repo').reply(200, {
+      syncing: false,
+      repos: [
+        {id: 'id', name: 'name', active: false},
+      ],
+    })
+    mockAxios.onGet('/github/api/repo/id/activate').reply(200, {
+      error: null,
+    })
+    mockAxios.onGet('/github/api/repo/id/deactivate').reply(200, {
+      error: null,
+    })
+    const wrapper = mount(GithubSettings)
+    setTimeout(() => {
+      wrapper.find('.repo>.btn')[0].text().should.include('Activate')
+      wrapper.find('.repo>.btn')[0].simulate('click')
+    }, 200)
+    setTimeout(() => {
+      wrapper.find('.repo>.btn')[0].text().should.include('Deactivate')
+      wrapper.find('.repo>.btn')[0].simulate('click')
+    }, 400)
+    setTimeout(() => {
+      wrapper.find('.repo>.btn')[0].text().should.include('Activate')
+      done()
+    }, 600)
   })
 
 })
