@@ -86,6 +86,6 @@ def badge(integration_name, source_name):
         status=last_status, style=style)
 
     file_path = os.path.join(
-        os.path.dirname(__file__), '..', '..', 'public', 'badges')
+        os.path.dirname(__file__), 'badges')
 
     return send_from_directory(file_path, file_name, mimetype='image/svg+xml')
