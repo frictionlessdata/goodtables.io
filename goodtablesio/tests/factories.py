@@ -2,6 +2,7 @@ import uuid
 import datetime
 
 import factory
+from faker import Faker
 
 from goodtablesio.models.job import Job
 from goodtablesio.models.user import User
@@ -10,6 +11,9 @@ from goodtablesio.models.integration import Integration
 from goodtablesio.services import database
 from goodtablesio.integrations.github.models.repo import GithubRepo
 from goodtablesio.integrations.s3.models.bucket import S3Bucket
+
+
+fake = Faker()
 
 
 class FactoryBase(factory.alchemy.SQLAlchemyModelFactory):
@@ -95,10 +99,11 @@ class GithubRepo(FactoryBase):
     class Meta:
         model = GithubRepo
         sqlalchemy_session = database['session']
-        exclude = ('owner', 'repo', 'integration',)
+        exclude = ('url', 'owner', 'repo', 'integration',)
 
     id = factory.Sequence(lambda n: str(uuid.uuid4()))
-    name = factory.Faker('name')
+    name = factory.LazyAttribute(lambda a: '{0}/{1}'.format(fake.user_name(),
+                                                            fake.user_name()))
     updated = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     active = True
 
@@ -107,12 +112,26 @@ class GithubRepo(FactoryBase):
         return database['session'].query(Integration).get('github')
 
     @property
+    def url(self):
+
+        parts = self.name.split('/')
+
+        template = 'https://github.com/{owner}/{repo}'
+        return template.format(owner=parts[0], repo=parts[1])
+
+    @property
     def owner(self):
-        return factory.Faker('name')
+
+        parts = self.name.split('/')
+
+        return parts[0]
 
     @property
     def repo(self):
-        return factory.Faker('name')
+
+        parts = self.name.split('/')
+
+        return parts[1]
 
 
 class S3Bucket(FactoryBase):
@@ -123,7 +142,7 @@ class S3Bucket(FactoryBase):
         exclude = ('integration',)
 
     id = factory.Sequence(lambda n: str(uuid.uuid4()))
-    name = factory.Faker('name')
+    name = factory.Faker('user_name')
     updated = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     active = True
 
