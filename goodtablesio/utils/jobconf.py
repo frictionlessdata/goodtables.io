@@ -34,25 +34,9 @@ def parse_job_conf(contents):
             raise exceptions.InvalidJobConfiguration(
                 'Invalid YAML file: {}'.format(e))
 
-        verify_job_conf(job_conf)
+        _verify_job_conf(job_conf)
 
     return job_conf
-
-
-def verify_job_conf(job_conf):
-    """Validate job configuration.
-
-    Raises:
-        exceptions.InvalidJobConfiguration
-
-    Returns:
-        True
-
-    """
-    try:
-        return _validate(job_conf, 'job-conf.yml')
-    except jsonschema.ValidationError:
-        raise exceptions.InvalidJobConfiguration()
 
 
 def verify_validation_conf(validation_conf):
@@ -141,3 +125,19 @@ def _validate(struct, schema):
     schema = yaml.load(io.open(schema_path, encoding='utf-8'))
     jsonschema.validate(struct, schema)
     return True
+
+
+def _verify_job_conf(job_conf):
+    """Validate job configuration.
+
+    Raises:
+        exceptions.InvalidJobConfiguration
+
+    Returns:
+        True
+
+    """
+    try:
+        return _validate(job_conf, 'job-conf.yml')
+    except jsonschema.ValidationError:
+        raise exceptions.InvalidJobConfiguration()

@@ -1,7 +1,7 @@
 import pytest
 from goodtablesio import exceptions
 from goodtablesio.utils.jobconf import make_validation_conf, parse_job_conf
-from goodtablesio.utils.jobconf import verify_validation_conf, verify_job_conf
+from goodtablesio.utils.jobconf import verify_validation_conf, _verify_job_conf
 
 
 # Tests
@@ -260,14 +260,14 @@ def test_parse_job_conf_files_settings():
 
 
 def test_verify_job_conf():
-    assert verify_job_conf({
+    assert _verify_job_conf({
         'files': '*',
     })
 
 
 def test_verify_job_conf_invalid():
     with pytest.raises(exceptions.InvalidJobConfiguration):
-        assert verify_job_conf({
+        assert _verify_job_conf({
             'files': ['*'],
         })
 
