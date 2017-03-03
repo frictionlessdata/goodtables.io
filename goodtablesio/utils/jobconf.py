@@ -50,7 +50,7 @@ def verify_validation_conf(validation_conf):
 
     """
     try:
-        return _validate(validation_conf, 'validation-conf.yml')
+        return _verify_conf(validation_conf, 'validation-conf.yml')
     except jsonschema.ValidationError:
         raise exceptions.InvalidValidationConfiguration()
 
@@ -119,25 +119,16 @@ def _is_tabular_file(name):
     return Stream.test(name)
 
 
-def _validate(struct, schema):
+def _verify_job_conf(job_conf):
+    try:
+        return _verify_conf(job_conf, 'job-conf.yml')
+    except jsonschema.ValidationError:
+        raise exceptions.InvalidJobConfiguration()
+
+
+def _verify_conf(conf, schema):
     schema_path = os.path.join(
          os.path.dirname(__file__), '..', 'schemas', schema)
     schema = yaml.load(io.open(schema_path, encoding='utf-8'))
-    jsonschema.validate(struct, schema)
+    jsonschema.validate(conf, schema)
     return True
-
-
-def _verify_job_conf(job_conf):
-    """Validate job configuration.
-
-    Raises:
-        exceptions.InvalidJobConfiguration
-
-    Returns:
-        True
-
-    """
-    try:
-        return _validate(job_conf, 'job-conf.yml')
-    except jsonschema.ValidationError:
-        raise exceptions.InvalidJobConfiguration()
