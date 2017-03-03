@@ -103,10 +103,9 @@ def _get_job_files_contents_api(repo_api, sha, contents=None):
 
 
 def _load_job_conf(job_base):
-    job_conf = {'files': '*'}
     url = '/'.join([job_base, 'goodtables.yml'])
     text = _load_file(url)
-    return parse_job_conf(text) or job_conf
+    return parse_job_conf(text)
 
 
 def _load_file(url):
