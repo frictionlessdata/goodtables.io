@@ -1,5 +1,4 @@
 import datetime
-from copy import deepcopy
 from goodtables import Inspector
 from goodtablesio import models
 from goodtablesio.celery_app import celery_app
