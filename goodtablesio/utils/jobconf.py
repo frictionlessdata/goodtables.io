@@ -16,6 +16,7 @@ def make_validation_conf(job_conf_text, job_files, job_base=None):
 
     Raises:
         exceptions.InvalidJobConfiguration
+        exceptions.InvalidValidationConfiguration
 
     Args:
         job_conf_text (str): Contents of the goodtables.yml file
@@ -23,16 +24,19 @@ def make_validation_conf(job_conf_text, job_files, job_base=None):
         job_base (url): Base URL for file paths (optional)
 
     Returns:
-        validation_conf (dict): Configuration object to be used by the
-            validation task
+        validation_conf (dict): Conf to be used by the validation task
 
     """
-    job_conf = _parse_job_conf(job_conf_text) or {'files': '*'}
-    validation_conf = {}
+    validation_conf = {'source': []}
 
-    # Wild-card syntax
-    validation_conf['source'] = []
-    if isinstance(job_conf['files'], str):
+    # Parse, set defaults and verify job conf
+    job_conf = _parse_job_conf(job_conf_text) or {}
+    if not job_conf.get('files', job_conf.get('datapackages')):
+        job_conf['files'] = '*'
+    _verify_job_conf(job_conf)
+
+    # Files: string
+    if isinstance(job_conf.get('files'), str):
         pattern = job_conf['files']
         for name in job_files:
             if not Stream.test(name):
@@ -46,8 +50,8 @@ def make_validation_conf(job_conf_text, job_files, job_base=None):
                     'source': source,
                 })
 
-    # Granular syntax
-    else:
+    # Files: array of objects
+    elif isinstance(job_conf.get('files'), list):
         for item in job_conf['files']:
             if item['source'] in job_files:
                 item['source'] = '/'.join([job_base, item['source']])
@@ -58,9 +62,20 @@ def make_validation_conf(job_conf_text, job_files, job_base=None):
                         [job_base, item['schema']])
                 validation_conf['source'].append(item)
 
-    # Copy settings
+    # Datapackages
+    if 'datapackages' in job_conf:
+        for item in job_conf['datapackages']:
+            validation_conf['source'].append({
+                'source': item,
+                'preset': 'datapackage',
+            })
+
+    # Settings
     if 'settings' in job_conf:
         validation_conf['settings'] = job_conf['settings']
+
+    # Verify validation conf
+    verify_validation_conf(validation_conf)
 
     return validation_conf
 
@@ -94,7 +109,6 @@ def _parse_job_conf(contents):
         except yaml.YAMLError as exception:
             raise exceptions.InvalidJobConfiguration(
                 'Invalid YAML file: {}'.format(exception))
-        _verify_job_conf(job_conf)
     return job_conf
 
 

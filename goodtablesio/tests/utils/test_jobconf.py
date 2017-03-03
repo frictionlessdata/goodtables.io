@@ -186,21 +186,6 @@ def test_parse_job_conf():
     assert _parse_job_conf(job_conf_text) == job_conf
 
 
-def test_parse_job_conf_invalid():
-    job_conf_text = """
-        files: {}
-    """
-    with pytest.raises(exceptions.InvalidJobConfiguration):
-        assert _parse_job_conf(job_conf_text)
-
-
-def test_parse_job_conf_invalid_text():
-    job_conf_text = """
-        aaa
-    """
-    with pytest.raises(exceptions.InvalidJobConfiguration):
-        assert _parse_job_conf(job_conf_text)
-
 
 def test_parse_job_conf_invalid_yml():
     job_conf_text = """
@@ -210,7 +195,7 @@ def test_parse_job_conf_invalid_yml():
         assert _parse_job_conf(job_conf_text)
 
 
-def test_parse_job_conf_invalid_none():
+def test_parse_job_conf_none():
     job_conf_text = None
     assert _parse_job_conf(job_conf_text) is None
 
