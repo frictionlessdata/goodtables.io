@@ -1,6 +1,6 @@
 import pytest
 from goodtablesio import exceptions
-from goodtablesio.utils.jobconf import make_validation_conf
+from goodtablesio.utils.jobconf import make_validation_conf, verify_validation_conf
 
 
 # Tests
@@ -37,8 +37,7 @@ def test_make_validation_conf():
             'error_limit': 1,
         }
     }
-    assert make_validation_conf(
-        job_conf_text, job_files, job_base) == validation_conf
+    assert make_validation_conf(job_conf_text, job_files, job_base) == validation_conf
 
 
 def test_make_validation_conf_no_base():
@@ -72,8 +71,7 @@ def test_make_validation_conf_no_base():
             'error_limit': 1,
         }
     }
-    assert make_validation_conf(
-        job_conf_text, job_files) == validation_conf
+    assert make_validation_conf(job_conf_text, job_files) == validation_conf
 
 
 def test_make_validation_conf_subdir():
@@ -91,8 +89,7 @@ def test_make_validation_conf_subdir():
         ]
     }
 
-    assert make_validation_conf(
-        job_conf_text, job_files, job_base) == validation_conf
+    assert make_validation_conf(job_conf_text, job_files, job_base) == validation_conf
 
 
 def test_make_validation_conf_subdir_config():
@@ -111,8 +108,7 @@ def test_make_validation_conf_subdir_config():
         ]
     }
 
-    assert make_validation_conf(
-        job_conf_text, job_files, job_base) == validation_conf
+    assert make_validation_conf(job_conf_text, job_files, job_base) == validation_conf
 
 
 def test_make_validation_conf_subdir_granular():
@@ -146,8 +142,7 @@ def test_make_validation_conf_subdir_granular():
         }
     }
 
-    assert make_validation_conf(
-        job_conf_text, job_files, job_base) == validation_conf
+    assert make_validation_conf(job_conf_text, job_files, job_base) == validation_conf
 
 
 def test_make_validation_conf_default_job_conf():
@@ -165,5 +160,82 @@ def test_make_validation_conf_default_job_conf():
         ]
     }
 
-    assert make_validation_conf(
-        job_conf_text, job_files, job_base) == validation_conf
+    assert make_validation_conf(job_conf_text, job_files, job_base) == validation_conf
+
+
+def test_make_validation_conf_datapackages():
+    job_conf_text = """
+    datapackages:
+      - datapackage1.json
+      - datapackage2.json
+    """
+    job_files = [
+        'datapackage1.json',
+        'datapackage2.json',
+    ]
+    job_base = 'http://example.com'
+    validation_conf = {
+        'source': [
+            {'source': 'http://example.com/datapackage1.json', 'preset': 'datapackage'},
+            {'source': 'http://example.com/datapackage2.json', 'preset': 'datapackage'},
+        ]
+    }
+
+    assert make_validation_conf(job_conf_text, job_files, job_base) == validation_conf
+
+
+def test_make_validation_conf_files_and_datapackages():
+    job_conf_text = """
+    files: '*.csv'
+    datapackages:
+      - datapackage1.json
+      - datapackage2.json
+    """
+    job_files = [
+        'file1.csv',
+        'file2.csv',
+        'datapackage1.json',
+        'datapackage2.json',
+    ]
+    job_base = 'http://example.com'
+    validation_conf = {
+        'source': [
+            {'source': 'http://example.com/file1.csv'},
+            {'source': 'http://example.com/file2.csv'},
+            {'source': 'http://example.com/datapackage1.json', 'preset': 'datapackage'},
+            {'source': 'http://example.com/datapackage2.json', 'preset': 'datapackage'},
+        ]
+    }
+
+    assert make_validation_conf(job_conf_text, job_files, job_base) == validation_conf
+
+
+def test_verify_validation_conf():
+    validation_conf = {
+        'source': [
+            {'source': 'http://example.com/file.csv'},
+            {'source': 'http://example.com/datapackage.json', 'preset': 'datapackage'},
+        ]
+    }
+
+    assert verify_validation_conf(validation_conf)
+
+
+def test_verify_validation_conf_invalid_bad_preset():
+    validation_conf = {
+        'source': [
+            {'source': 'http://example.com/file.csv', 'preset': 'bad-preset'},
+        ]
+    }
+
+    with pytest.raises(exceptions.InvalidValidationConfiguration):
+        verify_validation_conf(validation_conf)
+
+
+def test_verify_validation_conf_invalid_empty_source():
+    validation_conf = {
+        'source': []
+    }
+
+    with pytest.raises(exceptions.InvalidValidationConfiguration):
+        verify_validation_conf(validation_conf)

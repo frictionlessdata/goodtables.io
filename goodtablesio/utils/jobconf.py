@@ -42,10 +42,9 @@ def make_validation_conf(job_conf_text, job_files, job_base=None):
             if not Stream.test(name):
                 continue
             if fnmatch(name, pattern):
+                source = name
                 if job_base:
                     source = '/'.join([job_base, name])
-                else:
-                    source = name
                 validation_conf['source'].append({
                     'source': source,
                 })
@@ -64,9 +63,12 @@ def make_validation_conf(job_conf_text, job_files, job_base=None):
 
     # Datapackages
     if 'datapackages' in job_conf:
-        for item in job_conf['datapackages']:
+        for name in job_conf['datapackages']:
+            source = name
+            if job_base:
+                source = '/'.join([job_base, name])
             validation_conf['source'].append({
-                'source': item,
+                'source': source,
                 'preset': 'datapackage',
             })
 
