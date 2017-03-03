@@ -21,7 +21,7 @@ def test_validate(_inspect):
     validation_conf = {'source': ['file1', 'file2'], 'settings': {}}
     validate(validation_conf, job_id=job.id)
 
-    _inspect.assert_called_with(source=validation_conf['source'], preset='tables')
+    _inspect.assert_called_with(validation_conf['source'], preset='nested')
 
     jobs = models.job.find()
 

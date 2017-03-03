@@ -31,10 +31,8 @@ def validate(validation_conf, job_id):
         models.job.update(params)
 
     # Get report
-    validation_conf = deepcopy(validation_conf)
-    settings = validation_conf.pop('settings', {})
-    inspector = Inspector(**settings)
-    report = inspector.inspect(preset='tables', **validation_conf)
+    inspector = Inspector(**validation_conf.get('settings', {}))
+    report = inspector.inspect(validation_conf['source'], preset='nested')
 
     # Save report
     params = {

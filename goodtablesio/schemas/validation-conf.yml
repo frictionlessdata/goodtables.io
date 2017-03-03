@@ -2,6 +2,7 @@
 # -------------------------------
 #
 # The configuration object passed to the validation task should conform to this schema.
+# It strictly conforms to `goodtables.Inspector` API with the `nested` preset is used.
 #
 $schema: http://json-schema.org/draft-04/schema#
 type: object

@@ -26,7 +26,7 @@ flask-oauthlib==0.9.3
 flask==0.11.1
 future==0.16.0            # via jsontableschema
 github3.py==0.9.6
-goodtables==1.0.0a7
+goodtables==1.0.0a8
 gunicorn==19.6.0
 idna==2.2                 # via cryptography
 ijson==2.3                # via tabulator
