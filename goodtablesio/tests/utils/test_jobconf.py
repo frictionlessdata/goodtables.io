@@ -1,13 +1,17 @@
 import pytest
 from goodtablesio import exceptions
-from goodtablesio.utils.jobconf import make_validation_conf, parse_job_conf
-from goodtablesio.utils.jobconf import verify_validation_conf, _verify_job_conf
+from goodtablesio.utils.jobconf import (
+    make_validation_conf, verify_validation_conf, _parse_job_conf, _verify_job_conf)
 
 
 # Tests
 
 def test_create_validation_conf():
-    job_base = 'http://example.com'
+    job_conf_text = """
+    files: '*'
+    settings:
+      error_limit: 1
+    """
     job_files = [
         'file.csv',
         'file.json',
@@ -19,14 +23,7 @@ def test_create_validation_conf():
         'file.pdf',
         'goodtables.yml',
     ]
-
-    job_conf = {
-        'files': '*',
-        'settings': {
-            'error_limit': 1
-        }
-    }
-
+    job_base = 'http://example.com'
     validation_conf = {
         'files': [
             {'source': 'http://example.com/file.csv'},
@@ -42,10 +39,15 @@ def test_create_validation_conf():
         }
     }
     assert make_validation_conf(
-        job_files, job_conf, job_base) == validation_conf
+        job_conf_text, job_files, job_base) == validation_conf
 
 
 def test_create_validation_conf_no_base():
+    job_conf_text = """
+    files: '*'
+    settings:
+      error_limit: 1
+    """
     job_files = [
         'file.csv',
         'file.json',
@@ -57,14 +59,6 @@ def test_create_validation_conf_no_base():
         'file.pdf',
         'goodtables.yml',
     ]
-
-    job_conf = {
-        'files': '*',
-        'settings': {
-            'error_limit': 1
-        }
-    }
-
     validation_conf = {
         'files': [
             {'source': 'file.csv'},
@@ -80,19 +74,18 @@ def test_create_validation_conf_no_base():
         }
     }
     assert make_validation_conf(
-        job_files, job_conf) == validation_conf
+        job_conf_text, job_files) == validation_conf
 
 
 def test_create_validation_conf_subdir():
-    job_base = 'http://example.com'
+    job_conf_text = """
+    files: '*'
+    """
     job_files = [
         'data/file.csv',
         'file.pdf',
     ]
-    job_conf = {
-        'files': '*'
-    }
-
+    job_base = 'http://example.com'
     validation_conf = {
         'files': [
             {'source': 'http://example.com/data/file.csv'},
@@ -100,20 +93,19 @@ def test_create_validation_conf_subdir():
     }
 
     assert make_validation_conf(
-        job_files, job_conf, job_base) == validation_conf
+        job_conf_text, job_files, job_base) == validation_conf
 
 
 def test_create_validation_conf_subdir_config():
-    job_base = 'http://example.com'
+    job_conf_text = """
+    files: data/*
+    """
     job_files = [
         'data/file.csv',
         'file.ods',
         'file.pdf',
     ]
-    job_conf = {
-        'files': 'data/*'
-        }
-
+    job_base = 'http://example.com'
     validation_conf = {
         'files': [
             {'source': 'http://example.com/data/file.csv'},
@@ -121,32 +113,26 @@ def test_create_validation_conf_subdir_config():
     }
 
     assert make_validation_conf(
-        job_files, job_conf, job_base) == validation_conf
+        job_conf_text, job_files, job_base) == validation_conf
 
 
 def test_create_validation_conf_subdir_granular():
-    job_base = 'http://example.com'
+    job_conf_text = """
+    files:
+      - source: data/file.csv
+        schema: data/schema.json
+        delimiter: ';'
+        skip_rows: [1, 2, '#', '//']
+    settings:
+      order_fields: True
+    """
     job_files = [
         'data/file.csv',
         'data/schema.json',
         'file.ods',
         'file.pdf',
     ]
-
-    job_conf = {
-        'files': [
-            {
-                'source': 'data/file.csv',
-                'schema': 'data/schema.json',
-                'delimiter': ';',
-                'skip_rows': [1, 2, '#', '//']
-            }
-        ],
-        'settings': {
-            'order_fields': True
-        }
-    }
-
+    job_base = 'http://example.com'
     validation_conf = {
         'files': [
             {
@@ -162,19 +148,17 @@ def test_create_validation_conf_subdir_granular():
     }
 
     assert make_validation_conf(
-        job_files, job_conf, job_base) == validation_conf
+        job_conf_text, job_files, job_base) == validation_conf
 
 
 def test_create_validation_conf_default_job_conf():
-    job_base = 'http://example.com'
+    job_conf_text = None
     job_files = [
         'file1.csv',
         'file2.csv',
         'file.pdf',
     ]
-
-    job_conf = None
-
+    job_base = 'http://example.com'
     validation_conf = {
         'files': [
             {'source': 'http://example.com/file1.csv'},
@@ -183,7 +167,7 @@ def test_create_validation_conf_default_job_conf():
     }
 
     assert make_validation_conf(
-        job_files, job_conf, job_base) == validation_conf
+        job_conf_text, job_files, job_base) == validation_conf
 
 
 def test_parse_job_conf():
@@ -192,7 +176,6 @@ def test_parse_job_conf():
         settings:
             error_limit: 1
     """
-
     job_conf = {
         'files': '*',
         'settings': {
@@ -200,7 +183,7 @@ def test_parse_job_conf():
         }
     }
 
-    assert parse_job_conf(job_conf_text) == job_conf
+    assert _parse_job_conf(job_conf_text) == job_conf
 
 
 def test_parse_job_conf_invalid():
@@ -208,7 +191,7 @@ def test_parse_job_conf_invalid():
         files: {}
     """
     with pytest.raises(exceptions.InvalidJobConfiguration):
-        assert parse_job_conf(job_conf_text)
+        assert _parse_job_conf(job_conf_text)
 
 
 def test_parse_job_conf_invalid_text():
@@ -216,7 +199,7 @@ def test_parse_job_conf_invalid_text():
         aaa
     """
     with pytest.raises(exceptions.InvalidJobConfiguration):
-        assert parse_job_conf(job_conf_text)
+        assert _parse_job_conf(job_conf_text)
 
 
 def test_parse_job_conf_invalid_yml():
@@ -224,12 +207,12 @@ def test_parse_job_conf_invalid_yml():
         files: ][
     """
     with pytest.raises(exceptions.InvalidJobConfiguration):
-        assert parse_job_conf(job_conf_text)
+        assert _parse_job_conf(job_conf_text)
 
 
 def test_parse_job_conf_invalid_none():
     job_conf_text = None
-    assert parse_job_conf(job_conf_text) is None
+    assert _parse_job_conf(job_conf_text) is None
 
 
 def test_parse_job_conf_files_settings():
@@ -256,7 +239,7 @@ def test_parse_job_conf_files_settings():
         }
     }
 
-    assert parse_job_conf(job_conf_text) == job_conf
+    assert _parse_job_conf(job_conf_text) == job_conf
 
 
 def test_verify_job_conf():

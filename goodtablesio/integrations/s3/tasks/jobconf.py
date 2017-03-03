@@ -7,7 +7,7 @@ from goodtablesio import models
 from goodtablesio.services import database
 from goodtablesio.celery_app import celery_app
 from goodtablesio.utils.jobtask import JobTask
-from goodtablesio.utils.jobconf import parse_job_conf, make_validation_conf
+from goodtablesio.utils.jobconf import make_validation_conf
 
 
 log = logging.getLogger(__name__)
@@ -36,25 +36,22 @@ def get_validation_conf(bucket, job_id):
         aws_access_key_id=access_key_id,
         aws_secret_access_key=secret_access_key)
 
-    # Get goodtables.yml contents (if it exists)
+    # Get job conf text (if it exists)
     try:
-        yml_file = client.get_object(
-            Bucket=bucket_name, Key='goodtables.yml')
-
-        job_conf = parse_job_conf(yml_file['Body'].read())
-
-    except botocore.exceptions.ClientError as e:
-        if e.response['Error']['Code'] == 'NoSuchKey':
-            job_conf = {'files': '*'}
+        yml_file = client.get_object(Bucket=bucket_name, Key='goodtables.yml')
+        job_conf_text = yml_file['Body'].read()
+    except botocore.exceptions.ClientError as exception:
+        job_conf_text = ''
 
     # Get all keys and create validation conf
 
     # TODO: can we filter at this point
     objects = client.list_objects(Bucket=bucket_name)
 
-    keys = [o['Key'] for o in objects['Contents']]
+    # Get job files
+    job_files = [o['Key'] for o in objects['Contents']]
 
-    validation_conf = make_validation_conf(keys, job_conf)
+    validation_conf = make_validation_conf(job_conf_text, job_files)
 
     # Create a tmp link for each file
     for _file in validation_conf['files']:
