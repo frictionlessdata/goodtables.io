@@ -41,7 +41,7 @@ def get_validation_conf(bucket, job_id):
         yml_file = client.get_object(Bucket=bucket_name, Key='goodtables.yml')
         job_conf_text = yml_file['Body'].read()
     except botocore.exceptions.ClientError as exception:
-        job_conf_text = ''
+        job_conf_text = None
 
     # Get all keys and create validation conf
 
@@ -54,11 +54,11 @@ def get_validation_conf(bucket, job_id):
     validation_conf = make_validation_conf(job_conf_text, job_files)
 
     # Create a tmp link for each file
-    for _file in validation_conf['files']:
+    for _item in validation_conf['source']:
 
-        _file['source'] = client.generate_presigned_url(
+        _item['source'] = client.generate_presigned_url(
             'get_object',
-            Params={'Bucket': bucket_name, 'Key': _file['source']},
+            Params={'Bucket': bucket_name, 'Key': _item['source']},
             ExpiresIn=600)
 
     return validation_conf

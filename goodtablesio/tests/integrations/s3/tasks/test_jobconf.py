@@ -36,7 +36,7 @@ def test_get_validation_conf():
                        new=mock_generate_presigned_url):
 
         expected = {
-            'files': [
+            'source': [
                 {'source': 'https://example.com/presigned/councillors-address-3.csv'},
                 {'source': 'https://example.com/presigned/councillors-address2.csv'}
             ],
@@ -72,7 +72,7 @@ def test_get_validation_conf_no_goodtables_yml():
                        new=mock_generate_presigned_url):
 
         expected = {
-            'files': [
+            'source': [
                 {'source': 'https://example.com/presigned/councillors-address-3.csv'},
                 {'source': 'https://example.com/presigned/councillors-address2.csv'}
             ]

@@ -25,7 +25,7 @@ def test_create_validation_conf():
     ]
     job_base = 'http://example.com'
     validation_conf = {
-        'files': [
+        'source': [
             {'source': 'http://example.com/file.csv'},
             {'source': 'http://example.com/file.json'},
             {'source': 'http://example.com/file.jsonl'},
@@ -60,7 +60,7 @@ def test_create_validation_conf_no_base():
         'goodtables.yml',
     ]
     validation_conf = {
-        'files': [
+        'source': [
             {'source': 'file.csv'},
             {'source': 'file.json'},
             {'source': 'file.jsonl'},
@@ -87,7 +87,7 @@ def test_create_validation_conf_subdir():
     ]
     job_base = 'http://example.com'
     validation_conf = {
-        'files': [
+        'source': [
             {'source': 'http://example.com/data/file.csv'},
         ]
     }
@@ -107,7 +107,7 @@ def test_create_validation_conf_subdir_config():
     ]
     job_base = 'http://example.com'
     validation_conf = {
-        'files': [
+        'source': [
             {'source': 'http://example.com/data/file.csv'},
         ]
     }
@@ -134,7 +134,7 @@ def test_create_validation_conf_subdir_granular():
     ]
     job_base = 'http://example.com'
     validation_conf = {
-        'files': [
+        'source': [
             {
                 'source': 'http://example.com/data/file.csv',
                 'schema': 'http://example.com/data/schema.json',
@@ -160,7 +160,7 @@ def test_create_validation_conf_default_job_conf():
     ]
     job_base = 'http://example.com'
     validation_conf = {
-        'files': [
+        'source': [
             {'source': 'http://example.com/file1.csv'},
             {'source': 'http://example.com/file2.csv'},
         ]
@@ -257,12 +257,12 @@ def test_verify_job_conf_invalid():
 
 def test_verify_validation_conf():
     assert verify_validation_conf({
-        'files': [{'source': 'path.csv'}],
+        'source': [{'source': 'path.csv'}],
     })
 
 
 def test_verify_validation_conf_invalid():
     with pytest.raises(exceptions.InvalidValidationConfiguration):
         assert verify_validation_conf({
-            'files': ['*'],
+            'source': ['*'],
         })

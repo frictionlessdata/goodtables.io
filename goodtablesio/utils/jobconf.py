@@ -14,6 +14,9 @@ def make_validation_conf(job_conf_text, job_files, job_base=None):
         return the validation configuratio to be used by the validation
         task (goodtables)
 
+    Raises:
+        exceptions.InvalidJobConfiguration
+
     Args:
         job_conf_text (str): Contents of the goodtables.yml file
         job_files (str[]): List of file paths, relative to job_base
@@ -28,7 +31,7 @@ def make_validation_conf(job_conf_text, job_files, job_base=None):
     validation_conf = {}
 
     # Wild-card syntax
-    validation_conf['files'] = []
+    validation_conf['source'] = []
     if isinstance(job_conf['files'], str):
         pattern = job_conf['files']
         for name in job_files:
@@ -39,7 +42,7 @@ def make_validation_conf(job_conf_text, job_files, job_base=None):
                     source = '/'.join([job_base, name])
                 else:
                     source = name
-                validation_conf['files'].append({
+                validation_conf['source'].append({
                     'source': source,
                 })
 
@@ -53,7 +56,7 @@ def make_validation_conf(job_conf_text, job_files, job_base=None):
                         and job_base):
                     item['schema'] = '/'.join(
                         [job_base, item['schema']])
-                validation_conf['files'].append(item)
+                validation_conf['source'].append(item)
 
     # Copy settings
     if 'settings' in job_conf:
