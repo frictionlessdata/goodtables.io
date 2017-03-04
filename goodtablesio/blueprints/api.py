@@ -6,7 +6,7 @@ from flask.json import jsonify
 
 from goodtablesio import exceptions
 from goodtablesio import models
-from goodtablesio import tasks
+from goodtablesio.tasks.validate import validate
 from goodtablesio.utils.jobconf import verify_validation_conf
 
 log = logging.getLogger(__name__)
@@ -73,7 +73,7 @@ def create_job():
     models.job.create({'id': job_id})
 
     # Create celery task
-    tasks.validate.delay(validation_conf, job_id=job_id)
+    validate.delay(validation_conf, job_id=job_id)
 
     return job_id
 
