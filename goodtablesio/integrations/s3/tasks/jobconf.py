@@ -41,6 +41,8 @@ def get_validation_conf(bucket, job_id):
         yml_file = client.get_object(Bucket=bucket_name, Key='goodtables.yml')
         job_conf_text = yml_file['Body'].read()
     except botocore.exceptions.ClientError as exception:
+        if exception.response['Error']['Code'] != 'NoSuchKey':
+            raise
         job_conf_text = None
 
     # Get all keys and create validation conf
