@@ -2,56 +2,84 @@
 # -------------------------------
 #
 # The configuration object passed to the validation task should conform to this schema.
+# It strictly conforms to `goodtables.Inspector` API for the `nested` preset.
 #
 $schema: http://json-schema.org/draft-04/schema#
 type: object
 required:
-  - files
+  - source
 properties:
 
-  # Ths property defines validation sources
+  # Ths property defines validation source
   #
   # All paths should be fully qualified urls.
   #
-  files:
+  source:
     type: array
+    minItems: 1
     items:
-      type: object
-      required:
-        - source
-      properties:
+      oneOf:
 
-        # For any format
-        source:
-          type: string
-        schema:
-          type: string
-        format:
-          type: string
-        encoding:
-          type: string
-        skip_rows:
-          type: array
+        # Preset: table
+        - type: object
+          required:
+            - source
+          properties:
 
-        # For csv format
-        doublequote:
-          type: boolean
-        escapechar:
-          type: string
-        quotechar:
-          type: string
-        quoting:
-          type: string
-        skipinitialspace:
-          type: boolean
+            # Source
+            source:
+              type: string
 
-        # For json format
-        prefix:
-          type: string
+            # Preset
+            preset:
+              type: string
+              enum: ['table']
 
-        # For xls[x] format
-        sheet:
-          type: integer
+            # Options (any format)
+            schema:
+              type: string
+            format:
+              type: string
+            encoding:
+              type: string
+            skip_rows:
+              type: array
+
+            # Options (csv format)
+            doublequote:
+              type: boolean
+            escapechar:
+              type: string
+            quotechar:
+              type: string
+            quoting:
+              type: string
+            skipinitialspace:
+              type: boolean
+
+            # Options (json format)
+            prefix:
+              type: string
+
+            # Options (xls[x] format)
+            sheet:
+              type: integer
+
+        # Preset: datapackage
+        - type: object
+          required:
+            - source
+            - preset
+          properties:
+
+            # Source
+            source:
+              type: string
+
+            # Preset
+            preset:
+              type: string
+              enum: ['datapackage']
 
   # This property defines validation settings
   #

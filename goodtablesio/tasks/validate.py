@@ -12,7 +12,7 @@ def validate(validation_conf, job_id):
     """Main validation task.
 
     Args:
-        validation_conf (dict): validation configuration
+        validation_conf (dict): VERIFIED validation conf
 
     See `schemas/validation-conf.yml`.
 
@@ -29,28 +29,17 @@ def validate(validation_conf, job_id):
         }
         models.job.update(params)
 
-    # Safety checks
-    if not validation_conf.get('files'):
-        params = {
-            'id': job_id,
-            'finished': datetime.datetime.utcnow(),
-            'status': 'error',
-            'error': {'message': 'No files to validate'}
-        }
+    # Get report
+    inspector = Inspector(**validation_conf.get('settings', {}))
+    report = inspector.inspect(validation_conf['source'], preset='nested')
 
-    else:
-        # Get report
-        settings = validation_conf.get('settings', {})
-        inspector = Inspector(**settings)
-        report = inspector.inspect(validation_conf['files'], preset='tables')
-
-        # Save report
-        params = {
-            'id': job_id,
-            'report': report,
-            'finished': datetime.datetime.utcnow(),
-            'status': 'success' if report['valid'] else 'failure'
-        }
+    # Save report
+    params = {
+        'id': job_id,
+        'report': report,
+        'finished': datetime.datetime.utcnow(),
+        'status': 'success' if report['valid'] else 'failure'
+    }
 
     models.job.update(params)
 

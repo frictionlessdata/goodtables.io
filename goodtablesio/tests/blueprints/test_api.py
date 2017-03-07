@@ -69,7 +69,7 @@ def test_api_get_job_not_found(client):
 
 def test_api_create_job(client):
 
-    payload = {'files': [{'source': 'http://example.com'}]}
+    payload = {'source': [{'source': 'http://example.com'}]}
 
     # NB: We can't post the payload directly in `data` as Werkzeug
     # will think that the `files` key are actual uploads

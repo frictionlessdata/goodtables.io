@@ -6,7 +6,7 @@ flask==0.11.1
 flask-login==0.4.0
 flask-oauthlib==0.9.3
 github3.py==0.9.6
-goodtables==1.0.0a4
+goodtables==1.0.0a8
 gunicorn==19.6.0
 jsonschema==2.5.1
 jsontableschema==0.9.0

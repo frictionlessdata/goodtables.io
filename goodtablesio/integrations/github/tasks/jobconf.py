@@ -7,7 +7,7 @@ from goodtablesio.services import database
 from goodtablesio.models.job import Job
 from goodtablesio.celery_app import celery_app
 from goodtablesio.utils.jobtask import JobTask
-from goodtablesio.utils.jobconf import make_validation_conf, parse_job_conf
+from goodtablesio.utils.jobconf import make_validation_conf
 from goodtablesio.integrations.github.utils.hook import get_tokens_for_job
 
 
@@ -33,10 +33,8 @@ def get_validation_conf(owner, repo, sha, job_id):
     # Get validation conf
     job_base = _get_job_base(owner, repo, sha)
     job_files = _get_job_files(owner, repo, sha, tokens)
-    job_conf = _load_job_conf(job_base)
-
-    validation_conf = make_validation_conf(
-        job_files, job_conf, job_base=job_base)
+    job_conf_text = _load_job_conf_text(job_base)
+    validation_conf = make_validation_conf(job_conf_text, job_files, job_base)
 
     return validation_conf
 
@@ -102,11 +100,10 @@ def _get_job_files_contents_api(repo_api, sha, contents=None):
     return files
 
 
-def _load_job_conf(job_base):
-    job_conf = {'files': '*'}
+def _load_job_conf_text(job_base):
     url = '/'.join([job_base, 'goodtables.yml'])
     text = _load_file(url)
-    return parse_job_conf(text) or job_conf
+    return text
 
 
 def _load_file(url):

@@ -10,12 +10,11 @@ from goodtablesio.tests import factories
 
 pytestmark = pytest.mark.usefixtures('session_cleanup')
 
-# TODO: this test should not rely on external HTTP calls to GitHub
-
 
 # Tests
 
-@patch('goodtablesio.integrations.github.blueprint.set_commit_status')
+# TODO: this test should not rely on external HTTP calls to GitHub
+@patch('goodtablesio.integrations.github.signals.set_commit_status')
 def test_create_job(set_commit_status, client, celery_app):
 
     # TODO: refactor to not use actual calls!

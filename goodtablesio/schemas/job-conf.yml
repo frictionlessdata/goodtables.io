@@ -5,11 +5,9 @@
 #
 $schema: http://json-schema.org/draft-04/schema#
 type: object
-required:
-  - files
 properties:
 
-  # Ths property defines validation sources
+  # Ths property defines files for validation
   #
   # All paths should be relative to goodtables.yml
   # file location in the reposotiry.
@@ -27,7 +25,7 @@ properties:
       #
       - type: string
 
-      # Could be an array
+      # Could be an array of objects
       #
       # Examples:
       #
@@ -74,6 +72,24 @@ properties:
             # For xls[x] format
             sheet:
               type: integer
+
+  # Ths property defines datapackages for validation
+  #
+  # All paths should be relative to goodtables.yml
+  # file location in the reposotiry.
+  #
+  datapackages:
+    oneOf:
+
+      # Could be an array of strings
+      #
+      # Examples:
+      #
+      # - datapackage.json
+      #
+      - type: array
+        items:
+          type: string
 
   # This property defines validation settings
   #
