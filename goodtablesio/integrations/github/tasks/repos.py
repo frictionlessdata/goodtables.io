@@ -6,7 +6,7 @@ from goodtablesio.integrations.github.models.repo import GithubRepo
 from goodtablesio.integrations.github.utils.repos import iter_repos_by_token
 
 
-@celery_app.task(name='goodtablesio.github.sync_user_repos')
+@celery_app.task(name='goodtablesio.github.sync_user_repos', queue='internal')
 def sync_user_repos(user_id):
     """Sync user repositories.
     """
