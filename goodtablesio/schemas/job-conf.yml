@@ -5,6 +5,15 @@
 #
 $schema: http://json-schema.org/draft-04/schema#
 type: object
+not:
+  required:
+    - files
+    - datapackages
+anyOf:
+  - required:
+    - files
+  - required:
+    - datapackages
 properties:
 
   # Ths property defines files for validation
