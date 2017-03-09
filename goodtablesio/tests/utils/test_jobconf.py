@@ -198,16 +198,20 @@ def test_make_validation_conf_files_and_datapackages():
         'datapackage2.json',
     ]
     job_base = 'http://example.com'
-    validation_conf = {
-        'source': [
-            {'source': 'http://example.com/file1.csv'},
-            {'source': 'http://example.com/file2.csv'},
-            {'source': 'http://example.com/datapackage1.json', 'preset': 'datapackage'},
-            {'source': 'http://example.com/datapackage2.json', 'preset': 'datapackage'},
-        ]
-    }
 
-    assert make_validation_conf(job_conf_text, job_files, job_base) == validation_conf
+    # https://github.com/frictionlessdata/goodtables.io/issues/169
+    # validation_conf = {
+        # 'source': [
+            # {'source': 'http://example.com/file1.csv'},
+            # {'source': 'http://example.com/file2.csv'},
+            # {'source': 'http://example.com/datapackage1.json', 'preset': 'datapackage'},
+            # {'source': 'http://example.com/datapackage2.json', 'preset': 'datapackage'},
+        # ]
+    # }
+    # assert make_validation_conf(job_conf_text, job_files, job_base) == validation_conf
+
+    with pytest.raises(exceptions.InvalidJobConfiguration):
+        make_validation_conf(job_conf_text, job_files, job_base)
 
 
 def test_verify_validation_conf():
