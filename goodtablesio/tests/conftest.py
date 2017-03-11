@@ -2,6 +2,7 @@ import pytest
 from goodtablesio.app import app
 from goodtablesio.services import database
 from goodtablesio.models.job import Job
+from goodtablesio.models.task import Task
 from goodtablesio.models.user import User
 from goodtablesio.models.source import Source
 from goodtablesio.models.integration import Integration
@@ -21,6 +22,7 @@ def pytest_configure(config):
 def session_cleanup():
 
     database['session'].query(Job).delete()
+    database['session'].query(Task).delete()
     database['session'].query(User).delete()
     database['session'].query(Source).delete()
 
