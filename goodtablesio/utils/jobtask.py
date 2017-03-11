@@ -1,5 +1,5 @@
 import datetime
-from celery import Task
+from goodtablesio.utils.task import Task
 from goodtablesio import exceptions, models
 
 
