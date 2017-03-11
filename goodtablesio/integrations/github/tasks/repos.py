@@ -1,4 +1,5 @@
 import datetime
+from goodtablesio.utils.task import Task
 from goodtablesio.models.user import User
 from goodtablesio.services import database
 from goodtablesio.celery_app import celery_app
@@ -6,7 +7,7 @@ from goodtablesio.integrations.github.models.repo import GithubRepo
 from goodtablesio.integrations.github.utils.repos import iter_repos_by_token
 
 
-@celery_app.task(name='goodtablesio.github.sync_user_repos', queue='internal')
+@celery_app.task(name='goodtablesio.github.sync_user_repos', queue='internal', base=Task)
 def sync_user_repos(user_id):
     """Sync user repositories.
     """
