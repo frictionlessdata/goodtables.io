@@ -1,7 +1,6 @@
 import pytest
 
 from goodtablesio.models.task import Task
-from goodtablesio.tests import factories
 from goodtablesio.services import database
 
 

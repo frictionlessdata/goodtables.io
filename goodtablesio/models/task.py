@@ -18,5 +18,6 @@ class Task(Base, BaseModelMixin):
     created = Column(
         DateTime(timezone=True), default=datetime.datetime.utcnow, nullable=False)
     finished = Column(DateTime(timezone=True))
+    error = Column(JSONB)
     user_id = Column(Unicode, ForeignKey('users.id'))
     user = relationship('User', backref='tasks')
