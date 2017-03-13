@@ -1,6 +1,9 @@
+import datetime
+
 import pytest
 
 from goodtablesio.models.user import User
+from goodtablesio.models.plan import Plan, Subscription
 from goodtablesio.tests import factories
 from goodtablesio.services import database
 
@@ -110,3 +113,94 @@ def test_json_fields_mutable():
 
     assert user.provider_ids == {'google': 'abcd', 'github': 123456}
     assert user.conf == {'a': '1', 'b': '2'}
+
+
+def test_user_set_plan():
+
+    plan = database['session'].query(Plan).filter_by(name='paid').one()
+
+    user = factories.User()
+
+    assert user.plan is None
+
+    user.set_plan(plan.name)
+
+    assert user.plan == plan
+
+    subscriptions = database['session'].query(Subscription).filter_by(
+        user_id=user.id).all()
+
+    assert len(subscriptions) == 1
+
+    assert subscriptions[0].user_id == user.id
+    assert subscriptions[0].plan_id == plan.id
+    assert subscriptions[0].active is True
+
+    assert user.subscription.id == subscriptions[0].id
+
+
+def test_user_set_plan_unknown():
+
+    user = factories.User()
+    with pytest.raises(ValueError):
+        user.set_plan('not-found')
+
+
+def test_user_set_plan_no_expire():
+
+    plan = database['session'].query(Plan).filter_by(name='free').one()
+    assert plan.frequency == ''
+
+    user = factories.User()
+    user.set_plan(plan.name)
+
+    assert user.subscription.expires is None
+
+
+def test_user_set_plan_expire_in_a_month():
+
+    plan = database['session'].query(Plan).filter_by(name='paid').one()
+    assert plan.frequency == 'month'
+
+    user = factories.User()
+    user.set_plan(plan.name)
+
+    assert (user.subscription.expires.date() ==
+            datetime.datetime.now().date() + datetime.timedelta(days=30))
+
+
+def test_user_set_plan_expire_in_a_year():
+
+    plan = factories.Plan(name='my-plan', frequency='year')
+
+    user = factories.User()
+    user.set_plan(plan.name)
+
+    assert (user.subscription.expires.date() ==
+            datetime.datetime.now().date() + datetime.timedelta(days=365))
+
+    database['session'].delete(user.subscription)
+    database['session'].delete(plan)
+    database['session'].commit()
+
+
+def test_user_set_plan_extend_subscription():
+
+    plan = database['session'].query(Plan).filter_by(name='paid').one()
+    assert plan.frequency == 'month'
+
+    user = factories.User()
+    user.set_plan(plan.name)
+
+    user.extend_subscription()
+
+    # Initial month + an extra one
+    assert (user.subscription.expires.date() ==
+            datetime.datetime.now().date() + datetime.timedelta(days=60))
+
+
+def test_user_set_plan_extend_subscription_no_active_subscription():
+
+    user = factories.User()
+    with pytest.raises(ValueError):
+        user.extend_subscription()
