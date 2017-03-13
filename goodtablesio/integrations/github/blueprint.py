@@ -2,12 +2,13 @@ import uuid
 import logging
 
 from celery import chain
-from flask import Blueprint, request, abort, session, jsonify
+from flask import Blueprint, request, abort, jsonify
 from flask_login import login_required, current_user
 
 from goodtablesio import models, settings
 from goodtablesio.services import database
 from goodtablesio.models.job import Job
+from goodtablesio.models.task import Task
 from goodtablesio.tasks.validate import validate
 from goodtablesio.utils.signature import validate_signature
 from goodtablesio.utils.frontend import render_component
@@ -167,15 +168,21 @@ def create_job():
 @login_required
 def api_sync_account():
     error = None
-    try:
-        result = sync_user_repos.delay(current_user.id)
-        # TODO: store in the database (not session)
-        # It's kinda general problem it looks like we need
-        # to track syncing tasks in the database (github, s3, etc)
-        session['github_sync_task_id'] = result.task_id
-    except Exception as exception:
-        log.exception(exception)
-        error = 'Sync account error'
+
+    # Check syncing status
+    if _is_user_repos_syncing(current_user.id):
+        error = 'User repos are already syncing'
+
+    # Run syncing
+    if not error:
+        # TODO:
+        # Task create/run should be atomic
+        # https://github.com/frictionlessdata/goodtables.io/issues/172
+        task = Task(name=sync_user_repos.name, user=current_user)
+        database['session'].add(task)
+        database['session'].commit()
+        sync_user_repos.s(current_user.id).apply_async(task_id=task.id)
+
     return jsonify({
         'error': error,
     })
@@ -218,15 +225,7 @@ def api_repo_list():
     repos_data = [repos.to_api() for repos in repos]
 
     # Get syncing status
-    syncing = False
-    if session.get('github_sync_task_id'):
-        task_id = session['github_sync_task_id']
-        result = sync_user_repos.AsyncResult(task_id)
-        if result.status == 'PENDING':
-            syncing = True
-        else:
-            # TODO: cover errors
-            del session['github_sync_task_id']
+    syncing = _is_user_repos_syncing(current_user.id)
 
     return jsonify({
         'repos': repos_data,
@@ -305,3 +304,15 @@ def api_repo_deactivate(repo_id):
     return jsonify({
         'error': error,
     })
+
+
+# Internal
+
+def _is_user_repos_syncing(user_id):
+    return bool(
+        database['session'].query(Task).
+        filter_by(
+            name=sync_user_repos.name,
+            user_id=user_id,
+            finished=None).
+        count())
