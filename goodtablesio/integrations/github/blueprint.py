@@ -168,8 +168,7 @@ def create_job():
 def api_sync_account():
     error = None
     try:
-        user_id = session['user_id']
-        result = sync_user_repos.delay(user_id)
+        result = sync_user_repos.delay(current_user.id)
         # TODO: store in the database (not session)
         # It's kinda general problem it looks like we need
         # to track syncing tasks in the database (github, s3, etc)
