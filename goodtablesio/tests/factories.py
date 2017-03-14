@@ -6,6 +6,7 @@ from faker import Faker
 
 from goodtablesio.models.job import Job
 from goodtablesio.models.user import User
+from goodtablesio.models.plan import Plan
 from goodtablesio.models.source import Source
 from goodtablesio.models.integration import Integration
 from goodtablesio.services import database
@@ -149,3 +150,18 @@ class S3Bucket(FactoryBase):
     @property
     def integration(self):
         return database['session'].query(Integration).get('s3')
+
+
+class Plan(FactoryBase):
+
+    class Meta:
+        model = Plan
+        sqlalchemy_session = database['session']
+
+    id = factory.Sequence(lambda n: str(uuid.uuid4()))
+    name = 'paid'
+    description = ''
+    active = True
+    frequency = 'month'
+    price = 1000
+    created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
