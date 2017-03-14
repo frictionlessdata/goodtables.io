@@ -3,7 +3,8 @@ import datetime
 import pytest
 
 from goodtablesio.models.user import User
-from goodtablesio.models.plan import Plan, Subscription
+from goodtablesio.models.plan import Plan
+from goodtablesio.models.subscription import Subscription
 from goodtablesio.tests import factories
 from goodtablesio.services import database
 

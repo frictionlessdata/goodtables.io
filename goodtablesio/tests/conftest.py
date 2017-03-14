@@ -3,7 +3,7 @@ from goodtablesio.app import app
 from goodtablesio.services import database
 from goodtablesio.models.job import Job
 from goodtablesio.models.user import User
-from goodtablesio.models.plan import Subscription
+from goodtablesio.models.subscription import Subscription
 from goodtablesio.models.source import Source
 from goodtablesio.models.integration import Integration
 from goodtablesio.celery_app import celery_app as celapp

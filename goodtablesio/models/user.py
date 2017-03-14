@@ -9,7 +9,8 @@ from flask_login import UserMixin as UserLoginMixin
 
 from goodtablesio.services import database
 from goodtablesio.models.base import Base, BaseModelMixin, make_uuid
-from goodtablesio.models.plan import Plan, Subscription
+from goodtablesio.models.plan import Plan
+from goodtablesio.models.subscription import Subscription
 
 
 log = logging.getLogger(__name__)
