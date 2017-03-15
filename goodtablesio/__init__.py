@@ -4,6 +4,8 @@ import goodtablesio.models.internal_job
 import goodtablesio.models.user
 import goodtablesio.models.source
 import goodtablesio.models.integration
+import goodtablesio.models.plan
+import goodtablesio.models.subscription
 
 # Register tasks
 import goodtablesio.tasks.validate

@@ -4,6 +4,7 @@ from goodtablesio.services import database
 from goodtablesio.models.job import Job
 from goodtablesio.models.internal_job import InternalJob
 from goodtablesio.models.user import User
+from goodtablesio.models.subscription import Subscription
 from goodtablesio.models.source import Source
 from goodtablesio.models.integration import Integration
 from goodtablesio.celery_app import celery_app as celapp
@@ -23,6 +24,7 @@ def session_cleanup():
 
     database['session'].query(Job).delete()
     database['session'].query(InternalJob).delete()
+    database['session'].query(Subscription).delete()
     database['session'].query(User).delete()
     database['session'].query(Source).delete()
 
