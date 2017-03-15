@@ -1,6 +1,6 @@
 # Register models
 import goodtablesio.models.job
-import goodtablesio.models.task
+import goodtablesio.models.internal_job
 import goodtablesio.models.user
 import goodtablesio.models.source
 import goodtablesio.models.integration

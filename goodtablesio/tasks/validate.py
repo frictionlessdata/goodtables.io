@@ -2,7 +2,7 @@ import datetime
 from goodtables import Inspector
 from goodtablesio import models
 from goodtablesio.celery_app import celery_app
-from goodtablesio.utils.jobtask import JobTask
+from goodtablesio.tasks.base import JobTask
 
 
 # Module API

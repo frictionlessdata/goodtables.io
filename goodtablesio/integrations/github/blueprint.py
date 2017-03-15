@@ -8,7 +8,7 @@ from flask_login import login_required, current_user
 from goodtablesio import models, settings
 from goodtablesio.services import database
 from goodtablesio.models.job import Job
-from goodtablesio.models.task import Task
+from goodtablesio.models.internal_job import InternalJob
 from goodtablesio.tasks.validate import validate
 from goodtablesio.utils.signature import validate_signature
 from goodtablesio.utils.frontend import render_component
@@ -176,12 +176,12 @@ def api_sync_account():
     # Run syncing
     if not error:
         # TODO:
-        # Task create/run should be atomic
+        # Job create/run should be atomic
         # https://github.com/frictionlessdata/goodtables.io/issues/172
-        task = Task(name=sync_user_repos.name, user=current_user)
-        database['session'].add(task)
+        job = InternalJob(name=sync_user_repos.name, user=current_user)
+        database['session'].add(job)
         database['session'].commit()
-        sync_user_repos.s(current_user.id).apply_async(task_id=task.id)
+        sync_user_repos.delay(current_user.id, job_id=job.id)
 
     return jsonify({
         'error': error,
@@ -310,7 +310,7 @@ def api_repo_deactivate(repo_id):
 
 def _is_user_repos_syncing(user_id):
     return bool(
-        database['session'].query(Task).
+        database['session'].query(InternalJob).
         filter_by(
             name=sync_user_repos.name,
             user_id=user_id,

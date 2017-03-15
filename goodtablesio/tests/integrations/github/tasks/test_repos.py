@@ -7,9 +7,9 @@ pytestmark = pytest.mark.usefixtures('session_cleanup')
 # Tests
 
 def test_sync_user_repos(celery_app, GitHubForIterRepos):
-    task = factories.Task()
+    job = factories.InternalJob()
     user = factories.User(github_oauth_token='my-token')
-    sync_user_repos.s(user.id).apply_async(task_id=task.id)
+    sync_user_repos.delay(user.id, job_id=job.id)
     GitHubForIterRepos.assert_called_with(token='my-token')
     sources = sorted(user.sources, key=lambda source: source.name)
     assert sources[0].conf['github_id'] == 'id1'

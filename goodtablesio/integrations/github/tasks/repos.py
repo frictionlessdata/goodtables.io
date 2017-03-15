@@ -1,22 +1,22 @@
 import datetime
-from goodtablesio.utils.task import Task
 from goodtablesio.models.user import User
 from goodtablesio.services import database
 from goodtablesio.celery_app import celery_app
-from goodtablesio.models.task import Task as TaskModel
+from goodtablesio.tasks.base import InternalJobTask
+from goodtablesio.models.internal_job import InternalJob
 from goodtablesio.integrations.github.models.repo import GithubRepo
 from goodtablesio.integrations.github.utils.repos import iter_repos_by_token
 
 
 @celery_app.task(name='goodtablesio.github.sync_user_repos',
-        bind=True, queue='internal', base=Task)
-def sync_user_repos(self, user_id):
+        queue='internal', base=InternalJobTask)
+def sync_user_repos(user_id, job_id):
     """Sync user repositories.
     """
 
-    # Get user/task
+    # Get user/job
     user = database['session'].query(User).get(user_id)
-    task = database['session'].query(TaskModel).get(self.request.id)
+    job = database['session'].query(InternalJob).get(job_id)
 
     # Get token
     token = user.github_oauth_token
@@ -35,9 +35,9 @@ def sync_user_repos(self, user_id):
         repo.updated = datetime.datetime.utcnow(),
         repo.users.append(user)
 
-    # Update task
-    task.status = 'success'
-    task.finished = datetime.datetime.utcnow()
+    # Update job
+    job.status = 'success'
+    job.finished = datetime.datetime.utcnow()
 
     # Commit to database
     database['session'].commit()

@@ -7,9 +7,9 @@ from goodtablesio.models.base import Base, BaseModelMixin, make_uuid
 log = logging.getLogger(__name__)
 
 
-class Task(Base, BaseModelMixin):
+class InternalJob(Base, BaseModelMixin):
 
-    __tablename__ = 'tasks'
+    __tablename__ = 'internal_jobs'
 
     id = Column(Unicode, primary_key=True, default=make_uuid)
     name = Column(Unicode, nullable=False)
