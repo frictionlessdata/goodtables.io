@@ -42,6 +42,7 @@ MAX_JOBS_LIMIT = 100
 
 broker_url = os.environ['BROKER_URL']
 result_backend = os.environ['RESULT_BACKEND']
+task_default_queue = 'default'
 task_serializer = 'json'
 result_serializer = 'json'
 timezone = 'Europe/London'

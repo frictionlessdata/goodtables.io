@@ -5,8 +5,8 @@ import botocore
 
 from goodtablesio import models
 from goodtablesio.services import database
+from goodtablesio.tasks.base import JobTask
 from goodtablesio.celery_app import celery_app
-from goodtablesio.utils.jobtask import JobTask
 from goodtablesio.utils.jobconf import make_validation_conf
 
 

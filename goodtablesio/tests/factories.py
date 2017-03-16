@@ -5,6 +5,7 @@ import factory
 from faker import Faker
 
 from goodtablesio.models.job import Job
+from goodtablesio.models.internal_job import InternalJob
 from goodtablesio.models.user import User
 from goodtablesio.models.plan import Plan
 from goodtablesio.models.source import Source
@@ -53,6 +54,18 @@ class Job(FactoryBase):
     created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     integration_name = 'api'
     status = 'created'
+
+
+class InternalJob(FactoryBase):
+
+    class Meta:
+        model = InternalJob
+        sqlalchemy_session = database['session']
+
+    id = factory.Sequence(lambda n: str(uuid.uuid4()))
+    name = 'internal_job_name'
+    status = 'created'
+    created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
 
 
 class User(FactoryBase):
