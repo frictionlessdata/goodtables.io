@@ -1,5 +1,6 @@
 <script>
-const Report = (typeof goodtablesVue !== 'undefined') ? goodtablesVue.Report : null  // eslint-disable-line no-undef
+import {Report} from 'goodtables-vue'
+
 export default {
   name: 'Job',
   props: {
