@@ -42,4 +42,4 @@ export default {
 </style>
 
 <!-- Import global styles -->
-<style src="../styles.css"></style>
+<style lang="scss" src="../styles/main.scss"></style>

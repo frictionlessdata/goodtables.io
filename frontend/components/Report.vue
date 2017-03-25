@@ -13,7 +13,7 @@ export default {
 </script>
 
 <template>
-<div class="goodtables-vue-report">
+<div class="report">
 
   <ul class="dataset-errors">
     <li v-for="error of report.errors">{{ error.message }}</li>

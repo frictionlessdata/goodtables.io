@@ -72,8 +72,8 @@ export default {
 
   <h4 class="file-heading">
     <span>
-      <a class="file-name">{{ table.source }}</a>
-      <a class="file-count">Table {{ tableNumber }} of {{ tablesCount }}</a>
+      <a class="file-name" :href="table.source">{{ table.source }}</a>
+      <a class="file-count" :href="table.source">Table {{ tableNumber }} of {{ tablesCount }}</a>
     </span>
   </h4>
 

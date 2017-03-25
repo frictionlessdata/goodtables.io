@@ -23,7 +23,7 @@ const webpackConfig = {
         options: {
           loaders: {
             css: 'vue-style-loader!css-loader',
-            postcss: 'vue-style-loader!css-loader',
+            scss: 'vue-style-loader!css-loader!sass-loader',
           },
           postcss: [
             autoprefixer({
@@ -46,7 +46,15 @@ const webpackConfig = {
         loader: 'url-loader',
         options: {
           limit: 32768,
-          name: '[name].[ext]?[hash]'
+          name: 'images/[name].[hash].[ext]'
+        }
+      },
+      {
+        test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
+        loader: 'url-loader',
+        query: {
+          limit: 10000,
+          name: 'fonts/[name].[hash].[ext]'
         }
       },
     ]

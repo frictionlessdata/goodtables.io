@@ -1,0 +1,228 @@
+.panel {
+  overflow: hidden;
+  box-shadow: none;
+  border-width: 0;
+
+  @mixin active-panel {
+    background-color: $body-bg;
+    color: $text-color;
+    border-left-width: 5px;
+  }
+
+  .github,
+  .aws {
+    position: relative;
+
+    .integration {
+      position: absolute;
+      top: 1px;
+      right: 0;
+      font-size: 15px;
+      text-decoration: none;
+      padding: 11px 10px;
+    }
+  }
+
+  &.source-item {
+    white-space: nowrap;
+    border-width: 0;
+
+    .label {
+      margin-right: 10px;
+    }
+
+    .panel-title {
+      display: inline-block;
+      font-weight: 600;
+    }
+
+    .source,
+    .job {
+      display: block;
+      text-decoration: none;
+
+      &.active {
+        @media screen and (min-width: $screen-sm) {
+          color: #fff;
+          background-color: $brand-warning;
+          border-color: $brand-warning;
+        }
+      }
+    }
+
+    .source {
+      padding: 10px;
+    }
+
+    .job {
+      border-top: solid 1px $gray-darker;
+      padding: 3px 10px;
+      font-size: 12px;
+      font-weight: 500;
+
+      .jobcount {
+        float: right;
+      }
+    }
+
+    @mixin panel_state($colour: $brand-warning) {
+      .source,
+      .job {
+        display: block;
+
+        &.active {
+          background-color: $colour;
+          border-color: $colour;
+        }
+      }
+      .source.active {
+        .label {
+          background-color: #fff;
+          color: $colour;
+        }
+
+        & + .job.active {
+          @media screen and (min-width: $screen-sm) {
+            border-top-color: rgba(#fff,0.2);
+          }
+        }
+
+        & ~ .integration {
+          color: rgba(#fff,0.8);
+          @include gradient-horizontal(rgba($colour,0), $colour, 0%, 25%);
+
+          &:hover {
+            color: #fff;
+          }
+        }
+      }
+    }
+
+    &.panel-success {
+      @media screen and (min-width: $screen-sm) {
+        @include panel_state($brand-success);
+      }
+      .source-view & {
+        @include panel_state($brand-success);
+      }
+    }
+
+    &.panel-danger {
+      @media screen and (min-width: $screen-sm) {
+        @include panel_state($brand-danger);
+      }
+      .source-view & {
+        @include panel_state($brand-danger);
+      }
+    }
+
+    &.active {
+      @media screen and (min-width: $screen-sm) {
+
+        @include active-panel;
+
+        .source,
+        .job {
+          &:not(.active) {
+            &:hover {
+              background-color: inherit;
+            }
+          }
+        }
+        .source:hover ~ .integration {
+          @include gradient-horizontal(rgba($body-bg,0), $body-bg, 0%, 25%);
+        }
+        .integration {
+          @include gradient-horizontal(rgba($body-bg,0), $body-bg, 0%, 25%);
+          color: rgba($text-color,0.8);
+
+          &:hover {
+            color: $text-color;
+          }
+        }
+        &.panel-success {
+          .source.active:hover ~ .integration {
+            @include gradient-horizontal(rgba($brand-success,0), $brand-success, 0%, 25%);
+          }
+        }
+        &.panel-danger {
+          .source.active:hover ~ .integration {
+            @include gradient-horizontal(rgba($brand-danger,0), $brand-danger, 0%, 25%);
+          }
+        }
+      }
+    }
+  }
+
+  .table {
+    font-size: 11px;
+    background-color: $body-bg;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    .result-header-row {
+      font-weight: 600;
+    }
+
+    .result-row-index {
+      font-weight: normal;
+      width: 1em;
+    }
+  }
+
+  &.result {
+
+    .panel-heading {
+      text-align: right;
+      font-size: 15px;
+      line-height: 1.2;
+      @include clearfix;
+
+      .label,
+      .panel-title {
+        float: left;
+        margin-right: 0.5em;
+      }
+
+      .count {
+        background-color: #fff;
+        color: currentColor;
+      }
+
+      .panel-title {
+        font-size: inherit;
+        small {
+          font-size: 14px;
+        }
+      }
+
+      .help {
+        font-size: 12px;
+      }
+    }
+
+    .popover {
+      font-size: 13px;
+
+      .label {
+        float: right;
+        margin-left: 0.5em;
+        margin-right: 0;
+      }
+    }
+  }
+}
+
+.panel-body {
+  background-color: $body-bg;
+  color: $text-color;
+
+  .panel-danger & {
+    background-color: lighten($state-danger-bg,3%);
+  }
+  .panel-warning & {
+    background-color: lighten($state-warning-bg,3%);
+  }
+}

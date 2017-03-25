@@ -1,0 +1,20 @@
+@mixin rev-out($col:$body-bg, $bg:$gray-dark) {
+  color: $col;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  svg {
+    fill: $col;
+  }
+
+  .btn {
+    border-color: $col;
+    background-color: $col;
+    color: $bg;
+
+    &.btn-default {
+      color: $col;
+      background-color: rgba($bg,0);
+    }
+  }
+}

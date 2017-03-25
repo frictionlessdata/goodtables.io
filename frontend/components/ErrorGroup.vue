@@ -5,9 +5,11 @@ export default {
     errorGroup: Object,
   },
   mounted: () => {
-    // $('[rel="popover"]').popover({
-      // html: true,
-    // })
+    if (typeof $ !== undefined) {
+      $('[rel="popover"]').popover({
+        html: true,
+      })
+    }
   },
 }
 </script>
