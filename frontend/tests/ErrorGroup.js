@@ -1,7 +1,6 @@
 import {should} from 'chai'
 import {mount} from 'avoriaz'
 import ErrorGroup from '../components/ErrorGroup.vue'
-const report = require('./report.json')
 should()
 
 // Tests

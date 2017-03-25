@@ -5,8 +5,8 @@ export default {
     errorGroup: Object,
   },
   mounted: () => {
-    if (typeof $ !== undefined) {
-      $('[rel="popover"]').popover({
+    if (typeof $ !== 'undefined') { // eslint-disable-line
+      $('[rel="popover"]').popover({ // eslint-disable-line
         html: true,
       })
     }
