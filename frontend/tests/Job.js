@@ -1,6 +1,6 @@
 import {should} from 'chai'
 import {mount} from 'avoriaz'
-import {Report} from 'goodtables-vue'
+import Report from '../components/Report.vue'
 import Job from '../components/Job.vue'
 should()
 
