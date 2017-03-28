@@ -1,0 +1,655 @@
+.app {
+  $source-item-border: 0;
+  overflow-x: hidden;
+
+  .default {
+    @include make-row();
+    @media screen and (min-width: $screen-sm) {
+      height: 100vh;
+      overflow: hidden;
+    }
+  }
+
+  .main-nav {
+    overflow: hidden;
+    @include make-sm-column(4);
+    @include transition(width 0.2s ease);
+    min-height: 100vh;
+    @media screen and (min-width: $screen-sm) {
+      height: 100vh;
+      padding-right: 0;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .panel {
+      margin-bottom: 0;
+      border-radius: 0;
+    }
+
+    .tab-pane {
+      @include clearfix;
+    }
+
+    .source-item {
+      margin-bottom: 4px;
+
+      .status {
+        display: none;
+      }
+
+      .panel-title {
+        .jobnumber {
+          display: none;
+        }
+      }
+
+      .source,
+      .job {
+        @media screen and (min-width: $screen-sm) {
+          border-right-style: solid;
+          border-right-width: 4px;
+        }
+      }
+
+      .job {
+        border-bottom: solid $source-item-border/2 $gray-darker;
+
+        .jobtotal {
+          @include text-hide;
+          display: block; //for safari
+        }
+      }
+
+      &:hover {
+        border-left-width: 5px;
+      }
+
+      & + .source-item {
+        .source {
+          border-top: solid $source-item-border/2 $gray-darker;
+        }
+
+        @media screen and (min-width: $screen-sm) {
+          &.active {
+            .source {
+              border-top-color: $body-bg;
+            }
+            &.panel-danger {
+              .source.active {
+                border-top-color: $brand-danger;
+                border-right-color: $brand-danger;
+              }
+            }
+            &.panel-success {
+              .source.active {
+                border-top-color: $brand-success;
+                border-right-color: $brand-success;
+              }
+            }
+          }
+        }
+      }
+
+      &.active {
+        @media screen and (min-width: $screen-sm) {
+          .source {
+            border-right-color: $body-bg;
+          }
+
+          position: relative;
+
+          &:after {
+            content: '';
+            display: block;
+            width: 4px;
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            pointer-events: none;
+            background-color: rgba(#000,0.1);
+            z-index: 3;
+          }
+        }
+      }
+    }
+
+    .integration {
+      right: 4px;
+      padding-right: 8px;
+      top: $source-item-border/2;
+    }
+
+    @media screen and (min-width: $screen-sm) {
+      &:after {
+        content: '';
+        height: 50px;
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        pointer-events: none;
+      }
+    }
+
+    &.invalid {
+      .main-header {
+        background-color: $brand-danger;
+      }
+    }
+  }
+
+  .source-view {
+    display: none;
+    @include make-sm-column(8);
+    @include transition(width 0.2s ease);
+    @media screen and (min-width: $screen-sm) {
+      display: block;
+      padding-left: 0;
+
+      & > div {
+        height: 100vh;
+        overflow-x: hidden;
+        overflow-y: auto;
+        position: relative;
+      }
+    }
+
+    .main-header {
+      background-color: $brand-success;
+    }
+  }
+
+  .main-header {
+    height: 54px;
+    background-image: none;
+    position: relative;
+
+    @media screen and (min-width: $screen-sm) {
+      height: 64px;
+      box-shadow: inset -4px 0px 0px 0px rgba(#000,0.1);
+    }
+
+    .logo {
+      padding: 15px 10px 0;
+      overflow: hidden;
+
+      svg {
+        width: 150px;
+      }
+
+      @media screen and (min-width: $screen-sm) {
+        display: none;
+      }
+    }
+
+    .nav-tabs {
+      margin-right: 5px;
+      display: none;
+
+      @media screen and (min-width: $screen-sm) {
+        display: block;
+        position: absolute;
+        width: 100%;
+        bottom: 0;
+        pointer-events: none;
+
+        li {
+          pointer-events: auto;
+
+          &:only-child {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+
+  .secondary-nav {
+    display: none;
+
+    a {
+      color: #fff;
+
+      &:hover {
+        background-color: transparent;
+        cursor: pointer;
+      }
+    }
+
+    @media screen and (min-width: $screen-sm) {
+      display: table;
+      overflow: hidden;
+      padding: 15px 0 0 0;
+      margin: 0;
+      position: absolute;
+      bottom: 0;
+      right: 4px;
+      z-index: 2;
+      width: 100%;
+
+      [class*=" icon-"],
+      [class^=icon-] {
+        display: inline-block;
+        border-radius: 50%;
+        padding: 0.4em;
+      }
+
+      li {
+        display: table-cell;
+        padding-top: 8px;
+        padding-bottom: 11px;
+        border-top: solid 4px $text-color;
+
+        &:first-of-type {
+          padding-left: 30px;
+        }
+
+        a {
+          text-decoration: none;
+        }
+      }
+
+      .label {
+        font-size: 13px;
+        background-color: transparent;
+        position: relative;
+        top: -1px;
+        color: $text-color;
+      }
+    }
+  }
+
+  .source-view {
+    & > div {
+      & > .inner {
+        padding: 0 $grid-gutter-width $grid-gutter-width/2 $grid-gutter-width;
+
+        &.banner {
+          padding-top: $grid-gutter-width*1.25;
+        }
+      }
+
+      &.invalid {
+        .main-header {
+          background-color: $brand-danger;
+        }
+
+        .banner {
+          background-color: $brand-danger;
+          padding-bottom: 10px;
+
+          & + .inner > div > .nav-tabs {
+            background-color: $brand-danger;
+
+            & > li.active > a {
+              color: $brand-danger;
+            }
+          }
+        }
+      }
+    }
+
+    .banner {
+      @include rev-out;
+      background-color: $brand-success;
+
+      .source-title {
+        small {
+          color: inherit;
+        }
+      }
+
+      .source-item {
+        margin-left: -10px;
+        margin-right: -10px;
+        background-color: inherit;
+      }
+
+      & + .inner > div > .nav-tabs {
+        background-color: $brand-success;
+        margin-left: -30px;
+        margin-right: -30px;
+        padding-left: 30px;
+        padding-right: 30px;
+
+        & > li {
+          & > a {
+            color: #fff;
+          }
+
+          &.active > a {
+            color: $brand-success;
+          }
+        }
+      }
+    }
+
+    .source-title {
+      margin-top: 0;
+    }
+
+    .integration {
+      float: right;
+      font-size: 22px;
+      color: #fff;
+      text-decoration: none;
+      padding: 4px;
+    }
+
+    .source-item {
+      margin-top: $grid-gutter-width/2;
+      margin-bottom: $grid-gutter-width/2;
+
+      .status {
+        float: right;
+        text-transform: capitalize;
+        font-weight: bold;
+      }
+
+      .integration {
+        display: none;
+      }
+
+      .source {
+        padding-top: $grid-gutter-width/2;
+        padding-bottom: $grid-gutter-width/2;
+      }
+
+      .job {
+        padding-top: $grid-gutter-width/4;
+        padding-bottom: $grid-gutter-width/4;
+      }
+    }
+
+    .tab-pane {
+      padding: 30px 0;
+    }
+
+    .meta {
+      padding: 0;
+      margin: 0;
+
+      li {
+        display: inline-block;
+        padding: 2px 10px;
+        margin-top: 16px;
+        font-size: 13px;
+        border-right: solid 1px $text-color;
+
+        &:last-child {
+          border: none;
+        }
+      }
+    }
+  }
+
+  section.add-source,
+  section.settings {
+    width: 0;
+    height: 100vh;
+    @include transition(width 0.2s ease);
+    overflow: hidden;
+    float: left;
+    margin-left: -15px;
+    position: relative;
+
+    .main-header {
+      .heading {
+        margin: 0;
+        font-size: 18px;
+        padding: 20px;
+      }
+
+      .nav-tabs > li {
+        & > a {
+          color: $gray-lighter;
+        }
+
+        &.active {
+          & > a {
+            background-color: $gray-lighter;
+            color: $gray-dark;
+          }
+        }
+      }
+
+      .close {
+        padding: 20px 10px;
+        text-shadow: none;
+      }
+    }
+  }
+
+  section.add-source {
+
+    .tool-bar {
+      padding: 15px;
+      display: table;
+      width: 100%;
+      background-color: $gray-lighter;
+      border-bottom: solid 5px $gray-dark;
+
+      & > span {
+        display: table-cell;
+        vertical-align: middle;
+
+        &.sync {
+          width: 40px;
+          text-align: right;
+
+          button {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            border: none;
+            line-height: 1;
+            background-color: $gray-light;
+
+            &:hover {
+              background-color: $brand-info;
+            }
+          }
+        }
+      }
+    }
+
+    .repos {
+      padding: 0;
+      margin: 0;
+
+      li {
+        position: relative;
+        border-bottom: solid 5px $gray-dark;
+        overflow: hidden;
+
+        .repo-title {
+          font-size: 16px;
+          font-weight: 600;
+          margin: 0;
+          padding: 12px 0 0 15px;
+        }
+
+        .repo-body {
+          display: block;
+          font-size: 13px;
+          padding: 1px 0 12px 15px;
+
+          a {
+            color: inherit;
+          }
+        }
+
+        .activate {
+          position: absolute;
+          top: 50%;
+          right: 14px;
+          width: 26px;
+          height: 26px;
+          border: none;
+          margin-top: -13px;
+          border-radius: 50%;
+          background-color: #fff;
+          color: $gray;
+          line-height: 1;
+          box-shadow: 10px 0px 10px 20px $gray;
+
+          &:hover {
+            background-color: $brand-success;
+            color: #fff;
+            box-shadow: 10px 0px 10px 20px lighten($gray,20%);
+
+            & + .repo-title {
+              background-color: lighten($gray,20%);
+              border-left: solid 4px $brand-success;
+
+              & + .repo-body {
+                background-color: lighten($gray,20%);
+                border-left: solid 4px $brand-success;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  section.settings {
+    .avatar {
+      width: 50%;
+      max-width: 128px;
+    }
+  }
+
+  [class^='show-view-'] {
+    float: right;
+    text-decoration: none;
+    cursor: pointer;
+    margin-top: 4px;
+    display: none;
+
+    span {
+      @include text-hide;
+      display: block; //for safari
+    }
+
+    &:before {
+      @include icon-font();
+      font-size: 32px;
+      padding: 10px;
+      display: inline-block;
+    }
+  }
+
+  .show-view-default {
+    &:before {
+      content: "\e901";
+    }
+  }
+
+  .show-view-list {
+    &:before {
+      content: "\e900";
+    }
+    @media screen and (min-width: $screen-sm) {
+      display: inline-block;
+    }
+  }
+
+  &.list-view {
+
+    .show-view-list {
+      display: none;
+    }
+
+    .show-view-default {
+      @media screen and (min-width: $screen-sm) {
+        display: inline-block;
+      }
+    }
+
+    .default {
+      @media screen and (min-width: $screen-sm) {
+        width: 200%;
+        margin-right: 0;
+      }
+    }
+
+    .main-nav {
+      @media screen and (min-width: $screen-sm) {
+        width: 50%;
+        height: auto;
+        min-height: 100vh;
+      }
+
+      .panel {
+        @include make-sm-column(6);
+        @include make-md-column(4);
+        @include make-lg-column(3);
+        padding-left: 0;
+        padding-right: 0;
+
+
+        & + .source-item {
+          .source {
+            border-top: none;
+          }
+        }
+
+        .job {
+          border-bottom-width: $source-item-border;
+        }
+      }
+
+      &:after {
+        display: none;
+      }
+    }
+    .source-view {
+      @media screen and (min-width: $screen-sm) {
+        width: 50%;
+        height: 100vh;
+        overflow: hidden;
+      }
+    }
+  }
+
+  &.add-view,
+  &.settings-view {
+    .inner {
+      width: 200vw;
+      @include transition(width 0.2s ease);
+
+      .default {
+        width: 100vw;
+        float: left;
+        margin-left: 0;
+
+        .main-nav {
+          padding-left: 0;
+        }
+      }
+    }
+  }
+
+  &.add-view {
+    @media screen and (min-width: $screen-sm) {
+      section.add-source {
+        width: 33vw;
+        padding-left: 15px;
+      }
+    }
+  }
+
+  &.settings-view {
+    @media screen and (min-width: $screen-sm) {
+      section.settings {
+        width: 33vw;
+        padding-left: 15px;
+      }
+    }
+  }
+}

@@ -1,0 +1,25 @@
+.main-header {
+  $header_colour1: $brand-info;
+  $header_colour2: $brand-primary;
+  background-color: $header_colour1;
+  @include rev-out(#fff, $header_colour1);
+  @include gradient-horizontal($header_colour1, $header_colour2, 0%, 100%);
+
+  .inner {
+    @include gradient-horizontal($header_colour1, rgba($header_colour2,0), 0%, 100%);
+  }
+
+  .logo {
+    display: block;
+    width: 200px;
+    padding-top: $grid-gutter-width;
+    padding-bottom: $grid-gutter-width;
+    box-sizing: content-box;
+  }
+}
+
+.pattern {
+  background-image: url("../images/pattern.png");
+  background-size: 135px 135px;
+  background-position: top center;
+}

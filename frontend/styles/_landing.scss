@@ -1,0 +1,60 @@
+.landing {
+  .main-header {
+    .container {
+
+      .text {
+        padding-bottom: $grid-gutter-width;
+
+        .btn {
+          margin-top: 1em;
+          margin-right: 1em;
+          margin-bottom: 1em;
+        }
+      }
+
+      @media screen and (min-width: $screen-md) {
+        background-image: url("../images/illustration.png");
+        background-size: 50% auto;
+        background-repeat: no-repeat;
+        background-position: right 20px;
+
+        .text {
+          width: 50%;
+          padding-top: $grid-gutter-width/2;
+
+          h1 {
+            font-size: 42px;
+          }
+
+          p {
+            font-size: 18px;
+            font-weight: 600;
+          }
+
+          .btn {
+            font-size: 20px;
+          }
+        }
+      }
+
+      @media screen and (min-width: $screen-lg) {
+        background-size: 60% auto;
+        background-position: 105% 10px;
+
+        .text {
+          width: 42%;
+          padding-top: $grid-gutter-width;
+          padding-bottom: $grid-gutter-width*2;
+
+          h1 {
+            font-size: 52px;
+          }
+
+          p {
+            font-size: 24px;
+          }
+        }
+      }
+    }
+  }
+}

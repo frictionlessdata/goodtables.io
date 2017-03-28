@@ -1,0 +1,22 @@
+.nav {
+  & > li > a {
+    [class^="icon-"], [class*=" icon-"] {
+      &:first-child {
+        margin-right: 8px;
+      }
+    }
+  }
+}
+
+.nav-stacked {
+  & > li + li {
+    margin: 0;
+  }
+}
+
+.nav-tabs {
+  & > li > a {
+    padding: 10px 15px;
+    color: $text-color;
+  }
+}
