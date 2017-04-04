@@ -32,7 +32,6 @@ def record_params(setup_state):
 def index():
     jobs = models.job.get_by_integration('s3')
     return render_component('S3Home', props={
-        'userName': getattr(current_user, 'display_name', None),
         'jobs': jobs,
     })
 
@@ -40,9 +39,7 @@ def index():
 @s3.route('/settings')
 @login_required
 def s3_settings():
-    return render_component('S3Settings', props={
-        'userName': getattr(current_user, 'display_name', None),
-    })
+    return render_component('S3Settings')
 
 
 @s3.route('/hook', methods=['POST'])
@@ -114,9 +111,9 @@ def api_bucket(bucket_id):
     # Get bucket
     try:
         bucket = (database['session'].query(S3Bucket).
-            filter(S3Bucket.users.any(id=current_user.id)).
-            filter(S3Bucket.id == bucket_id).
-            one())
+                  filter(S3Bucket.users.any(id=current_user.id)).
+                  filter(S3Bucket.id == bucket_id).
+                  one())
         bucket_data = bucket.to_api()
     except Exception as exception:
         log.exception(exception)
@@ -191,9 +188,9 @@ def api_bucket_activate(bucket_id):
     # Get bucket
     try:
         bucket = (database['session'].query(S3Bucket).
-            filter(S3Bucket.users.any(id=current_user.id)).
-            filter(S3Bucket.id == bucket_id).
-            one())
+                  filter(S3Bucket.users.any(id=current_user.id)).
+                  filter(S3Bucket.id == bucket_id).
+                  one())
     except Exception as exception:
         log.exception(exception)
         abort(403)
@@ -227,9 +224,9 @@ def api_bucket_deactivate(bucket_id):
     # Get bucket
     try:
         bucket = (database['session'].query(S3Bucket).
-            filter(S3Bucket.users.any(id=current_user.id)).
-            filter(S3Bucket.id == bucket_id).
-            one())
+                  filter(S3Bucket.users.any(id=current_user.id)).
+                  filter(S3Bucket.id == bucket_id).
+                  one())
     except Exception as exception:
         log.exception(exception)
         abort(403)
@@ -263,9 +260,9 @@ def api_bucket_remove(bucket_id):
     # Get bucket
     try:
         bucket = (database['session'].query(S3Bucket).
-            filter(S3Bucket.users.any(id=current_user.id)).
-            filter(S3Bucket.id == bucket_id).
-            one())
+                  filter(S3Bucket.users.any(id=current_user.id)).
+                  filter(S3Bucket.id == bucket_id).
+                  one())
     except Exception as exception:
         log.exception(exception)
         abort(403)
