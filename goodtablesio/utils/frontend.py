@@ -1,4 +1,6 @@
 from flask import render_template
+from flask_login import current_user
+
 from goodtablesio import settings
 
 
@@ -18,4 +20,9 @@ def render_component(component, props={}):
     filename = 'index.min.html'
     if settings.DEBUG:
         filename = 'index.html'
+
+    # Common props
+    if not props or (props and 'userName' not in props):
+        props['userName'] = getattr(current_user, 'display_name', None)
+
     return render_template(filename, component=component, props=props.copy())

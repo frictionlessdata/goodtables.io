@@ -38,7 +38,6 @@ def github_home():
     jobs = models.job.get_by_integration('github')
 
     return render_component('GithubHome', props={
-        'userName': getattr(current_user, 'display_name', None),
         'jobs': jobs,
     })
 
@@ -53,7 +52,6 @@ def github_org(org):
     )
 
     return render_component('GithubHome', props={
-        'userName': getattr(current_user, 'display_name', None),
         'org': org,
         'jobs': jobs,
     })
@@ -70,7 +68,6 @@ def github_repo(org, repo):
     )
 
     return render_component('GithubHome', props={
-        'userName': getattr(current_user, 'display_name', None),
         'org': org,
         'repo': repo,
         'jobs': jobs,
@@ -80,9 +77,7 @@ def github_repo(org, repo):
 @github.route('/settings')
 @login_required
 def github_settings():
-    return render_component('GithubSettings', props={
-        'userName': getattr(current_user, 'display_name', None),
-    })
+    return render_component('GithubSettings')
 
 
 @github.route('/hook', methods=['POST'])
@@ -197,9 +192,9 @@ def api_repo(repo_id):
     # Get repo
     try:
         repo = (database['session'].query(GithubRepo).
-            filter(GithubRepo.users.any(id=current_user.id)).
-            filter(GithubRepo.id == repo_id).
-            one())
+                filter(GithubRepo.users.any(id=current_user.id)).
+                filter(GithubRepo.id == repo_id).
+                one())
         repo_data = repo.to_api()
     except Exception as exception:
         log.exception(exception)
@@ -222,7 +217,7 @@ def api_repo_list():
         filter(GithubRepo.users.any(id=current_user.id)).
         order_by(GithubRepo.active.desc(), GithubRepo.name).
         all())
-    repos_data = [repos.to_api() for repos in repos]
+    repos_data = [repo.to_api() for repo in repos]
 
     # Get syncing status
     syncing = _is_user_repos_syncing(current_user.id)
@@ -248,9 +243,9 @@ def api_repo_activate(repo_id):
     if not error:
         try:
             repo = (database['session'].query(GithubRepo).
-                filter(GithubRepo.users.any(id=current_user.id)).
-                filter(GithubRepo.id == repo_id).
-                one())
+                    filter(GithubRepo.users.any(id=current_user.id)).
+                    filter(GithubRepo.id == repo_id).
+                    one())
         except Exception as exception:
             log.exception(exception)
             abort(403)
@@ -284,9 +279,9 @@ def api_repo_deactivate(repo_id):
     if not error:
         try:
             repo = (database['session'].query(GithubRepo).
-                filter(GithubRepo.users.any(id=current_user.id)).
-                filter(GithubRepo.id == repo_id).
-                one())
+                    filter(GithubRepo.users.any(id=current_user.id)).
+                    filter(GithubRepo.id == repo_id).
+                    one())
         except Exception as exception:
             log.exception(exception)
             abort(403)
