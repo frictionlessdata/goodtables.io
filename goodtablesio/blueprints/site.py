@@ -25,12 +25,16 @@ def dashboard():
     user_id = session.get('user_id')
     if not user_id:
         return redirect(url_for('site.home'))
+
     # TODO: Get most recent job per source
+
     github_jobs = models.job.get_by_integration('github', limit=5)
     s3_jobs = models.job.get_by_integration('s3', limit=5)
+
+    latest_jobs = github_jobs + s3_jobs
+
     return render_component('Dashboard', props={
-        'githubJobs': github_jobs,
-        's3Jobs': s3_jobs,
+        'latestJobs': latest_jobs,
     })
 
 

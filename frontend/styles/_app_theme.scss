@@ -9,7 +9,7 @@ $mn-divider: $mn-border;
 .panel {
 
   .github,
-  .aws {
+  .s3 {
     .integration {
       @include gradient-horizontal(rgba($mn-panel,0), $mn-panel, 0%, 25%);
       color: rgba($mn-colour,0.8);
