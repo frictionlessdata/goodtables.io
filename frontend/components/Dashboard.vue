@@ -2,6 +2,7 @@
 
 import Logo from './Logo.vue'
 import SourceList from './SourceList.vue'
+import Source_ from './Source.vue'
 
 export default {
   name: 'Dashboard',
@@ -13,9 +14,19 @@ export default {
         view: 'default-view'
     }
   },
+  computed: {
+    mainNavStatusClass: function() {
+      return {
+        'success': this.latestJobs[0].status === 'success',
+        'failure': this.latestJobs[0].status === 'failure',
+        'error': this.latestJobs[0].status === 'error',
+      }
+    }
+  },
   components: {
     Logo,
     SourceList,
+    Source_
   },
 }
 </script>
@@ -73,7 +84,7 @@ export default {
       </section>
 
       <div class="default">
-        <nav class="main-nav invalid">
+        <nav class="main-nav" v-bind:class="mainNavStatusClass">
           <header class="main-header">
             <a v-on:click="view = 'default-view'" class="show-view-default"><span>Default view</span></a>
             <a v-on:click="view = 'list-view'" class="show-view-list"><span>List view</span></a>
@@ -99,13 +110,14 @@ export default {
           </ul>
 
           <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="latest-jobs">
+            <div role="tabpanel" class="tab-pane active latest-jobs" id="latest-jobs">
               <SourceList :jobs="latestJobs" />
             </div>
           </div>
 
         </nav>
         <main class="source-view">
+          <Source_ :job="latestJobs[0]" />
         </main>
       </div>
     </div>

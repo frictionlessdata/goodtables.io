@@ -1,10 +1,11 @@
 <script>
 
 export default {
-  name: 'JobListItem',
+  name: 'SourceListItem',
   props: {
     job: Object,
-    active: Boolean
+    active: Boolean,
+    inSourcePanel: Boolean
   },
   computed: {
     panelStatusClass: function() {
@@ -23,6 +24,11 @@ export default {
 
       }
     }
+  },
+  methods: {
+    load: function(event) {
+      console.log(this.job)
+    }
   }
 }
 
@@ -30,9 +36,9 @@ export default {
 
 
 <template>
-  <div class="source-item panel" v-bind:class="panelStatusClass">
+  <div class="source-item panel" v-on:click="load" v-bind:class="panelStatusClass">
     <div v-bind:class="job.integration_name">
-      <a class="source" v-bind:class="{active: active}">
+      <a class="source" v-bind:class="{active: inSourcePanel}">
         <span class="status">{{ job.status }} </span>
 
         <span v-if="job.status === 'success'" class="label label-success">
@@ -57,7 +63,7 @@ export default {
           </h3>
         </a>
 
-        <a class="job"  v-bind:class="{active: active}">
+        <a class="job"  v-bind:class="{active: active || inSourcePanel}">
           <span class="jobcount">
             <span class="jobnumber"> #XX</span>
             <span class="jobtotal"> of YY</span>

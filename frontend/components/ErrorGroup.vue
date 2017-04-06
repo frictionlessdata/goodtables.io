@@ -18,7 +18,7 @@ export default {
 <div class="result panel panel-danger">
 
   <div class="panel-heading">
-    <span class="text-uppercase label label-danger">error</span>
+    <span class="text-uppercase label label-danger">Invalid</span>
     <span class="count label">{{ errorGroup.count }}</span>
     <h5 class="panel-title">{{ errorGroup.name }}</h5>
     <span class="help"
