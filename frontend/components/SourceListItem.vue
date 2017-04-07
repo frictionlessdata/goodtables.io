@@ -5,31 +5,31 @@ export default {
   props: {
     job: Object,
     active: Boolean,
-    inSourcePanel: Boolean
+    inSourcePanel: Boolean,
   },
   computed: {
-    panelStatusClass: function() {
+    panelStatusClass() {
       return {
         'panel-success': this.job.status === 'success',
         'panel-danger': this.job.status === 'failure',
         'panel-warning': this.job.status === 'error',
-        'active': this.active
+        active: this.active,
 
       }
     },
-    integrationIconClass: function() {
+    integrationIconClass() {
       return {
-        'icon-github': this.job.integration_name == 'github',
-        'icon-amazon': this.job.integration_name == 's3',
+        'icon-github': this.job.integration_name === 'github',
+        'icon-amazon': this.job.integration_name === 's3',
 
       }
-    }
+    },
   },
   methods: {
-    load: function(event) {
+    load(event) {
       console.log(this.job)
-    }
-  }
+    },
+  },
 }
 
 </script>

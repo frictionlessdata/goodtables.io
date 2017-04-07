@@ -7,13 +7,13 @@ export default {
   props: {
     jobs: Array,
     activeSourceIndex: {
-        type: Number,
-        default: 0
-    }
+      type: Number,
+      default: 0,
+    },
   },
   components: {
-    SourceListItem
-  }
+    SourceListItem,
+  },
 }
 
 </script>

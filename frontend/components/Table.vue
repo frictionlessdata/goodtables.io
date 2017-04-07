@@ -63,14 +63,14 @@ export default {
       }
       return groups
     },
-    githubTableSourceName: function() {
-      let source = this.table.source;
+    githubTableSourceName() {
+      const source = this.table.source
       if (source.startsWith('https://raw.githubusercontent.com')) {
         return source.replace(/https:\/\/raw\.githubusercontent\.com\/\S*\/\S*\/[a-z0-9]{40}\//, '')
       }
       return source
-    }
-  }
+    },
+  },
 }
 </script>
 

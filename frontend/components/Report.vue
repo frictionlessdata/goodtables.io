@@ -7,7 +7,7 @@ export default {
     report: Object,
   },
   components: {
-    MyTable: Table,
+    Table_: Table,
   },
 }
 </script>
@@ -20,7 +20,7 @@ export default {
   </ul>
 
   <template v-for="(table, index) of report.tables">
-    <MyTable :table="table" :tablesCount="report['table-count']" :tableNumber="index + 1" />
+    <Table_ :table="table" :tablesCount="report['table-count']" :tableNumber="index + 1" />
   </template>
 
 </div>

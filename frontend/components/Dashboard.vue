@@ -9,24 +9,24 @@ export default {
   props: {
     latestJobs: Array,
   },
-  data: function() {
+  data() {
     return {
-        view: 'default-view'
+      view: 'default-view',
     }
   },
   computed: {
-    mainNavStatusClass: function() {
+    mainNavStatusClass() {
       return {
-        'success': this.latestJobs[0].status === 'success',
-        'failure': this.latestJobs[0].status === 'failure',
-        'error': this.latestJobs[0].status === 'error',
+        success: this.latestJobs[0].status === 'success',
+        failure: this.latestJobs[0].status === 'failure',
+        error: this.latestJobs[0].status === 'error',
       }
-    }
+    },
   },
   components: {
     Logo,
     SourceList,
-    Source_
+    Source_,
   },
 }
 </script>

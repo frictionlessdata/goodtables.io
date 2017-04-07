@@ -12,14 +12,14 @@ export default {
     SourceListItem,
   },
   computed: {
-    statusClass: function() {
+    statusClass() {
       return {
-        'valid': this.job.status === 'success',
-        'invalid': this.job.status === 'failure',
-        'error': this.job.status === 'error'
+        valid: this.job.status === 'success',
+        invalid: this.job.status === 'failure',
+        error: this.job.status === 'error',
       }
-    }
-  }
+    },
+  },
 
 }
 </script>
