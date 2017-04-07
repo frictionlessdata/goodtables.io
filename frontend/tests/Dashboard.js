@@ -9,12 +9,12 @@ should()
 describe('Dashboard', () => {
 
   it('should contain headings', () => {
+    /*
+     * TODO: update once the Dashboard design is settled
     const propsData = {
       latestJobs: [],
     }
     const wrapper = mount(Dashboard, {propsData})
-    /*
-     * TODO: update once the Dashboard design is settled
     wrapper.find('h1')[0].text().should.equal('Dashboard')
     wrapper.find('h2')[0].text().should.equal('Jobs')
     wrapper.find('h3')[0].text().should.equal('GitHub')
@@ -32,8 +32,8 @@ describe('Dashboard', () => {
         ],
       }
       const wrapper = mount(Dashboard, {propsData})
-      wrapper.find(SourceList).should.has.length(1)
-      wrapper.find(SourceList)[0].propsData().should.deep.equal({jobs: ['job1', 'job2']})
+      wrapper.find(SourceList).should.have.length(1)
+      wrapper.find(SourceList)[0].propsData().jobs.should.deep.equal(['job1', 'job2'])
     })
 
   })

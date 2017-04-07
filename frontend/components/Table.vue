@@ -51,7 +51,7 @@ export default {
         // Add row badcols
         if (error['column-number']) {
           row.badcols.add(error['column-number'])
-        } else {
+        } else if (row.values) {
           row.badcols = new Set(row.values.map((value, index) => index + 1))
         }
 

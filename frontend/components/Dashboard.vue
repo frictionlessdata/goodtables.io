@@ -1,27 +1,33 @@
 <script>
 
+import Vue from 'vue'
 import Logo from './Logo.vue'
 import SourceList from './SourceList.vue'
 import Source_ from './Source.vue'
+
 
 export default {
   name: 'Dashboard',
   props: {
     latestJobs: Array,
+    eventHub: {
+      type: Object,
+      default() { return new Vue() },
+    },
   },
   data() {
     return {
       view: 'default-view',
+      activeJob: this.latestJobs[0],
     }
   },
-  computed: {
-    mainNavStatusClass() {
-      return {
-        success: this.latestJobs[0].status === 'success',
-        failure: this.latestJobs[0].status === 'failure',
-        error: this.latestJobs[0].status === 'error',
-      }
+  methods: {
+    changeJob(job) {
+      this.activeJob = job
     },
+  },
+  mounted() {
+    this.eventHub.$on('job:changed', this.changeJob)
   },
   components: {
     Logo,
@@ -84,7 +90,7 @@ export default {
       </section>
 
       <div class="default">
-        <nav class="main-nav" v-bind:class="mainNavStatusClass">
+        <nav class="main-nav">
           <header class="main-header">
             <a v-on:click="view = 'default-view'" class="show-view-default"><span>Default view</span></a>
             <a v-on:click="view = 'list-view'" class="show-view-list"><span>List view</span></a>
@@ -111,13 +117,13 @@ export default {
 
           <div class="tab-content">
             <div role="tabpanel" class="tab-pane active latest-jobs" id="latest-jobs">
-              <SourceList :jobs="latestJobs" />
+               <SourceList :jobs="latestJobs" :eventHub="eventHub" ref="source-list" />
             </div>
           </div>
 
         </nav>
         <main class="source-view">
-          <Source_ :job="latestJobs[0]" />
+          <Source_ :job="activeJob" ref="source-view" />
         </main>
       </div>
     </div>

@@ -57,7 +57,6 @@ $mn-divider: $mn-border;
     @include gradient-vertical($mn-background, $mn-panel, 0%, 100%);
 
     .main-header {
-      background-color: $mn-header;
     }
 
     .nav-tabs {

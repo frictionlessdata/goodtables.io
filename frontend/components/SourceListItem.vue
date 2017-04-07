@@ -4,8 +4,14 @@ export default {
   name: 'SourceListItem',
   props: {
     job: Object,
+    eventHub: Object,
     active: Boolean,
     inSourcePanel: Boolean,
+  },
+  data() {
+    return {
+      isActive: this.active,
+    }
   },
   computed: {
     panelStatusClass() {
@@ -13,7 +19,7 @@ export default {
         'panel-success': this.job.status === 'success',
         'panel-danger': this.job.status === 'failure',
         'panel-warning': this.job.status === 'error',
-        active: this.active,
+        active: this.isActive,
 
       }
     },
@@ -26,9 +32,17 @@ export default {
     },
   },
   methods: {
-    load(event) {
-      console.log(this.job)
+    onClickSourceItem() {
+      this.eventHub.$emit('job:changed', this.job)
     },
+    setActive(job) {
+      this.isActive = job === this.job
+    },
+  },
+  created() {
+    if (!this.inSourcePanel) {
+      this.eventHub.$on('job:changed', this.setActive)
+    }
   },
 }
 
@@ -36,7 +50,7 @@ export default {
 
 
 <template>
-  <div class="source-item panel" v-on:click="load" v-bind:class="panelStatusClass">
+  <div class="source-item panel" v-on:click="onClickSourceItem" v-bind:class="panelStatusClass">
     <div v-bind:class="job.integration_name">
       <a class="source" v-bind:class="{active: inSourcePanel}">
         <span class="status">{{ job.status }} </span>
@@ -63,7 +77,7 @@ export default {
           </h3>
         </a>
 
-        <a class="job"  v-bind:class="{active: active || inSourcePanel}">
+        <a class="job"  v-bind:class="{active: isActive || inSourcePanel}">
           <span class="jobcount">
             <span class="jobnumber"> #XX</span>
             <span class="jobtotal"> of YY</span>
