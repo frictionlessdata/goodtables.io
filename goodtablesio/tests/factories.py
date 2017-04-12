@@ -102,6 +102,7 @@ class Source(FactoryBase):
     name = factory.Faker('name')
     updated = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     active = True
+    job_number = 1
 
     @property
     def integration(self):
