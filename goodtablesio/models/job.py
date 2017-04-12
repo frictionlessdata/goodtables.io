@@ -2,7 +2,7 @@ import logging
 import datetime
 
 from sqlalchemy import (
-    Column, Unicode, DateTime, update as db_update,  ForeignKey)
+    Column, Unicode, Integer, DateTime, update as db_update,  ForeignKey)
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.mutable import MutableDict
@@ -23,6 +23,7 @@ class Job(Base, BaseModelMixin):
     status = Column(Unicode, default='created')
     created = Column(DateTime(timezone=True), default=datetime.datetime.utcnow)
     finished = Column(DateTime(timezone=True))
+    number = Column(Integer)
     report = Column(JSONB)
     error = Column(JSONB)
     integration_name = Column(

@@ -1,7 +1,7 @@
 import datetime
 
 from sqlalchemy import (
-    Column, Unicode, DateTime, Boolean, ForeignKey, Table)
+    Column, Unicode, Integer, DateTime, Boolean, ForeignKey, Table)
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import JSONB
 
@@ -17,6 +17,7 @@ class Source(Base, BaseModelMixin):
     active = Column(Boolean, nullable=False, default=False)
     updated = Column(DateTime(timezone=True), nullable=False,
                      default=datetime.datetime.utcnow)
+    job_number = Column(Integer)
     conf = Column(JSONB)
     integration_name = Column(Unicode, ForeignKey('integrations.name'))
     integration = relationship(
