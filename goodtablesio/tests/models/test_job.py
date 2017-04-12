@@ -287,3 +287,25 @@ def test_json_fields_mutable():
     job = database['session'].query(Job).get('my-id')
 
     assert job.conf == {'a': '1', 'b': '2'}
+
+
+def test_set_job_number(celery_app):
+
+    source1 = factories.Source(integration_name='github', _save_in_db=True)
+    source2 = factories.Source(integration_name='github', _save_in_db=True)
+
+    assert source1.job_number == 1
+    assert source2.job_number == 1
+
+    job1 = factories.Job(source=source1, _save_in_db=True)
+    job2 = factories.Job(source=source1, _save_in_db=True)
+    job3 = factories.Job(source=source2, _save_in_db=True)
+    job4 = factories.Job(source=source1, _save_in_db=True)
+
+    assert source1.job_number == 4
+    assert source2.job_number == 2
+
+    assert job1.number == 1
+    assert job2.number == 2
+    assert job3.number == 1
+    assert job4.number == 3
