@@ -52,7 +52,8 @@ def test_api_repo(client):
     response = client.get('/github/api/repo/%s' % repo.id)
     assert response.status_code == 200
     assert get_response_data(response) == {
-        'repo': {'id': repo.id, 'name': repo.name, 'active': repo.active},
+        'repo': {'id': repo.id, 'name': repo.name, 'active': repo.active,
+                 'integration_name': 'github'},
         'error': None,
     }
 
@@ -82,8 +83,10 @@ def test_api_repo_list(client):
     assert response.status_code == 200
     assert get_response_data(response) == {
         'repos': [
-            {'id': repo1.id, 'name': repo1.name, 'active': repo1.active},
-            {'id': repo2.id, 'name': repo2.name, 'active': repo2.active},
+            {'id': repo1.id, 'name': repo1.name, 'active': repo1.active,
+             'integration_name': 'github'},
+            {'id': repo2.id, 'name': repo2.name, 'active': repo2.active,
+             'integration_name': 'github'},
         ],
         'syncing': False,
         'error': None,

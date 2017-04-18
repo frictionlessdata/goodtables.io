@@ -25,9 +25,11 @@ def test_site_home_not_logged_in(client):
 
 def test_site_home_logged_in(client):
 
+    user = factories.User()
+
     with client.session_transaction() as sess:
         # Mock a user login
-        sess['user_id'] = 'xxx'
+        sess['user_id'] = user.id
 
     response = client.get('/')
 
@@ -45,9 +47,11 @@ def test_site_dashboard_not_logged_in(client):
 
 def test_site_dashboard_logged_in(client):
 
+    user = factories.User()
+
     with client.session_transaction() as sess:
         # Mock a user login
-        sess['user_id'] = 'xxx'
+        sess['user_id'] = user.id
 
     response = client.get('/dashboard')
 
