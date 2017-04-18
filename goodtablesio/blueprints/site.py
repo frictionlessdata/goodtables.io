@@ -2,9 +2,12 @@ import os
 
 from flask import (
     Blueprint, abort, session, redirect, url_for, send_from_directory, request)
+from flask_login import current_user
+from sqlalchemy.sql.expression import true
 
 from goodtablesio import models
 from goodtablesio.services import database
+from goodtablesio.models.source import Source
 from goodtablesio.utils.frontend import render_component
 
 
@@ -26,15 +29,21 @@ def dashboard():
     if not user_id:
         return redirect(url_for('site.home'))
 
-    # TODO: Get most recent job per source
+    # Get user sources
+    sources = (database['session'].query(Source).
+               filter(Source.users.any(id=current_user.id)).
+               filter(Source.active == true()).all())
 
-    github_jobs = models.job.get_by_integration('github', limit=5)
-    s3_jobs = models.job.get_by_integration('s3', limit=5)
+    def sort_sources(source):
+        return (source['last_job']['created'].isoformat()
+                if source['last_job'] else 'z')
 
-    latest_jobs = github_jobs + s3_jobs
+    if sources:
+        sources = [source.to_api(with_last_job=True) for source in sources]
+        sources = sorted(sources, key=sort_sources)
 
     return render_component('Dashboard', props={
-        'latestJobs': latest_jobs,
+        'sources': sources,
     })
 
 
