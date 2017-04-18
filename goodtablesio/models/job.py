@@ -32,7 +32,10 @@ class Job(Base, BaseModelMixin):
     source_id = Column(Unicode, ForeignKey('sources.id'))
 
     source = relationship(
-        'Source', primaryjoin='Job.source_id == Source.id')
+        'Source', backref='jobs', primaryjoin='Job.source_id == Source.id')
+
+    def to_api(self):
+        return self.to_dict()
 
 
 def create(params):

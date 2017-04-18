@@ -40,3 +40,20 @@ class Source(Base, BaseModelMixin):
         'polymorphic_on': integration_name,
         'polymorphic_identity': 'source'
     }
+
+    def to_api(self, with_last_job=False):
+        source = {
+            'id': self.id,
+            'name': self.name,
+            'integration_name': self.integration_name,
+            'active': self.active,
+        }
+        if with_last_job:
+            source['last_job'] = (self.last_job.to_api()
+                                  if self.last_job else None)
+
+        return source
+
+    @property
+    def last_job(self):
+        return self.jobs[-1] if self.jobs else None
