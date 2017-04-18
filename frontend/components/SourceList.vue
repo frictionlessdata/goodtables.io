@@ -5,7 +5,7 @@ import SourceListItem from './SourceListItem.vue'
 export default {
   name: 'SourceList',
   props: {
-    jobs: Array,
+    sources: Array,
     eventHub: Object,
     activeSourceIndex: {
       type: Number,
@@ -23,8 +23,8 @@ export default {
 <template>
   <div>
     <SourceListItem
-      v-for="(job, index) of (jobs || [])" 
-      :job="job" 
+      v-for="(source, index) of (sources || [])" 
+      :source="source" 
       :eventHub="eventHub"
       :active="index === activeSourceIndex" />
   </div>

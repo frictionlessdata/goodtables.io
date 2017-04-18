@@ -23,6 +23,13 @@
     }
   }
 
+  &.no-sources {
+    white-space: nowrap;
+    border-width: 0;
+    background-color: #f3f4f4;
+    padding: 20px;
+  }
+
   &.source-item {
     white-space: nowrap;
     border-width: 0;
@@ -113,6 +120,24 @@
       }
       .source-view & {
         @include panel_state($brand-danger);
+      }
+    }
+
+    &.panel-warning {
+      @media screen and (min-width: $screen-sm) {
+        @include panel_state($brand-warning);
+      }
+      .source-view & {
+        @include panel_state($brand-warning);
+      }
+    }
+
+    &.panel-info {
+      @media screen and (min-width: $screen-sm) {
+        @include panel_state($brand-info);
+      }
+      .source-view & {
+        @include panel_state($brand-info);
       }
     }
 

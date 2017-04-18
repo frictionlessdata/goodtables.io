@@ -143,7 +143,7 @@
   }
 
   /* TODO: put somewhere better */
-  .latest-jobs {
+  .my-sources {
     .source-item {
       cursor: pointer;
     }
@@ -280,6 +280,25 @@
         }
       }
 
+      &.valid {
+        .main-header {
+          background-color: $brand-success;
+        }
+
+        .banner {
+          background-color: $brand-success;
+          padding-bottom: 10px;
+
+          & + .inner > div > .nav-tabs {
+            background-color: $brand-success;
+
+            & > li.active > a {
+              color: $brand-success;
+            }
+          }
+        }
+      }
+
       &.invalid {
         .main-header {
           background-color: $brand-danger;
@@ -298,11 +317,51 @@
           }
         }
       }
+
+      &.error {
+        .main-header {
+          background-color: $brand-warning;
+        }
+
+        .banner {
+          background-color: $brand-warning;
+          padding-bottom: 10px;
+
+          & + .inner > div > .nav-tabs {
+            background-color: $brand-warning;
+
+            & > li.active > a {
+              color: $brand-warning;
+            }
+          }
+        }
+      }
+
+      &.info {
+        .main-header {
+          background-color: $brand-info;
+        }
+
+        .banner {
+          background-color: $brand-info;
+          padding-bottom: 10px;
+
+          & + .inner > div > .nav-tabs {
+            background-color: $brand-info;
+
+            & > li.active > a {
+              color: $brand-info;
+            }
+          }
+        }
+      }
+
+
     }
 
     .banner {
       @include rev-out;
-      background-color: $brand-success;
+      background-color: $brand-info;
 
       .source-title {
         small {
