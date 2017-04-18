@@ -142,6 +142,13 @@
     }
   }
 
+  /* TODO: put somewhere better */
+  .latest-jobs {
+    .source-item {
+      cursor: pointer;
+    }
+  }
+
   .source-view {
     display: none;
     @include make-sm-column(8);
@@ -379,6 +386,10 @@
         margin-top: 16px;
         font-size: 13px;
         border-right: solid 1px $text-color;
+
+        &:first-child {
+          padding-left: 0;
+        }
 
         &:last-child {
           border: none;

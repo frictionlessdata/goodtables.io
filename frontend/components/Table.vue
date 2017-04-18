@@ -51,7 +51,7 @@ export default {
         // Add row badcols
         if (error['column-number']) {
           row.badcols.add(error['column-number'])
-        } else {
+        } else if (row.values) {
           row.badcols = new Set(row.values.map((value, index) => index + 1))
         }
 
@@ -63,6 +63,13 @@ export default {
       }
       return groups
     },
+    githubTableSourceName() {
+      const source = this.table.source
+      if (source.startsWith('https://raw.githubusercontent.com')) {
+        return source.replace(/https:\/\/raw\.githubusercontent\.com\/\S*\/\S*\/[a-z0-9]{40}\//, '')
+      }
+      return source
+    },
   },
 }
 </script>
@@ -72,12 +79,29 @@ export default {
 
   <h4 class="file-heading">
     <span>
-      <a class="file-name" :href="table.source">{{ table.source }}</a>
+      <a class="file-name" :href="table.source">{{ githubTableSourceName }}</a>
       <a class="file-count" :href="table.source">Table {{ tableNumber }} of {{ tablesCount }}</a>
     </span>
   </h4>
 
+  <template v-if="!table.valid">
   <ErrorGroup v-for="errorGroup of errorGroups" :errorGroup="errorGroup" />
+  </template>
+
+  <template v-else-if="table.valid">
+  <div class="result panel panel-success">
+    <div class="panel-heading">
+      <span class="text-uppercase label label-success">Valid</span>
+      <span class="help"
+            rel="popover"
+            data-toggle="popover"
+            data-placement="left"
+            data-content="No errors where found">
+        <span class="icon-info"><i>What is this?</i></span>
+      </span>
+    </div>
+  </div>
+  </template>
 
 </div>
 </template>
