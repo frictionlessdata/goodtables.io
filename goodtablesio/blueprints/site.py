@@ -8,6 +8,7 @@ from sqlalchemy.sql.expression import true
 from goodtablesio import models
 from goodtablesio.services import database
 from goodtablesio.models.source import Source
+from goodtablesio.models.job import Job
 from goodtablesio.utils.frontend import render_component
 
 
@@ -30,17 +31,13 @@ def dashboard():
         return redirect(url_for('site.home'))
 
     # Get user sources
-    sources = (database['session'].query(Source).
+    sources = (database['session'].query(Source).join(Job, isouter=True).
                filter(Source.users.any(id=current_user.id)).
-               filter(Source.active == true()).all())
-
-    def sort_sources(source):
-        return (source['last_job']['created'].isoformat()
-                if source['last_job'] else 'z')
+               filter(Source.active == true()).
+               order_by(Job.created.desc().nullslast(), Source.name).all())
 
     if sources:
         sources = [source.to_api(with_last_job=True) for source in sources]
-        sources = sorted(sources, key=sort_sources)
 
     return render_component('Dashboard', props={
         'sources': sources,

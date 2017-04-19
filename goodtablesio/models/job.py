@@ -3,7 +3,6 @@ import datetime
 
 from sqlalchemy import (
     Column, Unicode, Integer, DateTime, update as db_update,  ForeignKey)
-from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.mutable import MutableDict
 
@@ -30,9 +29,6 @@ class Job(Base, BaseModelMixin):
         Unicode, ForeignKey('integrations.name'), default='api')
     conf = Column(MutableDict.as_mutable(JSONB))
     source_id = Column(Unicode, ForeignKey('sources.id'))
-
-    source = relationship(
-        'Source', backref='jobs', primaryjoin='Job.source_id == Source.id')
 
     def to_api(self):
         return self.to_dict()

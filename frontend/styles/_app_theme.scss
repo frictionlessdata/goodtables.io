@@ -52,12 +52,14 @@ $mn-divider: $mn-border;
 
 .app {
 
+  header {
+    background-color: $mn-background;
+  }
+
   .main-nav {
     background-color: $mn-background;
     @include gradient-vertical($mn-background, $mn-panel, 0%, 100%);
 
-    .main-header {
-    }
 
     .nav-tabs {
       border-bottom-color: $mn-background;
@@ -72,7 +74,7 @@ $mn-divider: $mn-border;
     }
 
     .tab-pane {
-      background-color: $mn-border;
+      background-color: $mn-background;
     }
 
     .source-item {
@@ -88,8 +90,6 @@ $mn-divider: $mn-border;
       }
     }
     @media screen and (min-width: $screen-sm) {
-      box-shadow: inset -4px 0px 0px 0px $mn-divider;
-
       &:after {
         @include gradient-vertical(rgba($mn-background,0), $mn-background, 0%, 100%);
       }

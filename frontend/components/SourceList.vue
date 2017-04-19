@@ -6,11 +6,6 @@ export default {
   name: 'SourceList',
   props: {
     sources: Array,
-    eventHub: Object,
-    activeSourceIndex: {
-      type: Number,
-      default: 0,
-    },
   },
   components: {
     SourceListItem,
@@ -22,11 +17,6 @@ export default {
 
 <template>
   <div>
-    <SourceListItem
-      v-for="(source, index) of (sources || [])" 
-      :source="source" 
-      :eventHub="eventHub"
-      :active="index === activeSourceIndex" />
+    <SourceListItem v-for="source in sources" :source="source"/>
   </div>
-
 </template>
