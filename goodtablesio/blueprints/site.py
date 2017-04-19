@@ -44,22 +44,24 @@ def dashboard():
     })
 
 
-@site.route('/jobs')
-def jobs():
-    jobs = models.job.find()
-    return render_component('Jobs', props={
-        'jobs': jobs,
-    })
+@site.route('/source/github/repo/<org>/<repo>')
+def source_github(org, repo):
+    return str({'org': org, 'repo': repo})
 
 
-@site.route('/jobs/<job_id>')
-def job(job_id):
-    job = models.job.get(job_id)
-    if not job:
-        abort(404)
-    return render_component('Job', props={
-        'job': job,
-    })
+@site.route('/source/github/repo/<org>/<repo>/jobs/<job>')
+def source_github_job(org, repo, job):
+    return str({'org': org, 'repo': repo, 'job': job})
+
+
+@site.route('/source/s3/bucket/<bucket>')
+def source_s3(bucket):
+    return str({'bucket': bucket})
+
+
+@site.route('/source/s3/bucket/<bucket>/jobs/<job>')
+def source_s3_job(bucket, job):
+    return str({'bucket': bucket, 'job': job})
 
 
 @site.route('/badge/<integration_name>/<path:source_name>.svg')
