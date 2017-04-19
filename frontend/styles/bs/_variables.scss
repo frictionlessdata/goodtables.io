@@ -17,7 +17,8 @@ $gray-lighter:           lighten($gray-base, 80%) !default;
 
 $brand-primary:         #01CD81 !default;
 $brand-success:         $brand-primary !default;
-$brand-info:            #1595BC !default;
+/* $brand-info:            #1595BC !default; */
+$brand-info:            #ccc !default;
 $brand-warning:         #f0ad4e !default;
 $brand-danger:          #F13C3F !default;
 
@@ -395,12 +396,15 @@ $navbar-default-toggle-border-color:       #ddd !default;
 
 //=== Inverted navbar
 // Reset inverted navbar basics
-$navbar-inverse-color:                      lighten($gray-light, 15%) !default;
-$navbar-inverse-bg:                         #222 !default;
+/* $navbar-inverse-color:                      lighten($gray-light, 15%) !default; */
+$navbar-inverse-color:                      #fff !default;
+/* $navbar-inverse-bg:                         #222 !default; */
+$navbar-inverse-bg:                         #1595BC !default;
 $navbar-inverse-border:                     darken($navbar-inverse-bg, 10%) !default;
 
 // Inverted navbar links
-$navbar-inverse-link-color:                 lighten($gray-light, 15%) !default;
+/* $navbar-inverse-link-color:                 lighten($gray-light, 15%) !default; */
+$navbar-inverse-link-color:                 #fff !default;
 $navbar-inverse-link-hover-color:           #fff !default;
 $navbar-inverse-link-hover-bg:              transparent !default;
 $navbar-inverse-link-active-color:          $navbar-inverse-link-hover-color !default;
@@ -732,6 +736,7 @@ $panel-success-heading-bg:    $state-success-bg !default;
 $panel-info-text:             $text-color !default;
 $panel-info-border:           $state-info-border !default;
 $panel-info-heading-bg:       $state-info-bg !default;
+$panel-info-heading-bg:       #ccc !default;
 
 $panel-warning-text:          $text-color !default;
 $panel-warning-border:        $state-warning-border !default;
