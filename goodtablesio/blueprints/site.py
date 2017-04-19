@@ -7,6 +7,7 @@ from sqlalchemy.sql.expression import true
 
 from goodtablesio import models
 from goodtablesio.services import database
+from goodtablesio.models.job import Job
 from goodtablesio.models.source import Source
 from goodtablesio.models.job import Job
 from goodtablesio.utils.frontend import render_component
@@ -46,22 +47,22 @@ def dashboard():
 
 @site.route('/source/github/repo/<org>/<repo>')
 def source_github(org, repo):
-    return str({'org': org, 'repo': repo})
+    return _source('github', '/'.join([org, repo]))
 
 
 @site.route('/source/github/repo/<org>/<repo>/jobs/<job>')
 def source_github_job(org, repo, job):
-    return str({'org': org, 'repo': repo, 'job': job})
+    return _source('github', '/'.join([org, repo]), job)
 
 
 @site.route('/source/s3/bucket/<bucket>')
 def source_s3(bucket):
-    return str({'bucket': bucket})
+    return _source('s3', bucket)
 
 
 @site.route('/source/s3/bucket/<bucket>/jobs/<job>')
 def source_s3_job(bucket, job):
-    return str({'bucket': bucket, 'job': job})
+    return _source('s3', bucket, job)
 
 
 @site.route('/badge/<integration_name>/<path:source_name>.svg')
@@ -95,3 +96,35 @@ def badge(integration_name, source_name):
         os.path.dirname(__file__), 'badges')
 
     return send_from_directory(file_path, file_name, mimetype='image/svg+xml')
+
+
+# Internal
+
+def _source(integration_name, name, job_number=None):
+    from flask import jsonify
+
+    # Get source
+    source = (database['session'].query(Source).
+              filter(Source.integration_name == integration_name).
+              filter(Source.name == name).
+              first())
+    if not source:
+        abort(404)
+
+    # Get selected job
+    if job_number:
+        job = (database['session'].query(Job).
+               filter(Job.integration_name == integration_name).
+               filter(Job.number == job_number).
+               first())
+        if not job:
+            abort(404)
+
+    # Get default job
+    else:
+        job = source.last_job
+
+    return jsonify({
+        'source': source.to_api(with_job_history=True),
+        'job': job.to_api(),
+    })
