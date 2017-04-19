@@ -33,21 +33,21 @@ export default {
 
         <main class="source-view">
           <div v-bind:class="statusClass">
+
             <div class="inner banner">
               <template v-if="source.integration_name === 'github'">
-              <a class="icon-github integration"><i>GitHub</i></a>
+              <a :href="`https://github.com/${source.name}`" class="icon-github integration"><i>GitHub</i></a>
               </template>
-
               <template v-else-if="source.integration_name === 's3'">
-              <a class="icon-amazon integration"><i>Amazon S3</i></a>
+              <a :href="`https://console.aws.amazon.com/s3/buckets/${source.name}`" class="icon-amazon integration"><i>Amazon S3</i></a>
               </template>
               <h2 class="source-title">
                   {{ source.name }}
               </h2>
-
               <SourceListItem :source="source" :inSourcePanel="true"/>
             </div>
-            <section class="inner">
+
+            <section v-if="job" class="inner">
 
               <div>
                 <ul class="nav nav-tabs" role="tablist">
@@ -58,6 +58,8 @@ export default {
                   <div role="tabpanel" class="report tab-pane active" id="report">
 
                     <template v-if="job">
+                    <Report :report="job.report" />
+                    <hr>
                     <ul class="meta">
                         Report calculated on {{ job.finished }}
                       </li>
@@ -65,12 +67,12 @@ export default {
                         Source added: 21 Feb 2017
                       </li>
                     </ul>
-                    <Report :report="job.report" />
                     </template>
 
                     <template v-if="!job">
                     <p>No jobs yet</p>
                     </template>
+
                  </div>
                  <div role="tabpanel" class="tab-pane" id="history">
                    History here
@@ -78,6 +80,7 @@ export default {
                 </div>
               </div>
             </section>
+
           </div>
         </main>
 
