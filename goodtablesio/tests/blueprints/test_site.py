@@ -77,7 +77,7 @@ def test_site_source_github(render_component, client):
     assert response.status_code == 200
     assert response.get_data(as_text=True) == 'body'
     render_component.assert_called_with('Source', props={
-        'source': source.to_api(with_last_job=True, with_job_history=True),
+        'source': source.to_api(with_job_history=True),
         'job': job2.to_api(),
     })
 
@@ -89,7 +89,7 @@ def test_site_source_github_no_jobs(render_component, client):
     assert response.status_code == 200
     assert response.get_data(as_text=True) == 'body'
     render_component.assert_called_with('Source', props={
-        'source': source.to_api(with_last_job=True, with_job_history=True),
+        'source': source.to_api(with_job_history=True),
         'job': None,
     })
 
@@ -110,7 +110,7 @@ def test_site_source_github_job(render_component, client):
     assert response.status_code == 200
     assert response.get_data(as_text=True) == 'body'
     render_component.assert_called_with('Source', props={
-        'source': source.to_api(with_last_job=True, with_job_history=True),
+        'source': source.to_api(with_job_history=True),
         'job': job1.to_api(),
     })
 
@@ -133,7 +133,7 @@ def test_site_source_s3(render_component, client):
     assert response.status_code == 200
     assert response.get_data(as_text=True) == 'body'
     render_component.assert_called_with('Source', props={
-        'source': source.to_api(with_last_job=True, with_job_history=True),
+        'source': source.to_api(with_job_history=True),
         'job': job2.to_api(),
     })
 
@@ -154,7 +154,7 @@ def test_site_source_s3_job(render_component, client):
     assert response.status_code == 200
     assert response.get_data(as_text=True) == 'body'
     render_component.assert_called_with('Source', props={
-        'source': source.to_api(with_last_job=True, with_job_history=True),
+        'source': source.to_api(with_job_history=True),
         'job': job1.to_api(),
     })
 

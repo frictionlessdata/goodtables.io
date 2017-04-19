@@ -44,7 +44,7 @@ export default {
               <h2 class="source-title">
                 {{ source.name }}
               </h2>
-              <SourceListItem :source="source" :inSourcePanel="true"/>
+              <SourceListItem :source="source" :job="job" :inSourcePanel="true"/>
             </div>
 
             <section v-if="job" class="inner">
