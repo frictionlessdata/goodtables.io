@@ -58,19 +58,17 @@ export default {
                   <div role="tabpanel" class="report tab-pane active" id="report">
 
                     <template v-if="job">
-                    <Report :report="job.report" />
-                    <hr>
-                    <ul class="meta">
-                        Report calculated on {{ job.finished }}
-                      </li>
-                      <li>
-                        Source added: 21 Feb 2017
-                      </li>
-                    </ul>
+                      <Report v-if="job.report" :report="job.report" />
+                      <p v-else>{{ job.error.message }}</p>
+                      <hr>
+                      <ul class="meta">
+                        <li>Report calculated on {{ job.finished }}</li>
+                        <li>Source added: 21 Feb 2017</li>
+                      </ul>
                     </template>
 
                     <template v-if="!job">
-                    <p>No jobs yet</p>
+                      <p>No jobs yet</p>
                     </template>
 
                  </div>
