@@ -3,7 +3,7 @@ import Report from './Report.vue'
 import SourceListItem from './SourceListItem.vue'
 
 export default {
-  name: 'Source_',
+  name: 'Source',
   props: {
     source: Object,
     job: Object,
@@ -42,7 +42,7 @@ export default {
               <a :href="`https://console.aws.amazon.com/s3/buckets/${source.name}`" class="icon-amazon integration"><i>Amazon S3</i></a>
               </template>
               <h2 class="source-title">
-                  {{ source.name }}
+                {{ source.name }}
               </h2>
               <SourceListItem :source="source" :inSourcePanel="true"/>
             </div>
@@ -58,8 +58,10 @@ export default {
                   <div role="tabpanel" class="report tab-pane active" id="report">
 
                     <template v-if="job">
+                      <div v-if="job.error" class="alert alert-warning">
+                        {{ job.error.message }}
+                      </div>
                       <Report v-if="job.report" :report="job.report" />
-                      <p v-else>{{ job.error.message }}</p>
                       <ul class="meta">
                         <li>Report calculated on {{ job.finished }}</li>
                       </ul>
