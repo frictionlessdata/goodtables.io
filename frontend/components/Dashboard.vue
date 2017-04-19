@@ -9,7 +9,7 @@ import Source_ from './Source.vue'
 export default {
   name: 'Dashboard',
   props: {
-    latestJobs: Array,
+    sources: Array,
     eventHub: {
       type: Object,
       default() { return new Vue() },
@@ -18,16 +18,16 @@ export default {
   data() {
     return {
       view: 'default-view',
-      activeJob: this.latestJobs[0],
+      activeSource: (this.sources) ? this.sources[0] : null,
     }
   },
   methods: {
-    changeJob(job) {
-      this.activeJob = job
+    changeSource(source) {
+      this.activeSource = source
     },
   },
   mounted() {
-    this.eventHub.$on('job:changed', this.changeJob)
+    this.eventHub.$on('source:changed', this.changeSource)
   },
   components: {
     Logo,
@@ -96,7 +96,7 @@ export default {
             <a v-on:click="view = 'list-view'" class="show-view-list"><span>List view</span></a>
             <logo/>
             <ul class="nav nav-tabs" role="tablist">
-              <li role="presentation" class="active"><a href="#latest-jobs" aria-controls="latest-jobs" role="tab" data-toggle="tab">Latest Jobs</a></li>
+              <li role="presentation" class="active"><a href="#my-sources" aria-controls="my-sources" role="tab" data-toggle="tab">My Sources</a></li>
             </ul>
           </header>
 
@@ -116,14 +116,21 @@ export default {
           </ul>
 
           <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active latest-jobs" id="latest-jobs">
-               <SourceList :jobs="latestJobs" :eventHub="eventHub" ref="source-list" />
+            <div role="tabpanel" class="tab-pane active my-sources" id="my-sources">
+              <template v-if="sources">
+               <SourceList :sources="sources" :eventHub="eventHub" ref="source-list" />
+              </template>
+              <template v-if="!sources.length" ref="source-list">
+                <div class="no-sources panel">No sources added yet!</div>
+              </template>
             </div>
           </div>
 
         </nav>
         <main class="source-view">
-          <Source_ :job="activeJob" ref="source-view" />
+          <template v-if="activeSource">
+          <Source_ :source="activeSource" ref="source-view" />
+          </template>
         </main>
       </div>
     </div>

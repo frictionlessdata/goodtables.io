@@ -5,7 +5,7 @@ import SourceListItem from './SourceListItem.vue'
 export default {
   name: 'Source_',
   props: {
-    job: Object,
+    source: Object,
   },
   components: {
     Report,
@@ -14,9 +14,10 @@ export default {
   computed: {
     statusClass() {
       return {
-        valid: this.job.status === 'success',
-        invalid: this.job.status === 'failure',
-        error: this.job.status === 'error',
+        valid: this.source.last_job && this.source.last_job.status === 'success',
+        invalid: this.source.last_job && this.source.last_job.status === 'failure',
+        error: this.source.last_job && this.source.last_job.status === 'error',
+        info: !this.source.last_job,
       }
     },
   },
@@ -27,21 +28,18 @@ export default {
 <template>
   <div v-bind:class="statusClass">
     <div class="inner banner">
-      <template v-if="job.integration_name === 'github'">
+      <template v-if="source.integration_name === 'github'">
       <a class="icon-github integration"><i>GitHub</i></a>
-      <h2 class="source-title">
-          {{ job.integration_name }}/{{ job.conf.owner }}/{{job.conf.repo }}
-
-      </h2>
       </template>
 
-      <template v-else-if="job.integration_name === 's3'">
+      <template v-else-if="source.integration_name === 's3'">
       <a class="icon-amazon integration"><i>Amazon S3</i></a>
-      <h2 class="source-title">
-          {{ job.integration_name }}/{{job.conf.bucket }}
-      </h2>
       </template>
-      <SourceListItem :job="job" :inSourcePanel="true"/>
+      <h2 class="source-title">
+          {{ source.name }}
+      </h2>
+
+      <SourceListItem :source="source" :inSourcePanel="true"/>
     </div>
     <section class="inner">
 
@@ -52,15 +50,21 @@ export default {
         </ul>
         <div class="tab-content">
           <div role="tabpanel" class="report tab-pane active" id="report">
+
+            <template v-if="source.last_job">
             <ul class="meta">
-              <li>
-                Report calculated on {{ job.finished }}
+                Report calculated on {{ source.last_job.finished }}
               </li>
               <li>
                 Source added: 21 Feb 2017
               </li>
             </ul>
-            <Report :report="job.report" />
+            <Report :report="source.last_job.report" />
+            </template>
+
+            <template v-if="!source.last_job">
+            <p>No jobs yet</p>
+            </template>
          </div>
          <div role="tabpanel" class="tab-pane" id="history">
            History here

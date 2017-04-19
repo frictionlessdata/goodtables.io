@@ -22,18 +22,18 @@ describe('Dashboard', () => {
     */
   })
 
-  describe('[with latestJobs]', () => {
+  describe('[with sources]', () => {
 
     it('should contain SourceList', () => {
       const propsData = {
-        latestJobs: [
-          'job1',
-          'job2',
+        sources: [
+          'source1',
+          'source2',
         ],
       }
       const wrapper = mount(Dashboard, {propsData})
       wrapper.find(SourceList).should.have.length(1)
-      wrapper.find(SourceList)[0].propsData().jobs.should.deep.equal(['job1', 'job2'])
+      wrapper.find(SourceList)[0].propsData().sources.should.deep.equal(['source1', 'source2'])
     })
 
   })

@@ -141,6 +141,7 @@ def test_s3_api_bucket(client):
     assert get_response_data(response) == {
         'bucket': {
             'id': bucket.id, 'name': bucket.name, 'active': bucket.active,
+            'integration_name': 's3'
         },
         'error': None,
     }
@@ -164,8 +165,10 @@ def test_s3_api_bucket_list(client):
     assert response.status_code == 200
     assert get_response_data(response) == {
         'buckets': [
-            {'id': bucket1.id, 'name': bucket1.name, 'active': bucket1.active},
-            {'id': bucket2.id, 'name': bucket2.name, 'active': bucket2.active},
+            {'id': bucket1.id, 'name': bucket1.name, 'active': bucket1.active,
+             'integration_name': 's3'},
+            {'id': bucket2.id, 'name': bucket2.name, 'active': bucket2.active,
+             'integration_name': 's3'},
         ],
         'error': None,
     }
@@ -194,6 +197,7 @@ def test_s3_api_bucket_add(mock_set_up_bucket_on_aws, client):
             'id': mock.ANY,
             'name': 'name',
             'active': True,
+            'integration_name': 's3'
         },
         'error': None,
     }

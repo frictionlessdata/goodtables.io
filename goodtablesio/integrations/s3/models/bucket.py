@@ -10,13 +10,6 @@ class S3Bucket(Source):
         'polymorphic_identity': 's3'
     }
 
-    def to_api(self):
-        return {
-            'id': self.id,
-            'name': self.name,
-            'active': self.active,
-        }
-
     @property
     def access_key_id(self):
         return self._get_encrypted('access_key_id')
