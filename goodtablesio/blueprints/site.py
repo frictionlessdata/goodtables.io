@@ -125,5 +125,5 @@ def _source(integration_name, name, job_number=None):
 
     return render_component('Source', props={
         'source': source.to_api(with_last_job=True, with_job_history=True),
-        'job': job.to_api(),
+        'job': job.to_api() if job else None,
     })

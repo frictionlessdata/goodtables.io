@@ -81,6 +81,18 @@ def test_site_source_github(render_component, client):
         'job': job2.to_api(),
     })
 
+@mock.patch('goodtablesio.blueprints.site.render_component')
+def test_site_source_github_no_jobs(render_component, client):
+    render_component.return_value = 'body'
+    source = factories.GithubRepo()
+    response = client.get('/source/github/repo/%s/%s' % (source.owner, source.repo))
+    assert response.status_code == 200
+    assert response.get_data(as_text=True) == 'body'
+    render_component.assert_called_with('Source', props={
+        'source': source.to_api(with_last_job=True, with_job_history=True),
+        'job': None,
+    })
+
 
 def test_site_source_github_not_found(client):
     response = client.get('/source/github/repo/%s/%s' % ('owner', 'repo'))
