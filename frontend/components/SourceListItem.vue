@@ -31,18 +31,18 @@ export default {
       }
     },
     sourceURL() {
-      let url;
+      let url
       if (this.source.integration_name === 'github') {
-        url = '/github/repo/' + this.source.name
+        url = `/github/repo/${this.source.name}`
       } else if (this.source.integration_name === 's3') {
-        url = '/s3/bucket/' + this.source.name
+        url = `/s3/bucket/${this.source.name}`
       }
       return url
     },
     jobTimeStamp() {
       return moment(this.source.last_job.created).fromNow()
-    }
-  }
+    },
+  },
 }
 
 </script>

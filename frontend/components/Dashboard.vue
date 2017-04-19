@@ -1,6 +1,5 @@
 <script>
 
-import Vue from 'vue'
 import Logo from './Logo.vue'
 import SourceList from './SourceList.vue'
 import Source_ from './Source.vue'
@@ -36,7 +35,7 @@ export default {
                <SourceList :sources="sources" ref="source-list" />
               </template>
               <template v-if="!sources.length">
-                <div class="no-sources panel">No sources added yet!</div>
+                <div class="no-sources panel">No sources added yet! Click on the "Add Sources" button to get started.</div>
               </template>
             </div>
           </main>
