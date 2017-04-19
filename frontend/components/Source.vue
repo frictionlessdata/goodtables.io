@@ -62,7 +62,6 @@ export default {
                       <p v-else>{{ job.error.message }}</p>
                       <ul class="meta">
                         <li>Report calculated on {{ job.finished }}</li>
-                        <li>Source added: 21 Feb 2017</li>
                       </ul>
                     </template>
 
