@@ -162,19 +162,20 @@
   }
 
   .source-view {
-    display: none;
-    @include make-sm-column(8);
+    display: block;
+    /* display: none; */
+    /* @include make-sm-column(8); */
     @include transition(width 0.2s ease);
     @media screen and (min-width: $screen-sm) {
       display: block;
       padding-left: 0;
 
-      & > div {
-        height: 100vh;
-        overflow-x: hidden;
-        overflow-y: auto;
-        position: relative;
-      }
+      /* & > div { */
+        /* height: 100vh; */
+        /* overflow-x: hidden; */
+        /* overflow-y: auto; */
+        /* position: relative; */
+      /* } */
     }
 
     .main-header {
