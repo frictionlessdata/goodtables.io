@@ -5,6 +5,7 @@
   "license": "AGPL-3.0",
   "dependencies": {
     "axios": "^0.15.3",
+    "moment": "^2.18.1",
     "vue": "^2.1.0"
   },
   "devDependencies": {

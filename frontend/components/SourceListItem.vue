@@ -1,5 +1,7 @@
 <script>
 
+import moment from 'moment'
+
 export default {
   name: 'SourceListItem',
   props: {
@@ -37,6 +39,9 @@ export default {
       }
       return url
     },
+    jobTimeStamp() {
+      return moment(this.source.last_job.created).fromNow()
+    }
   }
 }
 
@@ -82,7 +87,7 @@ export default {
           <span class="jobcount">
             <span class="jobnumber"> #{{ source.last_job.number }}</span>
           </span>
-          <span class="icon-clock"></span><span class="time"> TIME</span>
+          <span class="icon-clock"></span><span class="time" v-bind:title="source.last_job.created"> {{ jobTimeStamp }}</span>
           </template>
 
           <template v-if="!source.last_job">
