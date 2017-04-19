@@ -9,7 +9,7 @@ export default {
 
 <template>
 <nav class="navbar navbar-default">
-  <div class="container">
+
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -28,13 +28,13 @@ export default {
           <li><a href="/user/login/github">Login with GitHub</a></li>
         </template>
         <template v-else>
-          <li><p class="navbar-text">Hello <a href="/user">{{ userName }}</a></p></li>
+          <li><p class="navbar-text">Hello <a href="/settings">{{ userName }}</a></p></li>
           <li role="separator" class="divider"></li>
           <li><a href="/user/logout">Logout</a></li>
         </template>
       </ul>
     </div>
-  </div>
+
 </nav>
 </template>
 
