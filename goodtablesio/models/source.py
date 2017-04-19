@@ -74,6 +74,9 @@ class Source(Base, BaseModelMixin):
         for job in self.jobs:
             history.append({
                 'id': job.id,
+                'status': job.status,
+                'created': job.created,
+                'finished': job.finished,
                 'number': job.number,
             })
         return history

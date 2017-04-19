@@ -9,7 +9,6 @@ from goodtablesio import models
 from goodtablesio.services import database
 from goodtablesio.models.job import Job
 from goodtablesio.models.source import Source
-from goodtablesio.models.job import Job
 from goodtablesio.utils.frontend import render_component
 
 
@@ -124,6 +123,6 @@ def _source(integration_name, name, job_number=None):
         job = source.last_job
 
     return render_component('Source', props={
-        'source': source.to_api(with_job_history=True),
+        'source': source.to_api(with_last_job=True, with_job_history=True),
         'job': job.to_api() if job else None,
     })

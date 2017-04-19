@@ -38,6 +38,9 @@ export default {
       } else if (this.source.integration_name === 's3') {
         url = `/source/s3/bucket/${this.source.name}`
       }
+      if (this.job && this.source.last_job.number !== this.job.number) {
+        url = `${url}/jobs/${this.job.number}`
+      }
       return url
     },
     jobTimeStamp() {

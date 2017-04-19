@@ -1,3 +1,4 @@
+# pylama:ignore=W0612
 import pytest
 import datetime
 from unittest import mock
@@ -77,9 +78,10 @@ def test_site_source_github(render_component, client):
     assert response.status_code == 200
     assert response.get_data(as_text=True) == 'body'
     render_component.assert_called_with('Source', props={
-        'source': source.to_api(with_job_history=True),
+        'source': source.to_api(with_last_job=True, with_job_history=True),
         'job': job2.to_api(),
     })
+
 
 @mock.patch('goodtablesio.blueprints.site.render_component')
 def test_site_source_github_no_jobs(render_component, client):
@@ -89,7 +91,7 @@ def test_site_source_github_no_jobs(render_component, client):
     assert response.status_code == 200
     assert response.get_data(as_text=True) == 'body'
     render_component.assert_called_with('Source', props={
-        'source': source.to_api(with_job_history=True),
+        'source': source.to_api(with_last_job=True, with_job_history=True),
         'job': None,
     })
 
@@ -106,11 +108,12 @@ def test_site_source_github_job(render_component, client):
     source = factories.GithubRepo()
     job1 = factories.Job(source=source, integration_name='github', number=1)
     job2 = factories.Job(source=source, integration_name='github', number=2)
-    response = client.get('/source/github/repo/%s/%s/jobs/1' % (source.owner, source.repo))
+    response = client.get('/source/github/repo/%s/%s/jobs/1' % (
+        source.owner, source.repo))
     assert response.status_code == 200
     assert response.get_data(as_text=True) == 'body'
     render_component.assert_called_with('Source', props={
-        'source': source.to_api(with_job_history=True),
+        'source': source.to_api(with_last_job=True, with_job_history=True),
         'job': job1.to_api(),
     })
 
@@ -133,7 +136,7 @@ def test_site_source_s3(render_component, client):
     assert response.status_code == 200
     assert response.get_data(as_text=True) == 'body'
     render_component.assert_called_with('Source', props={
-        'source': source.to_api(with_job_history=True),
+        'source': source.to_api(with_last_job=True, with_job_history=True),
         'job': job2.to_api(),
     })
 
@@ -154,7 +157,7 @@ def test_site_source_s3_job(render_component, client):
     assert response.status_code == 200
     assert response.get_data(as_text=True) == 'body'
     render_component.assert_called_with('Source', props={
-        'source': source.to_api(with_job_history=True),
+        'source': source.to_api(with_last_job=True, with_job_history=True),
         'job': job1.to_api(),
     })
 

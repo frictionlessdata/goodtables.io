@@ -73,7 +73,11 @@ export default {
 
                  </div>
                  <div role="tabpanel" class="tab-pane" id="history">
-                   History here
+
+                   <div class="main-nav">
+                     <SourceListItem v-for="job of source.job_history.reverse()" :source="source" :job="job" />
+                   </div>
+
                  </div>
                 </div>
               </div>
