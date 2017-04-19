@@ -60,7 +60,6 @@ export default {
                     <template v-if="job">
                       <Report v-if="job.report" :report="job.report" />
                       <p v-else>{{ job.error.message }}</p>
-                      <hr>
                       <ul class="meta">
                         <li>Report calculated on {{ job.finished }}</li>
                         <li>Source added: 21 Feb 2017</li>

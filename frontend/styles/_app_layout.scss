@@ -5,7 +5,7 @@
   .default {
     @include make-row();
     @media screen and (min-width: $screen-sm) {
-      height: 100vh;
+      /* height: 100vh; */
       overflow: hidden;
     }
   }
@@ -694,8 +694,8 @@
     .source-view {
       @media screen and (min-width: $screen-sm) {
         width: 50%;
-        height: 100vh;
-        overflow: hidden;
+        /* height: 100vh; */
+        /* overflow: hidden; */
       }
     }
   }
