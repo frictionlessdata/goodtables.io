@@ -36,6 +36,10 @@ class Source(Base, BaseModelMixin):
                    primary_key=True),
             Column('role', Unicode, nullable=False, default='default')))
 
+    jobs = relationship(
+        'Job', backref='source', primaryjoin='Job.source_id == Source.id',
+        order_by='Job.created')
+
     __mapper_args__ = {
         'polymorphic_on': integration_name,
         'polymorphic_identity': 'source'
