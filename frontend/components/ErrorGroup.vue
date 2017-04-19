@@ -19,7 +19,7 @@ export default {
 
   <div class="panel-heading">
     <span class="text-uppercase label label-danger">Invalid</span>
-    <span class="count label">{{ errorGroup.count }}</span>
+    <span class="count label">{{ (errorGroup.count < 10) ? errorGroup.count : `10/${errorGroup.count}` }}</span>
     <h5 class="panel-title">{{ errorGroup.name }}</h5>
     <span class="help"
           rel="popover"
@@ -34,7 +34,7 @@ export default {
   <div class="panel-body">
     <table class="table table-bordered table-condensed">
       <tbody>
-        <tr v-for="rowNumber of Object.keys(errorGroup.rows).sort()" class="result-header-row">
+        <tr v-for="rowNumber, index of Object.keys(errorGroup.rows).sort()" v-if="index < 10 " class="result-header-row">
           <td class="result-row-index">{{ (rowNumber !== 'null') ? rowNumber : 'H' }}</td>
           <td v-for="(value, index) of errorGroup.rows[rowNumber].values"
               :class="{danger: errorGroup.rows[rowNumber].badcols.has(index + 1)}">
