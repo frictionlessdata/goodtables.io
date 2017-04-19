@@ -45,14 +45,14 @@ def dashboard():
     })
 
 
-@site.route('/source/github/repo/<org>/<repo>')
-def source_github(org, repo):
-    return _source('github', '/'.join([org, repo]))
+@site.route('/source/github/repo/<owner>/<repo>')
+def source_github(owner, repo):
+    return _source('github', '/'.join([owner, repo]))
 
 
-@site.route('/source/github/repo/<org>/<repo>/jobs/<job>')
-def source_github_job(org, repo, job):
-    return _source('github', '/'.join([org, repo]), job)
+@site.route('/source/github/repo/<owner>/<repo>/jobs/<int:job>')
+def source_github_job(owner, repo, job):
+    return _source('github', '/'.join([owner, repo]), job)
 
 
 @site.route('/source/s3/bucket/<bucket>')
@@ -60,7 +60,7 @@ def source_s3(bucket):
     return _source('s3', bucket)
 
 
-@site.route('/source/s3/bucket/<bucket>/jobs/<job>')
+@site.route('/source/s3/bucket/<bucket>/jobs/<int:job>')
 def source_s3_job(bucket, job):
     return _source('s3', bucket, job)
 
@@ -101,7 +101,6 @@ def badge(integration_name, source_name):
 # Internal
 
 def _source(integration_name, name, job_number=None):
-    from flask import jsonify
 
     # Get source
     source = (database['session'].query(Source).
@@ -114,7 +113,7 @@ def _source(integration_name, name, job_number=None):
     # Get selected job
     if job_number:
         job = (database['session'].query(Job).
-               filter(Job.integration_name == integration_name).
+               filter(Job.source == source).
                filter(Job.number == job_number).
                first())
         if not job:
@@ -124,7 +123,7 @@ def _source(integration_name, name, job_number=None):
     else:
         job = source.last_job
 
-    return jsonify({
+    return render_component('Source', props={
         'source': source.to_api(with_job_history=True),
         'job': job.to_api(),
     })
