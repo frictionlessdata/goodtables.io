@@ -4,7 +4,6 @@ export default {
   name: 'SourceListItem',
   props: {
     source: Object,
-    eventHub: Object,
     active: Boolean,
     inSourcePanel: Boolean,
   },
@@ -20,8 +19,6 @@ export default {
         'panel-danger': (this.source.last_job && this.source.last_job.status === 'failure'),
         'panel-warning': (this.source.last_job && this.source.last_job.status === 'error'),
         'panel-info': !this.source.last_job,
-        active: this.isActive,
-
       }
     },
     integrationIconClass() {
@@ -31,29 +28,25 @@ export default {
 
       }
     },
-  },
-  methods: {
-    onClickSourceItem() {
-      this.eventHub.$emit('source:changed', this.source)
+    sourceURL() {
+      let url;
+      if (this.source.integration_name === 'github') {
+        url = '/github/repo/' + this.source.name
+      } else if (this.source.integration_name === 's3') {
+        url = '/s3/bucket/' + this.source.name
+      }
+      return url
     },
-    setActive(source) {
-      this.isActive = source === this.source
-    },
-  },
-  created() {
-    if (!this.inSourcePanel) {
-      this.eventHub.$on('source:changed', this.setActive)
-    }
-  },
+  }
 }
 
 </script>
 
 
 <template>
-  <div class="source-item panel" v-on:click="onClickSourceItem" v-bind:class="panelStatusClass">
+  <div class="source-item panel" v-bind:class="panelStatusClass">
     <div v-bind:class="source.integration_name">
-      <a class="source" v-bind:class="{active: inSourcePanel}">
+      <a class="source" v-bind:class="{active: inSourcePanel}" v-bind:href="sourceURL">
 
         <template v-if="source.last_job">
         <span class="status">{{ source.last_job.status }} </span>
@@ -83,7 +76,7 @@ export default {
           </h3>
         </a>
 
-        <a class="job"  v-bind:class="{active: isActive || inSourcePanel}">
+        <a class="job"  v-bind:class="{active: inSourcePanel}">
 
           <template v-if="source.last_job">
           <span class="jobcount">

@@ -10,6 +10,17 @@
     }
   }
 
+  .default header {
+
+    @media screen and (min-width: $screen-sm) {
+      padding: 10px 0 10px 35px;
+    }
+    @media screen and (max-width: $screen-sm) {
+      padding: 10px 0 10px 19px;
+    }
+
+  }
+
   .main-nav {
     overflow: hidden;
     @include make-sm-column(4);
@@ -17,7 +28,8 @@
     min-height: 100vh;
     @media screen and (min-width: $screen-sm) {
       height: 100vh;
-      padding-right: 0;
+      margin-right: 15px;
+      margin-left: 15px;
     }
 
     a {
@@ -34,7 +46,7 @@
     }
 
     .source-item {
-      margin-bottom: 4px;
+      margin: 4px;
 
       .status {
         display: none;
