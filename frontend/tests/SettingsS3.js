@@ -3,12 +3,12 @@ import {should} from 'chai'
 import {mount} from 'avoriaz'
 import AxiosMockAdapter from 'axios-mock-adapter'
 import Messages from '../components/Messages.vue'
-import S3Settings from '../components/S3Settings.vue'
+import SettingsS3 from '../components/SettingsS3.vue'
 should()
 
 // Tests
 
-describe('S3Settings', () => {
+describe('SettingsS3', () => {
   let mockAxios
 
   beforeEach(() => {
@@ -23,7 +23,7 @@ describe('S3Settings', () => {
   })
 
   it('should contain headings', (done) => {
-    const wrapper = mount(S3Settings)
+    const wrapper = mount(SettingsS3)
     setTimeout(() => {
       wrapper.find('h1')[0].text().should.equal('Amazon S3')
       wrapper.find('h2')[0].text().should.equal('Buckets')
@@ -33,7 +33,7 @@ describe('S3Settings', () => {
   })
 
   it('should have no buckets', (done) => {
-    const wrapper = mount(S3Settings)
+    const wrapper = mount(SettingsS3)
     setTimeout(() => {
       wrapper.text().should.include('No buckets configured')
       done()
@@ -48,7 +48,7 @@ describe('S3Settings', () => {
         {id: 'id2', name: 'name2', active: false},
       ],
     })
-    const wrapper = mount(S3Settings)
+    const wrapper = mount(SettingsS3)
     wrapper.text().should.include('Loading buckets. Please wait..')
     setTimeout(() => {
       wrapper.text().should.include('name1')
@@ -58,7 +58,7 @@ describe('S3Settings', () => {
   })
 
   it('should have submit button', (done) => {
-    const wrapper = mount(S3Settings)
+    const wrapper = mount(SettingsS3)
     setTimeout(() => {
       wrapper.find('button')[0].text().should.include('Submit')
       done()
@@ -74,7 +74,7 @@ describe('S3Settings', () => {
       },
       error: null,
     })
-    const wrapper = mount(S3Settings)
+    const wrapper = mount(SettingsS3)
     wrapper.vm.bucketName = 'name'
     wrapper.find('button')[0].simulate('click')
     setTimeout(() => {
@@ -87,7 +87,7 @@ describe('S3Settings', () => {
     mockAxios.onPost('/s3/api/bucket').replyOnce(200, {
       error: 'Bucket error',
     })
-    const wrapper = mount(S3Settings)
+    const wrapper = mount(SettingsS3)
     wrapper.vm.bucketName = 'bucket-name'
     wrapper.find('button')[0].simulate('click')
     setTimeout(() => {

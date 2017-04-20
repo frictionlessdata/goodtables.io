@@ -3,12 +3,12 @@ import {should} from 'chai'
 import {mount} from 'avoriaz'
 import AxiosMockAdapter from 'axios-mock-adapter'
 import Messages from '../components/Messages.vue'
-import GithubSettings from '../components/GithubSettings.vue'
+import SettingsGithub from '../components/SettingsGithub.vue'
 should()
 
 // Tests
 
-describe('GithubSettings', () => {
+describe('SettingsGithub', () => {
   let mockAxios
 
   beforeEach(() => {
@@ -23,17 +23,8 @@ describe('GithubSettings', () => {
     mockAxios.restore()
   })
 
-  it('should contain headings', (done) => {
-    const wrapper = mount(GithubSettings)
-    setTimeout(() => {
-      wrapper.find('h1')[0].text().should.equal('GitHub')
-      wrapper.find('h2')[0].text().should.equal('Repos')
-      done()
-    })
-  })
-
   it('should have no repositories', (done) => {
-    const wrapper = mount(GithubSettings)
+    const wrapper = mount(SettingsGithub)
     setTimeout(() => {
       wrapper.text().should.include('There are no synced repositories')
       done()
@@ -41,15 +32,15 @@ describe('GithubSettings', () => {
   })
 
   it('should have sync account button', (done) => {
-    const wrapper = mount(GithubSettings)
+    const wrapper = mount(SettingsGithub)
     setTimeout(() => {
-      wrapper.find('.sync>.btn')[0].text().should.include('Sync account')
+      wrapper.find('.refresh')[0].text().should.include('Sync account')
       done()
     })
   })
 
   it('should not have syncing account message', (done) => {
-    const wrapper = mount(GithubSettings)
+    const wrapper = mount(SettingsGithub)
     setTimeout(() => {
       wrapper.find(Messages).should.has.length(0)
       done()
@@ -62,7 +53,7 @@ describe('GithubSettings', () => {
       syncing: true,
       repos: [],
     })
-    const wrapper = mount(GithubSettings)
+    const wrapper = mount(SettingsGithub)
     setTimeout(() => {
       wrapper.find(Messages).should.has.length(1)
       wrapper.find(Messages)[0].propsData().messages
@@ -80,7 +71,7 @@ describe('GithubSettings', () => {
         {id: 'id2', name: 'name2', active: false},
       ],
     })
-    const wrapper = mount(GithubSettings)
+    const wrapper = mount(SettingsGithub)
     wrapper.text().should.include('Loading repos. Please wait..')
     setTimeout(() => {
       wrapper.text().should.include('name1')
@@ -93,8 +84,8 @@ describe('GithubSettings', () => {
     mockAxios.onGet('/github/api/sync_account').replyOnce(200, {
       error: 'Sync account error',
     })
-    const wrapper = mount(GithubSettings)
-    wrapper.find('.sync>.btn')[0].simulate('click')
+    const wrapper = mount(SettingsGithub)
+    wrapper.find('.refresh')[0].simulate('click')
     setTimeout(() => {
       wrapper.find(Messages).should.has.length(1)
       wrapper.find(Messages)[0].propsData().messages
@@ -124,8 +115,8 @@ describe('GithubSettings', () => {
       error: null,
     })
     // TODO: use fake timer from sinon.js
-    const wrapper = mount(GithubSettings)
-    wrapper.find('.sync>.btn')[0].simulate('click')
+    const wrapper = mount(SettingsGithub)
+    wrapper.find('.refresh')[0].simulate('click')
     setTimeout(() => {
       wrapper.find(Messages).should.has.length(1)
       wrapper.find(Messages)[0].propsData().messages
@@ -155,7 +146,7 @@ describe('GithubSettings', () => {
     mockAxios.onGet('/github/api/repo/id/deactivate').reply(200, {
       error: null,
     })
-    const wrapper = mount(GithubSettings)
+    const wrapper = mount(SettingsGithub)
     setTimeout(() => {
       wrapper.find('.repo>.btn')[0].text().should.include('Activate')
       wrapper.find('.repo>.btn')[0].simulate('click')

@@ -1,9 +1,16 @@
 <script>
+import SettingsGithub from './SettingsGithub.vue'
+import SettingsS3 from './SettingsS3.vue'
+
 export default {
   name: 'Settings',
   props: {
     repos: Array,
     buckets: Array,
+  },
+  components: {
+    SettingsGithub,
+    SettingsS3,
   },
 }
 </script>
@@ -22,29 +29,7 @@ export default {
 
       <div class="tab-content">
         <div role="tabpanel" class="github tab-pane active" id="addGithub">
-          <div class="tool-bar">
-            <span>
-              <input type="search" class="form-control search" placeholder="Filter">
-            </span>
-            <span class="sync">
-              <button data-toggle="tooltip" data-placement="left" title="Refresh your organizations and repositories">
-                <span class="icon-spinner11"><i>Sync account</i></span>
-              </button>
-            </span>
-          </div>
-
-          <ul class="repos">
-            <li v-for="repo of repos" v-if="!repo.active">
-              <button class="activate">
-                <span class="icon-plus"><i>Activate</i></span>
-              </button>
-              <h3 class="repo-title">{{ repo.name }}</h3>
-              <span class="repo-body">
-                <a :href="`https://github.com/${repo.name}`">View repository</a>
-              </span>
-            </li>
-          </ul>
-
+          <SettingsGithub />
         </div>
         <div role="tabpanel" class="amazon tab-pane" id="addAmazon">
           <div class="tool-bar">
@@ -57,6 +42,8 @@ export default {
               </button>
             </span>
           </div>
+
+          <SettingsS3 />
 
           <ul class="repos">
             <li v-for="bucket of buckets" v-if="!bucket.active">

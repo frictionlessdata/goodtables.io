@@ -474,9 +474,9 @@
   section.settings {
     width: 100%;
     /* width: 0; */
-    height: 100vh;
+    /* height: 100vh; */
     @include transition(width 0.2s ease);
-    overflow: hidden;
+    /* overflow: hidden; */
     float: left;
     margin-left: -15px;
     position: relative;
@@ -547,15 +547,23 @@
       margin: 0;
 
       li {
+        width: 100vw;
         position: relative;
         border-bottom: solid 5px $gray-dark;
         overflow: hidden;
+        &.active {
+          background-color: #777;
+        }
 
         .repo-title {
           font-size: 16px;
           font-weight: 600;
           margin: 0;
           padding: 12px 0 0 15px;
+
+          a {
+            color: inherit;
+          }
         }
 
         .repo-body {
@@ -571,7 +579,8 @@
         .activate {
           position: absolute;
           top: 50%;
-          right: 14px;
+          /* right: 14px; */
+          right: 26px;
           width: 26px;
           height: 26px;
           border: none;
@@ -580,12 +589,12 @@
           background-color: #fff;
           color: $gray;
           line-height: 1;
-          box-shadow: 10px 0px 10px 20px $gray;
+          /* box-shadow: 10px 0px 10px 20px $gray; */
 
           &:hover {
             background-color: $brand-success;
             color: #fff;
-            box-shadow: 10px 0px 10px 20px lighten($gray,20%);
+            /* box-shadow: 10px 0px 10px 20px lighten($gray,20%); */
 
             & + .repo-title {
               background-color: lighten($gray,20%);

@@ -3,7 +3,7 @@ import axios from 'axios'
 import Messages from './Messages.vue'
 
 export default {
-  name: 'S3Settings',
+  name: 'SettingsS3',
   components: {
     Messages,
   },
