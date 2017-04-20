@@ -16,21 +16,6 @@ pytestmark = pytest.mark.usefixtures('session_cleanup')
 
 # Tests
 
-def test_s3_home(client):
-
-    job1 = factories.Job(integration_name='s3')
-    job2 = factories.Job(integration_name='github')
-
-    response = client.get('/s3/')
-
-    body = response.get_data(as_text=True)
-
-    # TODO: improve when final UI is in place
-    assert 'S3' in body
-    assert job1.id in body
-    assert job2.id not in body
-
-
 def test_s3_settings_logged_in(client):
 
     user = factories.User()
