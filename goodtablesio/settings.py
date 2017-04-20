@@ -72,3 +72,6 @@ GITHUB_CLIENT_SECRET = os.environ['GITHUB_CLIENT_SECRET']
 # Sentry
 
 SENTRY_DSN = os.environ.get('SENTRY_DSN')
+
+# Plans
+MAX_S3_BUCKETS_ON_FREE_PLAN = 2

@@ -6,6 +6,7 @@ import pytest
 from goodtablesio import settings
 from goodtablesio.services import database
 from goodtablesio.models.job import Job
+from goodtablesio.models.plan import Plan
 from goodtablesio.utils.signature import create_signature
 from goodtablesio.tests import factories
 from goodtablesio.integrations.s3.models.bucket import S3Bucket
@@ -260,6 +261,108 @@ def test_s3_api_bucket_add_failure(mock_set_up_bucket_on_aws, client):
     assert get_response_data(response) == {
         'bucket': None,
         'error': 'Error setting up bucket integration. Some error happened',
+    }
+
+
+def test_s3_api_bucket_add_user_on_free_plan(client):
+    user = factories.User()
+    bucket1 = factories.S3Bucket()
+    bucket1.users.append(user)
+    bucket2 = factories.S3Bucket()
+    bucket2.users.append(user)
+
+    with client.session_transaction() as session:
+        session['user_id'] = user.id
+    response = client.post(
+        '/s3/api/bucket',
+        headers={'Content-Type': 'application/json'},
+        data=json.dumps({
+            'access-key-id': 'id',
+            'secret-access-key': 'key',
+            'bucket-name': 'name',
+        })
+    )
+
+    assert response.status_code == 200
+    assert get_response_data(response) == {
+        'bucket': None,
+        'error': 'Free plan users can only have {} active buckets'.format(
+            settings.MAX_S3_BUCKETS_ON_FREE_PLAN)
+    }
+
+
+@mock.patch('goodtablesio.integrations.s3.blueprint.set_up_bucket_on_aws')
+def test_s3_api_bucket_add_user_on_paid_plan(mock_set_up_bucket_on_aws, client):
+
+    mock_set_up_bucket_on_aws.return_value = (True, '')
+
+    plan = database['session'].query(Plan).filter_by(name='paid').one()
+
+    user = factories.User()
+    user.set_plan(plan.name)
+
+    bucket1 = factories.S3Bucket()
+    bucket1.users.append(user)
+    bucket2 = factories.S3Bucket()
+    bucket2.users.append(user)
+
+    with client.session_transaction() as session:
+        session['user_id'] = user.id
+    response = client.post(
+        '/s3/api/bucket',
+        headers={'Content-Type': 'application/json'},
+        data=json.dumps({
+            'access-key-id': 'id',
+            'secret-access-key': 'key',
+            'bucket-name': 'name',
+        })
+    )
+
+    assert response.status_code == 200
+    assert get_response_data(response) == {
+        'bucket': {
+            'id': mock.ANY,
+            'name': 'name',
+            'active': True,
+            'integration_name': 's3'
+        },
+        'error': None,
+    }
+
+
+@mock.patch('goodtablesio.integrations.s3.blueprint.set_up_bucket_on_aws')
+def test_s3_api_bucket_add_user_admin(mock_set_up_bucket_on_aws, client):
+
+    mock_set_up_bucket_on_aws.return_value = (True, '')
+
+    user = factories.User(admin=True)
+
+    bucket1 = factories.S3Bucket()
+    bucket1.users.append(user)
+    bucket2 = factories.S3Bucket()
+    bucket2.users.append(user)
+
+    with client.session_transaction() as session:
+        session['user_id'] = user.id
+    response = client.post(
+        '/s3/api/bucket',
+        headers={'Content-Type': 'application/json'},
+        data=json.dumps({
+            'access-key-id': 'id',
+            'secret-access-key': 'key',
+            'bucket-name': 'name',
+        })
+    )
+
+    assert response.status_code == 200
+    assert get_response_data(response) == {
+        'bucket': {
+            'id': mock.ANY,
+            'name': 'name',
+            'active': True,
+            'integration_name': 's3'
+        },
+        'error': None,
     }
 
 
