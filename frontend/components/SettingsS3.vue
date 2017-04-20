@@ -25,7 +25,7 @@ export default {
       return this.buckets.filter(bucket => bucket.name.includes(this.filter))
     },
     addBucketIcon() {
-      return (!this.showAddBucket) ? 'icon-plus': 'icon-cross'
+      return (!this.showAddBucket) ? 'icon-plus' : 'icon-cross'
     },
   },
   methods: {

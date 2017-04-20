@@ -6,7 +6,7 @@ export default {
   props: {},
   components: {
     Logo,
-  }
+  },
 }
 </script>
 
