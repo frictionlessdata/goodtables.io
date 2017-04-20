@@ -96,6 +96,12 @@ queue: ## Run celery for production
 queue-dev: ## Run celery for development
 	celery -A goodtablesio.celery_app worker -Q default,internal --loglevel=DEBUG
 
+add-admin: ## Give an existing user admin permissions (Usage: make add-admin USERNAME=name_or_id)
+	FLASK_APP=goodtablesio/app.py flask add_admin $(USERNAME)
+
+remove-admin: ## Remove admin permissions an existing user (Usage: make remove-admin USERNAME=name_or_id)
+	FLASK_APP=goodtablesio/app.py flask remove_admin $(USERNAME)
+
 server: ## Command to run the app as queue or server
 	@if [ $(queue_mode) ]; then \
 		make queue; \
