@@ -24,6 +24,9 @@ export default {
       if (!this.filter) return this.buckets
       return this.buckets.filter(bucket => bucket.name.includes(this.filter))
     },
+    addBucketIcon() {
+      return (!this.showAddBucket) ? 'icon-plus': 'icon-cross'
+    },
   },
   methods: {
     updateBuckets() {
@@ -106,15 +109,14 @@ export default {
     </span>
     <span class="sync">
       <button @click="showAddBucket = !showAddBucket" class="show-add" data-toggle="tooltip" data-placement="left" title="Add bucket">
-        <span class="icon-plus"><i>Add bucket</i></span>
+        <span :class="addBucketIcon"><i>Add bucket</i></span>
       </button>
     </span>
   </div>
 
   <Messages v-if="error" :messages="[['danger', error]]" />
 
-  <div v-if="showAddBucket">
-    <hr>
+  <div v-if="showAddBucket" style="padding: 25px 15px; width: 50%; border-bottom: solid 5px #333">
     <form @submit.prevent="addBucket()">
       <div class="form-group">
         <label for="access-key-id">Access Key Id</label>
@@ -130,7 +132,6 @@ export default {
       </div>
       <button type="submit" class="btn btn-default add">Submit</button>
     </form>
-    <hr>
   </div>
 
   <ul v-if="buckets.length" class="repos">
