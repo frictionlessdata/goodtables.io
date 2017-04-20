@@ -8,10 +8,10 @@ const karmaConfig = (config) => {
     singleRun: true,
     browsers: ['PhantomJS'],
     frameworks: ['mocha', 'sinon-chai'],
-    files: ['frontend/tests/index.js'],
+    files: ['frontend/tests/karma.opts'],
     reporters: ['spec', 'coverage'],
     preprocessors: {
-      'frontend/tests/index.js': ['webpack'],
+      'frontend/tests/karma.opts': ['webpack'],
     },
     webpack: webpackConfig,
     webpackMiddleware: {
@@ -19,7 +19,7 @@ const karmaConfig = (config) => {
     },
     client: {
       mocha: {
-        opts: '.mocharc',
+        opts: 'frontend/tests/mocha.opts',
       },
     },
     coverageReporter: {
