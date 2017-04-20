@@ -1,15 +1,15 @@
 <script>
-import ErrorGroup from './ErrorGroup.vue'
+import ReportErrorGroup from './ReportErrorGroup.vue'
 
 export default {
-  name: 'Table',
+  name: 'ReportTable',
   props: {
     table: Object,
     tableNumber: Number,
     tablesCount: Number,
   },
   components: {
-    ErrorGroup,
+    ReportErrorGroup,
   },
   computed: {
     errorGroups() {
@@ -85,7 +85,7 @@ export default {
   </h4>
 
   <template v-if="!table.valid">
-  <ErrorGroup v-for="errorGroup of errorGroups" :errorGroup="errorGroup" />
+  <ReportErrorGroup v-for="errorGroup of errorGroups" :errorGroup="errorGroup" />
   </template>
 
   <template v-else-if="table.valid">

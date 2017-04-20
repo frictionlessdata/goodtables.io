@@ -1,11 +1,11 @@
 import {should} from 'chai'
 import {mount} from 'avoriaz'
-import ErrorGroup from '../components/ErrorGroup.vue'
+import ReportErrorGroup from '../components/ReportErrorGroup.vue'
 should()
 
 // Tests
 
-describe('ErrorGroup', () => {
+describe('ReportErrorGroup', () => {
 
   it('should contain data', () => {
     const propsData = {errorGroup: {
@@ -14,7 +14,7 @@ describe('ErrorGroup', () => {
       count: 1,
       rows: [],
     }}
-    const wrapper = mount(ErrorGroup, {propsData})
+    const wrapper = mount(ReportErrorGroup, {propsData})
     wrapper.text().should.include('name')
     wrapper.text().should.include('1')
   })

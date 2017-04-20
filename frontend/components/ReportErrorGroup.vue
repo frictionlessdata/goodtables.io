@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: 'ErrorGroup',
+  name: 'ReportErrorGroup',
   props: {
     errorGroup: Object,
   },
