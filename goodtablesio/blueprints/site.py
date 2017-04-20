@@ -44,22 +44,22 @@ def dashboard():
     })
 
 
-@site.route('/source/github/repo/<owner>/<repo>')
+@site.route('/source/github/<owner>/<repo>')
 def source_github(owner, repo):
     return _source('github', '/'.join([owner, repo]))
 
 
-@site.route('/source/github/repo/<owner>/<repo>/jobs/<int:job>')
+@site.route('/source/github/<owner>/<repo>/jobs/<int:job>')
 def source_github_job(owner, repo, job):
     return _source('github', '/'.join([owner, repo]), job)
 
 
-@site.route('/source/s3/bucket/<bucket>')
+@site.route('/source/s3/<bucket>')
 def source_s3(bucket):
     return _source('s3', bucket)
 
 
-@site.route('/source/s3/bucket/<bucket>/jobs/<int:job>')
+@site.route('/source/s3/<bucket>/jobs/<int:job>')
 def source_s3_job(bucket, job):
     return _source('s3', bucket, job)
 

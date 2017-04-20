@@ -34,9 +34,9 @@ export default {
     sourceURL() {
       let url
       if (this.source.integration_name === 'github') {
-        url = `/source/github/repo/${this.source.name}`
+        url = `/source/github/${this.source.name}`
       } else if (this.source.integration_name === 's3') {
-        url = `/source/s3/bucket/${this.source.name}`
+        url = `/source/s3/${this.source.name}`
       }
       if (this.job && this.source.last_job.number !== this.job.number) {
         url = `${url}/jobs/${this.job.number}`
