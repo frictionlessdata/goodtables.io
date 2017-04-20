@@ -32,7 +32,10 @@ def make_validation_conf(job_conf_text, job_files, job_base=None):
     # Parse, set defaults and verify job conf
     job_conf = _parse_job_conf(job_conf_text) or {}
     if not job_conf.get('files', job_conf.get('datapackages')):
-        job_conf['files'] = '*'
+        if 'datapackage.json' in job_files:
+            job_conf['datapackages'] = ['datapackage.json']
+        else:
+            job_conf['files'] = '*'
     _verify_job_conf(job_conf)
 
     # Files: string

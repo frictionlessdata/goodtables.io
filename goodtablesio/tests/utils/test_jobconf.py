@@ -214,6 +214,23 @@ def test_make_validation_conf_files_and_datapackages():
         make_validation_conf(job_conf_text, job_files, job_base)
 
 
+def test_make_validation_conf_infer_datapackage_json():
+    job_conf_text = None
+    job_files = [
+        'file1.csv',
+        'file2.csv',
+        'datapackage.json',
+    ]
+    job_base = 'http://example.com'
+    validation_conf = {
+        'source': [
+            {'source': 'http://example.com/datapackage.json', 'preset': 'datapackage'},
+        ]
+    }
+
+    assert make_validation_conf(job_conf_text, job_files, job_base) == validation_conf
+
+
 def test_verify_validation_conf():
     validation_conf = {
         'source': [
