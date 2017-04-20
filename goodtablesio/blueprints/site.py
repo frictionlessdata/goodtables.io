@@ -1,7 +1,6 @@
 import os
 
-from flask import (
-    Blueprint, abort, session, redirect, url_for, send_from_directory, request)
+from flask import Blueprint, abort, redirect, url_for, send_from_directory, request
 from flask_login import current_user
 from sqlalchemy.sql.expression import true
 
@@ -19,15 +18,14 @@ site = Blueprint('site', __name__)
 
 @site.route('/')
 def home():
-    if session.get('user_id'):
+    if current_user.is_authenticated:
         return redirect(url_for('site.dashboard'))
     return render_component('Home')
 
 
 @site.route('/dashboard')
 def dashboard():
-    user_id = session.get('user_id')
-    if not user_id:
+    if not current_user.is_authenticated:
         return redirect(url_for('site.home'))
 
     # Get user sources
@@ -66,6 +64,8 @@ def source_s3_job(bucket, job):
 
 @site.route('/settings')
 def settings():
+    if not current_user.is_authenticated:
+        return redirect(url_for('site.home'))
     return render_component('Settings')
 
 
