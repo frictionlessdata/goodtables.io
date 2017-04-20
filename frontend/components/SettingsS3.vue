@@ -23,7 +23,7 @@ export default {
     filteredBuckets() {
       if (!this.filter) return this.buckets
       return this.buckets.filter(bucket => bucket.name.includes(this.filter))
-    }
+    },
   },
   methods: {
     updateBuckets() {

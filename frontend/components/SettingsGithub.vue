@@ -20,7 +20,7 @@ export default {
     filteredRepos() {
       if (!this.filter) return this.repos
       return this.repos.filter(repo => repo.name.includes(this.filter))
-    }
+    },
   },
   methods: {
     updateRepos() {
