@@ -4,6 +4,7 @@ import yaml
 import jsonschema
 from fnmatch import fnmatch
 from tabulator import Stream
+from goodtablesio import settings
 from goodtablesio import exceptions
 
 
@@ -42,15 +43,16 @@ def make_validation_conf(job_conf_text, job_files, job_base=None):
     if isinstance(job_conf.get('files'), str):
         pattern = job_conf['files']
         for name in job_files:
-            if not Stream.test(name):
+            if not _is_glob_supported_format(name, pattern):
                 continue
-            if fnmatch(name, pattern):
-                source = name
-                if job_base:
-                    source = '/'.join([job_base, name])
-                validation_conf['source'].append({
-                    'source': source,
-                })
+            if not fnmatch(name, pattern):
+                continue
+            source = name
+            if job_base:
+                source = '/'.join([job_base, name])
+            validation_conf['source'].append({
+                'source': source,
+            })
 
     # Files: array of objects
     elif isinstance(job_conf.get('files'), list):
@@ -133,4 +135,17 @@ def _verify_conf(conf, schema):
          os.path.dirname(__file__), '..', 'schemas', schema)
     schema = yaml.load(io.open(schema_path, encoding='utf-8'))
     jsonschema.validate(conf, schema)
+    return True
+
+
+def _is_glob_supported_format(name, pattern):
+    """Check if this file is supported
+    """
+    for format in settings.GLOB_EXCLUDED_FORMATS:
+        if format in pattern:
+            continue
+        if format == os.path.splitext(name.lower())[1][1:]:
+            return False
+    if not Stream.test(name):
+        return False
     return True

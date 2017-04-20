@@ -137,7 +137,7 @@ def find(filters=None, limit=10, offset=0):
 
     q = database['session'].query(Job)
 
-    limit = limit or settings.MAX_JOBS_LIMIT
+    limit = limit or settings.JOBS_LIMIT_FOR_FIND_QUERY
 
     if filters:
         for _filter in filters:
