@@ -7,7 +7,6 @@ export default {
   props: {
     source: Object,
     active: Boolean,
-    inSourcePanel: Boolean,
   },
   data() {
     return {
@@ -51,7 +50,7 @@ export default {
 <template>
   <div class="source-item panel" v-bind:class="panelStatusClass">
     <div v-bind:class="source.integration_name">
-      <a class="source" v-bind:class="{active: inSourcePanel}" v-bind:href="sourceURL">
+      <a class="source" v-bind:href="sourceURL">
 
         <template v-if="source.last_job">
         <span class="status">{{ source.last_job.status }} </span>
@@ -81,7 +80,7 @@ export default {
           </h3>
         </a>
 
-        <a class="job"  v-bind:class="{active: inSourcePanel}" v-bind:href="sourceURL">
+        <a class="job" v-bind:href="sourceURL">
 
           <template v-if="source.last_job">
           <span class="jobcount">
