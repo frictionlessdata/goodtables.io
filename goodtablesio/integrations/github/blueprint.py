@@ -5,7 +5,7 @@ from celery import chain
 from flask import Blueprint, request, abort, jsonify
 from flask_login import login_required, current_user
 
-from goodtablesio import models, settings
+from goodtablesio import settings
 from goodtablesio.services import database
 from goodtablesio.models.job import Job
 from goodtablesio.models.internal_job import InternalJob
