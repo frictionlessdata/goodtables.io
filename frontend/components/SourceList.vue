@@ -17,6 +17,6 @@ export default {
 
 <template>
   <div>
-    <SourceListItem v-for="source in sources" :source="source" :job="source.last_job"/>
+    <SourceListItem v-for="source in sources" :source="source" />
   </div>
 </template>

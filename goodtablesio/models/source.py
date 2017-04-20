@@ -77,6 +77,8 @@ class Source(Base, BaseModelMixin):
                 'status': job.status,
                 'created': job.created,
                 'finished': job.finished,
+                'integration_name': job.integration_name,
                 'number': job.number,
+                'conf': job.conf,
             })
         return history

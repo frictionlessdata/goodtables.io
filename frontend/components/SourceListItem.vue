@@ -6,7 +6,6 @@ export default {
   name: 'SourceListItem',
   props: {
     source: Object,
-    job: Object,
     active: Boolean,
     inSourcePanel: Boolean,
   },
@@ -18,10 +17,10 @@ export default {
   computed: {
     panelStatusClass() {
       return {
-        'panel-success': (this.job && this.job.status === 'success'),
-        'panel-danger': (this.job && this.job.status === 'failure'),
-        'panel-warning': (this.job && this.job.status === 'error'),
-        'panel-info': !this.job,
+        'panel-success': (this.source.last_job && this.source.last_job.status === 'success'),
+        'panel-danger': (this.source.last_job && this.source.last_job.status === 'failure'),
+        'panel-warning': (this.source.last_job && this.source.last_job.status === 'error'),
+        'panel-info': !this.source.last_job,
       }
     },
     integrationIconClass() {
@@ -38,13 +37,10 @@ export default {
       } else if (this.source.integration_name === 's3') {
         url = `/source/s3/${this.source.name}`
       }
-      if (this.job && this.source.last_job.number !== this.job.number) {
-        url = `${url}/jobs/${this.job.number}`
-      }
       return url
     },
     jobTimeStamp() {
-      return moment(this.job.created).fromNow()
+      return moment(this.source.last_job.created).fromNow()
     },
   },
 }
@@ -57,22 +53,22 @@ export default {
     <div v-bind:class="source.integration_name">
       <a class="source" v-bind:class="{active: inSourcePanel}" v-bind:href="sourceURL">
 
-        <template v-if="job">
-        <span class="status">{{ job.status }} </span>
+        <template v-if="source.last_job">
+        <span class="status">{{ source.last_job.status }} </span>
 
-        <span v-if="job.status === 'success'" class="label label-success">
+        <span v-if="source.last_job.status === 'success'" class="label label-success">
           <span class="icon-checkmark"><i>Valid</i></span>
         </span>
-        <span v-else-if="job.status === 'failure'" class="label label-danger">
+        <span v-else-if="source.last_job.status === 'failure'" class="label label-danger">
           <span class="icon-cross"><i>Invalid</i></span>
         </span>
-        <span v-else-if="job.status === 'error'" class="label label-warning">
+        <span v-else-if="source.last_job.status === 'error'" class="label label-warning">
           <span class="icon-warning"><i>Error</i></span>
         </span>
 
         </template>
 
-        <template v-if="!job">
+        <template v-if="!source.last_job">
         <span class="label label-info">
           <span class="icon-info"><i>No jobs yet</i></span>
         </span>
@@ -81,20 +77,20 @@ export default {
           <h3 class="panel-title">
             {{ source.name }}
 
-            <span v-if="job" class="jobnumber">#{{ job.number }}</span>
+            <span v-if="source.last_job" class="jobnumber">#{{ source.last_job.number }}</span>
           </h3>
         </a>
 
-        <a class="job"  v-bind:class="{active: inSourcePanel}">
+        <a class="job"  v-bind:class="{active: inSourcePanel}" v-bind:href="sourceURL">
 
-          <template v-if="job">
+          <template v-if="source.last_job">
           <span class="jobcount">
-            <span class="jobnumber"> #{{ job.number }}</span>
+            <span class="jobnumber"> #{{ source.last_job.number }}</span>
           </span>
-          <span class="icon-clock"></span><span class="time" v-bind:title="job.created"> {{ jobTimeStamp }}</span>
+          <span class="icon-clock"></span><span class="time" v-bind:title="source.last_job.created"> {{ jobTimeStamp }}</span>
           </template>
 
-          <template v-if="!job">
+          <template v-if="!source.last_job">
           <span class="time">No jobs yet</span>
           </template>
 

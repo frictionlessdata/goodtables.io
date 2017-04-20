@@ -63,6 +63,8 @@ rules:
     - off
   no-unused-expressions:
     - off
+  consistent-return:
+    - off
   import/prefer-default-export:
     - off
   import/newline-after-import:

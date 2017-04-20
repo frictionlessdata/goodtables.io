@@ -1,6 +1,7 @@
 <script>
 import Report from './Report.vue'
-import SourceListItem from './SourceListItem.vue'
+import JobList from './JobList.vue'
+import JobListItem from './JobListItem.vue'
 
 export default {
   name: 'Source',
@@ -10,7 +11,8 @@ export default {
   },
   components: {
     Report,
-    SourceListItem,
+    JobList,
+    JobListItem,
   },
   computed: {
     statusClass() {
@@ -44,41 +46,38 @@ export default {
               <h2 class="source-title">
                 {{ source.name }}
               </h2>
-              <SourceListItem :source="source" :job="job" :inSourcePanel="true"/>
+              <JobListItem v-if="job" :job="job" :inSourcePanel="true"/>
+              <div v-else class="alert alert-warning">
+                Not jobs yet
+              </div>
             </div>
 
             <section v-if="job" class="inner">
 
               <div>
+
                 <ul class="nav nav-tabs" role="tablist">
                  <li role="presentation" class="active"><a href="#report" aria-controls="home" role="tab" data-toggle="tab">Report</a></li>
                  <li role="presentation"><a href="#history" aria-controls="profile" role="tab" data-toggle="tab">Job history</a></li>
                 </ul>
+
                 <div class="tab-content">
                   <div role="tabpanel" class="report tab-pane active" id="report">
+                    <div v-if="job.error" class="alert alert-warning">
+                      {{ job.error.message }}
+                    </div>
+                    <Report v-if="job.report" :report="job.report" />
+                    <ul class="meta">
+                      <li>Report calculated on {{ job.finished }}</li>
+                    </ul>
+                  </div>
 
-                    <template v-if="job">
-                      <div v-if="job.error" class="alert alert-warning">
-                        {{ job.error.message }}
-                      </div>
-                      <Report v-if="job.report" :report="job.report" />
-                      <ul class="meta">
-                        <li>Report calculated on {{ job.finished }}</li>
-                      </ul>
-                    </template>
-
-                    <template v-if="!job">
-                      <p>No jobs yet</p>
-                    </template>
-
-                 </div>
                  <div role="tabpanel" class="tab-pane" id="history">
-
                    <div class="main-nav">
-                     <SourceListItem v-for="job of source.job_history.reverse()" :source="source" :job="job" />
+                     <JobList :jobs="source.job_history.reverse()" />
                    </div>
-
                  </div>
+
                 </div>
               </div>
             </section>

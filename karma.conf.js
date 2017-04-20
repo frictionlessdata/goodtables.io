@@ -27,7 +27,7 @@ const karmaConfig = (config) => {
       includeAllSources: true,
       check: {
         global: {
-          lines: 70,
+          lines: 50,
         },
       },
       reporters: [
