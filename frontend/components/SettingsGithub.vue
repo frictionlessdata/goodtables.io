@@ -3,7 +3,7 @@ import axios from 'axios'
 import Messages from './Messages.vue'
 
 export default {
-  name: 'GithubSettings',
+  name: 'SettingsGithub',
   components: {
     Messages,
   },
@@ -13,6 +13,13 @@ export default {
       error: null,
       syncing: false,
       repos: [],
+      filter: '',
+    }
+  },
+  computed: {
+    filteredRepos() {
+      if (!this.filter) return this.repos
+      return this.repos.filter(repo => repo.name.includes(this.filter))
     }
   },
   methods: {
@@ -22,7 +29,7 @@ export default {
           this.ready = true
           this.error = res.data.error
           this.syncing = res.data.syncing
-          this.repos = res.data.repos
+          this.repos = res.data.repos || []
         })
         .catch(() => {
           this.error = 'Unknown Error'
@@ -81,41 +88,38 @@ export default {
 <template>
 <div>
 
+  <div class="tool-bar">
+    <span>
+      <input v-model="filter" type="search" class="form-control search" placeholder="Filter">
+    </span>
+    <span class="sync">
+      <button @click="syncAccount()" class="refresh" :disabled="!ready || syncing"  data-toggle="tooltip" data-placement="left" title="Refresh your organizations and repositories">
+        <span class="icon-spinner11"><i>Sync account</i></span>
+      </button>
+    </span>
+  </div>
+
   <Messages v-if="error" :messages="[['danger', error]]" />
   <Messages v-if="syncing" :messages="[['warning', 'Syncing account. Please wait..']]" />
 
-  <div class="container">
-
-    <h1>GitHub</h1>
-
-    <p>GitHub integration description</p>
-
-    <h2>Repos</h2>
-
-    <div class="sync">
-      <span> Refresh your organizations and repositories</span>
-      <button @click="syncAccount()" :disabled="!ready || syncing" class="btn btn-primary">
-        Sync account
+  <ul v-if="repos.length" class="repos">
+    <li v-for="repo of filteredRepos" class="repo" :class="{active: repo.active}">
+      <button v-if="repo.active" @click="deactivateRepo(repo)" class="activate">
+        <span class="icon-cross"><i>Deactivate</i></span>
       </button>
-    </div>
-
-    <template v-if="repos && repos.length">
-      <div v-for="repo of repos" class="repo">
-        <button v-if="repo.active" @click="deactivateRepo(repo)" class="btn btn-success">
-          Deactivate
-        </button>
-        <button v-else @click="activateRepo(repo)" class="btn btn-danger">
-          Activate
-        </button>
-        {{ repo.name }}
-        (<a :href="`https://github.com/${repo.name}`">repo</a>)
-        <a v-if="repo.active" :href="`/github/repo/${repo.name}`">View jobs</a>
-      </div>
-    </template>
-    <p v-else-if="!ready" class="empty">Loading repos. Please wait..</p>
-    <p v-else class="empty">There are no synced repositories</p>
-
-  </div>
+      <button v-else @click="activateRepo(repo)" class="activate">
+        <span class="icon-plus"><i>Activate</i></span>
+      </button>
+      <h3 class="repo-title">
+        <a :href="`/source/github/repo/${repo.name}`">{{ repo.name }}</a>
+      </h3>
+      <span class="repo-body">
+        <a :href="`https://github.com/${repo.name}`">View repository</a>
+      </span>
+    </li>
+  </ul>
+  <p v-else-if="!ready" class="empty">Loading repos. Please wait..</p>
+  <p v-else class="empty">There are no synced repositories</p>
 
 </div>
 </template>
