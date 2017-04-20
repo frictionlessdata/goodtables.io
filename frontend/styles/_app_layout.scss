@@ -472,7 +472,8 @@
 
   section.add-source,
   section.settings {
-    width: 0;
+    width: 100%;
+    /* width: 0; */
     height: 100vh;
     @include transition(width 0.2s ease);
     overflow: hidden;
@@ -512,7 +513,8 @@
     .tool-bar {
       padding: 15px;
       display: table;
-      width: 100%;
+      width: 50%;
+      /* width: 100%; */
       background-color: $gray-lighter;
       border-bottom: solid 5px $gray-dark;
 
@@ -721,7 +723,8 @@
   &.add-view {
     @media screen and (min-width: $screen-sm) {
       section.add-source {
-        width: 33vw;
+        width: 100%;
+        /* width: 33vw; */
         padding-left: 15px;
       }
     }

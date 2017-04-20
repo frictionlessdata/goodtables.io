@@ -64,6 +64,11 @@ def source_s3_job(bucket, job):
     return _source('s3', bucket, job)
 
 
+@site.route('/settings')
+def settings():
+    return render_component('Settings')
+
+
 @site.route('/badge/<integration_name>/<path:source_name>.svg')
 def badge(integration_name, source_name):
 
