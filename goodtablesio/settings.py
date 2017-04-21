@@ -21,6 +21,7 @@ log = logging.getLogger(__name__)
 BASE_URL = os.environ['BASE_URL']
 DEBUG = os.environ.get('FLASK_DEBUG', False)
 GTIO_SECRET_KEY = os.environ['GTIO_SECRET_KEY']
+GLOB_EXCLUDED_FORMATS = ['json']
 
 # Flask
 
@@ -28,15 +29,13 @@ FLASK_SECRET_KEY = os.environ['FLASK_SECRET_KEY']
 
 # Database
 
+JOBS_LIMIT_FOR_FIND_QUERY = 100
 if not os.environ.get('TESTING'):
     log.debug('Not testing mode')
     DATABASE_URL = os.environ['DATABASE_URL']
 else:
     log.debug('Testing mode')
     DATABASE_URL = os.environ['TEST_DATABASE_URL']
-
-# Maximum limit on all job queries
-MAX_JOBS_LIMIT = 100
 
 # Celery
 
@@ -53,7 +52,6 @@ enable_utc = True
 GITHUB_API_BASE = 'https://api.github.com'
 GITHUB_API_TOKEN = os.environ['GITHUB_API_TOKEN']
 GITHUB_HOOK_SECRET = os.environ['GITHUB_HOOK_SECRET']
-
 
 # S3
 

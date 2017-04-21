@@ -3,7 +3,7 @@ from goodtablesio import exceptions
 from goodtablesio.utils.jobconf import make_validation_conf, verify_validation_conf
 
 
-# Tests
+# Make validation conf
 
 def test_make_validation_conf():
     job_conf_text = """
@@ -26,7 +26,7 @@ def test_make_validation_conf():
     validation_conf = {
         'source': [
             {'source': 'http://example.com/file.csv'},
-            {'source': 'http://example.com/file.json'},
+            # {'source': 'http://example.com/file.json'},
             {'source': 'http://example.com/file.jsonl'},
             {'source': 'http://example.com/file.ndjson'},
             {'source': 'http://example.com/file.tsv'},
@@ -60,7 +60,7 @@ def test_make_validation_conf_no_base():
     validation_conf = {
         'source': [
             {'source': 'file.csv'},
-            {'source': 'file.json'},
+            # {'source': 'file.json'},
             {'source': 'file.jsonl'},
             {'source': 'file.ndjson'},
             {'source': 'file.tsv'},
@@ -88,7 +88,6 @@ def test_make_validation_conf_subdir():
             {'source': 'http://example.com/data/file.csv'},
         ]
     }
-
     assert make_validation_conf(job_conf_text, job_files, job_base) == validation_conf
 
 
@@ -107,7 +106,6 @@ def test_make_validation_conf_subdir_config():
             {'source': 'http://example.com/data/file.csv'},
         ]
     }
-
     assert make_validation_conf(job_conf_text, job_files, job_base) == validation_conf
 
 
@@ -141,7 +139,6 @@ def test_make_validation_conf_subdir_granular():
             'order_fields': True,
         }
     }
-
     assert make_validation_conf(job_conf_text, job_files, job_base) == validation_conf
 
 
@@ -159,7 +156,6 @@ def test_make_validation_conf_default_job_conf():
             {'source': 'http://example.com/file2.csv'},
         ]
     }
-
     assert make_validation_conf(job_conf_text, job_files, job_base) == validation_conf
 
 
@@ -180,7 +176,6 @@ def test_make_validation_conf_datapackages():
             {'source': 'http://example.com/datapackage2.json', 'preset': 'datapackage'},
         ]
     }
-
     assert make_validation_conf(job_conf_text, job_files, job_base) == validation_conf
 
 
@@ -198,7 +193,6 @@ def test_make_validation_conf_files_and_datapackages():
         'datapackage2.json',
     ]
     job_base = 'http://example.com'
-
     # https://github.com/frictionlessdata/goodtables.io/issues/169
     # validation_conf = {
         # 'source': [
@@ -209,10 +203,61 @@ def test_make_validation_conf_files_and_datapackages():
         # ]
     # }
     # assert make_validation_conf(job_conf_text, job_files, job_base) == validation_conf
-
     with pytest.raises(exceptions.InvalidJobConfiguration):
         make_validation_conf(job_conf_text, job_files, job_base)
 
+
+def test_make_validation_conf_infer_datapackage_json():
+    job_conf_text = None
+    job_files = [
+        'file1.csv',
+        'file2.csv',
+        'datapackage.json',
+    ]
+    job_base = 'http://example.com'
+    validation_conf = {
+        'source': [
+            {'source': 'http://example.com/datapackage.json', 'preset': 'datapackage'},
+        ]
+    }
+    assert make_validation_conf(job_conf_text, job_files, job_base) == validation_conf
+
+
+def test_make_validation_conf_glob_exlude_json_files():
+    job_conf_text = """
+    files: '*'
+    """
+    job_files = [
+        'data.csv',
+        'data.json',
+    ]
+    job_base = 'http://example.com'
+    validation_conf = {
+        'source': [
+            {'source': 'http://example.com/data.csv'},
+        ]
+    }
+    assert make_validation_conf(job_conf_text, job_files, job_base) == validation_conf
+
+
+def test_make_validation_conf_glob_include_json_files_using_pattern():
+    job_conf_text = """
+    files: '*.json'
+    """
+    job_files = [
+        'data.csv',
+        'data.json',
+    ]
+    job_base = 'http://example.com'
+    validation_conf = {
+        'source': [
+            {'source': 'http://example.com/data.json'},
+        ]
+    }
+    assert make_validation_conf(job_conf_text, job_files, job_base) == validation_conf
+
+
+# Verify validation conf
 
 def test_verify_validation_conf():
     validation_conf = {
@@ -221,7 +266,6 @@ def test_verify_validation_conf():
             {'source': 'http://example.com/datapackage.json', 'preset': 'datapackage'},
         ]
     }
-
     assert verify_validation_conf(validation_conf)
 
 
@@ -231,7 +275,6 @@ def test_verify_validation_conf_invalid_bad_preset():
             {'source': 'http://example.com/file.csv', 'preset': 'bad-preset'},
         ]
     }
-
     with pytest.raises(exceptions.InvalidValidationConfiguration):
         verify_validation_conf(validation_conf)
 
@@ -240,6 +283,5 @@ def test_verify_validation_conf_invalid_empty_source():
     validation_conf = {
         'source': []
     }
-
     with pytest.raises(exceptions.InvalidValidationConfiguration):
         verify_validation_conf(validation_conf)
