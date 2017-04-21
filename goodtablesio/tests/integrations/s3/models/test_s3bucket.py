@@ -101,13 +101,11 @@ def test_delete_bucket():
     user = factories.User()
     repo = factories.GithubRepo(users=[user], active=True)
     bucket = factories.S3Bucket(users=[user], active=True)
-    repo = database['session'].query(GithubRepo).one()
     bucket = database['session'].query(S3Bucket).one()
     database['session'].delete(bucket)
     database['session'].commit()
     users = database['session'].query(User).all()
-    repos = database['session'].query(GithubRepo).all()
     buckets = database['session'].query(S3Bucket).all()
     assert len(users) == 1
-    assert len(repos) == 1
+    assert len(users[0].sources) == 1
     assert len(buckets) == 0
