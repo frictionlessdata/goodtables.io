@@ -5,7 +5,7 @@
   .default {
     @include make-row();
     @media screen and (min-width: $screen-sm) {
-      height: 100vh;
+      /* height: 100vh; */
       overflow: hidden;
     }
   }
@@ -162,19 +162,20 @@
   }
 
   .source-view {
-    display: none;
-    @include make-sm-column(8);
+    display: block;
+    /* display: none; */
+    /* @include make-sm-column(8); */
     @include transition(width 0.2s ease);
     @media screen and (min-width: $screen-sm) {
       display: block;
       padding-left: 0;
 
-      & > div {
-        height: 100vh;
-        overflow-x: hidden;
-        overflow-y: auto;
-        position: relative;
-      }
+      /* & > div { */
+        /* height: 100vh; */
+        /* overflow-x: hidden; */
+        /* overflow-y: auto; */
+        /* position: relative; */
+      /* } */
     }
 
     .main-header {
@@ -471,10 +472,11 @@
 
   section.add-source,
   section.settings {
-    width: 0;
-    height: 100vh;
+    width: 100%;
+    /* width: 0; */
+    /* height: 100vh; */
     @include transition(width 0.2s ease);
-    overflow: hidden;
+    /* overflow: hidden; */
     float: left;
     margin-left: -15px;
     position: relative;
@@ -511,7 +513,8 @@
     .tool-bar {
       padding: 15px;
       display: table;
-      width: 100%;
+      width: 50%;
+      /* width: 100%; */
       background-color: $gray-lighter;
       border-bottom: solid 5px $gray-dark;
 
@@ -544,15 +547,23 @@
       margin: 0;
 
       li {
+        width: 100vw;
         position: relative;
         border-bottom: solid 5px $gray-dark;
         overflow: hidden;
+        &.active {
+          background-color: #777;
+        }
 
         .repo-title {
           font-size: 16px;
           font-weight: 600;
           margin: 0;
           padding: 12px 0 0 15px;
+
+          a {
+            color: inherit;
+          }
         }
 
         .repo-body {
@@ -568,7 +579,8 @@
         .activate {
           position: absolute;
           top: 50%;
-          right: 14px;
+          /* right: 14px; */
+          right: 26px;
           width: 26px;
           height: 26px;
           border: none;
@@ -577,12 +589,12 @@
           background-color: #fff;
           color: $gray;
           line-height: 1;
-          box-shadow: 10px 0px 10px 20px $gray;
+          /* box-shadow: 10px 0px 10px 20px $gray; */
 
           &:hover {
             background-color: $brand-success;
             color: #fff;
-            box-shadow: 10px 0px 10px 20px lighten($gray,20%);
+            /* box-shadow: 10px 0px 10px 20px lighten($gray,20%); */
 
             & + .repo-title {
               background-color: lighten($gray,20%);
@@ -693,8 +705,8 @@
     .source-view {
       @media screen and (min-width: $screen-sm) {
         width: 50%;
-        height: 100vh;
-        overflow: hidden;
+        /* height: 100vh; */
+        /* overflow: hidden; */
       }
     }
   }
@@ -720,7 +732,8 @@
   &.add-view {
     @media screen and (min-width: $screen-sm) {
       section.add-source {
-        width: 33vw;
+        width: 100%;
+        /* width: 33vw; */
         padding-left: 15px;
       }
     }

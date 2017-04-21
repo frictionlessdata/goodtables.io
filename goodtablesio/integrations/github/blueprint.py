@@ -5,7 +5,7 @@ from celery import chain
 from flask import Blueprint, request, abort, jsonify
 from flask_login import login_required, current_user
 
-from goodtablesio import models, settings
+from goodtablesio import settings
 from goodtablesio.services import database
 from goodtablesio.models.job import Job
 from goodtablesio.models.internal_job import InternalJob
@@ -30,48 +30,6 @@ github = Blueprint('github', __name__, url_prefix='/github')
 @github.record
 def record_params(setup_state):
     github.debug = setup_state.app.debug
-
-
-@github.route('/')
-def github_home():
-
-    jobs = models.job.get_by_integration('github')
-
-    return render_component('GithubHome', props={
-        'jobs': jobs,
-    })
-
-
-@github.route('/repo/<org>')
-def github_org(org):
-
-    jobs = models.job.find(
-        filters=[
-            models.job.Job.integration_name == 'github',
-            models.job.Job.conf['owner'].astext == org]
-    )
-
-    return render_component('GithubHome', props={
-        'org': org,
-        'jobs': jobs,
-    })
-
-
-@github.route('/repo/<org>/<repo>')
-def github_repo(org, repo):
-
-    jobs = models.job.find(
-        filters=[
-            models.job.Job.conf['owner'].astext == org,
-            models.job.Job.conf['repo'].astext == repo,
-            ]
-    )
-
-    return render_component('GithubHome', props={
-        'org': org,
-        'repo': repo,
-        'jobs': jobs,
-    })
 
 
 @github.route('/settings')

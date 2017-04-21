@@ -1,14 +1,13 @@
 import os
 
-from flask import (
-    Blueprint, abort, session, redirect, url_for, send_from_directory, request)
+from flask import Blueprint, abort, redirect, url_for, send_from_directory, request
 from flask_login import current_user
 from sqlalchemy.sql.expression import true
 
 from goodtablesio import models
 from goodtablesio.services import database
-from goodtablesio.models.source import Source
 from goodtablesio.models.job import Job
+from goodtablesio.models.source import Source
 from goodtablesio.utils.frontend import render_component
 
 
@@ -19,15 +18,14 @@ site = Blueprint('site', __name__)
 
 @site.route('/')
 def home():
-    if session.get('user_id'):
+    if current_user.is_authenticated:
         return redirect(url_for('site.dashboard'))
     return render_component('Home')
 
 
 @site.route('/dashboard')
 def dashboard():
-    user_id = session.get('user_id')
-    if not user_id:
+    if not current_user.is_authenticated:
         return redirect(url_for('site.home'))
 
     # Get user sources
@@ -44,22 +42,31 @@ def dashboard():
     })
 
 
-@site.route('/jobs')
-def jobs():
-    jobs = models.job.find()
-    return render_component('Jobs', props={
-        'jobs': jobs,
-    })
+@site.route('/source/github/<owner>/<repo>')
+def source_github(owner, repo):
+    return _source('github', '/'.join([owner, repo]))
 
 
-@site.route('/jobs/<job_id>')
-def job(job_id):
-    job = models.job.get(job_id)
-    if not job:
-        abort(404)
-    return render_component('Job', props={
-        'job': job,
-    })
+@site.route('/source/github/<owner>/<repo>/jobs/<int:job>')
+def source_github_job(owner, repo, job):
+    return _source('github', '/'.join([owner, repo]), job)
+
+
+@site.route('/source/s3/<bucket>')
+def source_s3(bucket):
+    return _source('s3', bucket)
+
+
+@site.route('/source/s3/<bucket>/jobs/<int:job>')
+def source_s3_job(bucket, job):
+    return _source('s3', bucket, job)
+
+
+@site.route('/settings')
+def settings():
+    if not current_user.is_authenticated:
+        return redirect(url_for('site.home'))
+    return render_component('Settings')
 
 
 @site.route('/badge/<integration_name>/<path:source_name>.svg')
@@ -93,3 +100,34 @@ def badge(integration_name, source_name):
         os.path.dirname(__file__), 'badges')
 
     return send_from_directory(file_path, file_name, mimetype='image/svg+xml')
+
+
+# Internal
+
+def _source(integration_name, name, job_number=None):
+
+    # Get source
+    source = (database['session'].query(Source).
+              filter(Source.integration_name == integration_name).
+              filter(Source.name == name).
+              first())
+    if not source:
+        abort(404)
+
+    # Get selected job
+    if job_number:
+        job = (database['session'].query(Job).
+               filter(Job.source == source).
+               filter(Job.number == job_number).
+               first())
+        if not job:
+            abort(404)
+
+    # Get default job
+    else:
+        job = source.last_job
+
+    return render_component('Source', props={
+        'source': source.to_api(with_job_history=True),
+        'job': job.to_api() if job else None,
+    })

@@ -3,7 +3,7 @@ export default {
     client
       .url(client.launch_url)
       .waitForElementVisible('h1', 5000)
-      .assert.containsText('h1', 'Welcome to Goodtables')
+      .assert.containsText('h1', 'Valid Data. Always.')
       .end();
   },
   afterEach: (client, done) => {

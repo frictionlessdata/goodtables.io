@@ -7,7 +7,6 @@ export default {
   props: {
     source: Object,
     active: Boolean,
-    inSourcePanel: Boolean,
   },
   data() {
     return {
@@ -33,9 +32,9 @@ export default {
     sourceURL() {
       let url
       if (this.source.integration_name === 'github') {
-        url = `/github/repo/${this.source.name}`
+        url = `/source/github/${this.source.name}`
       } else if (this.source.integration_name === 's3') {
-        url = `/s3/bucket/${this.source.name}`
+        url = `/source/s3/${this.source.name}`
       }
       return url
     },
@@ -51,7 +50,7 @@ export default {
 <template>
   <div class="source-item panel" v-bind:class="panelStatusClass">
     <div v-bind:class="source.integration_name">
-      <a class="source" v-bind:class="{active: inSourcePanel}" v-bind:href="sourceURL">
+      <a class="source" v-bind:href="sourceURL">
 
         <template v-if="source.last_job">
         <span class="status">{{ source.last_job.status }} </span>
@@ -81,7 +80,7 @@ export default {
           </h3>
         </a>
 
-        <a class="job"  v-bind:class="{active: inSourcePanel}">
+        <a class="job" v-bind:href="sourceURL">
 
           <template v-if="source.last_job">
           <span class="jobcount">

@@ -29,6 +29,9 @@
     new frontend.Vue({
       el: '#app',
       render(createElement) {
+        if (component === 'Home') {
+          return createElement(frontend[component], {props})
+        }
         return createElement('div', null, [
           createElement(frontend.Header, {props}),
           createElement(frontend.Messages, {props}),

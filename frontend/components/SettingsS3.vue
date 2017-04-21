@@ -3,7 +3,7 @@ import axios from 'axios'
 import Messages from './Messages.vue'
 
 export default {
-  name: 'S3Settings',
+  name: 'SettingsS3',
   components: {
     Messages,
   },
@@ -15,7 +15,18 @@ export default {
       accessKeyId: null,
       secretAccessKey: null,
       bucketName: null,
+      showAddBucket: false,
+      filter: '',
     }
+  },
+  computed: {
+    filteredBuckets() {
+      if (!this.filter) return this.buckets
+      return this.buckets.filter(bucket => bucket.name.includes(this.filter))
+    },
+    addBucketIcon() {
+      return (!this.showAddBucket) ? 'icon-plus' : 'icon-cross'
+    },
   },
   methods: {
     updateBuckets() {
@@ -23,7 +34,7 @@ export default {
         .then(res => {
           this.ready = true
           this.error = res.data.error
-          this.buckets = res.data.buckets
+          this.buckets = res.data.buckets || []
         })
         .catch(() => {
           this.error = 'Unknown Error'
@@ -92,34 +103,20 @@ export default {
 <template>
 <div>
 
+  <div class="tool-bar">
+    <span>
+      <input v-model="filter" type="search" class="form-control search" placeholder="Filter">
+    </span>
+    <span class="sync">
+      <button @click="showAddBucket = !showAddBucket" class="show-add" data-toggle="tooltip" data-placement="left" title="Add bucket">
+        <span :class="addBucketIcon"><i>Add bucket</i></span>
+      </button>
+    </span>
+  </div>
+
   <Messages v-if="error" :messages="[['danger', error]]" />
 
-  <div class="container">
-
-    <h1>Amazon S3</h1>
-
-    <p>Amazon S3 integration description</p>
-
-    <h2>Buckets</h2>
-    <div v-if="buckets && buckets.length">
-      <div v-for="bucket of buckets" class="bucket">
-        <button v-if="bucket.active" @click="deactivateBucket(bucket)" class="btn btn-success">
-          Deactivate
-        </button>
-        <button v-else @click="activateBucket(bucket)" class="btn btn-danger">
-          Activate
-        </button>
-        {{ bucket.name }}
-        (<a @click.prevent="removeBucket(bucket)" href="">remove</a>)
-      </div>
-    </div>
-    <p v-else-if="!ready" class="empty">Loading buckets. Please wait..</p>
-    <p v-else>No buckets configured</p>
-
-    <hr>
-
-    <h2>Add Bucket</h2>
-
+  <div v-if="showAddBucket" style="padding: 25px 15px; width: 50%; border-bottom: solid 5px #333">
     <form @submit.prevent="addBucket()">
       <div class="form-group">
         <label for="access-key-id">Access Key Id</label>
@@ -133,10 +130,30 @@ export default {
         <label for="bucket-name">Bucket Name</label>
         <input v-model="bucketName" type="text" class="form-control" id="bucket-name" />
       </div>
-      <button type="submit" class="btn btn-default">Submit</button>
+      <button type="submit" class="btn btn-default add">Submit</button>
     </form>
-
   </div>
+
+  <ul v-if="buckets.length" class="repos">
+    <li v-for="bucket of filteredBuckets" class="repo" :class="{active: bucket.active}">
+      <button v-if="bucket.active" @click="deactivateBucket(bucket)" class="activate">
+        <span class="icon-cross"><i>Deactivate</i></span>
+      </button>
+      <button v-else @click="activateBucket(bucket)" class="activate">
+        <span class="icon-plus"><i>Activate</i></span>
+      </button>
+      <h3 class="repo-title">
+        <a :href="`/source/s3/${bucket.name}`">{{ bucket.name }}</a>
+      </h3>
+      <span class="repo-body">
+        <a :href="`https://console.aws.amazon.com/s3/buckets/${bucket.name}`">View bucket</a>
+        /
+        <a href="#" @click.prevent="removeBucket(bucket)">Remove bucket</a>
+      </span>
+    </li>
+  </ul>
+  <p v-else-if="!ready" class="empty">Loading buckets. Please wait..</p>
+  <p v-else>No buckets configured</p>
 
 </div>
 </template>

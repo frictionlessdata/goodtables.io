@@ -2,7 +2,6 @@
 
 import Logo from './Logo.vue'
 import SourceList from './SourceList.vue'
-import Source_ from './Source.vue'
 
 
 export default {
@@ -13,7 +12,6 @@ export default {
   components: {
     Logo,
     SourceList,
-    Source_,
   },
 }
 </script>
@@ -25,7 +23,7 @@ export default {
       <div class="default">
           <header>
             <div>
-              <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add Sources</button>
+              <a href="/settings" type="button" class="btn btn-default"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add Sources</a>
             </div>
           </header>
 

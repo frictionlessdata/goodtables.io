@@ -28,14 +28,6 @@ def record_params(setup_state):
     s3.debug = setup_state.app.debug
 
 
-@s3.route('/')
-def index():
-    jobs = models.job.get_by_integration('s3')
-    return render_component('S3Home', props={
-        'jobs': jobs,
-    })
-
-
 @s3.route('/settings')
 @login_required
 def s3_settings():
