@@ -9,7 +9,7 @@ from goodtablesio.integrations.github.utils.repos import iter_repos_by_token
 
 
 @celery_app.task(name='goodtablesio.github.sync_user_repos',
-        queue='internal', base=InternalJobTask)
+                 queue='internal', base=InternalJobTask)
 def sync_user_repos(user_id, job_id):
     """Sync user repositories.
     """
@@ -24,20 +24,46 @@ def sync_user_repos(user_id, job_id):
         raise ValueError('User don\'t have github auth token')
 
     # Update repos
+    github_orgs = []
     for repo_data in iter_repos_by_token(token):
+
         repo = database['session'].query(GithubRepo).filter(
-            GithubRepo.conf['github_id'].astext == repo_data['conf']['github_id']
+            GithubRepo.conf['github_id'].astext ==
+            repo_data['conf']['github_id']
         ).one_or_none()
+
+        if repo and repo_data['conf']['private']:
+            # TODO: check there's a valid subscription that this user can use
+            # (eg for this GitHub organization)
+            pass
+
         if repo is None:
+            if (repo_data['conf']['private'] and
+                    not _can_see_private_repos(user, repo_data)):
+                continue
+
             repo = GithubRepo(**repo_data)
             database['session'].add(repo)
         repo.active = repo_data['active']
         repo.updated = datetime.datetime.utcnow(),
         repo.users.append(user)
 
+        org = repo.name.split('/')[0]
+        if org not in github_orgs:
+            github_orgs.append(org)
+
     # Update job
     job.status = 'success'
     job.finished = datetime.datetime.utcnow()
 
+    # Update user's GitHub orgs
+    user.conf['github_orgs'] = github_orgs
+
     # Commit to database
     database['session'].commit()
+
+
+def _can_see_private_repos(user, repo_data):
+    # TODO: check that there is any subscription that gives access to this
+    # GitHub organization
+    return (user.plan and user.plan.name != 'free') or user.admin

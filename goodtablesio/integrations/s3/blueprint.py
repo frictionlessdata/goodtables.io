@@ -13,8 +13,8 @@ from goodtablesio.utils.frontend import render_component
 from goodtablesio.integrations.s3.models.bucket import S3Bucket
 from goodtablesio.integrations.s3.utils import (
     set_up_bucket_on_aws, create_bucket, get_user_buckets,
-    get_bucket_from_hook_payload, disable_bucket_on_aws,
-    activate_bucket, deactivate_bucket)
+    get_user_buckets_count, get_bucket_from_hook_payload,
+    disable_bucket_on_aws, activate_bucket, deactivate_bucket)
 from goodtablesio.integrations.s3.tasks.jobconf import get_validation_conf
 
 log = logging.getLogger(__name__)
@@ -143,15 +143,21 @@ def api_bucket_add():
     error = None
     bucket_data = None
 
-    # Get input fields
-    payload = request.get_json()
-    access_key_id = payload.get('access-key-id')
-    secret_access_key = payload.get('secret-access-key')
-    bucket_name = payload.get('bucket-name')
+    # Check current number of buckets for this user
+    if not _check_number_of_buckets(current_user):
+        error = 'Free plan users can only have {} active buckets'.format(
+            settings.MAX_S3_BUCKETS_ON_FREE_PLAN)
 
-    # Check input fields
-    if not access_key_id or not secret_access_key or not bucket_name:
-        error = 'Missing fields'
+    # Get input fields
+    if not error:
+        payload = request.get_json()
+        access_key_id = payload.get('access-key-id')
+        secret_access_key = payload.get('secret-access-key')
+        bucket_name = payload.get('bucket-name')
+
+        # Check input fields
+        if not access_key_id or not secret_access_key or not bucket_name:
+            error = 'Missing fields'
 
     # Get bucket
     if not error:
@@ -287,6 +293,16 @@ def api_bucket_remove(bucket_id):
 
 
 # Internal
+
+def _check_number_of_buckets(user):
+
+    if (user.plan and user.plan.name != 'free') or user.admin:
+        return True
+
+    # Free plan users
+    return (get_user_buckets_count(current_user.id) <
+            settings.MAX_S3_BUCKETS_ON_FREE_PLAN)
+
 
 def _run_validation(bucket, job_id):
     # Run validation

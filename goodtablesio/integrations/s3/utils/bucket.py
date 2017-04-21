@@ -1,5 +1,7 @@
 import logging
 
+from sqlalchemy.sql.expression import true
+
 from goodtablesio.services import database
 from goodtablesio.integrations.s3.models.bucket import S3Bucket
 from goodtablesio.integrations.s3.utils.s3client import S3Client
@@ -123,6 +125,18 @@ def get_user_buckets(user_id):
             S3Bucket.name).all()
 
     return buckets
+
+
+def get_user_buckets_count(user_id):
+
+    buckets_count = (
+        database['session'].query(S3Bucket).
+        filter(S3Bucket.users.any(id=user_id)).
+        filter(S3Bucket.active == true()).
+        count()
+    )
+
+    return buckets_count
 
 
 def _check_connection(lambda_client, s3_client, bucket_name):

@@ -10,14 +10,21 @@ def test_iter_repos_by_token(GitHubForIterRepos):
     assert repos == [
         {
             'active': True,
-            'conf': {'github_id': 'id1'},
+            'conf': {'github_id': 'id1', 'private': False},
             'integration_name': 'github',
             'name': 'owner1/repo1'
         },
         {
             'active': False,
-            'conf': {'github_id': 'id2'},
+            'conf': {'github_id': 'id2', 'private': False},
             'integration_name': 'github',
             'name': 'owner2/repo2'
+        },
+        {
+            'active': False,
+            'conf': {'github_id': 'id3', 'private': True},
+            'integration_name': 'github',
+            'name': 'owner2/repo3'
         }
+
     ]

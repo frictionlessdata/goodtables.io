@@ -12,7 +12,8 @@ def GitHubForIterRepos():
         'name': 'repo1',
         'owner': {
             'login': 'owner1',
-        }
+        },
+        'private': False
     }))
     hook1 = Mock(config=Mock(get=Mock(return_value=True)))
     repo1.iter_hooks.return_value = [hook1]
@@ -21,10 +22,22 @@ def GitHubForIterRepos():
         'name': 'repo2',
         'owner': {
             'login': 'owner2',
-        }
+        },
+        'private': False
     }))
     hook2 = Mock(config=Mock(get=Mock(return_value=False)))
     repo2.iter_hooks.return_value = [hook2]
-    GitHub.return_value.iter_repos.return_value = [repo1, repo2]
+    repo3 = Mock(to_json=Mock(return_value={
+        'id': 'id3',
+        'name': 'repo3',
+        'owner': {
+            'login': 'owner2',
+        },
+        'private': True
+    }))
+    hook3 = Mock(config=Mock(get=Mock(return_value=False)))
+    repo3.iter_hooks.return_value = [hook3]
+
+    GitHub.return_value.iter_repos.return_value = [repo1, repo2, repo3]
     yield GitHub
     patch.stopall()

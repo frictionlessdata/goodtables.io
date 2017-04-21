@@ -16,6 +16,9 @@ def iter_repos_by_token(token):
         yield {
             'integration_name': 'github',
             'name': '{0}/{1}'.format(data['owner']['login'], data['name']),
-            'conf': {'github_id': str(data['id'])},
+            'conf': {
+                'github_id': str(data['id']),
+                'private': data['private'],
+            },
             'active': active
         }
