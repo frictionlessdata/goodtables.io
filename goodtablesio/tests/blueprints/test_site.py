@@ -101,7 +101,6 @@ def test_site_source_github_not_found(client):
     assert response.status_code == 404
 
 
-@pytest.mark.skip('Something wrong with Job.number in test mode')
 @mock.patch('goodtablesio.blueprints.site.render_component')
 def test_site_source_github_job(render_component, client):
     render_component.return_value = 'body'
@@ -129,9 +128,14 @@ def test_site_source_github_job_not_found(client):
 @mock.patch('goodtablesio.blueprints.site.render_component')
 def test_site_source_s3(render_component, client):
     render_component.return_value = 'body'
-    source = factories.S3Bucket()
+    user = factories.User()
+    source = factories.S3Bucket(users=[user])
     job1 = factories.Job(source=source, integration_name='s3', number=1)
     job2 = factories.Job(source=source, integration_name='s3', number=2)
+    with client.session_transaction() as sess:
+        # Mock a user login
+        sess['user_id'] = user.id
+
     response = client.get('/source/s3/%s' % source.name)
     assert response.status_code == 200
     assert response.get_data(as_text=True) == 'body'
@@ -146,13 +150,18 @@ def test_site_source_s3_not_found(client):
     assert response.status_code == 404
 
 
-@pytest.mark.skip('Something wrong with Job.number in test mode')
 @mock.patch('goodtablesio.blueprints.site.render_component')
 def test_site_source_s3_job(render_component, client):
     render_component.return_value = 'body'
-    source = factories.S3Bucket()
-    job1 = factories.Job(source=source, integration_name='s3', number=1)
-    job2 = factories.Job(source=source, integration_name='s3', number=2)
+
+    user = factories.User()
+    source = factories.S3Bucket(users=[user])
+    job1 = factories.Job(source=source, integration_name='s3', number=1, _save_in_db=True)
+    job2 = factories.Job(source=source, integration_name='s3', number=2, _save_in_db=True)
+    with client.session_transaction() as sess:
+        # Mock a user login
+        sess['user_id'] = user.id
+
     response = client.get('/source/s3/%s/jobs/1' % source.name)
     assert response.status_code == 200
     assert response.get_data(as_text=True) == 'body'
@@ -163,11 +172,102 @@ def test_site_source_s3_job(render_component, client):
 
 
 def test_site_source_s3_job_not_found(client):
-    source = factories.S3Bucket()
+    user = factories.User()
+    source = factories.S3Bucket(users=[user])
     job1 = factories.Job(source=source, integration_name='s3', number=1)
     job2 = factories.Job(source=source, integration_name='s3', number=2)
+    with client.session_transaction() as sess:
+        # Mock a user login
+        sess['user_id'] = user.id
+
     response = client.get('/source/s3/%s/jobs/3' % source.name)
     assert response.status_code == 404
+
+
+# Source access
+
+def test_site_source_s3_owner_user(client):
+    user = factories.User()
+    source = factories.S3Bucket(users=[user])
+    with client.session_transaction() as sess:
+        # Mock a user login
+        sess['user_id'] = user.id
+
+    response = client.get('/source/s3/%s' % source.name)
+    assert response.status_code == 200
+
+
+def test_site_source_s3_admin_user(client):
+    user = factories.User(admin=True)
+    source = factories.S3Bucket()
+    with client.session_transaction() as sess:
+        # Mock a user login
+        sess['user_id'] = user.id
+
+    response = client.get('/source/s3/%s' % source.name)
+    assert response.status_code == 200
+
+
+def test_site_source_s3_other_user(client):
+    user = factories.User()
+    source = factories.S3Bucket()
+    with client.session_transaction() as sess:
+        # Mock a user login
+        sess['user_id'] = user.id
+
+    response = client.get('/source/s3/%s' % source.name)
+    assert response.status_code == 401
+
+
+def test_site_source_s3_anon_user(client):
+    source = factories.S3Bucket()
+    response = client.get('/source/s3/%s' % source.name)
+    assert response.status_code == 401
+
+
+def test_site_source_public_github_anon_user(client):
+    source = factories.GithubRepo()
+    response = client.get('/source/github/%s' % source.name)
+    assert response.status_code == 200
+
+
+def test_site_source_private_github_anon_user(client):
+    source = factories.GithubRepo(conf={'private': True})
+    response = client.get('/source/github/%s' % source.name)
+    assert response.status_code == 401
+
+
+def test_site_source_private_github_owner_user(client):
+    user = factories.User()
+    source = factories.GithubRepo(users=[user], conf={'private': True})
+    with client.session_transaction() as sess:
+        # Mock a user login
+        sess['user_id'] = user.id
+
+    response = client.get('/source/github/%s' % source.name)
+    assert response.status_code == 200
+
+
+def test_site_source_private_github_admin_user(client):
+    user = factories.User(admin=True)
+    source = factories.GithubRepo(conf={'private': True})
+    with client.session_transaction() as sess:
+        # Mock a user login
+        sess['user_id'] = user.id
+
+    response = client.get('/source/github/%s' % source.name)
+    assert response.status_code == 200
+
+
+def test_site_source_private_github_other_user(client):
+    user = factories.User()
+    source = factories.GithubRepo(conf={'private': True})
+    with client.session_transaction() as sess:
+        # Mock a user login
+        sess['user_id'] = user.id
+
+    response = client.get('/source/github/%s' % source.name)
+    assert response.status_code == 401
 
 
 # Badge

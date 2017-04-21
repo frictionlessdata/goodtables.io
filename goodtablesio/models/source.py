@@ -4,6 +4,7 @@ from sqlalchemy import (
     Column, Unicode, Integer, DateTime, Boolean, ForeignKey, Table)
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.ext.mutable import MutableDict
 
 from goodtablesio.models.base import Base, BaseModelMixin, make_uuid
 
@@ -18,7 +19,7 @@ class Source(Base, BaseModelMixin):
     updated = Column(DateTime(timezone=True), nullable=False,
                      default=datetime.datetime.utcnow)
     job_number = Column(Integer)
-    conf = Column(JSONB)
+    conf = Column(MutableDict.as_mutable(JSONB))
     integration_name = Column(Unicode, ForeignKey('integrations.name'))
     integration = relationship(
         'Integration',

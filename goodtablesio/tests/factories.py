@@ -103,6 +103,7 @@ class Source(FactoryBase):
     updated = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     active = True
     job_number = 1
+    conf = {}
 
     @property
     def integration(self):
@@ -121,6 +122,8 @@ class GithubRepo(FactoryBase):
                                                             fake.user_name()))
     updated = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     active = True
+    job_number = 1
+    conf = {'private': False}
 
     @property
     def integration(self):
@@ -160,6 +163,8 @@ class S3Bucket(FactoryBase):
     name = factory.Faker('user_name')
     updated = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     active = True
+    job_number = 1
+    conf = {}
 
     @property
     def integration(self):

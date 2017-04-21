@@ -8,7 +8,7 @@ export default {
 <template>
 <div class="container">
   <h1>Error 404</h1>
-  <p>Page is not found</p>
+  <p>Page not found</p>
 </div>
 </template>
 

@@ -50,6 +50,14 @@ app.register_blueprint(s3)
 
 # Set error handlers
 
+@app.errorhandler(401)
+def not_authorized_error(err):
+    return (
+        render_component('Error401', props={'message': err.description}),
+        401
+    )
+
+
 @app.errorhandler(404)
 def not_found_error(err):
     return (render_component('Error404'), 404)

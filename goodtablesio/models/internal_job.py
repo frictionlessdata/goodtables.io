@@ -1,8 +1,11 @@
 import logging
 import datetime
+
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy import Column, Unicode, DateTime,  ForeignKey
+from sqlalchemy.ext.mutable import MutableDict
+
 from goodtablesio.models.base import Base, BaseModelMixin, make_uuid
 log = logging.getLogger(__name__)
 
@@ -13,7 +16,7 @@ class InternalJob(Base, BaseModelMixin):
 
     id = Column(Unicode, primary_key=True, default=make_uuid)
     name = Column(Unicode, nullable=False)
-    conf = Column(JSONB, default={}, nullable=False)
+    conf = Column(MutableDict.as_mutable(JSONB), default={}, nullable=False)
     status = Column(Unicode, default='created', nullable=False)
     created = Column(
         DateTime(timezone=True), default=datetime.datetime.utcnow, nullable=False)
