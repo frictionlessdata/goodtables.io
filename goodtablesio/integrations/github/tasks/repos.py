@@ -44,6 +44,8 @@ def sync_user_repos(user_id, job_id):
 
             repo = GithubRepo(**repo_data)
             database['session'].add(repo)
+
+        repo.conf['private'] = repo_data['conf']['private']
         repo.active = repo_data['active']
         repo.updated = datetime.datetime.utcnow(),
         repo.users.append(user)
