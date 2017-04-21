@@ -2,7 +2,7 @@
 export default {
   name: 'Error401',
   props: {
-    message: String
+    message: String,
   },
 }
 </script>
