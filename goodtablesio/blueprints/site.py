@@ -114,6 +114,10 @@ def _source(integration_name, name, job_number=None):
     if not source:
         abort(404)
 
+    # Check access
+    if not _check_source_access(source):
+        abort(401, 'You are not authorized to access this source')
+
     # Get selected job
     if job_number:
         job = (database['session'].query(Job).
@@ -131,3 +135,26 @@ def _source(integration_name, name, job_number=None):
         'source': source.to_api(with_job_history=True),
         'job': job.to_api() if job else None,
     })
+
+
+def _check_source_access(source):
+
+    anon = not current_user.is_authenticated
+
+    # Public GitHub repos can be accessed by anybody
+    if (source.integration_name == 'github' and
+            not source.conf.get('private', True)):
+        return True
+
+    # For all the other sources, user must be at least logged in
+    if anon:
+        return False
+
+    # Admins can see everything
+    if current_user.admin:
+        return True
+
+    # Simple check for now. You can only see your own S3 buckets or private
+    # repos linked to your account (eventually this will mean that there is
+    # a paid subcription linked to the GitHub org)
+    return current_user.id in [u.id for u in source.users]

@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Unicode, Boolean, ForeignKey, Table
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.ext.mutable import MutableDict
 
 from goodtablesio.models.base import Base, BaseModelMixin
 
@@ -22,4 +23,4 @@ class Integration(Base, BaseModelMixin):
                    ForeignKey('users.id', ondelete='CASCADE'),
                    primary_key=True),
             Column('active', Boolean, nullable=False, default=True),
-            Column('conf', JSONB)))
+            Column('conf', MutableDict.as_mutable(JSONB))))

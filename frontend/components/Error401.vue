@@ -1,14 +1,16 @@
 <script>
 export default {
-  name: 'Error404',
-  props: {},
+  name: 'Error401',
+  props: {
+    message: String
+  },
 }
 </script>
 
 <template>
 <div class="container">
-  <h1>Error 404</h1>
-  <p>Page not found</p>
+  <h1>Not Authorized</h1>
+  <p v-if:message>{{ message }}</p>
 </div>
 </template>
 
