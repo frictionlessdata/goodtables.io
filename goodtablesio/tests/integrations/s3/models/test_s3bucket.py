@@ -1,10 +1,13 @@
 import pytest
 from goodtablesio.tests import factories
 from goodtablesio.services import database
+from goodtablesio.models.user import User
 from goodtablesio.integrations.s3.models.bucket import S3Bucket
 
 pytestmark = pytest.mark.usefixtures('session_cleanup')
 
+
+# Tests
 
 def test_access_key_id_get():
 
@@ -90,3 +93,18 @@ def test_secret_access_key_del():
     bucket_db = database['session'].query(S3Bucket).first()
 
     assert bucket_db.secret_access_key is None
+
+
+# https://github.com/frictionlessdata/goodtables.io/issues/192
+def test_delete_bucket():
+    user = factories.User()
+    bucket = factories.S3Bucket(
+        users=[user], active=True,
+        conf={'access_key_id': 'test', 'secret_access_key': 'test'})
+    bucket = database['session'].query(S3Bucket).one()
+    database['session'].delete(bucket)
+    database['session'].commit()
+    users = database['session'].query(User).all()
+    buckets = database['session'].query(S3Bucket).all()
+    assert len(users) == 1
+    assert len(buckets) == 0

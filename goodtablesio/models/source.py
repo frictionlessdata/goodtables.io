@@ -24,9 +24,7 @@ class Source(Base, BaseModelMixin):
         'Integration',
         primaryjoin='Source.integration_name == Integration.name')
 
-    users = relationship(
-        'User', backref='sources', cascade='all',
-        secondary=Table(
+    users = relationship('User', backref='sources', secondary=Table(
             'source_users', Base.metadata,
             Column('source_id', Unicode,
                    ForeignKey('sources.id', ondelete='CASCADE'),
