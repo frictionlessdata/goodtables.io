@@ -13,9 +13,7 @@ class Integration(Base, BaseModelMixin):
     description = Column(Unicode)
     active = Column(Boolean, nullable=False, default=True)
 
-    users = relationship(
-        'User', backref='integrations', cascade='all',
-        secondary=Table(
+    users = relationship('User', backref='integrations', secondary=Table(
             'integration_users', Base.metadata,
             Column('integration_name', Unicode,
                    ForeignKey('integrations.name', ondelete='CASCADE'),
