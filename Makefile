@@ -14,7 +14,6 @@ help: # http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 
 
 install-backend: ## Install the dependencies for the backend app
-	pip3 install --upgrade pip honcho
 	pip3 install --upgrade --no-cache-dir --exists-action w -r requirements.txt
 
 install-dev: ## Install the additional development dependencies for the app
