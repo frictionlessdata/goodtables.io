@@ -1,14 +1,13 @@
 .navbar {
-
-  a {
-    color: $gray-dark;
-  }
+  border: none;
+  border-bottom: solid 3px $gray-light;
 
   .logo {
     float: left;
     height: 50px;
     width: 200px;
     padding: $grid-gutter-width/4 $grid-gutter-width/2;
+    color: darken($gray-light,5%);
 
     svg {
       fill: currentColor;
@@ -18,4 +17,256 @@
 
 .app {
 
+  .main-nav {
+
+    .my-sources {
+      padding: $grid-gutter-width/2 0 $grid-gutter-width/2 $grid-gutter-width/2;
+
+      .source-item {
+        margin-bottom: $grid-gutter-width/2;
+
+        & > div {
+          border: solid 3px $gray-lighter;
+          margin-right: $grid-gutter-width/2;
+        }
+
+        @media screen and (min-width: $screen-md) {
+          float: left;
+          width: 50%;
+        }
+
+        @media screen and (min-width: $screen-lg) {
+          width: 33.33%;
+        }
+
+        .job {
+          border-top-color: $gray-lighter;
+        }
+      }
+    }
+
+    .source-item {
+
+      .status {
+        display: none;
+      }
+
+      .panel-title {
+        .jobnumber {
+          display: none;
+        }
+      }
+
+      .job {
+
+        .jobtotal {
+          @include text-hide;
+          display: block; //for safari
+        }
+      }
+
+      &.panel-danger {
+        & > div {
+          border-color: $brand-danger;
+        }
+      }
+      &.panel-success {
+        & > div {
+          border-color: $brand-success;
+        }
+      }
+    }
+
+    .integration {
+      right: 0;
+      padding-right: 8px;
+      @include gradient-horizontal(rgba(#fff,0), #fff, 0%, 25%);
+    }
+
+    @media screen and (min-width: $screen-sm) {
+      &:after {
+        content: '';
+        height: 50px;
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        pointer-events: none;
+      }
+    }
+  }
+
+  .nav-tabs {
+    border-bottom-color: $gray-lighter;
+
+    li.active > a {
+      background-color: $gray-lighter;
+      color: $gray-dark;
+    }
+  }
+
+
+  section.add-source {
+
+    .main-header {
+      background-image: none;
+      background-color: $gray-light;
+      color: #fff;
+
+      a {
+        color: inherit;
+      }
+
+
+    }
+
+    .tool-bar {
+      padding: 15px;
+      display: table;
+      width: 100%;
+      border-bottom: solid 3px $gray-light;
+      background-color: $gray-lighter;
+
+      & > span {
+        display: table-cell;
+        vertical-align: middle;
+
+        &.sync {
+          width: 40px;
+          text-align: right;
+          border: none;
+
+          button {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            border: none;
+            line-height: 1;
+            background-color: $gray-light;
+            color: #fff;
+
+            &:hover {
+              background-color: $brand-info;
+            }
+          }
+        }
+      }
+    }
+
+    .repos {
+      padding: 0;
+      margin: 0 0 0 -3px;
+      background-color: $gray-light;
+      @include clearfix;
+
+      .repo {
+        position: relative;
+        border-bottom: solid 3px $gray-light;
+        overflow: hidden;
+        border-left: solid 3px $gray-light;
+        background-color: #fff;
+        white-space: nowrap;
+
+        @media screen and (min-width: $screen-md) {
+          float: left;
+          width: 50%;
+        }
+        @media screen and (min-width: $screen-lg) {
+          width: 33.33%;
+        }
+
+        .repo-title {
+          font-size: 16px;
+          font-weight: 600;
+          margin: 0;
+          padding: 12px 0 0 15px;
+
+          a {
+            color: inherit;
+          }
+        }
+
+        .repo-body {
+          display: block;
+          font-size: 13px;
+          padding: 1px 0 12px 15px;
+
+          a {
+            color: inherit;
+          }
+        }
+
+        .activate {
+          position: absolute;
+          top: 50%;
+          right: 14px;
+          width: 26px;
+          height: 26px;
+          border: none;
+          margin-top: -13px;
+          border-radius: 50%;
+          background-color: #fff;
+          color: $gray;
+          line-height: 1;
+          box-shadow: 10px 0px 10px 20px #fff;
+
+          &:hover {
+            background-color: $brand-success;
+            color: #fff;
+            box-shadow: 10px 0px 10px 20px lighten($brand-success,55%);
+
+            & + .repo-title {
+              background-color: lighten($brand-success,55%);
+
+              & + .repo-body {
+                background-color: lighten($brand-success,55%);
+              }
+            }
+          }
+        }
+
+        &.active {
+          background-color: lighten($gray-lighter, 3%);
+
+          .activate {
+            box-shadow: 10px 0px 10px 20px lighten($gray-lighter, 3%);
+
+            &:hover {
+              background-color: $brand-danger;
+              box-shadow: 10px 0px 10px 20px lighten($brand-danger,36%);
+
+              & + .repo-title {
+                background-color: lighten($brand-danger,36%);
+
+                & + .repo-body {
+                  background-color: lighten($brand-danger,36%);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .source-view {
+    padding: $grid-gutter-width/2;
+
+    .integration {
+      float: right;
+      font-size: 22px;
+      color: inherit;
+      text-decoration: none;
+      padding: 4px;
+    }
+
+    .source-item {
+
+      .status {
+        float: right;
+        text-transform: capitalize;
+        font-weight: bold;
+      }
+    }
+  }
 }

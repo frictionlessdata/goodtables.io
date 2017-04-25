@@ -131,11 +131,6 @@ export default {
   padding-bottom: 10px;
   text-align: right;
 }
-
-.repo {
-  border-bottom: solid 1px #eee;
-  padding: 5px 0;
-}
 .empty {
   margin: 10px 0;
 }
