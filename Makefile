@@ -93,6 +93,9 @@ app-e2e: ## Serve the app for e2e with Werkzeug
 queue: ## Run celery for production
 	celery -A goodtablesio.celery_app worker -Q default,internal --loglevel=WARNING
 
+queue-flower: ## Run flower, celery monitoring tool
+	celery flower -A goodtablesio.celery_app
+
 queue-dev: ## Run celery for development
 	celery -A goodtablesio.celery_app worker -Q default,internal --loglevel=DEBUG
 
@@ -103,8 +106,10 @@ remove-admin: ## Remove admin permissions an existing user (Usage: make remove-a
 	FLASK_APP=goodtablesio/app.py flask remove_admin $(USERNAME)
 
 server: ## Command to run the app as queue or server
-	@if [ $(queue_mode) ]; then \
+	@if [ $(queue_mode) == "1" ]; then \
 		make queue; \
+	elif [ $(queue_mode) == "2" ]; then \
+		make queue-flower; \
 	else \
 		make migrate; \
 		make app; \

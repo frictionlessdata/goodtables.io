@@ -6,34 +6,36 @@
 #
 alembic==0.8.9
 amqp==2.1.4               # via kombu
-appdirs==1.4.0            # via setuptools
+appdirs==1.4.3            # via setuptools
+babel==2.4.0              # via flower
 billiard==3.5.0.2         # via celery
 blinker==1.4              # via raven
 boto3==1.4.4
-botocore==1.5.15          # via boto3, s3transfer
-cchardet==1.1.2           # via tabulator
+botocore==1.5.43          # via boto3, s3transfer
+cchardet==1.1.3           # via tabulator
 celery==4.0.0
-cffi==1.9.1               # via cryptography
+cffi==1.10.0              # via cryptography
 click==6.7                # via flask, goodtables, jsontableschema, python-dotenv, tabulator
-contextlib2==0.5.4        # via raven
+contextlib2==0.5.5        # via raven
 cryptography==1.7.2
-datapackage==0.8.6        # via goodtables
+datapackage==0.8.8        # via goodtables
 docutils==0.13.1          # via botocore
 et-xmlfile==1.0.1         # via openpyxl
 ezodf==0.3.2              # via tabulator
 flask-login==0.4.0
 flask-oauthlib==0.9.3
 flask==0.11.1
+flower==0.9.1
 future==0.16.0            # via jsontableschema
 github3.py==0.9.6
 goodtables==1.0.0a8
 gunicorn==19.6.0
-idna==2.2                 # via cryptography
+idna==2.5                 # via cryptography
 ijson==2.3                # via tabulator
 itsdangerous==0.24        # via flask
 jdcal==1.3                # via openpyxl
-Jinja2==2.9.5             # via flask
-jmespath==0.9.1           # via boto3, botocore
+Jinja2==2.9.6             # via flask
+jmespath==0.9.2           # via boto3, botocore
 jsonlines==1.1.0          # via tabulator
 jsonschema==2.5.1
 jsontableschema==0.9.0
@@ -41,18 +43,18 @@ kombu==4.0.2              # via celery
 linear-tsv==1.0.0         # via tabulator
 lxml==3.7.3               # via tabulator
 Mako==1.0.6               # via alembic
-MarkupSafe==0.23          # via jinja2, mako
-oauthlib==2.0.1           # via flask-oauthlib, requests-oauthlib
-openpyxl==2.4.2           # via tabulator
+MarkupSafe==1.0           # via jinja2, mako
+oauthlib==2.0.2           # via flask-oauthlib, requests-oauthlib
+openpyxl==2.4.7           # via tabulator
 packaging==16.8           # via setuptools
 psycopg2==2.6.2
-pyasn1==0.2.2             # via cryptography
+pyasn1==0.2.3             # via cryptography
 pycparser==2.17           # via cffi
-pyparsing==2.1.10         # via packaging
+pyparsing==2.2.0          # via packaging
 python-dateutil==2.6.0    # via botocore, jsontableschema
 python-dotenv==0.6.0
 python-editor==1.0.3      # via alembic
-pytz==2016.10             # via celery
+pytz==2017.2              # via babel, celery, flower
 pyyaml==3.12.0
 raven[flask]==6.0.0
 redis==2.10.5
@@ -62,12 +64,13 @@ rfc3986==0.4.1            # via jsontableschema
 s3transfer==0.1.10        # via boto3
 six==1.10.0               # via cryptography, datapackage, goodtables, jsonlines, linear-tsv, packaging, python-dateutil, setuptools, tabulator
 sqlalchemy==1.1.4
-tabulator==0.14.0
+tabulator==0.15.0
+tornado==4.2.0            # via flower
 unicodecsv==0.14.1        # via datapackage, jsontableschema, tabulator
 uritemplate.py==3.0.2     # via github3.py
 uritemplate==3.0.0        # via uritemplate.py
 vine==1.1.3               # via amqp
-Werkzeug==0.11.15         # via flask
+Werkzeug==0.12.1          # via flask
 xlrd==1.0.0               # via tabulator
 
 # The following packages are considered to be unsafe in a requirements file:
