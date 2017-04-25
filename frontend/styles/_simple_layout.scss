@@ -1,0 +1,21 @@
+.navbar {
+
+  a {
+    color: $gray-dark;
+  }
+
+  .logo {
+    float: left;
+    height: 50px;
+    width: 200px;
+    padding: $grid-gutter-width/4 $grid-gutter-width/2;
+
+    svg {
+      fill: currentColor;
+    }
+  }
+}
+
+.app {
+
+}
