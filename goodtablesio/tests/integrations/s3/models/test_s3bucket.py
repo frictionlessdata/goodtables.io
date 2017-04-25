@@ -108,3 +108,13 @@ def test_delete_bucket():
     assert len(users) == 1
     assert len(users[0].sources) == 1
     assert len(buckets) == 0
+
+
+def test_new_source_job_number():
+
+    source = S3Bucket()
+
+    database['session'].add(source)
+    database['session'].commit()
+
+    assert source.job_number == 1

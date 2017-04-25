@@ -40,3 +40,13 @@ def test_user_relationship():
     repos = database['session'].query(GithubRepo).all()
     assert len(repos) == 1
     assert repos[0].users[0].id == user.id
+
+
+def test_new_source_job_number():
+
+    source = GithubRepo()
+
+    database['session'].add(source)
+    database['session'].commit()
+
+    assert source.job_number == 1

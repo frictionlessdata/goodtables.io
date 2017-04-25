@@ -18,7 +18,7 @@ class Source(Base, BaseModelMixin):
     active = Column(Boolean, nullable=False, default=False)
     updated = Column(DateTime(timezone=True), nullable=False,
                      default=datetime.datetime.utcnow)
-    job_number = Column(Integer)
+    job_number = Column(Integer, default=1)
     conf = Column(MutableDict.as_mutable(JSONB))
     integration_name = Column(Unicode, ForeignKey('integrations.name'))
     integration = relationship(
