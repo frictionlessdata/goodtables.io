@@ -48,6 +48,8 @@ def logout():
     # Logout user with Flask-Login
     logout_user()
 
+    log.debug('User logged out: {0}'.format(user.name))
+
     return redirect(url_for('site.home'))
 
 
@@ -79,6 +81,7 @@ def authorized(provider):
         oauth_user = github_auth.get('user',
                                      token=(response['access_token'], ''))
         if oauth_user.status != 200:
+            log.warning('Access denied: could not get user details')
             abort(401, 'Error logging in: could not get user details')
         oauth_user = oauth_user.data
         provider_id = oauth_user['id']
@@ -97,6 +100,8 @@ def authorized(provider):
                 display_name=oauth_user['name'],
                 email=oauth_user['email']
             )
+            log.debug('New user created: {0} (GitHub id: {1})'.format(
+                user.name, provider_id))
 
         if user.provider_ids is None:
             user.provider_ids = {}
@@ -114,5 +119,7 @@ def authorized(provider):
 
         # Login user with Flask-Login
         login_user(user)
+        log.debug('User logged in: {0} (GitHub id: {1})'.format(
+                user.name, provider_id))
 
     return redirect(url_for('site.home'))
