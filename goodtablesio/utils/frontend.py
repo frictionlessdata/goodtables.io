@@ -6,7 +6,7 @@ from goodtablesio import settings
 
 # Module API
 
-def render_component(component, props={}):
+def render_component(component, props=None):
     """Render frontend component within html layout.
 
     Args:
@@ -21,8 +21,13 @@ def render_component(component, props={}):
     if settings.DEBUG:
         filename = 'index.html'
 
+    if not props:
+        props = {}
+
     # Common props
-    if not props or (props and 'userName' not in props):
-        props['userName'] = getattr(current_user, 'display_name', None)
+    if props == {} or (props and 'userName' not in props):
+        user_name = getattr(current_user, 'display_name',
+                            getattr(current_user, 'name', None))
+        props['userName'] = user_name
 
     return render_template(filename, component=component, props=props.copy())
