@@ -181,6 +181,23 @@ def test_github_login_existing_user_same_email_different_provider(
     assert users[0].provider_ids == {'google': 'abcd', 'github': 123456}
 
 
+def test_github_login_existing_user_without_email(
+     client, mock_github_auth_response, mock_github_user_response_no_email):
+
+    with client.app.test_request_context():
+        authorized_url = url_for('user.authorized', provider='github')
+
+    factories.User(provider_ids={'github': 'xxx'}, email=None)
+
+    client.get(authorized_url)
+
+    users = database['session'].query(User).order_by(User.created.desc()).all()
+
+    assert len(users) == 2
+
+    assert users[0].provider_ids == {'github': 7891011}
+
+
 def test_home(client):
 
     user = factories.User()
@@ -235,6 +252,23 @@ def mock_github_user_response():
             'login': 'test-user-from-github',
             'name': 'Test User from GitHub',
             'email': 'test-from-github@example.com'
+        }
+
+        mock_get.return_value = user_response
+        yield mock_get
+        mock.patch.stopall()
+
+
+@pytest.fixture
+def mock_github_user_response_no_email():
+    with mock.patch('goodtablesio.auth.github_auth.get') as mock_get:
+        user_response = mock.Mock()
+        user_response.status = 200
+        user_response.data = {
+            'id': 7891011,
+            'login': 'test-user-from-github',
+            'name': 'Test User from GitHub',
+            'email': None
         }
 
         mock_get.return_value = user_response

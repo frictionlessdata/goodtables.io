@@ -89,7 +89,7 @@ def authorized(provider):
         # Check if user exists, first by provider id, then by email
 
         user = _get_user_by_provider_id(provider, provider_id)
-        if not user:
+        if not user and oauth_user.get('email'):
             # User exists, but she had logged in with another provider
             user = _get_user_by_email(oauth_user['email'])
 
