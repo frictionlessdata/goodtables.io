@@ -9,7 +9,7 @@ describe('Header', () => {
 
   it('should contain link to home', () => {
     const wrapper = mount(Header)
-    wrapper.find('[href="/"]')[0].text().should.equal('goodtables.io')
+    wrapper.find('[href="/"]')[0]
   })
 
   it('should contain login with github link', () => {
@@ -20,10 +20,10 @@ describe('Header', () => {
 
   describe('[with user]', () => {
 
-    it('should contain userName', () => {
+    it('should contain manage sources link', () => {
       const propsData = {userName: 'userName'}
       const wrapper = mount(Header, {propsData})
-      wrapper.text().should.include(propsData.userName)
+      wrapper.find('[href="/settings"]')[0].text().should.equal('Manage Sources')
     })
 
     it('should contain logout link', () => {

@@ -21,12 +21,6 @@ export default {
     <div class="inner">
 
       <div class="default">
-          <header>
-            <div>
-              <a href="/settings" type="button" class="btn btn-default"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add Sources</a>
-            </div>
-          </header>
-
           <main class="main-nav">
             <div role="tabpanel" class="tab-pane active my-sources" id="my-sources">
               <template v-if="sources">
@@ -34,6 +28,7 @@ export default {
               </template>
               <template v-if="!sources.length">
                 <div class="no-sources panel">No sources added yet! Click on the "Add Sources" button to get started.</div>
+                <a href="/settings" type="button" class="btn btn-default"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add Sources</a>
               </template>
             </div>
           </main>

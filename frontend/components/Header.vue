@@ -1,8 +1,12 @@
 <script>
+import Logo from './Logo.vue'
 export default {
   name: 'Header',
   props: {
     userName: String,
+  },
+  components: {
+    Logo,
   },
 }
 </script>
@@ -18,7 +22,7 @@ export default {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="/">goodtables.io</a>
+      <Logo/>
     </div>
 
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -28,9 +32,11 @@ export default {
           <li><a href="/user/login/github">Login with GitHub</a></li>
         </template>
         <template v-else>
-          <li><p class="navbar-text">Hello <a href="/settings">{{ userName }}</a></p></li>
+          <li>
+            <a href="/settings"><span class="icon-equalizer"></span>Manage Sources</a>
+          </li>
           <li role="separator" class="divider"></li>
-          <li><a href="/user/logout">Logout</a></li>
+          <li><a href="/user/logout"><span class="icon-exit"></span>Logout</a></li>
         </template>
       </ul>
     </div>
