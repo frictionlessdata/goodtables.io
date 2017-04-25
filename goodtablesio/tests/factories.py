@@ -164,7 +164,6 @@ class S3Bucket(FactoryBase):
     updated = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     active = True
     job_number = 1
-    conf = {}
 
     @property
     def integration(self):
