@@ -48,7 +48,7 @@ export default {
               </h2>
               <JobListItem v-if="job" :job="job" :inSourcePanel="true"/>
               <div v-else class="alert alert-warning">
-                Not jobs yet
+                No jobs yet
               </div>
             </div>
 
