@@ -11,7 +11,6 @@ from goodtablesio.models.job import Job
 from goodtablesio.models.internal_job import InternalJob
 from goodtablesio.tasks.validate import validate
 from goodtablesio.utils.signature import validate_signature
-from goodtablesio.utils.frontend import render_component
 from goodtablesio.integrations.github.models.repo import GithubRepo
 from goodtablesio.integrations.github.tasks.jobconf import get_validation_conf
 from goodtablesio.integrations.github.tasks.repos import sync_user_repos
@@ -30,12 +29,6 @@ github = Blueprint('github', __name__, url_prefix='/github')
 @github.record
 def record_params(setup_state):
     github.debug = setup_state.app.debug
-
-
-@github.route('/settings')
-@login_required
-def github_settings():
-    return render_component('GithubSettings')
 
 
 @github.route('/hook', methods=['POST'])

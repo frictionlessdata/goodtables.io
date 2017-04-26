@@ -3,7 +3,7 @@ from urllib.parse import urlparse
 import logging
 
 import sqlalchemy
-from flask import Flask
+from flask import Flask, request, jsonify
 from raven.contrib.flask import Sentry
 
 from goodtablesio import settings
@@ -49,23 +49,19 @@ app.register_blueprint(s3)
 
 
 # Set error handlers
-
 @app.errorhandler(401)
 def not_authorized_error(err):
-    return (
-        render_component('Error401', props={'message': err.description}),
-        401
-    )
+    return _error_response(401, err)
 
 
 @app.errorhandler(404)
 def not_found_error(err):
-    return (render_component('Error404'), 404)
+    return _error_response(404, err)
 
 
 @app.errorhandler(500)
 def server_error(err):
-    return (render_component('Error500'), 500)
+    return _error_response(500, err)
 
 
 @app.errorhandler(sqlalchemy.exc.SQLAlchemyError)
@@ -75,3 +71,14 @@ def error_handler(err):
     log.info('Database session rollback by server error handler')
     database['session'].rollback()
     raise err
+
+
+def _error_response(code, err):
+    if request.path.startswith('/api/'):
+        return jsonify({
+            'status': code,
+            'message': err.description}), code
+    else:
+        return (render_component('Error{}'.format(code),
+                                 props={'message': err.description}),
+                code)

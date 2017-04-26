@@ -36,3 +36,10 @@ def get_github_oauth_token():
 @login_manager.user_loader
 def load_user(user_id):
     return database['session'].query(User).filter_by(id=user_id).one_or_none()
+
+
+@login_manager.request_loader
+def load_user_from_request(request):
+
+    # TODO: Implement API keys
+    return None

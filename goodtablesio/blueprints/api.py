@@ -3,6 +3,7 @@ import uuid
 
 from flask import Blueprint, request
 from flask.json import jsonify
+from flask_login import login_required
 
 from goodtablesio import exceptions
 from goodtablesio import models
@@ -48,11 +49,13 @@ def handle_api_errors(error):
 
 
 @api.route('/')
+@login_required
 def root():
     return jsonify({'help': 'todo'})
 
 
 @api.route('/job', methods=['POST'])
+@login_required
 def create_job():
 
     # Get validation configuration
@@ -79,11 +82,13 @@ def create_job():
 
 
 @api.route('/job')
+@login_required
 def list_jobs():
     return jsonify(models.job.get_ids())
 
 
 @api.route('/job/<job_id>')
+@login_required
 def get_job(job_id):
     job = models.job.get(job_id)
     if job:

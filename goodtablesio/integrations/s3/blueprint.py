@@ -9,7 +9,6 @@ from goodtablesio import models, settings
 from goodtablesio.services import database
 from goodtablesio.tasks.validate import validate
 from goodtablesio.utils.signature import validate_signature
-from goodtablesio.utils.frontend import render_component
 from goodtablesio.integrations.s3.models.bucket import S3Bucket
 from goodtablesio.integrations.s3.utils import (
     set_up_bucket_on_aws, create_bucket, get_user_buckets,
@@ -26,12 +25,6 @@ s3 = Blueprint('s3', __name__, url_prefix='/s3')
 @s3.record
 def record_params(setup_state):
     s3.debug = setup_state.app.debug
-
-
-@s3.route('/settings')
-@login_required
-def s3_settings():
-    return render_component('S3Settings')
 
 
 @s3.route('/hook', methods=['POST'])
