@@ -50,6 +50,9 @@ def get_details_from_hook_payload(payload):
             details['sha'] = payload['pull_request']['head']['sha']
             details['base_owner'] = payload['pull_request']['base']['repo']['owner']['login']
             details['base_repo'] = payload['pull_request']['base']['repo']['name']
+            details['pr_number'] = payload['pull_request']['number']
+            details['pr_title'] = payload['pull_request']['title']
+            details['author_name'] = payload['pull_request']['user']['login']
 
         # PUSH
         else:
@@ -57,6 +60,8 @@ def get_details_from_hook_payload(payload):
             details['repo'] = payload['repository']['name']
             details['owner'] = payload['repository']['owner']['name']
             details['sha'] = payload['head_commit']['id']
+            details['commit_message'] = payload['head_commit']['message']
+            details['author_name'] = payload['head_commit']['author']['name']
 
     except KeyError:
         return None

@@ -25,7 +25,9 @@ def test_create_job_push(run_validation, set_commit_status, client):
             'name': 'example',
             'owner': {'name': 'test-org'},
         },
-        'head_commit': {'id': 'xxx'},
+        'head_commit': {
+            'id': 'xxx',
+            'message': 'Test commit', 'author': {'name': 'test-user'}},
     })
     signature = create_signature(settings.GITHUB_HOOK_SECRET, data)
     response = client.post(
@@ -51,6 +53,12 @@ def test_create_job_pr(run_validation, set_commit_status, client):
     data = json.dumps({
       'action': 'opened',
       'pull_request': {
+          'number': 3,
+          'title': 'Test PR',
+          'user': {
+              'login': 'test-user',
+          },
+
           'head': {
               'repo': {'name': 'example', 'owner': {'login': 'test-org'}},
               'sha': 'test-sha',
@@ -82,6 +90,12 @@ def test_create_job_pr_other_action(client):
     data = json.dumps({
       'action': 'labeled',
       'pull_request': {
+          'number': 3,
+          'title': 'Test PR',
+          'user': {
+              'login': 'test-user',
+          },
+
           'head': {
               'repo': {'name': 'example', 'owner': {'login': 'test-org'}},
               'sha': 'test-sha',
@@ -113,6 +127,11 @@ def test_create_job_pr_from_fork(run_validation, set_commit_status, client):
     data = json.dumps({
       'action': 'opened',
       'pull_request': {
+          'number': 3,
+          'title': 'Test PR',
+          'user': {
+              'login': 'test-user',
+          },
           'head': {
               'repo': {'name': 'example', 'owner': {'login': 'different-org'}},
               'sha': 'test-sha',
