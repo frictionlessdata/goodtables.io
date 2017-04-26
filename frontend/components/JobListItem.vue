@@ -32,9 +32,9 @@ export default {
     },
     internalURL() {
       if (this.job.integration_name === 'github') {
-        return `/source/github/${this.sourceName}/jobs/${this.job.number}`
+        return `/github/${this.sourceName}/jobs/${this.job.number}`
       } else if (this.job.integration_name === 's3') {
-        return `/source/s3/${this.sourceName}/jobs/${this.job.number}`
+        return `/s3/${this.sourceName}/jobs/${this.job.number}`
       }
     },
     externalURL() {

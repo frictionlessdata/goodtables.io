@@ -111,7 +111,7 @@ export default {
         <span class="icon-plus"><i>Activate</i></span>
       </button>
       <h3 class="repo-title">
-        <a :href="`/source/github/${repo.name}`">{{ repo.name }}</a>
+        <a :href="`/github/${repo.name}`">{{ repo.name }}</a>
       </h3>
       <span class="repo-body">
         <a :href="`https://github.com/${repo.name}`">View repository</a>

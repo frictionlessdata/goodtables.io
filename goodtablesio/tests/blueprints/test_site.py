@@ -74,7 +74,7 @@ def test_site_source_github(render_component, client):
     source = factories.GithubRepo()
     job1 = factories.Job(source=source, integration_name='github', number=1)
     job2 = factories.Job(source=source, integration_name='github', number=2)
-    response = client.get('/source/github/%s/%s' % (source.owner, source.repo))
+    response = client.get('/github/%s/%s' % (source.owner, source.repo))
     assert response.status_code == 200
     assert response.get_data(as_text=True) == 'body'
     render_component.assert_called_with('Source', props={
@@ -87,7 +87,7 @@ def test_site_source_github(render_component, client):
 def test_site_source_github_no_jobs(render_component, client):
     render_component.return_value = 'body'
     source = factories.GithubRepo()
-    response = client.get('/source/github/%s/%s' % (source.owner, source.repo))
+    response = client.get('/github/%s/%s' % (source.owner, source.repo))
     assert response.status_code == 200
     assert response.get_data(as_text=True) == 'body'
     render_component.assert_called_with('Source', props={
@@ -97,7 +97,7 @@ def test_site_source_github_no_jobs(render_component, client):
 
 
 def test_site_source_github_not_found(client):
-    response = client.get('/source/github/%s/%s' % ('owner', 'repo'))
+    response = client.get('/github/%s/%s' % ('owner', 'repo'))
     assert response.status_code == 404
 
 
@@ -107,7 +107,7 @@ def test_site_source_github_job(render_component, client):
     source = factories.GithubRepo()
     job1 = factories.Job(source=source, integration_name='github', number=1)
     job2 = factories.Job(source=source, integration_name='github', number=2)
-    response = client.get('/source/github/%s/%s/jobs/1' % (
+    response = client.get('/github/%s/%s/jobs/1' % (
         source.owner, source.repo))
     assert response.status_code == 200
     assert response.get_data(as_text=True) == 'body'
@@ -121,7 +121,7 @@ def test_site_source_github_job_not_found(client):
     source = factories.GithubRepo()
     job1 = factories.Job(source=source, integration_name='github', number=1)
     job2 = factories.Job(source=source, integration_name='github', number=2)
-    response = client.get('/source/github/%s/%s/jobs/3' % ('owner', 'repo'))
+    response = client.get('/github/%s/%s/jobs/3' % ('owner', 'repo'))
     assert response.status_code == 404
 
 
@@ -136,7 +136,7 @@ def test_site_source_s3(render_component, client):
         # Mock a user login
         sess['user_id'] = user.id
 
-    response = client.get('/source/s3/%s' % source.name)
+    response = client.get('/s3/%s' % source.name)
     assert response.status_code == 200
     assert response.get_data(as_text=True) == 'body'
     render_component.assert_called_with('Source', props={
@@ -146,7 +146,7 @@ def test_site_source_s3(render_component, client):
 
 
 def test_site_source_s3_not_found(client):
-    response = client.get('/source/s3/%s' % 'bucket')
+    response = client.get('/s3/%s' % 'bucket')
     assert response.status_code == 404
 
 
@@ -162,7 +162,7 @@ def test_site_source_s3_job(render_component, client):
         # Mock a user login
         sess['user_id'] = user.id
 
-    response = client.get('/source/s3/%s/jobs/1' % source.name)
+    response = client.get('/s3/%s/jobs/1' % source.name)
     assert response.status_code == 200
     assert response.get_data(as_text=True) == 'body'
     render_component.assert_called_with('Source', props={
@@ -180,7 +180,7 @@ def test_site_source_s3_job_not_found(client):
         # Mock a user login
         sess['user_id'] = user.id
 
-    response = client.get('/source/s3/%s/jobs/3' % source.name)
+    response = client.get('/s3/%s/jobs/3' % source.name)
     assert response.status_code == 404
 
 
@@ -193,7 +193,7 @@ def test_site_source_s3_owner_user(client):
         # Mock a user login
         sess['user_id'] = user.id
 
-    response = client.get('/source/s3/%s' % source.name)
+    response = client.get('/s3/%s' % source.name)
     assert response.status_code == 200
 
 
@@ -204,7 +204,7 @@ def test_site_source_s3_admin_user(client):
         # Mock a user login
         sess['user_id'] = user.id
 
-    response = client.get('/source/s3/%s' % source.name)
+    response = client.get('/s3/%s' % source.name)
     assert response.status_code == 200
 
 
@@ -215,25 +215,25 @@ def test_site_source_s3_other_user(client):
         # Mock a user login
         sess['user_id'] = user.id
 
-    response = client.get('/source/s3/%s' % source.name)
+    response = client.get('/s3/%s' % source.name)
     assert response.status_code == 401
 
 
 def test_site_source_s3_anon_user(client):
     source = factories.S3Bucket()
-    response = client.get('/source/s3/%s' % source.name)
+    response = client.get('/s3/%s' % source.name)
     assert response.status_code == 401
 
 
 def test_site_source_public_github_anon_user(client):
     source = factories.GithubRepo()
-    response = client.get('/source/github/%s' % source.name)
+    response = client.get('/github/%s' % source.name)
     assert response.status_code == 200
 
 
 def test_site_source_private_github_anon_user(client):
     source = factories.GithubRepo(conf={'private': True})
-    response = client.get('/source/github/%s' % source.name)
+    response = client.get('/github/%s' % source.name)
     assert response.status_code == 401
 
 
@@ -244,7 +244,7 @@ def test_site_source_private_github_owner_user(client):
         # Mock a user login
         sess['user_id'] = user.id
 
-    response = client.get('/source/github/%s' % source.name)
+    response = client.get('/github/%s' % source.name)
     assert response.status_code == 200
 
 
@@ -255,7 +255,7 @@ def test_site_source_private_github_admin_user(client):
         # Mock a user login
         sess['user_id'] = user.id
 
-    response = client.get('/source/github/%s' % source.name)
+    response = client.get('/github/%s' % source.name)
     assert response.status_code == 200
 
 
@@ -266,7 +266,7 @@ def test_site_source_private_github_other_user(client):
         # Mock a user login
         sess['user_id'] = user.id
 
-    response = client.get('/source/github/%s' % source.name)
+    response = client.get('/github/%s' % source.name)
     assert response.status_code == 401
 
 

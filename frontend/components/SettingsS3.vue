@@ -143,7 +143,7 @@ export default {
         <span class="icon-plus"><i>Activate</i></span>
       </button>
       <h3 class="repo-title">
-        <a :href="`/source/s3/${bucket.name}`">{{ bucket.name }}</a>
+        <a :href="`/s3/${bucket.name}`">{{ bucket.name }}</a>
       </h3>
       <span class="repo-body">
         <a :href="`https://console.aws.amazon.com/s3/buckets/${bucket.name}`">View bucket</a>
