@@ -17,7 +17,7 @@ from goodtablesio.integrations.github.tasks.jobconf import get_validation_conf
 from goodtablesio.integrations.github.tasks.repos import sync_user_repos
 from goodtablesio.integrations.github.utils.status import set_commit_status
 from goodtablesio.integrations.github.utils.hook import (
-    activate_hook, deactivate_hook, get_owner_repo_sha_from_hook_payload,
+    activate_hook, deactivate_hook, get_details_from_hook_payload,
     get_tokens_for_job)
 
 
@@ -51,22 +51,32 @@ def create_job():
             log.error(msg)
             abort(400, msg)
 
-    # Get payload parameters
+    # Get payload parameters (throws 400 if no data or bad JSON)
     payload = request.get_json()
-    if not payload:
-        msg = 'No payload received'
-        log.error(msg)
-        abort(400, msg)
 
-    owner, repo, sha = get_owner_repo_sha_from_hook_payload(payload)
-    if not owner:
+    details = get_details_from_hook_payload(payload)
+    if details is None:
         msg = 'Wrong payload received'
         log.error(msg)
         abort(400, msg)
+    if details == {}:
+        return 'No job triggered'
+
+    owner = details['owner']
+    repo = details['repo']
+    sha = details['sha']
 
     # Check repo exists
+    if details['is_pr']:
+        source_owner = details['base_owner']
+        source_repo = details['base_repo']
+    else:
+        source_owner = owner
+        source_repo = repo
+
     source = database['session'].query(GithubRepo).filter(
-        GithubRepo.name == '{0}/{1}'.format(owner, repo)).one_or_none()
+        GithubRepo.name == '{0}/{1}'.format(
+            source_owner, source_repo)).one_or_none()
 
     if not source:
         msg = 'A job was requested on a repository not present in the DB'
@@ -79,11 +89,7 @@ def create_job():
         'id': job_id,
         'integration_name': 'github',
         'source_id': source.id,
-        'conf': {
-            'owner': owner,
-            'repo': repo,
-            'sha': sha,
-        }
+        'conf': details
     }
     job = Job(**params)
     job.source = source
@@ -103,10 +109,7 @@ def create_job():
         tokens=tokens)
 
     # Run validation
-    tasks_chain = chain(
-        get_validation_conf.s(owner, repo, sha, job_id=job_id),
-        validate.s(job_id=job_id))
-    tasks_chain.delay()
+    _run_validation(owner, repo, sha, job_id)
 
     return jsonify({'job_id': job_id})
 
@@ -269,3 +272,10 @@ def _is_user_repos_syncing(user_id):
             user_id=user_id,
             finished=None).
         count())
+
+
+def _run_validation(owner, repo, sha, job_id):
+    tasks_chain = chain(
+        get_validation_conf.s(owner, repo, sha, job_id=job_id),
+        validate.s(job_id=job_id))
+    tasks_chain.delay()

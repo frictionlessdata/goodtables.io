@@ -34,30 +34,34 @@ def deactivate_hook(token, owner, repo):
             hook.delete()
 
 
-def get_owner_repo_sha_from_hook_payload(payload):
-    """Return tuple (owner, repo, sha) from GitHub hook payload.
+def get_details_from_hook_payload(payload):
+    """Return a dict with details from GitHub hook payload.
     """
-
+    details = {}
     try:
 
         # PR
         if payload.get('pull_request'):
             if payload['action'] != 'opened':
-                return None, None, None
-            repo = payload['pull_request']['head']['repo']['name']
-            owner = payload['pull_request']['head']['repo']['owner']['login']
-            sha = payload['pull_request']['head']['sha']
+                return {}
+            details['is_pr'] = True
+            details['repo'] = payload['pull_request']['head']['repo']['name']
+            details['owner'] = payload['pull_request']['head']['repo']['owner']['login']
+            details['sha'] = payload['pull_request']['head']['sha']
+            details['base_owner'] = payload['pull_request']['base']['repo']['owner']['login']
+            details['base_repo'] = payload['pull_request']['base']['repo']['name']
 
         # PUSH
         else:
-            repo = payload['repository']['name']
-            owner = payload['repository']['owner']['name']
-            sha = payload['head_commit']['id']
+            details['is_pr'] = False
+            details['repo'] = payload['repository']['name']
+            details['owner'] = payload['repository']['owner']['name']
+            details['sha'] = payload['head_commit']['id']
 
     except KeyError:
-        return None, None, None
+        return None
 
-    return owner, repo, sha
+    return details
 
 
 def get_tokens_for_job(job):

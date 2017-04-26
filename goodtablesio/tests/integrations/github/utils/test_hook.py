@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import Mock, patch
 from goodtablesio import settings
 from goodtablesio.integrations.github.utils.hook import (
-    activate_hook, deactivate_hook, get_owner_repo_sha_from_hook_payload)
+    activate_hook, deactivate_hook, get_details_from_hook_payload)
 
 
 # Tests
@@ -27,40 +27,78 @@ def test_deactivate_hook(GitHub):
     assert not hook2.delete.called
 
 
-def test_get_owner_repo_sha_from_hook_payload_PUSH():
+def test_get_details_from_hook_payload_PUSH():
     payload = {
-      'repository': {'name': 'repo', 'owner': {'name': 'owner'}},
-      'head_commit': {'id': 'sha'},
+      'repository': {'name': 'test-repo', 'owner': {'name': 'test-owner'}},
+      'head_commit': {'id': 'test-sha'},
     }
-    assert get_owner_repo_sha_from_hook_payload(payload) == ('owner', 'repo', 'sha')
+    assert get_details_from_hook_payload(payload) == {
+        'owner': 'test-owner',
+        'repo': 'test-repo',
+        'sha': 'test-sha',
+        'is_pr': False,
+    }
 
 
-def test_get_owner_repo_sha_from_hook_payload_PR():
+def test_get_details_from_hook_payload_PR():
     payload = {
       'action': 'opened',
       'pull_request': {
           'head': {
-              'repo': {'name': 'repo', 'owner': {'login': 'owner'}},
-              'sha': 'sha',
+              'repo': {'name': 'test-repo', 'owner': {'login': 'test-owner'}},
+              'sha': 'test-sha',
           },
+          'base': {
+              'repo': {'name': 'test-repo', 'owner': {'login': 'test-owner'}},
+          }
        },
     }
-    assert get_owner_repo_sha_from_hook_payload(payload) == ('owner', 'repo', 'sha')
+    assert get_details_from_hook_payload(payload) == {
+        'owner': 'test-owner',
+        'repo': 'test-repo',
+        'base_owner': 'test-owner',
+        'base_repo': 'test-repo',
+        'sha': 'test-sha',
+        'is_pr': True,
+    }
 
 
-def test_get_owner_repo_sha_from_hook_payload_PR_other_action():
+def test_get_details_from_hook_payload_PR_other_fork():
+    payload = {
+      'action': 'opened',
+      'pull_request': {
+          'head': {
+              'repo': {'name': 'test-fork-repo', 'owner': {'login': 'test-fork-owner'}},
+              'sha': 'test-sha',
+          },
+          'base': {
+              'repo': {'name': 'test-repo', 'owner': {'login': 'test-owner'}},
+          }
+       },
+    }
+    assert get_details_from_hook_payload(payload) == {
+        'owner': 'test-fork-owner',
+        'repo': 'test-fork-repo',
+        'base_owner': 'test-owner',
+        'base_repo': 'test-repo',
+        'sha': 'test-sha',
+        'is_pr': True,
+    }
+
+
+def test_get_details_from_hook_payload_PR_other_action():
     payload = {
       'action': 'labeled',
-      'pull_request': {},
+      'pull_request': {'head': {}},
     }
-    assert get_owner_repo_sha_from_hook_payload(payload) == (None, None, None)
+    assert get_details_from_hook_payload(payload) == {}
 
 
-def test_get_owner_repo_sha_from_hook_payload_bad_payload():
+def test_get_details_from_hook_payload_bad_payload():
     payload = {
       'key': 'value',
     }
-    assert get_owner_repo_sha_from_hook_payload(payload) == (None, None, None)
+    assert get_details_from_hook_payload(payload) is None
 
 
 # Fixtures

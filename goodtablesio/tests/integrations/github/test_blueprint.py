@@ -1,5 +1,5 @@
 import json
-from unittest.mock import patch
+from unittest import mock
 
 import pytest
 
@@ -12,22 +12,20 @@ pytestmark = pytest.mark.usefixtures('session_cleanup')
 
 
 # Tests
+@mock.patch('goodtablesio.integrations.github.blueprint._run_validation')
+@mock.patch('goodtablesio.integrations.github.blueprint.set_commit_status')
+def test_create_job_push(run_validation, set_commit_status, client):
 
-# TODO: this test should not rely on external HTTP calls to GitHub
-@patch('goodtablesio.integrations.github.signals.set_commit_status')
-def test_create_job(set_commit_status, client, celery_app):
-
-    # TODO: refactor to not use actual calls!
     user = factories.User(github_oauth_token=settings.GITHUB_API_TOKEN)
-    factories.GithubRepo(name='frictionlessdata/goodtables.io-example',
+    factories.GithubRepo(name='test-org/example',
                          users=[user])
 
     data = json.dumps({
         'repository': {
-            'name': 'goodtables.io-example',
-            'owner': {'name': 'frictionlessdata'},
+            'name': 'example',
+            'owner': {'name': 'test-org'},
         },
-        'head_commit': {'id': 'd5be243487d9882d7f762e7fa04b36b900164a59'},
+        'head_commit': {'id': 'xxx'},
     })
     signature = create_signature(settings.GITHUB_HOOK_SECRET, data)
     response = client.post(
@@ -39,9 +37,172 @@ def test_create_job(set_commit_status, client, celery_app):
     job = models.job.get(job_id)
     assert job['id'] == job_id
     assert job['created']
-    assert job['finished']
-    assert job['status'] == 'failure'
-    assert job['report']
+    assert job['status'] == 'created'
+
+
+@mock.patch('goodtablesio.integrations.github.blueprint._run_validation')
+@mock.patch('goodtablesio.integrations.github.blueprint.set_commit_status')
+def test_create_job_pr(run_validation, set_commit_status, client):
+
+    user = factories.User(github_oauth_token=settings.GITHUB_API_TOKEN)
+    factories.GithubRepo(name='test-org/example',
+                         users=[user])
+
+    data = json.dumps({
+      'action': 'opened',
+      'pull_request': {
+          'head': {
+              'repo': {'name': 'example', 'owner': {'login': 'test-org'}},
+              'sha': 'test-sha',
+          },
+          'base': {
+              'repo': {'name': 'example', 'owner': {'login': 'test-org'}},
+          }
+       },
+    })
+    signature = create_signature(settings.GITHUB_HOOK_SECRET, data)
+    response = client.post(
+        '/github/hook',
+        headers={'X-Hub-Signature': signature},
+        content_type='application/json',
+        data=data)
+    job_id = get_response_data(response)['job_id']
+    job = models.job.get(job_id)
+    assert job['id'] == job_id
+    assert job['created']
+    assert job['status'] == 'created'
+
+
+def test_create_job_pr_other_action(client):
+
+    user = factories.User(github_oauth_token=settings.GITHUB_API_TOKEN)
+    source = factories.GithubRepo(name='test-org/example',
+                                  users=[user])
+
+    data = json.dumps({
+      'action': 'labeled',
+      'pull_request': {
+          'head': {
+              'repo': {'name': 'example', 'owner': {'login': 'test-org'}},
+              'sha': 'test-sha',
+          },
+          'base': {
+              'repo': {'name': 'example', 'owner': {'login': 'test-org'}},
+          }
+       },
+    })
+    signature = create_signature(settings.GITHUB_HOOK_SECRET, data)
+    response = client.post(
+        '/github/hook',
+        headers={'X-Hub-Signature': signature},
+        content_type='application/json',
+        data=data)
+
+    assert response.status_code == 200
+    assert len(source.jobs) == 0
+
+
+@mock.patch('goodtablesio.integrations.github.blueprint._run_validation')
+@mock.patch('goodtablesio.integrations.github.blueprint.set_commit_status')
+def test_create_job_pr_from_fork(run_validation, set_commit_status, client):
+
+    user = factories.User(github_oauth_token=settings.GITHUB_API_TOKEN)
+    factories.GithubRepo(name='test-org/example',
+                         users=[user])
+
+    data = json.dumps({
+      'action': 'opened',
+      'pull_request': {
+          'head': {
+              'repo': {'name': 'example', 'owner': {'login': 'different-org'}},
+              'sha': 'test-sha',
+          },
+          'base': {
+              'repo': {'name': 'example', 'owner': {'login': 'test-org'}},
+          }
+       },
+    })
+    signature = create_signature(settings.GITHUB_HOOK_SECRET, data)
+    response = client.post(
+        '/github/hook',
+        headers={'X-Hub-Signature': signature},
+        content_type='application/json',
+        data=data)
+    job_id = get_response_data(response)['job_id']
+    job = models.job.get(job_id)
+    assert job['id'] == job_id
+    assert job['created']
+    assert job['status'] == 'created'
+
+
+def test_create_job_wrong_signature(client):
+
+    signature = 'xxx'
+    response = client.post(
+        '/github/hook',
+        headers={'X-Hub-Signature': signature},
+        content_type='application/json',
+        data={})
+
+    assert response.status_code == 400
+
+
+def test_create_job_no_payload(client):
+
+    data = ''
+    signature = create_signature(settings.GITHUB_HOOK_SECRET, data)
+    response = client.post(
+        '/github/hook',
+        headers={'X-Hub-Signature': signature},
+        content_type='application/json',
+        data=data)
+
+    assert response.status_code == 400
+
+
+def test_create_job_wrong_payload(client):
+
+    data = 'xxx'
+    signature = create_signature(settings.GITHUB_HOOK_SECRET, data)
+    response = client.post(
+        '/github/hook',
+        headers={'X-Hub-Signature': signature},
+        content_type='application/json',
+        data=data)
+
+    assert response.status_code == 400
+
+
+def test_create_job_source_does_not_exist(client):
+
+    data = json.dumps({
+        'repository': {
+            'name': 'example',
+            'owner': {'name': 'some-org'},
+        },
+        'head_commit': {'id': 'xxx'},
+    })
+    signature = create_signature(settings.GITHUB_HOOK_SECRET, data)
+    response = client.post(
+        '/github/hook',
+        headers={'X-Hub-Signature': signature},
+        content_type='application/json',
+        data=data)
+
+    assert response.status_code == 400
+
+
+def test_create_job_wrong_json(client):
+
+    data = json.dumps({'x': 'y'})
+    signature = create_signature(settings.GITHUB_HOOK_SECRET, data)
+    response = client.post(
+        '/github/hook',
+        headers={'X-Hub-Signature': signature},
+        content_type='application/json',
+        data=data)
+
+    assert response.status_code == 400
 
 
 def test_api_repo(client):
@@ -93,7 +254,7 @@ def test_api_repo_list(client):
     }
 
 
-@patch('goodtablesio.integrations.github.blueprint.activate_hook')
+@mock.patch('goodtablesio.integrations.github.blueprint.activate_hook')
 def test_api_repo_activate(activate_hook, client):
     user = factories.User(github_oauth_token='token')
     repo = factories.GithubRepo(name='owner/repo', users=[user])
@@ -107,7 +268,7 @@ def test_api_repo_activate(activate_hook, client):
     }
 
 
-@patch('goodtablesio.integrations.github.blueprint.deactivate_hook')
+@mock.patch('goodtablesio.integrations.github.blueprint.deactivate_hook')
 def test_api_repo_deactivate(deactivate_hook, client):
     user = factories.User(github_oauth_token='token')
     repo = factories.GithubRepo(name='owner/repo', users=[user])
