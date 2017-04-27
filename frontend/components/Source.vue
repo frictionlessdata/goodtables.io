@@ -24,7 +24,9 @@ export default {
       }
     },
     sourceURL() {
-      return `/${this.job.integration_name}/${this.source.name}`
+      if (this.job) {
+        return `/${this.job.integration_name}/${this.source.name}`
+      }
     },
   },
 
@@ -51,7 +53,9 @@ export default {
               </h2>
               <JobListItem v-if="job" :job="job" :inSourcePanel="true"/>
               <div v-else class="alert alert-warning">
-                No jobs yet
+                <p>No jobs yet!</p>
+                <p v-if="source.integration_name == 'github'">The first job will be triggered the next time someone pushes to the GitHub repository.</p>
+                <p v-if="source.integration_name == 's3'">The first job will be triggered the next time someone upload or updates a file on the S3 bucket.</p>
               </div>
             </div>
 
@@ -84,7 +88,6 @@ export default {
                 </div>
               </div>
             </section>
-
           </div>
         </main>
 
