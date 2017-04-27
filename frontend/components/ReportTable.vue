@@ -80,7 +80,7 @@ export default {
   <h4 class="file-heading">
     <span>
       <a class="file-name" :href="table.source">{{ githubTableSourceName }}</a>
-      <a class="file-count" :href="table.source">Table {{ tableNumber }} of {{ tablesCount }}</a>
+      <span class="file-count">Table {{ tableNumber }} of {{ tablesCount }}</span>
     </span>
   </h4>
 

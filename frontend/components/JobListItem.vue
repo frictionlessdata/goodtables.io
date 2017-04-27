@@ -31,7 +31,9 @@ export default {
       }
     },
     internalURL() {
-      return `/${this.job.integration_name}/${this.sourceName}/jobs/${this.job.number}`
+      if (!this.inSourcePanel) {
+        return `/${this.job.integration_name}/${this.sourceName}/jobs/${this.job.number}`
+      }
     },
     externalURL() {
       if (this.job.integration_name === 'github') {

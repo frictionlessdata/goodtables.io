@@ -23,6 +23,9 @@ export default {
         info: !this.job,
       }
     },
+    sourceURL() {
+      return `/${this.job.integration_name}/${this.source.name}`
+    },
   },
 
 }
@@ -44,7 +47,7 @@ export default {
               <a :href="`https://console.aws.amazon.com/s3/buckets/${source.name}`" class="icon-amazon integration"><i>Amazon S3</i></a>
               </template>
               <h2 class="source-title">
-                {{ source.name }}
+                <a :href="sourceURL">{{ source.name }}</a>
               </h2>
               <JobListItem v-if="job" :job="job" :inSourcePanel="true"/>
               <div v-else class="alert alert-warning">
