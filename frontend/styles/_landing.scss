@@ -1,59 +1,331 @@
 .landing {
+  overflow-x: hidden;
+
   .main-header {
+    text-align: center;
+
+    .inner > div {
+      min-height: 100vh;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    .main-nav {
+      position: absolute;
+      width: 100%;
+      left: 0;
+      text-align: right;
+
+      .logo {
+        float: left;
+      }
+
+      nav {
+        padding-top: $grid-gutter-width;
+      }
+    }
+
+    .source-item {
+      text-align: left;
+      font-size: 8vmin;
+      border-radius: 0.1em 0 0 0.1em;
+      width: 100vw;
+      margin-top: 33vh;
+
+      .source {
+        padding: 0.6em 0.5em;
+      }
+
+      .label {
+        font-size: 1em;
+        padding: .1em .45em;
+        border-radius: 0.1em;
+      }
+
+      .panel-title {
+        color: $text-color;
+        display: inline-block;
+        font-size: 1em;
+        font-weight: 700;
+        margin-left: 0.3em;
+      }
+
+      .job {
+        font-size: 1em;
+        padding: 0.2em 0.5em;
+        color: $gray;
+        border-top-color: $gray-lighter;
+        border-top-width: 0.07em;
+        line-height: 1.3;
+
+        .icon-clock {
+          font-size: 0.7em;
+          top: 0em;
+          opacity: 0.7;
+        }
+
+        .time {
+          font-size: 0.6em;
+          font-weight: 600;
+          position: relative;
+          top: -0.2em;
+          opacity: 0.7;
+        }
+      }
+    }
+
+    .next {
+      position: absolute;
+      bottom: 4vh;
+      display: block;
+      width: 100%;
+      left: 0;
+      color: inherit;
+
+      h1 {
+        font-weight: 600;
+        font-size: 2em;
+        margin-bottom: 5vh;
+        opacity: 0.9;
+
+        strong {
+          font-weight: 700;
+        }
+        small {
+          color: inherit;
+          font-weight: 600;
+        }
+      }
+
+      & > span {
+        font-size: 2em;
+        opacity: 0.9;
+      }
+
+      &:hover {
+        & > span {
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  .feature-list {
+    margin: 0;
+    padding: 0;
+    @include make-row();
+
+    li {
+      display: block;
+      @include make-sm-column(4);
+      margin-bottom: 5vh;
+
+      p {
+        font-size: 1.5em;
+        font-weight: 600;
+        max-width: 14em;
+        margin: 2vh auto 0 auto;
+      }
+
+      & > span {
+        display: inline-block;
+        width: 160px;
+        height: 160px;
+
+        &[class^="icon-"] {
+          font-size: 160px;
+          top: 0;
+        }
+      }
+
+      .wrapper {
+        background-color: $text-color;
+        color: #fff;
+        border-radius: 50%;
+
+        [class^="icon-"] {
+          display: block;
+          font-size: 120px;
+          top: 22px;
+        }
+      }
+
+      &.check {
+        .wrapper {
+          background-color: $brand-primary;
+          @include gradient-vertical($brand-primary, rgba($brand-info,0.3), 0%, 100%);
+        }
+      }
+
+      &.validate {
+        [class^="icon-"] {
+          font-size: 100px;
+          top: 34px;
+          left: 5px;
+        }
+      }
+      &.trust {
+        .wrapper {
+          background-color: $brand-primary;
+          @include gradient-vertical($brand-primary, rgba($brand-info,0.3), 0%, 100%);
+        }
+        [class^="icon-"] {
+          top: 28px;
+        }
+      }
+      &.quality {
+        .wrapper {
+          background-color: $brand-primary;
+          @include gradient-vertical($brand-primary, rgba($brand-info,0.3), 0%, 100%);
+        }
+        [class^="icon-"] {
+          font-size: 80px;
+          top: 18px;
+
+          & + [class^="icon-"] {
+            top: -12px;
+          }
+        }
+      }
+    }
+  }
+
+  .features {
+    text-align: center;
+
+    h2 {
+      font-weight: 600;
+      margin: 8vh 0;
+    }
+
+    @media screen and (min-width: $screen-md) {
+      .container {
+        position: relative;
+        padding-top: 18vh;
+      }
+      h2 {
+        position: absolute;
+        width: 100%;
+        top: 0;
+      }
+      .content {
+        display: table;
+        height: 82vh;
+
+        .inner {
+          display: table-cell;
+          vertical-align: middle;
+        }
+      }
+    }
+    @media screen and (min-height: 820px) {
+      .feature-list {
+        li {
+          margin-bottom: 7vh;
+        }
+      }
+    }
+    @media screen and (min-height: 840px) {
+      .feature-list {
+        li {
+          margin-bottom: 9vh;
+        }
+      }
+    }
+  }
+
+  .text {
+    background-color: $brand-info;
+    @include rev-out(#fff, $brand-primary);
+    line-height: 1.6;
+
+    h2 {
+      font-weight: 600;
+      line-height: 1.4;
+      margin-bottom: 4vh;
+    }
+
+    p {
+      font-size: 1.1em;
+    }
+
     .container {
+      display: table;
+      height: 100vh;
+    }
 
-      .text {
-        padding-bottom: $grid-gutter-width;
+    .content,
+    .cta {
+      display: table-row;
 
-        .btn {
-          margin-top: 1em;
-          margin-right: 1em;
-          margin-bottom: 1em;
-        }
+      .inner {
+        display: table-cell;
+        vertical-align: middle;
+      }
+    }
+
+    .content {
+      height: 99%;
+    }
+
+    .cta {
+      height: 1%;
+      background-color: $brand-primary;
+
+      h2 {
+        margin-bottom: 0;
       }
 
-      @media screen and (min-width: $screen-md) {
-        background-image: url("../images/illustration.png");
-        background-size: 50% auto;
-        background-repeat: no-repeat;
-        background-position: right 20px;
-
-        .text {
-          width: 50%;
-          padding-top: $grid-gutter-width/2;
-
-          h1 {
-            font-size: 42px;
-          }
-
-          p {
-            font-size: 18px;
-            font-weight: 600;
-          }
-
-          .btn {
-            font-size: 20px;
-          }
-        }
+      .btn {
+        margin-top: $grid-gutter-width;
+        font-size: 20px;
       }
 
-      @media screen and (min-width: $screen-lg) {
-        background-size: 60% auto;
-        background-position: 105% 10px;
+      small {
+        margin-bottom: $grid-gutter-width*0.75;
+        line-height: 1.2;
+        display: block;
+      }
 
-        .text {
-          width: 42%;
-          padding-top: $grid-gutter-width;
-          padding-bottom: $grid-gutter-width*2;
+      .inner {
+        position: relative;
+        z-index: 1;
 
-          h1 {
-            font-size: 52px;
-          }
-
-          p {
-            font-size: 24px;
-          }
+        &:before {
+          content: '';
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: -100vw;
+          width: 300vw;
+          background-color: $brand-primary;
+          z-index: -1;
         }
+      }
+    }
+
+    @media screen and (min-width: $screen-sm) {
+      .btn {
+        float: right;
+        margin-left: $grid-gutter-width;
+      }
+      h2 {
+        font-size: 34px;
+      }
+      p {
+        font-size: 1.4em;
+      }
+    }
+    @media screen and (min-width: $screen-md) {
+      h2 {
+        font-size: 38px;
+      }
+    }
+    @media screen and (min-width: $screen-md) and (min-height: 820px) {
+      h2 {
+        font-size: 42px;
       }
     }
   }

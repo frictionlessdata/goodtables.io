@@ -36,8 +36,8 @@
   }
 }
 
-.icon-exit:before {
-  content: "\e902";
+.icon-keyboard_arrow_down:before {
+  content: "\e907";
 }
 .icon-keyboard_arrow_right:before {
   content: "\e904";
@@ -45,11 +45,29 @@
 .icon-keyboard_arrow_left:before {
   content: "\e903";
 }
-.icon-grid:before {
-  content: "\e900";
+.icon-shield:before {
+  content: "\e905";
 }
-.icon-list:before {
-  content: "\e901";
+.icon-mouse-pointer:before {
+  content: "\e908";
+}
+.icon-goodtables:before {
+  content: "\e906";
+}
+.icon-exit:before {
+  content: "\e902";
+}
+.icon-signout:before {
+  content: "\e902";
+}
+.icon-logout:before {
+  content: "\e902";
+}
+.icon-quit:before {
+  content: "\e902";
+}
+.icon-close:before {
+  content: "\e902";
 }
 .icon-clock:before {
   content: "\e94e";
@@ -69,9 +87,6 @@
 .icon-cross:before {
   content: "\ea0f";
 }
-.icon-warning:before {
-  content: "\ea07";
-}
 .icon-checkmark:before {
   content: "\ea10";
 }
@@ -80,4 +95,10 @@
 }
 .icon-github:before {
   content: "\eab0";
+}
+.icon-grid:before {
+  content: "\e900";
+}
+.icon-list:before {
+  content: "\e901";
 }
