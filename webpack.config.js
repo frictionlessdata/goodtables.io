@@ -76,6 +76,7 @@ const webpackConfig = {
     new HtmlWebpackPlugin({
       template: 'frontend/index.html',
       filename: (ENV === 'production') ? 'index.min.html' : 'index.html',
+      favicon: 'frontend/favicon.ico',
       inject: 'head',
     }),
   ],
