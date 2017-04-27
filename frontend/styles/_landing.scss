@@ -203,7 +203,7 @@
     @media screen and (min-width: $screen-md) {
       .container {
         position: relative;
-        padding-top: 18vh;
+        padding-top: 10vh;
       }
       h2 {
         position: absolute;
@@ -251,6 +251,10 @@
       font-size: 1.1em;
     }
 
+    a {
+      color: white;
+      font-weight: bold;
+    }
     .container {
       display: table;
       height: 100vh;
@@ -292,6 +296,9 @@
       .inner {
         position: relative;
         z-index: 1;
+        padding-top: 2em;
+        padding-bottom: 2em;
+
 
         &:before {
           content: '';
@@ -327,6 +334,16 @@
       h2 {
         font-size: 42px;
       }
+    }
+  }
+
+  .footer {
+    text-align: center;
+    padding: 1em;
+
+    span {
+      margin-left: 1em;
+      margin-right: 1em;
     }
   }
 }

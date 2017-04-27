@@ -45,7 +45,7 @@ export default {
               </div>
 
               <a class="next" href="#features">
-                <h1>meet <strong>goodTables</strong><small>.io</small></h1>
+                <h1>Continuous Data Validation for Everybody</h1>
                 <span class="icon-keyboard_arrow_down">
                   <i>Learn more</i>
                 </span>
@@ -57,7 +57,6 @@ export default {
     </header>
     <section class="features" id="features">
       <div class="container">
-        <h2>the web service for the continuous validation of data quality</h2>
         <div class="content">
           <div class="inner">
             <ul class="feature-list">
@@ -65,34 +64,34 @@ export default {
                 <span class="wrapper">
                   <span class="icon-goodtables"></span>
                 </span>
-                <p>Automatically check data is good on every update.</p>
+                <p>Automatically check data is good on every update</p>
               </li>
               <li class="validate">
                 <span class="wrapper">
                   <span class="icon-mouse-pointer"></span>
                 </span>
-                <p>Validate data with a minimum of clicks.</p>
+                <p>Validate data with a minimum of clicks</p>
               </li>
               <li class="trust">
                 <span class="wrapper">
                   <span class="icon-shield"></span>
                 </span>
-                <p>Trust in the validity and usefulness of your data.</p>
+                <p>Trust in the validity and usefulness of your data</p>
               </li>
               <li class="connect">
                 <span class="icon-github"></span>
-                <p>Connect directly to your data repository.</p>
+                <p>Connect directly to your data repository</p>
               </li>
               <li class="quality">
                 <span class="wrapper">
                   <span class="icon-checkmark"></span>
                   <span class="icon-checkmark"></span>
                 </span>
-                <p>Prove that your data is of consistent good quality.</p>
+                <p>Prove that your data is of consistent good quality</p>
               </li>
               <li class="errors">
                 <span class="icon-clock"></span>
-                <p>Catch and identify errors early.</p>
+                <p>Catch and identify errors early</p>
               </li>
             </ul>
           </div>
@@ -103,12 +102,9 @@ export default {
       <div class="container">
         <div class="content">
 		  <div class="inner">
-			<h2>"How can one ensure, in a detailed and automated fashion, that data sources meet the quality requirements for further analysis and integration?"</h2>
+			<h2>Ensure, in a detailed and automated fashion, that data sources meet the quality requirements for further analysis and integration</h2>
 			<p>
-			  GoodTables is part of the Frictionless Data project from Open Knowledge International, which supports a wider discussion around open data quality. We believe that GoodTables can reduce the processing time of your data publication workflow, whatever it may be. For us it answers one the most consistent questions we have encountered in our work with data over the last 10 years: How can one ensure, in a detailed and automated fashion, that data sources meet the quality requirements for further analysis and integration?
-			</p>
-			<p>
-			  <em>(the answer is goodTables.io)</em>
+			  GoodTables is part of the <a href="https://frictionlessdata.io/">Frictionless Data</a> project from Open Knowledge International, which supports a wider discussion around Open Data quality. We believe that GoodTables can reduce the processing time of your data publication workflow, whatever it may be. For us it answers one the most consistent questions we have encountered in our work with data over the last 10 years: How can one ensure, in a detailed and automated fashion, that data sources meet the quality requirements for further analysis and integration?
 			</p>
 		  </div>
         </div>
@@ -121,6 +117,8 @@ export default {
         </div>
       </div>
     </section>
-    <my-footer/>
+    <section class="footer">
+		<span>&copy; <a href="https://okfn.org">Open Knowledge International</a> 2017</span> | <span><a href="https://twitter.com/OKFNLabs">@OKFNLabs</a></span>
+    </section>
   </div>
 </template>
