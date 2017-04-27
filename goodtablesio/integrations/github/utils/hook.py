@@ -44,15 +44,19 @@ def get_details_from_hook_payload(payload):
         if payload.get('pull_request'):
             if payload['action'] != 'opened':
                 return {}
+
+            pull_request = payload['pull_request']
+
             details['is_pr'] = True
-            details['repo'] = payload['pull_request']['head']['repo']['name']
-            details['owner'] = payload['pull_request']['head']['repo']['owner']['login']
-            details['sha'] = payload['pull_request']['head']['sha']
-            details['base_owner'] = payload['pull_request']['base']['repo']['owner']['login']
-            details['base_repo'] = payload['pull_request']['base']['repo']['name']
-            details['pr_number'] = payload['pull_request']['number']
-            details['pr_title'] = payload['pull_request']['title']
-            details['author_name'] = payload['pull_request']['user']['login']
+            details['repo'] = pull_request['head']['repo']['name']
+            details['owner'] = pull_request['head']['repo']['owner']['login']
+            details['sha'] = pull_request['head']['sha']
+            details['base_owner'] = (
+                pull_request['base']['repo']['owner']['login'])
+            details['base_repo'] = pull_request['base']['repo']['name']
+            details['pr_number'] = pull_request['number']
+            details['pr_title'] = pull_request['title']
+            details['author_name'] = pull_request['user']['login']
 
         # PUSH
         else:

@@ -17,29 +17,6 @@ pytestmark = pytest.mark.usefixtures('session_cleanup')
 
 # Tests
 
-def test_s3_settings_logged_in(client):
-
-    user = factories.User()
-    with client.session_transaction() as sess:
-        # Mock a user login
-        sess['user_id'] = user.id
-
-    response = client.get('/s3/settings')
-
-    assert response.status_code == 200
-
-    body = response.get_data(as_text=True)
-
-    # TODO: improve when final UI is in place
-    assert "const component = 'S3Settings'" in body
-
-
-def test_s3_settings_not_logged_in(client):
-
-    response = client.get('/s3/settings')
-
-    assert response.status_code == 401
-
 
 def test_s3_hook_wrong_signature(client):
 
