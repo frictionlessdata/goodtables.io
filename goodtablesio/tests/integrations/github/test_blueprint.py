@@ -16,7 +16,7 @@ pytestmark = pytest.mark.usefixtures('session_cleanup')
 @mock.patch('goodtablesio.integrations.github.blueprint.set_commit_status')
 def test_create_job_push(run_validation, set_commit_status, client):
 
-    user = factories.User(github_oauth_token=settings.GITHUB_API_TOKEN)
+    user = factories.User(github_oauth_token='xxx')
     factories.GithubRepo(name='test-org/example',
                          users=[user])
 
@@ -47,7 +47,7 @@ def test_create_job_push(run_validation, set_commit_status, client):
 @mock.patch('goodtablesio.integrations.github.blueprint.set_commit_status')
 def test_create_job_pr(run_validation, set_commit_status, client):
 
-    user = factories.User(github_oauth_token=settings.GITHUB_API_TOKEN)
+    user = factories.User(github_oauth_token='xxx')
     factories.GithubRepo(name='test-org/example',
                          users=[user])
 
@@ -84,7 +84,7 @@ def test_create_job_pr(run_validation, set_commit_status, client):
 
 def test_create_job_pr_other_action(client):
 
-    user = factories.User(github_oauth_token=settings.GITHUB_API_TOKEN)
+    user = factories.User(github_oauth_token='xxx')
     source = factories.GithubRepo(name='test-org/example',
                                   users=[user])
 
@@ -121,7 +121,7 @@ def test_create_job_pr_other_action(client):
 @mock.patch('goodtablesio.integrations.github.blueprint.set_commit_status')
 def test_create_job_pr_from_fork(run_validation, set_commit_status, client):
 
-    user = factories.User(github_oauth_token=settings.GITHUB_API_TOKEN)
+    user = factories.User(github_oauth_token='xxx')
     factories.GithubRepo(name='test-org/example',
                          users=[user])
 

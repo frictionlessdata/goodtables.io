@@ -8,6 +8,7 @@ from goodtablesio.integrations.github.tasks import jobconf
 OWNER = 'frictionlessdata'
 REPO = 'goodtables.io-example'
 SHA = 'd5be243487d9882d7f762e7fa04b36b900164a59'
+# TODO: mock requests so we can get rid of this setting
 TOKENS = [settings.GITHUB_API_TOKEN]
 
 
