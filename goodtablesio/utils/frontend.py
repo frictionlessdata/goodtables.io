@@ -30,4 +30,6 @@ def render_component(component, props=None):
                             getattr(current_user, 'name', None))
         props['userName'] = user_name
 
-    return render_template(filename, component=component, props=props.copy())
+    return render_template(
+        filename, component=component, props=props.copy(),
+        google_analytics_code=settings.GOOGLE_ANALYTICS_CODE)
