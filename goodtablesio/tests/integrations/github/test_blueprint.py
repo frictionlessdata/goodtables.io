@@ -21,6 +21,7 @@ def test_create_job_push(run_validation, set_commit_status, client):
                          users=[user])
 
     data = json.dumps({
+        'ref': 'refs/head/some-branch',
         'repository': {
             'name': 'example',
             'owner': {'name': 'test-org'},

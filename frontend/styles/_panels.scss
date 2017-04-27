@@ -47,6 +47,14 @@
       font-weight: 600;
     }
 
+    .panel-details {
+      padding-top: 1em;
+
+      a {
+        font-weight: bold;
+      }
+    }
+
     .source,
     .job {
       display: block;

@@ -66,6 +66,7 @@ def get_details_from_hook_payload(payload):
             details['sha'] = payload['head_commit']['id']
             details['commit_message'] = payload['head_commit']['message']
             details['author_name'] = payload['head_commit']['author']['name']
+            details['branch_name'] = payload['ref'].replace('refs/head/', '')
 
     except KeyError:
         return None

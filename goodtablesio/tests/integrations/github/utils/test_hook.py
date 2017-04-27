@@ -29,6 +29,7 @@ def test_deactivate_hook(GitHub):
 
 def test_get_details_from_hook_payload_PUSH():
     payload = {
+      'ref': 'refs/head/some-branch',
       'repository': {'name': 'test-repo', 'owner': {'name': 'test-owner'}},
       'head_commit': {
           'id': 'test-sha',
@@ -44,6 +45,7 @@ def test_get_details_from_hook_payload_PUSH():
         'is_pr': False,
         'commit_message': 'Test message',
         'author_name': 'test-user',
+        'branch_name': 'some-branch',
     }
 
 

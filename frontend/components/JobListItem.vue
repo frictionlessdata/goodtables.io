@@ -31,11 +31,7 @@ export default {
       }
     },
     internalURL() {
-      if (this.job.integration_name === 'github') {
-        return `/github/${this.sourceName}/jobs/${this.job.number}`
-      } else if (this.job.integration_name === 's3') {
-        return `/s3/${this.sourceName}/jobs/${this.job.number}`
-      }
+      return `/${this.job.integration_name}/${this.sourceName}/jobs/${this.job.number}`
     },
     externalURL() {
       if (this.job.integration_name === 'github') {
@@ -46,13 +42,28 @@ export default {
     },
     jobTitle() {
       if (this.job.integration_name === 'github') {
-        return this.job.conf.sha.slice(0, 7)
+        if (this.job.conf.is_pr) {
+          return this.job.conf.pr_title
+        }
+        return this.job.conf.commit_message
       } else if (this.job.integration_name === 's3') {
         return this.job.conf.bucket
       }
     },
     jobTimeStamp() {
       return moment(this.job.created).fromNow()
+    },
+    githubUserURL() {
+      return `https://github.com/${this.job.conf.author_name}`
+    },
+    githubBranchURL() {
+      return `https://github.com/${this.sourceName}/tree/${this.job.conf.branch_name}`
+    },
+    githubCommitURL() {
+      return `https://github.com/${this.sourceName}/commit/${this.job.conf.sha}`
+    },
+    githubPullRequestURL() {
+      return `https://github.com/${this.sourceName}/pull/${this.job.conf.pr_number}`
     },
   },
 }
@@ -76,6 +87,17 @@ export default {
         <h3 class="panel-title">
           {{ jobTitle }}
         </h3>
+        <div class="panel-details" v-if="job.integration_name === 'github'">
+          <span v-if="!job.conf.is_pr">
+            Pushed by <a :href="githubUserURL">{{ job.conf.author_name}}</a> 
+            on branch <a :href="githubBranchURL">{{ job.conf.branch_name }}</a> 
+            (<a :href="githubCommitURL">{{ job.conf.sha.slice(0,6) }}</a>)
+          </span>
+          <span v-if="job.conf.is_pr">
+            Pull Request <a :href="githubPullRequestURL">#{{ job.conf.pr_number }}</a> 
+            opened by <a :href="githubUserURL">{{ job.conf.author_name}}</a> 
+          </span>
+        </div>
       </a>
 
       <a class="job" :href="internalURL" :class="{active: inSourcePanel}">
