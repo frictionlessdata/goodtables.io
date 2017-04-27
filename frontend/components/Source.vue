@@ -55,7 +55,7 @@ export default {
               <div v-else class="alert alert-warning">
                 <p>No jobs yet!</p>
                 <p v-if="source.integration_name == 'github'">The first job will be triggered the next time someone pushes to the GitHub repository.</p>
-                <p v-if="source.integration_name == 's3'">The first job will be triggered the next time someone upload or updates a file on the S3 bucket.</p>
+                <p v-if="source.integration_name == 's3'">The first job will be triggered the next time someone uploads or updates a file on the S3 bucket.</p>
               </div>
             </div>
 
