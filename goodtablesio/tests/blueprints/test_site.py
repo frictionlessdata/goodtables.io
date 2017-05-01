@@ -397,3 +397,18 @@ def test_badge_source_supports_flat_square(client):
     assert response.content_type == 'image/svg+xml'
     assert b'>unknown</text></g>' in response.get_data()
     assert b'<linearGradient' not in response.get_data()
+
+
+def test_badge_no_cache_headers(client):
+
+    repo = factories.GithubRepo()
+    factories.Job(source=repo, integration_name='github', status='success')
+
+    response = client.get('/badge/github/{}/{}.svg'.format(repo.owner,
+                                                           repo.repo))
+
+    assert response.content_type == 'image/svg+xml'
+    assert response.headers['Cache-Control'] == 'no-cache'
+    assert response.headers['Pragma'] == 'no-cache'
+    assert 'Last-Modified' in response.headers
+    assert 'Expires' in response.headers

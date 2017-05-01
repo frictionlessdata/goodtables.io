@@ -1,6 +1,11 @@
 import os
+import datetime
+from functools import wraps, update_wrapper
 
-from flask import Blueprint, abort, redirect, url_for, send_from_directory, request
+from flask import (
+    Blueprint, abort, redirect, url_for, send_from_directory, request,
+    make_response)
+from werkzeug.http import http_date
 from flask_login import current_user
 from sqlalchemy.sql.expression import true
 
@@ -10,6 +15,19 @@ from goodtablesio.models.job import Job
 from goodtablesio.models.source import Source
 from goodtablesio.utils.frontend import render_component
 
+
+def no_cache(view):
+    @wraps(view)
+    def no_cache(*args, **kwargs):
+        http_now = http_date(datetime.datetime.now())
+        response = make_response(view(*args, **kwargs))
+        response.headers['Last-Modified'] = http_now
+        response.headers['Expires'] = http_now
+        response.headers['Cache-Control'] = 'no-cache'
+        response.headers['Pragma'] = 'no-cache'
+        return response
+
+    return update_wrapper(no_cache, view)
 
 # Module API
 
@@ -70,6 +88,7 @@ def settings():
 
 
 @site.route('/badge/<integration_name>/<path:source_name>.svg')
+@no_cache
 def badge(integration_name, source_name):
 
     last_status = (
