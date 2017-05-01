@@ -33,6 +33,10 @@ export default {
         </template>
         <template v-else>
           <li>
+            <a href="https://discuss.okfn.org/t/launching-goodtables-io-tell-us-what-you-think"><span class="icon-info"></span>Give Feedback</a>
+          </li>
+          <li role="separator" class="divider"></li>
+          <li>
             <a href="/settings"><span class="icon-equalizer"></span>Manage Sources</a>
           </li>
           <li role="separator" class="divider"></li>
