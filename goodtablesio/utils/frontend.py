@@ -26,10 +26,10 @@ def render_component(component, props=None):
 
     # Common props
     if props == {} or (props and 'userName' not in props):
-        user_name = getattr(current_user, 'display_name',
-                            getattr(current_user, 'name', None))
+        user_name = getattr(current_user, 'display_name')
+        if not user_name:
+            user_name = getattr(current_user, 'name')
         props['userName'] = user_name
-
     return render_template(
         filename, component=component, props=props.copy(),
         google_analytics_code=settings.GOOGLE_ANALYTICS_CODE)
