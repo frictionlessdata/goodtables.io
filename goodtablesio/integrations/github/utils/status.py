@@ -6,7 +6,7 @@ log = logging.getLogger(__name__)
 
 # Module API
 
-def set_commit_status(state, owner, repo, sha, job_id, tokens):
+def set_commit_status(state, owner, repo, sha, job_number, tokens):
     """Set commit status on GitHub.
     """
 
@@ -36,8 +36,9 @@ def set_commit_status(state, owner, repo, sha, job_id, tokens):
 
     data = {
       'state': state,
-      'target_url': '{base}/jobs/{job_id}'.format(
-           base=settings.BASE_URL, job_id=job_id),
+      'target_url': '{base}/github/{owner}/{repo}/jobs/{job_number}'.format(
+           base=settings.BASE_URL, owner=owner, repo=repo,
+           job_number=job_number),
       'description': description,
       'context': 'goodtables.io/push'
     }
@@ -48,7 +49,7 @@ def set_commit_status(state, owner, repo, sha, job_id, tokens):
         return True
     else:
         log.error('There was an error setting the GitHub status: ' +
-                  '{url} {response} {job_id} {state}'.format(
+                  '{url} {response} {job_number} {state}'.format(
                       url=url, response=response.text,
-                      job_id=job_id, state=state))
+                      job_id=job_number, state=state))
         return False

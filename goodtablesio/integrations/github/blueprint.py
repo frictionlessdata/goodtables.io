@@ -98,7 +98,7 @@ def create_job():
         owner=owner,
         repo=repo,
         sha=sha,
-        job_id=job_id,
+        job_number=job.number,
         tokens=tokens)
 
     # Run validation
