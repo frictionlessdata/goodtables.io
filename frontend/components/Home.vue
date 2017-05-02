@@ -50,7 +50,7 @@ export default {
               </div>
 
               <a class="next" href="#features" v-scroll-to="'#features'">
-                <h1>Continuous Data Validation for Everybody</h1>
+                <h1>Continuous data validation for everybody</h1>
                 <span class="icon-keyboard_arrow_down">
                   <i>Learn more</i>
                 </span>
