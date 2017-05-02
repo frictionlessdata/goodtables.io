@@ -1,6 +1,49 @@
 .landing {
   overflow-x: hidden;
 
+  .container {
+    padding-left: $grid-gutter-width;
+    padding-right: $grid-gutter-width;
+  }
+
+  .next {
+    position: absolute;
+    bottom: 4vh;
+    display: block;
+    width: 100%;
+    left: 0;
+    color: inherit;
+    text-decoration: none;
+
+    h1 {
+      font-weight: 600;
+      font-size: 1.8em;
+      margin-bottom: 5vh;
+      opacity: 0.9;
+      padding-left: $grid-gutter-width;
+      padding-right: $grid-gutter-width;
+
+      strong {
+        font-weight: 700;
+      }
+      small {
+        color: inherit;
+        font-weight: 600;
+      }
+    }
+
+    & > span {
+      font-size: 2em;
+      opacity: 0.9;
+    }
+
+    &:hover {
+      & > span {
+        opacity: 1;
+      }
+    }
+  }
+
   .main-header {
     text-align: center;
 
@@ -24,10 +67,73 @@
 
       nav {
         padding-top: $grid-gutter-width;
+
+        a {
+          color: inherit;
+          opacity: 0.9;
+
+          .link-icon {
+            font-size: 2.5em;
+            top: 0;
+            float: right;
+
+            @media screen and (min-width: $screen-md) {
+              display: none;
+            }
+          }
+
+          .link-text {
+            display: none;
+
+            @media screen and (min-width: $screen-md) {
+              display: inline-block;
+              font-size: 1.2em;
+              font-weight: 600;
+              border: solid 4px #fff;
+              padding: 0.2em 1em;
+              margin-left: 0.5em;
+            }
+          }
+
+          &:hover {
+            opacity: 1;
+          }
+        }
       }
     }
 
     .source-item {
+      @keyframes bounceInRight {
+        from, 60%, 75%, 90%, to {
+          animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+        }
+
+        from {
+          opacity: 0;
+          transform: translate3d(3000px, 0, 0);
+        }
+
+        60% {
+          opacity: 1;
+          transform: translate3d(-25px, 0, 0);
+        }
+
+        75% {
+          transform: translate3d(10px, 0, 0);
+        }
+
+        90% {
+          transform: translate3d(-5px, 0, 0);
+        }
+
+        to {
+          transform: none;
+        }
+      }
+
+      animation-duration: 0.7s;
+      animation-fill-mode: both;
+      animation-name: bounceInRight;
       text-align: left;
       font-size: 8vmin;
       border-radius: 0.1em 0 0 0.1em;
@@ -75,41 +181,6 @@
         }
       }
     }
-
-    .next {
-      position: absolute;
-      bottom: 4vh;
-      display: block;
-      width: 100%;
-      left: 0;
-      color: inherit;
-
-      h1 {
-        font-weight: 600;
-        font-size: 2em;
-        margin-bottom: 5vh;
-        opacity: 0.9;
-
-        strong {
-          font-weight: 700;
-        }
-        small {
-          color: inherit;
-          font-weight: 600;
-        }
-      }
-
-      & > span {
-        font-size: 2em;
-        opacity: 0.9;
-      }
-
-      &:hover {
-        & > span {
-          opacity: 1;
-        }
-      }
-    }
   }
 
   .feature-list {
@@ -120,6 +191,7 @@
     li {
       display: block;
       @include make-sm-column(4);
+      margin-top: 5vh;
       margin-bottom: 5vh;
 
       p {
@@ -194,20 +266,19 @@
 
   .features {
     text-align: center;
+    position: relative;
 
-    h2 {
-      font-weight: 600;
-      margin: 8vh 0;
+    .next {
+      display: none;
     }
 
     @media screen and (min-width: $screen-md) {
       .container {
         position: relative;
-        padding-top: 10vh;
       }
       .content {
         display: table;
-        height: 82vh;
+        height: 100vh;
 
         .inner {
           display: table-cell;
@@ -215,25 +286,17 @@
         }
       }
     }
-    @media screen and (min-height: 820px) {
-      .container {
-        padding-top: 7vh;
-      }
-
-      .feature-list {
-        li {
-          margin-bottom: 7vh;
-        }
+    @media screen and (min-width: $screen-md) and (min-height: 640px) {
+      .next {
+        display: block;
       }
     }
-    @media screen and (min-height: 840px) {
-      .container {
-        padding-top: 9vh;
-      }
+    @media screen and (min-height: 820px) {
 
       .feature-list {
         li {
-          margin-bottom: 9vh;
+          margin-top: 7vh;
+          margin-bottom: 7vh;
         }
       }
     }
@@ -275,6 +338,11 @@
 
     .content {
       height: 99%;
+
+      .inner {
+        padding-top: 1em;
+        padding-bottom: 1em;
+      }
     }
 
     .cta {
@@ -283,11 +351,16 @@
 
       h2 {
         margin-bottom: 0;
+        font-size: 2em;
+
+        @media screen and (min-width: $screen-sm) {
+          font-size: 2.4em;
+        }
       }
 
       .btn {
-        margin-top: $grid-gutter-width;
         font-size: 20px;
+        margin-top: $grid-gutter-width;
       }
 
       small {
@@ -299,9 +372,6 @@
       .inner {
         position: relative;
         z-index: 1;
-        padding-top: 2em;
-        padding-bottom: 2em;
-
 
         &:before {
           content: '';
@@ -341,12 +411,66 @@
   }
 
   .footer {
-    text-align: center;
-    padding: 1em;
+    background-color: $gray-dark;
+    color: rgba(255, 255, 255, 0.6);
+    padding: 30px 0;
+    font-size: 14px;
 
-    span {
-      margin-left: 1em;
-      margin-right: 1em;
+    a {
+      color: rgba(255, 255, 255, 0.9);
+
+      &:hover {
+        color:#fff;
+      }
+    }
+
+    .footer-primary {
+      @include make-row();
+
+      .footer-logo {
+        @include make-md-column(2);
+        opacity: 0.9;
+
+        &:hover {
+          opacity: 1;
+        }
+
+        img {
+          width: 130px;
+          max-width: 100%;
+        }
+      }
+
+      .footer-links {
+        margin: 10px;
+        padding: 0 5px;
+
+        @media (min-width: $screen-md-min) {
+          @include make-md-column(10);
+          text-align: right;
+          margin: 0;
+        }
+
+        li {
+          display: block;
+
+          @media (min-width: $screen-md-min) {
+            display: inline-block;
+            padding: 7px;
+
+            &:last-child {
+              padding-right: 0;
+            }
+          }
+        }
+      }
+    }
+
+    .footer-secondary {
+      font-size: 13px;
+      border-top: solid 1px rgba(255, 255, 255, 0.4);
+      margin-top: 15px;
+      padding-top: 15px;
     }
   }
 }

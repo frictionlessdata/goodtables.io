@@ -1,6 +1,11 @@
 <script>
 import Logo from './Logo.vue'
 
+var Vue = require('vue')
+var VueScrollTo = require('vue-scrollto')
+
+Vue.use(VueScrollTo)
+
 export default {
   name: 'Home',
   props: {},
@@ -20,7 +25,7 @@ export default {
               <div class="container">
                 <logo/>
                 <nav>
-                  <a class="btn btn-primary" href="/user/login/github">Sign in with GitHub</a>
+                  <a href="/user/login/github"><span class="link-icon icon-login"></span> <span class="link-text">Sign in with GitHub</span></a>
                 </nav>
               </div>
             </div>
@@ -44,8 +49,8 @@ export default {
                 </div>
               </div>
 
-              <a class="next" href="#features">
-                <h1>Continuous Data Validation for Everybody</h1>
+              <a class="next" href="#features" v-scroll-to="'#features'">
+                <h1>Continuous data validation for everybody</h1>
                 <span class="icon-keyboard_arrow_down">
                   <i>Learn more</i>
                 </span>
@@ -97,6 +102,11 @@ export default {
           </div>
         </div>
       </div>
+      <a class="next" href="#about" v-scroll-to="'#about'">
+        <span class="icon-keyboard_arrow_down">
+          <i>More</i>
+        </span>
+      </a>
     </section>
     <section class="text" id="about">
       <div class="container">
@@ -118,7 +128,21 @@ export default {
       </div>
     </section>
     <section class="footer">
-		<span>&copy; <a href="https://okfn.org">Open Knowledge International</a> 2017</span> | <span><a href="https://twitter.com/OKFNLabs">@OKFNLabs</a></span>
+      <div class="container">
+        <div class="footer-primary">
+          <a class="footer-logo" href="https://okfn.org/">
+            <img src="https://a.okfn.org/img/oki/landscape-white-468x122.png" alt="Open Knowledge International">
+          </a>
+          <ul class="footer-links">
+            <li><a href="https://twitter.com/OKFNLabs">@OKFNLabs</a></li>
+          </ul>
+        </div>
+        <div class="footer-secondary">
+          <p>
+            &copy; <a href="https://okfn.org">Open Knowledge International</a> 2017
+          </p>
+        </div>
+      </div>
     </section>
   </div>
 </template>
