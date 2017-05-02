@@ -25,7 +25,7 @@ export default {
               <div class="container">
                 <logo/>
                 <nav>
-                  <a class="btn btn-primary" href="/user/login/github">Sign in with GitHub</a>
+                  <a href="/user/login/github"><span class="link-icon icon-login"></span> <span class="link-text">Sign in with GitHub</span></a>
                 </nav>
               </div>
             </div>
