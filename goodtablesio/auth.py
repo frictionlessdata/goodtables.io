@@ -5,7 +5,7 @@ from goodtablesio import settings
 from goodtablesio.services import database
 from goodtablesio.models.user import User
 
-GITHUB_OAUTH_SCOPES = ['user', 'repo', 'admin:repo_hook']
+GITHUB_OAUTH_SCOPES = ['repo:status', 'admin:repo_hook']
 
 
 oauth = OAuth()
