@@ -1,6 +1,11 @@
 <script>
 import Logo from './Logo.vue'
 
+var Vue = require('vue')
+var VueScrollTo = require('vue-scrollto')
+
+Vue.use(VueScrollTo)
+
 export default {
   name: 'Home',
   props: {},
@@ -44,7 +49,7 @@ export default {
                 </div>
               </div>
 
-              <a class="next" href="#features">
+              <a class="next" href="#features" v-scroll-to="'#features'">
                 <h1>Continuous Data Validation for Everybody</h1>
                 <span class="icon-keyboard_arrow_down">
                   <i>Learn more</i>
