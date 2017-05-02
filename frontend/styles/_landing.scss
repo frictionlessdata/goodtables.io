@@ -120,6 +120,7 @@
     li {
       display: block;
       @include make-sm-column(4);
+      margin-top: 5vh;
       margin-bottom: 5vh;
 
       p {
@@ -195,19 +196,13 @@
   .features {
     text-align: center;
 
-    h2 {
-      font-weight: 600;
-      margin: 8vh 0;
-    }
-
     @media screen and (min-width: $screen-md) {
       .container {
         position: relative;
-        padding-top: 10vh;
       }
       .content {
         display: table;
-        height: 82vh;
+        height: 100vh;
 
         .inner {
           display: table-cell;
@@ -216,24 +211,11 @@
       }
     }
     @media screen and (min-height: 820px) {
-      .container {
-        padding-top: 7vh;
-      }
 
       .feature-list {
         li {
+          margin-top: 7vh;
           margin-bottom: 7vh;
-        }
-      }
-    }
-    @media screen and (min-height: 840px) {
-      .container {
-        padding-top: 9vh;
-      }
-
-      .feature-list {
-        li {
-          margin-bottom: 9vh;
         }
       }
     }
