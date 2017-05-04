@@ -68,6 +68,13 @@ S3_LAMBDA_HOOK_SECRET = os.environ['S3_LAMBDA_HOOK_SECRET']
 GITHUB_CLIENT_ID = os.environ['GITHUB_CLIENT_ID']
 GITHUB_CLIENT_SECRET = os.environ['GITHUB_CLIENT_SECRET']
 GITHUB_OAUTH_SCOPES = [
+    # See Travis scopes:
+    # https://github.com/travis-ci/travis-web/blob/master/mirage/api-spec.js
+    # Changes compared to Travis:
+    # - `repo_deployment` is removed
+    # - `write:repo_hook` changes to `admin:repo_hook` (TODO: sync with Travis here?)
+    'read:org',
+    'user:email',
     'repo:status',
     'admin:repo_hook',
 ]
