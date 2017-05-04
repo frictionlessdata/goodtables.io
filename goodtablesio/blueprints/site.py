@@ -29,6 +29,7 @@ def no_cache(view):
 
     return update_wrapper(no_cache, view)
 
+
 # Module API
 
 site = Blueprint('site', __name__)

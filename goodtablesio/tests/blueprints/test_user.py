@@ -4,7 +4,7 @@ from unittest import mock
 from flask import url_for, session
 import pytest
 
-from goodtablesio import settings, auth
+from goodtablesio import settings
 from goodtablesio.tests import factories
 from goodtablesio.services import database
 from goodtablesio.models.user import User
