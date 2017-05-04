@@ -67,6 +67,10 @@ S3_LAMBDA_HOOK_SECRET = os.environ['S3_LAMBDA_HOOK_SECRET']
 
 GITHUB_CLIENT_ID = os.environ['GITHUB_CLIENT_ID']
 GITHUB_CLIENT_SECRET = os.environ['GITHUB_CLIENT_SECRET']
+GITHUB_OAUTH_SCOPES = [
+    'repo:status',
+    'admin:repo_hook',
+]
 
 # Sentry
 

@@ -5,8 +5,6 @@ from goodtablesio import settings
 from goodtablesio.services import database
 from goodtablesio.models.user import User
 
-GITHUB_OAUTH_SCOPES = ['repo:status', 'admin:repo_hook']
-
 
 oauth = OAuth()
 
@@ -17,7 +15,7 @@ github_auth = oauth.remote_app(
     'github_auth',
     consumer_key=settings.GITHUB_CLIENT_ID,
     consumer_secret=settings.GITHUB_CLIENT_SECRET,
-    request_token_params={'scope': ' '.join(GITHUB_OAUTH_SCOPES)},
+    request_token_params={'scope': ' '.join(settings.GITHUB_OAUTH_SCOPES)},
     base_url='https://api.github.com/',
     request_token_url=None,
     access_token_method='POST',

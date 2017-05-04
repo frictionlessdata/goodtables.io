@@ -35,7 +35,7 @@ def test_github_login_basic(client):
 
     assert params['client_id'][0] == settings.GITHUB_CLIENT_ID
     assert params['redirect_uri'][0] == authorized_url
-    assert params['scope'][0] == ' '.join(auth.GITHUB_OAUTH_SCOPES)
+    assert params['scope'][0] == ' '.join(settings.GITHUB_OAUTH_SCOPES)
 
 
 def test_github_login_already_logged_in(client):
@@ -233,7 +233,7 @@ def mock_github_auth_response():
     with mock.patch(func) as mock_response:
         oauth_response = {
             'access_token': 'some-testing-token',
-            'scope': ','.join(auth.GITHUB_OAUTH_SCOPES),
+            'scope': ','.join(settings.GITHUB_OAUTH_SCOPES),
             'token_type': 'bearer'
         }
 
