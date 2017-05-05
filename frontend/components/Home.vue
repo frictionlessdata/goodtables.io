@@ -1,8 +1,8 @@
 <script>
 import Logo from './Logo.vue'
 
-var Vue = require('vue')
-var VueScrollTo = require('vue-scrollto')
+const Vue = require('vue')
+const VueScrollTo = require('vue-scrollto')
 
 Vue.use(VueScrollTo)
 

@@ -9,7 +9,7 @@ describe('Home', () => {
 
   it('should contain correct text', () => {
     const wrapper = mount(Home)
-    wrapper.find('h1')[0].text().should.include('Continuous Data Validation for Everybody')
+    wrapper.find('h1')[0].text().should.include('Continuous data validation for everybody')
   })
 
 })
