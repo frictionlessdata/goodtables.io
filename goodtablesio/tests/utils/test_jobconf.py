@@ -1,3 +1,4 @@
+# pylama:ignore=E501
 import pytest
 from goodtablesio import exceptions
 from goodtablesio.utils.jobconf import make_validation_conf, verify_validation_conf
