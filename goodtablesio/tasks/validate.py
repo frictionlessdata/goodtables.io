@@ -1,6 +1,6 @@
 import datetime
 from goodtables import Inspector
-from goodtablesio import models
+from goodtablesio import models, settings
 from goodtablesio.celery_app import celery_app
 from goodtablesio.tasks.base import JobTask
 
@@ -30,6 +30,13 @@ def validate(validation_conf, job_id):
         models.job.update(params)
 
     # Get report
+    if 'settings' not in validation_conf:
+        validation_conf['settings'] = {}
+
+    max_tables = settings.MAX_TABLES_PER_SOURCE
+    if (not validation_conf['settings'].get('table_limit') or
+            validation_conf['settings']['table_limit'] > max_tables):
+        validation_conf['settings']['table_limit'] = max_tables
     inspector = Inspector(**validation_conf.get('settings', {}))
     report = inspector.inspect(validation_conf['source'], preset='nested')
 
