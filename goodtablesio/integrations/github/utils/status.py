@@ -51,5 +51,5 @@ def set_commit_status(state, owner, repo, sha, job_number, tokens):
         log.error('There was an error setting the GitHub status: ' +
                   '{url} {response} {job_number} {state}'.format(
                       url=url, response=response.text,
-                      job_id=job_number, state=state))
+                      job_number=job_number, state=state))
         return False
