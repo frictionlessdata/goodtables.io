@@ -28,7 +28,7 @@ def test_create_job_push(run_validation, set_commit_status, client):
         },
         'head_commit': {
             'id': 'xxx',
-            'message': 'Test commit', 'author': {'name': 'test-user'}},
+            'message': 'Test commit', 'author': {'username': 'test-user'}},
     })
     signature = create_signature(settings.GITHUB_HOOK_SECRET, data)
     response = client.post(

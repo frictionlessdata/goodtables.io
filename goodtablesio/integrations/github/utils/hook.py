@@ -65,8 +65,8 @@ def get_details_from_hook_payload(payload):
             details['owner'] = payload['repository']['owner']['name']
             details['sha'] = payload['head_commit']['id']
             details['commit_message'] = payload['head_commit']['message']
-            details['author_name'] = payload['head_commit']['author']['name']
-            details['branch_name'] = payload['ref'].replace('refs/head/', '')
+            details['author_name'] = payload['head_commit']['author']['username']
+            details['branch_name'] = payload['ref'].replace('refs/heads/', '')
 
     except KeyError:
         return None
