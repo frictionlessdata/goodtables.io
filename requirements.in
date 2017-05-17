@@ -7,7 +7,7 @@ flask-login==0.4.0
 flask-oauthlib==0.9.3
 flower==0.9.1
 github3.py==0.9.6
-goodtables==1.0.0a8
+goodtables==1.0.0a9
 gunicorn==19.6.0
 jsonschema==2.5.1
 jsontableschema==0.9.0
@@ -18,4 +18,4 @@ raven[flask]==6.0.0
 redis==2.10.5
 requests==2.11.1
 sqlalchemy==1.1.4
-tabulator==0.15.0
+tabulator==1.0.0a4
