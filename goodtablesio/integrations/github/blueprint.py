@@ -99,6 +99,7 @@ def create_job():
         repo=repo,
         sha=sha,
         job_number=job.number,
+        is_pr=details['is_pr'],
         tokens=tokens)
 
     # Run validation

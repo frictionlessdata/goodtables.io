@@ -29,13 +29,13 @@ def test_deactivate_hook(GitHub):
 
 def test_get_details_from_hook_payload_PUSH():
     payload = {
-      'ref': 'refs/head/some-branch',
+      'ref': 'refs/heads/some-branch',
       'repository': {'name': 'test-repo', 'owner': {'name': 'test-owner'}},
       'head_commit': {
           'id': 'test-sha',
           'message': 'Test message',
           'author': {
-              'name': 'test-user',
+              'username': 'test-user',
           }},
     }
     assert get_details_from_hook_payload(payload) == {
