@@ -1,9 +1,9 @@
 import io
 import os
 import yaml
+import tabulator
 import jsonschema
 from fnmatch import fnmatch
-from tabulator import Stream
 from goodtablesio import settings
 from goodtablesio import exceptions
 
@@ -146,6 +146,8 @@ def _is_glob_supported_format(name, pattern):
             continue
         if format == os.path.splitext(name.lower())[1][1:]:
             return False
-    if not Stream.test(name):
+    try:
+        tabulator.validate(name)
+    except tabulator.exceptions.TabulatorException:
         return False
     return True

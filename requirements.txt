@@ -28,7 +28,7 @@ flask==0.11.1
 flower==0.9.1
 future==0.16.0            # via jsontableschema
 github3.py==0.9.6
-goodtables==1.0.0a8
+goodtables==1.0.0a9
 gunicorn==19.6.0
 idna==2.5                 # via cryptography
 ijson==2.3                # via tabulator
@@ -64,7 +64,7 @@ rfc3986==0.4.1            # via jsontableschema
 s3transfer==0.1.10        # via boto3
 six==1.10.0               # via cryptography, datapackage, goodtables, jsonlines, linear-tsv, packaging, python-dateutil, setuptools, tabulator
 sqlalchemy==1.1.4
-tabulator==0.15.0
+tabulator[ods]==1.0.0a5
 tornado==4.2.0            # via flower
 unicodecsv==0.14.1        # via datapackage, jsontableschema, tabulator
 uritemplate.py==3.0.2     # via github3.py
