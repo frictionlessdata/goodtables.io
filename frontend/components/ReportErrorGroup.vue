@@ -44,27 +44,28 @@ export default {
   </div>
 
   <div class="panel-body">
-    <table class="table table-bordered table-condensed">
-      <thead v-if="errorGroup.headers">
-        <tr>
-          <th>H</th>
-          <th v-for="header of errorGroup.headers">{{ header }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="rowNumber, index of rowNumbers" v-if="index < visibleRowsCount " class="result-header-row">
-          <td class="result-row-index">{{ (rowNumber !== null) ? rowNumber : 'H' }}</td>
-          <td v-for="(value, index) of errorGroup.rows[rowNumber].values"
-              :class="{danger: errorGroup.rows[rowNumber].badcols.has(index + 1)}">
-            {{ value }}
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <a class="btn btn-default" v-if="visibleRowsCount < rowNumbers.length" @click="visibleRowsCount += 10">
-      Show next 10 rows
-    </a>
+    <div class="table-container">
+      <table class="table table-bordered table-condensed">
+        <thead v-if="errorGroup.headers">
+          <tr>
+            <th>H</th>
+            <th v-for="header of errorGroup.headers">{{ header }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="rowNumber, index of rowNumbers" v-if="index < visibleRowsCount " class="result-header-row">
+            <td class="result-row-index">{{ (rowNumber !== null) ? rowNumber : 'H' }}</td>
+            <td v-for="(value, index) of errorGroup.rows[rowNumber].values"
+                :class="{danger: errorGroup.rows[rowNumber].badcols.has(index + 1)}">
+              {{ value }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="show-more" v-if="visibleRowsCount < rowNumbers.length">
+      <a @click="visibleRowsCount += 10">Show next 10 rows</a>
+    </div>
   </div>
-
 </div>
 </template>
