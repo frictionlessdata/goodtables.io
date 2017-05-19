@@ -26,6 +26,9 @@ export default {
             type: 'type',
             rows: {},
             count: 0,
+            // TODO: Add data-quality-spec to use error.context !== 'head'
+            // https://github.com/frictionlessdata/goodtables.io/issues/215
+            headers: !error.code.includes('header') ? this.table.headers : null,
           }
         }
 
