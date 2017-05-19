@@ -33,4 +33,5 @@ def post_task_handler(**kwargs):
            repo=job.conf['repo'],
            sha=job.conf['sha'],
            job_number=job.number,
+           is_pr=job.conf['is_pr'],
            tokens=tokens)
