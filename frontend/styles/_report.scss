@@ -44,7 +44,13 @@
   }
 
   .result {
-    .panel-body {
+    .show-more {
+      padding-top: 10px;
+      a {
+        color: #2f3135;
+      }
+    }
+    .table-container {
       overflow-y: auto;
     }
   }
