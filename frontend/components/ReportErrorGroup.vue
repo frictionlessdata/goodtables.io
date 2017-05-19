@@ -48,7 +48,7 @@ export default {
       <table class="table table-bordered table-condensed">
         <thead v-if="errorGroup.headers">
           <tr>
-            <th>1</th>
+            <th></th>
             <th v-for="header of errorGroup.headers">{{ header }}</th>
           </tr>
         </thead>
