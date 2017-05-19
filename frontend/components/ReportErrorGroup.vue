@@ -33,6 +33,12 @@ export default {
 
   <div class="panel-body">
     <table class="table table-bordered table-condensed">
+      <thead v-if="errorGroup.headers">
+        <tr>
+          <th>H</th>
+          <th v-for="header of errorGroup.headers">{{ header }}</th>
+        </tr>
+      </thead>
       <tbody>
         <tr v-for="rowNumber, index of Object.keys(errorGroup.rows).sort()" v-if="index < 10 " class="result-header-row">
           <td class="result-row-index">{{ (rowNumber !== 'null') ? rowNumber : 'H' }}</td>
