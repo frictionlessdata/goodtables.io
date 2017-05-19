@@ -48,13 +48,13 @@ export default {
       <table class="table table-bordered table-condensed">
         <thead v-if="errorGroup.headers">
           <tr>
-            <th>H</th>
+            <th>1</th>
             <th v-for="header of errorGroup.headers">{{ header }}</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="rowNumber, index of rowNumbers" v-if="index < visibleRowsCount " class="result-header-row">
-            <td class="result-row-index">{{ (rowNumber !== null) ? rowNumber : 'H' }}</td>
+            <td v-if="rowNumber !== null" class="result-row-index">{{ rowNumber }}</td>
             <td v-for="(value, index) of errorGroup.rows[rowNumber].values"
                 :class="{danger: errorGroup.rows[rowNumber].badcols.has(index + 1)}">
               {{ value }}
