@@ -4,6 +4,11 @@ export default {
   props: {
     errorGroup: Object,
   },
+  data() {
+    return {
+      visibleRowsCount: 10,
+    }
+  },
   mounted: () => {
     if (typeof $ !== 'undefined') { // eslint-disable-line
       $('[rel="popover"]').popover({ // eslint-disable-line
@@ -26,7 +31,7 @@ export default {
 
   <div class="panel-heading">
     <span class="text-uppercase label label-danger">Invalid</span>
-    <span class="count label">{{ (errorGroup.count < 10) ? errorGroup.count : `10/${errorGroup.count}` }}</span>
+    <span class="count label">{{ errorGroup.count }}</span>
     <h5 class="panel-title">{{ errorGroup.name }}</h5>
     <span class="help"
           rel="popover"
@@ -47,7 +52,7 @@ export default {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="rowNumber, index of rowNumbers" v-if="index < 10 " class="result-header-row">
+        <tr v-for="rowNumber, index of rowNumbers" v-if="index < visibleRowsCount " class="result-header-row">
           <td class="result-row-index">{{ (rowNumber !== null) ? rowNumber : 'H' }}</td>
           <td v-for="(value, index) of errorGroup.rows[rowNumber].values"
               :class="{danger: errorGroup.rows[rowNumber].badcols.has(index + 1)}">
@@ -56,6 +61,9 @@ export default {
         </tr>
       </tbody>
     </table>
+    <a class="btn btn-default" v-if="visibleRowsCount < rowNumbers.length" @click="visibleRowsCount += 10">
+      Show next 10 rows
+    </a>
   </div>
 
 </div>
