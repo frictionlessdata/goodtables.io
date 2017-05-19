@@ -11,6 +11,13 @@ export default {
       })
     }
   },
+  computed: {
+    rowNumbers() {
+      return Object.keys(this.errorGroup.rows)
+        .map(item => parseInt(item, 10) || null)
+        .sort((a, b) => a - b)
+    },
+  },
 }
 </script>
 
@@ -40,8 +47,8 @@ export default {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="rowNumber, index of Object.keys(errorGroup.rows).sort()" v-if="index < 10 " class="result-header-row">
-          <td class="result-row-index">{{ (rowNumber !== 'null') ? rowNumber : 'H' }}</td>
+        <tr v-for="rowNumber, index of rowNumbers" v-if="index < 10 " class="result-header-row">
+          <td class="result-row-index">{{ (rowNumber !== null) ? rowNumber : 'H' }}</td>
           <td v-for="(value, index) of errorGroup.rows[rowNumber].values"
               :class="{danger: errorGroup.rows[rowNumber].badcols.has(index + 1)}">
             {{ value }}
