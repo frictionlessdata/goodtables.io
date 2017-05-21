@@ -75,7 +75,7 @@ export default {
 </script>
 
 <template>
-<div>
+<div class="report-table">
 
   <h4 class="file-heading">
     <span>
@@ -92,13 +92,6 @@ export default {
   <div class="result panel panel-success">
     <div class="panel-heading">
       <span class="text-uppercase label label-success">Valid</span>
-      <span class="help"
-            rel="popover"
-            data-toggle="popover"
-            data-placement="left"
-            data-content="No errors where found">
-        <span class="icon-info"><i>What is this?</i></span>
-      </span>
     </div>
   </div>
   </template>

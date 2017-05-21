@@ -9,13 +9,13 @@ describe('ReportErrorGroup', () => {
 
   it('should contain data', () => {
     const propsData = {errorGroup: {
-      name: 'name',
-      type: 'type',
+      code: 'blank-header',
       count: 1,
       rows: [],
+      headers: [],
     }}
     const wrapper = mount(ReportErrorGroup, {propsData})
-    wrapper.text().should.include('name')
+    wrapper.text().should.include('Blank Header')
     wrapper.text().should.include('1')
   })
 

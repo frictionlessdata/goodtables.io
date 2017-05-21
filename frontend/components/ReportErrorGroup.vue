@@ -1,4 +1,5 @@
 <script>
+import marked from 'marked'
 const spec = require('../spec.json')
 
 export default {
@@ -8,6 +9,7 @@ export default {
   },
   data() {
     return {
+      showErrorDetails: false,
       visibleRowsCount: 10,
     }
   },
@@ -30,6 +32,11 @@ export default {
     showHeaders() {
       return this.errorDetails.context === 'body'
     },
+    description() {
+      const description = this.errorDetails.description
+        .replace('{validator}', '`goodtables.yml`')
+      return marked(description)
+    },
   },
 }
 </script>
@@ -39,16 +46,22 @@ export default {
 
   <div class="panel-heading">
     <span class="text-uppercase label label-danger">Invalid</span>
+    <span class="text-uppercase label label-info">{{ errorDetails.type }}</span>
     <span class="count label">{{ errorGroup.count }}</span>
-    <h5 class="panel-title">{{ errorDetails.name }}</h5>
-    <span class="help"
-          rel="popover"
-          data-toggle="popover"
-          data-placement="left"
-          :title="`<span class='label label-info'>${errorDetails.type}</span> ${errorDetails.code}`"
-          :data-content="`${errorDetails.code}. <a>Read more</a>`">
-      <span class="icon-info"><i>What is this?</i></span>
-    </span>
+    <h5 class="panel-title">
+      <a @click="showErrorDetails = !showErrorDetails">
+        {{ errorDetails.name }}
+      </a>
+    </h5>
+    <a @click="showErrorDetails = !showErrorDetails" class="error-details-link">
+      Error details
+    </a>
+  </div>
+
+  <div v-if="showErrorDetails" class="panel-heading error-details">
+    <p>
+      <div v-html="description"></div>
+    </p>
   </div>
 
   <div class="panel-body">
