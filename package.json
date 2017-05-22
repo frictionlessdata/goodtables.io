@@ -5,6 +5,7 @@
   "license": "AGPL-3.0",
   "dependencies": {
     "axios": "^0.15.3",
+    "marked": "^0.3.6",
     "moment": "^2.18.1",
     "vue": "^2.1.0",
     "vue-scrollto": "^2.6.7"

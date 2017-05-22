@@ -22,13 +22,10 @@ export default {
         // Create group
         if (!group) {
           group = {
-            name: error.code,
-            type: 'type',
+            code: error.code,
             rows: {},
             count: 0,
-            // TODO: Add data-quality-spec to use error.context !== 'head'
-            // https://github.com/frictionlessdata/goodtables.io/issues/215
-            headers: !error.code.includes('header') ? this.table.headers : null,
+            headers: this.table.headers,
           }
         }
 
@@ -78,7 +75,7 @@ export default {
 </script>
 
 <template>
-<div>
+<div class="report-table">
 
   <h4 class="file-heading">
     <span>
@@ -95,13 +92,6 @@ export default {
   <div class="result panel panel-success">
     <div class="panel-heading">
       <span class="text-uppercase label label-success">Valid</span>
-      <span class="help"
-            rel="popover"
-            data-toggle="popover"
-            data-placement="left"
-            data-content="No errors where found">
-        <span class="icon-info"><i>What is this?</i></span>
-      </span>
     </div>
   </div>
   </template>

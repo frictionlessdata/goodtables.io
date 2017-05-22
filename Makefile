@@ -113,3 +113,6 @@ server: ## Command to run the app as queue or server
 		make migrate; \
 		make app; \
 	fi
+
+spec:
+	wget -O frontend/spec.json https://raw.githubusercontent.com/frictionlessdata/data-quality-spec/master/spec.json

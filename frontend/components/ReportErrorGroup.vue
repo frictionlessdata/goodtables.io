@@ -1,4 +1,7 @@
 <script>
+import marked from 'marked'
+const spec = require('../spec.json')
+
 export default {
   name: 'ReportErrorGroup',
   props: {
@@ -6,6 +9,7 @@ export default {
   },
   data() {
     return {
+      showErrorDetails: false,
       visibleRowsCount: 10,
     }
   },
@@ -17,10 +21,21 @@ export default {
     }
   },
   computed: {
+    errorDetails() {
+      return spec.errors[this.errorGroup.code]
+    },
     rowNumbers() {
       return Object.keys(this.errorGroup.rows)
         .map(item => parseInt(item, 10) || null)
         .sort((a, b) => a - b)
+    },
+    showHeaders() {
+      return this.errorDetails.context === 'body'
+    },
+    description() {
+      const description = this.errorDetails.description
+        .replace('{validator}', '`goodtables.yml`')
+      return marked(description)
     },
   },
 }
@@ -31,22 +46,28 @@ export default {
 
   <div class="panel-heading">
     <span class="text-uppercase label label-danger">Invalid</span>
+    <span class="text-uppercase label label-info">{{ errorDetails.type }}</span>
     <span class="count label">{{ errorGroup.count }}</span>
-    <h5 class="panel-title">{{ errorGroup.name }}</h5>
-    <span class="help"
-          rel="popover"
-          data-toggle="popover"
-          data-placement="left"
-          :title="`<span class='label label-info'>${errorGroup.type}</span> ${errorGroup.name}`"
-          :data-content="`${errorGroup.name}. <a>Read more</a>`">
-      <span class="icon-info"><i>What is this?</i></span>
-    </span>
+    <h5 class="panel-title">
+      <a @click="showErrorDetails = !showErrorDetails">
+        {{ errorDetails.name }}
+      </a>
+    </h5>
+    <a @click="showErrorDetails = !showErrorDetails" class="error-details-link">
+      Error details
+    </a>
+  </div>
+
+  <div v-if="showErrorDetails" class="panel-heading error-details">
+    <p>
+      <div v-html="description"></div>
+    </p>
   </div>
 
   <div class="panel-body">
     <div class="table-container">
       <table class="table table-bordered table-condensed">
-        <thead v-if="errorGroup.headers">
+        <thead v-if="showHeaders">
           <tr>
             <th></th>
             <th v-for="header of errorGroup.headers">{{ header }}</th>
