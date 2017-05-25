@@ -1,7 +1,6 @@
 {
     "valid": false,
     "time": 0.027,
-    "errors": [],
     "tables": [
         {
             "valid": false,
@@ -107,5 +106,6 @@
         }
     ],
     "table-count": 2,
-    "error-count": 7
+    "error-count": 7,
+    "warnings": []
 }
