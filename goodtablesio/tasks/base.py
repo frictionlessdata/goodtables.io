@@ -48,17 +48,16 @@ class InternalJobTask(Task):
 
 def _on_failure(exception, job_class, job_id):
 
-    # Log exception
-    log.exception(exception)
-
     # Get error message
-    message = 'Internal error'
-    if isinstance(exception, SoftTimeLimitExceeded):
-        message = 'Time limit exceeded'
-    elif isinstance(exception, exceptions.InvalidJobConfiguration):
-        message = 'Invalid job configuration'
+    if isinstance(exception, exceptions.InvalidJobConfiguration):
+        message = str(exception)
     elif isinstance(exception, exceptions.InvalidValidationConfiguration):
-        message = 'Invalid validation configuration'
+        message = str(exception)
+    elif isinstance(exception, SoftTimeLimitExceeded):
+        message = 'Time limit exceeded'
+    else:
+        message = 'Internal error'
+        log.exception(exception)
 
     # Update database
     job = database['session'].query(job_class).get(job_id)

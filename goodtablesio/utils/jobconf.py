@@ -32,11 +32,12 @@ def make_validation_conf(job_conf_text, job_files, job_base=None):
 
     # Parse, set defaults and verify job conf
     job_conf = _parse_job_conf(job_conf_text) or {}
-    if not job_conf.get('files', job_conf.get('datapackages')):
-        if 'datapackage.json' in job_files:
-            job_conf['datapackages'] = ['datapackage.json']
-        else:
-            job_conf['files'] = '*'
+    if isinstance(job_conf, dict):
+        if not job_conf.get('files', job_conf.get('datapackages')):
+            if 'datapackage.json' in job_files:
+                job_conf['datapackages'] = ['datapackage.json']
+            else:
+                job_conf['files'] = '*'
     _verify_job_conf(job_conf)
 
     # Files: string
@@ -99,8 +100,9 @@ def verify_validation_conf(validation_conf):
     """
     try:
         return _verify_conf(validation_conf, 'validation-conf.yml')
-    except jsonschema.ValidationError:
-        raise exceptions.InvalidValidationConfiguration()
+    except jsonschema.ValidationError as exception:
+        raise exceptions.InvalidValidationConfiguration(
+            'Invalid validation configuration: %s' % str(exception).splitlines()[0])
 
 
 # Internal
@@ -115,7 +117,7 @@ def _parse_job_conf(contents):
             job_conf = yaml.safe_load(contents)
         except yaml.YAMLError as exception:
             raise exceptions.InvalidJobConfiguration(
-                'Invalid YAML file: {}'.format(exception))
+                'Invalid goodtables.yml: %s' % exception)
     return job_conf
 
 
@@ -124,8 +126,9 @@ def _verify_job_conf(job_conf):
     """
     try:
         return _verify_conf(job_conf, 'job-conf.yml')
-    except jsonschema.ValidationError:
-        raise exceptions.InvalidJobConfiguration()
+    except jsonschema.ValidationError as exception:
+        raise exceptions.InvalidJobConfiguration(
+            'Invalid goodtables.yml: %s' % str(exception).splitlines()[0])
 
 
 def _verify_conf(conf, schema):
