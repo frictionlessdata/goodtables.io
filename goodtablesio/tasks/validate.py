@@ -43,7 +43,7 @@ def validate(validation_conf, job_id):
         'id': job_id,
         'finished': datetime.datetime.utcnow(),
     }
-    if report['table-count']:
+    if report['table-count'] > 0:
         params.update({
             'status': 'success' if report['valid'] else 'failure',
             'report': report,
