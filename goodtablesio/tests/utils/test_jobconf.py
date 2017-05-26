@@ -389,7 +389,7 @@ def test_make_validation_non_valid_yaml():
         'data.json',
     ]
     job_base = 'http://example.com'
-    with pytest.raises(exceptions.InvalidJobConfiguration) as excinfo:
+    with pytest.raises(exceptions.InvalidJobConfiguration):
         make_validation_conf(job_conf_text, job_files, job_base)
 
 
@@ -402,7 +402,7 @@ def test_make_validation_just_a_string_yaml():
         'data.json',
     ]
     job_base = 'http://example.com'
-    with pytest.raises(exceptions.InvalidJobConfiguration) as excinfo:
+    with pytest.raises(exceptions.InvalidJobConfiguration):
         make_validation_conf(job_conf_text, job_files, job_base)
 
 
