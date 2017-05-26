@@ -380,6 +380,32 @@ def test_make_validation_conf_detect_all_csv_206():
     assert make_validation_conf(job_conf_text, job_files, job_base) == validation_conf
 
 
+def test_make_validation_non_valid_yaml():
+    job_conf_text = """
+    - [bad
+    """
+    job_files = [
+        'data.csv',
+        'data.json',
+    ]
+    job_base = 'http://example.com'
+    with pytest.raises(exceptions.InvalidJobConfiguration):
+        make_validation_conf(job_conf_text, job_files, job_base)
+
+
+def test_make_validation_just_a_string_yaml():
+    job_conf_text = """
+    string
+    """
+    job_files = [
+        'data.csv',
+        'data.json',
+    ]
+    job_base = 'http://example.com'
+    with pytest.raises(exceptions.InvalidJobConfiguration):
+        make_validation_conf(job_conf_text, job_files, job_base)
+
+
 # Verify validation conf
 
 def test_verify_validation_conf():

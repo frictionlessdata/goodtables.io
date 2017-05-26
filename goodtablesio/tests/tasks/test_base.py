@@ -17,7 +17,7 @@ def test_JobTask_on_failure_invalid_job_conf(celery_app):
     # Prepare and call task
     @celery_app.task(base=JobTask)
     def task(job_id):
-        raise exceptions.InvalidJobConfiguration()
+        raise exceptions.InvalidJobConfiguration('message')
     task.delay(job_id=job.id)
 
     # Assert errored job
@@ -27,7 +27,7 @@ def test_JobTask_on_failure_invalid_job_conf(celery_app):
     updated_job = jobs[0]
     assert updated_job['id'] == job.id
     assert updated_job['status'] == 'error'
-    assert updated_job['error'] == {'message': 'Invalid job configuration'}
+    assert updated_job['error'] == {'message': 'message'}
     assert isinstance(updated_job['finished'], datetime.datetime)
 
 
@@ -39,7 +39,7 @@ def test_JobTask_on_failure_invalid_validation_conf(celery_app):
     # Prepare and call task
     @celery_app.task(base=JobTask)
     def task(job_id):
-        raise exceptions.InvalidValidationConfiguration()
+        raise exceptions.InvalidValidationConfiguration('message')
     task.delay(job_id=job.id)
 
     # Assert errored job
@@ -49,7 +49,7 @@ def test_JobTask_on_failure_invalid_validation_conf(celery_app):
     updated_job = jobs[0]
     assert updated_job['id'] == job.id
     assert updated_job['status'] == 'error'
-    assert updated_job['error'] == {'message': 'Invalid validation configuration'}
+    assert updated_job['error'] == {'message': 'message'}
     assert isinstance(updated_job['finished'], datetime.datetime)
 
 

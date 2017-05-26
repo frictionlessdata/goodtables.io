@@ -16,7 +16,7 @@ export default {
 <div class="report">
 
   <ul class="dataset-errors">
-    <li v-for="error of report.errors">{{ error.message }}</li>
+    <li v-for="warning of report.warnings">{{ warning }}</li>
   </ul>
 
   <template v-for="(table, index) of report.tables">
