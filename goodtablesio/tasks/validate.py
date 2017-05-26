@@ -20,7 +20,6 @@ def validate(validation_conf, job_id):
 
     # Get job
     job = models.job.get(job_id)
-
     # TODO: job not found
     if job['status'] == 'created':
         params = {
@@ -32,7 +31,6 @@ def validate(validation_conf, job_id):
     # Get report
     if 'settings' not in validation_conf:
         validation_conf['settings'] = {}
-
     max_tables = settings.MAX_TABLES_PER_SOURCE
     if (not validation_conf['settings'].get('table_limit') or
             validation_conf['settings']['table_limit'] > max_tables):
@@ -43,13 +41,19 @@ def validate(validation_conf, job_id):
     # Save report
     params = {
         'id': job_id,
-        'report': report,
         'finished': datetime.datetime.utcnow(),
-        'status': 'success' if report['valid'] else 'failure'
     }
-
+    if report['table-count']:
+        params.update({
+            'status': 'success' if report['valid'] else 'failure',
+            'report': report,
+        })
+    else:
+        params.update({
+            'status': 'error',
+            'error': {'message': '\n'.join(report['warnings']) or 'No tables found'},
+        })
     models.job.update(params)
-
     job.update(params)
 
     return job
