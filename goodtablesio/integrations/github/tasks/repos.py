@@ -1,4 +1,5 @@
 import datetime
+from sqlalchemy import or_
 from goodtablesio.models.user import User
 from goodtablesio.services import database
 from goodtablesio.celery_app import celery_app
@@ -27,9 +28,10 @@ def sync_user_repos(user_id, job_id):
     github_orgs = []
     for repo_data in iter_repos_by_token(token):
 
-        repo = database['session'].query(GithubRepo).filter(
-            GithubRepo.name == repo_data['name']
-        ).one_or_none()
+        repo = database['session'].query(GithubRepo).filter(or_(
+            GithubRepo.name == repo_data['name'],
+            GithubRepo.conf['github_id'].astext == repo_data['conf']['github_id'],
+        )).one_or_none()
 
         if repo and repo_data['conf']['private']:
             # TODO: check there's a valid subscription that this user can use
@@ -44,6 +46,8 @@ def sync_user_repos(user_id, job_id):
             repo = GithubRepo(**repo_data)
             database['session'].add(repo)
 
+        repo.name = repo_data['name']
+        repo.conf['github_id'] = repo_data['conf']['github_id']
         repo.conf['private'] = repo_data['conf']['private']
         repo.active = repo_data['active']
         repo.updated = datetime.datetime.utcnow(),
