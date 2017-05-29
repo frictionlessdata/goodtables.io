@@ -28,8 +28,7 @@ def sync_user_repos(user_id, job_id):
     for repo_data in iter_repos_by_token(token):
 
         repo = database['session'].query(GithubRepo).filter(
-            GithubRepo.conf['github_id'].astext ==
-            repo_data['conf']['github_id']
+            GithubRepo.name == repo_data['name']
         ).one_or_none()
 
         if repo and repo_data['conf']['private']:
