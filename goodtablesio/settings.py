@@ -54,6 +54,7 @@ enable_utc = True
 GITHUB_API_BASE = 'https://api.github.com'
 GITHUB_API_TOKEN = os.environ['GITHUB_API_TOKEN']
 GITHUB_HOOK_SECRET = os.environ['GITHUB_HOOK_SECRET']
+GITHUB_HOOK_URL = '%s/github/hook' % BASE_URL
 
 # S3
 

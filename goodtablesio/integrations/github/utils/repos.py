@@ -1,5 +1,6 @@
 import logging
 from github3 import GitHub
+from goodtablesio import settings
 log = logging.getLogger(__name__)
 
 
@@ -13,7 +14,7 @@ def iter_repos_by_token(token):
         active = False
         data = repo.to_json()
         for hook in repo.iter_hooks():
-            if hook.config.get('is_goodtables_hook'):
+            if hook.config.get('url') == settings.GITHUB_HOOK_URL:
                 active = True
         yield {
             'integration_name': 'github',
