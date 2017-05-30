@@ -18,8 +18,8 @@ def test_activate_hook(GitHub):
 
 
 def test_deactivate_hook(GitHub):
-    hook1 = Mock(config=Mock(get=Mock(return_value=True)))
-    hook2 = Mock(config=Mock(get=Mock(return_value=False)))
+    hook1 = Mock(config={'url': settings.GITHUB_HOOK_URL})
+    hook2 = Mock(config={'url': 'http://example.com'})
     GitHub.return_value.repository.return_value.iter_hooks.return_value = [hook1, hook2]
     deactivate_hook('token', 'owner', 'repo')
     assert hook1.delete.called

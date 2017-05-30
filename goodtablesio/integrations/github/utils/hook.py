@@ -28,7 +28,7 @@ def deactivate_hook(token, owner, repo):
     client = GitHub(token=token)
     repo = client.repository(owner, repo)
     for hook in repo.iter_hooks():
-        if hook.config.get('is_goodtables_hook'):
+        if hook.config.get('url') == settings.GITHUB_HOOK_URL:
             hook.delete()
 
 
