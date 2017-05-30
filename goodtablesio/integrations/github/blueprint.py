@@ -1,27 +1,18 @@
-import uuid
 import logging
-
-from celery import chain
 from flask import Blueprint, request, abort, jsonify
 from flask_login import login_required, current_user
-
 from goodtablesio import settings
 from goodtablesio.services import database
-from goodtablesio.models.job import Job
 from goodtablesio.models.internal_job import InternalJob
-from goodtablesio.tasks.validate import validate
 from goodtablesio.utils.signature import validate_signature
 from goodtablesio.integrations.github.models.repo import GithubRepo
-from goodtablesio.integrations.github.tasks.jobconf import get_validation_conf
 from goodtablesio.integrations.github.tasks.repos import sync_user_repos
-from goodtablesio.integrations.github.utils.status import set_commit_status
 from goodtablesio.integrations.github.utils.hook import (
-    activate_hook, deactivate_hook, get_details_from_hook_payload,
-    get_tokens_for_job)
-
-
+    activate_hook, deactivate_hook, get_details_from_hook_payload)
 log = logging.getLogger(__name__)
 
+
+# Module API
 
 github = Blueprint('github', __name__, url_prefix='/github')
 
@@ -34,7 +25,7 @@ def record_params(setup_state):
 @github.route('/hook', methods=['POST'])
 def create_job():
 
-    # Validate signature
+    # Validate signature (throws 400 on invalid)
     if not github.debug:
         key = settings.GITHUB_HOOK_SECRET
         text = request.data
@@ -44,66 +35,35 @@ def create_job():
             log.error(msg)
             abort(400, msg)
 
-    # Get payload parameters (throws 400 if no data or bad JSON)
+    # Get payload details (throws 400 if no data or bad JSON)
     payload = request.get_json()
-
     details = get_details_from_hook_payload(payload)
     if details is None:
         msg = 'Wrong payload received'
         log.error(msg)
         abort(400, msg)
     if details == {}:
-        return 'No job triggered'
+        return jsonify({})
 
-    owner = details['owner']
-    repo = details['repo']
-    sha = details['sha']
-
-    # Check repo exists
+    # Get source (throw 400 if no source)
+    source_owner = details['owner']
+    source_repo = details['repo']
     if details['is_pr']:
         source_owner = details['base_owner']
         source_repo = details['base_repo']
-    else:
-        source_owner = owner
-        source_repo = repo
-
     source = database['session'].query(GithubRepo).filter(
-        GithubRepo.name == '{0}/{1}'.format(
-            source_owner, source_repo)).one_or_none()
-
+        GithubRepo.name == '%s/%s' % (source_owner, source_repo)).one_or_none()
     if not source:
         msg = 'A job was requested on a repository not present in the DB'
         log.error(msg)
         abort(400, msg)
 
-    # Save job to database
-    job_id = str(uuid.uuid4())
-    params = {
-        'id': job_id,
-        'integration_name': 'github',
-        'source_id': source.id,
-        'conf': details
-    }
-    job = Job(**params)
-    job.source = source
-
-    database['session'].add(job)
-    database['session'].commit()
-
-    tokens = get_tokens_for_job(job)
-
-    # Set GitHub status
-    set_commit_status(
-        'pending',
-        owner=owner,
-        repo=repo,
-        sha=sha,
-        job_number=job.number,
-        is_pr=details['is_pr'],
-        tokens=tokens)
-
-    # Run validation
-    _run_validation(owner, repo, sha, job_id)
+    # Create and start job (throw 400 if not started)
+    job_id = source.create_and_start_job(conf=details)
+    if not job_id:
+        msg = 'A job was requested but can\'t be started'
+        log.error(msg)
+        abort(400, msg)
 
     return jsonify({'job_id': job_id})
 
@@ -266,10 +226,3 @@ def _is_user_repos_syncing(user_id):
             user_id=user_id,
             finished=None).
         count())
-
-
-def _run_validation(owner, repo, sha, job_id):
-    tasks_chain = chain(
-        get_validation_conf.s(owner, repo, sha, job_id=job_id),
-        validate.s(job_id=job_id))
-    tasks_chain.delay()

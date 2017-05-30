@@ -12,8 +12,8 @@ pytestmark = pytest.mark.usefixtures('session_cleanup')
 
 
 # Tests
-@mock.patch('goodtablesio.integrations.github.blueprint._run_validation')
-@mock.patch('goodtablesio.integrations.github.blueprint.set_commit_status')
+@mock.patch('goodtablesio.integrations.github.models.repo.run_validation')
+@mock.patch('goodtablesio.integrations.github.models.repo.set_commit_status')
 def test_create_job_push(run_validation, set_commit_status, client):
 
     user = factories.User(github_oauth_token='xxx')
@@ -43,8 +43,8 @@ def test_create_job_push(run_validation, set_commit_status, client):
     assert job['status'] == 'created'
 
 
-@mock.patch('goodtablesio.integrations.github.blueprint._run_validation')
-@mock.patch('goodtablesio.integrations.github.blueprint.set_commit_status')
+@mock.patch('goodtablesio.integrations.github.models.repo.run_validation')
+@mock.patch('goodtablesio.integrations.github.models.repo.set_commit_status')
 def test_create_job_pr(run_validation, set_commit_status, client):
 
     user = factories.User(github_oauth_token='xxx')
@@ -82,7 +82,9 @@ def test_create_job_pr(run_validation, set_commit_status, client):
     assert job['status'] == 'created'
 
 
-def test_create_job_pr_other_action(client):
+@mock.patch('goodtablesio.integrations.github.models.repo.run_validation')
+@mock.patch('goodtablesio.integrations.github.models.repo.set_commit_status')
+def test_create_job_pr_other_action(run_validation, set_commit_status, client):
 
     user = factories.User(github_oauth_token='xxx')
     source = factories.GithubRepo(name='test-org/example',
@@ -117,8 +119,8 @@ def test_create_job_pr_other_action(client):
     assert len(source.jobs) == 0
 
 
-@mock.patch('goodtablesio.integrations.github.blueprint._run_validation')
-@mock.patch('goodtablesio.integrations.github.blueprint.set_commit_status')
+@mock.patch('goodtablesio.integrations.github.models.repo.run_validation')
+@mock.patch('goodtablesio.integrations.github.models.repo.set_commit_status')
 def test_create_job_pr_from_fork(run_validation, set_commit_status, client):
 
     user = factories.User(github_oauth_token='xxx')

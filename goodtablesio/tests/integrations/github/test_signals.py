@@ -5,10 +5,7 @@ from goodtablesio.integrations.github.signals import post_task_handler
 
 
 @mock.patch('goodtablesio.integrations.github.signals.set_commit_status')
-@mock.patch('goodtablesio.integrations.github.signals.get_tokens_for_job')
-def test_signal_sets_status(get_tokens_for_job, set_commit_status):
-
-    get_tokens_for_job.return_value = ['a', 'b']
+def test_signal_sets_status(set_commit_status):
 
     conf = {
         'owner': 'test-org',
@@ -16,9 +13,10 @@ def test_signal_sets_status(get_tokens_for_job, set_commit_status):
         'sha': 'abcde',
         'is_pr': True
     }
-
+    integration = factories.Integration()
+    repo = factories.GithubRepo(integration_name=integration.name)
     job = factories.Job(
-        integration_name='github', conf=conf, status='success', number=3)
+        integration_name='github', conf=conf, status='success', number=3, source=repo)
 
     post_task_handler(
             retval=job.to_dict(), kwargs={'job_id': job.id}, state='SUCCESS')
@@ -30,13 +28,12 @@ def test_signal_sets_status(get_tokens_for_job, set_commit_status):
         sha='abcde',
         is_pr=True,
         job_number=3,
-        tokens=['a', 'b'],
+        tokens=job.source.tokens,
     )
 
 
 @mock.patch('goodtablesio.integrations.github.signals.set_commit_status')
-@mock.patch('goodtablesio.integrations.github.signals.get_tokens_for_job')
-def test_signal_no_github(get_tokens_for_job, set_commit_status):
+def test_signal_no_github(set_commit_status):
 
     job = factories.Job(
         integration_name='s3')
@@ -44,15 +41,11 @@ def test_signal_no_github(get_tokens_for_job, set_commit_status):
     post_task_handler(
             retval=job.to_dict(), kwargs={'job_id': job.id}, state='SUCCESS')
 
-    assert not get_tokens_for_job.called
     assert not set_commit_status.called
 
 
 @mock.patch('goodtablesio.integrations.github.signals.set_commit_status')
-@mock.patch('goodtablesio.integrations.github.signals.get_tokens_for_job')
-def test_signal_sets_status_task_error(get_tokens_for_job, set_commit_status):
-
-    get_tokens_for_job.return_value = ['a', 'b']
+def test_signal_sets_status_task_error(set_commit_status):
 
     conf = {
         'owner': 'test-org',
@@ -61,8 +54,10 @@ def test_signal_sets_status_task_error(get_tokens_for_job, set_commit_status):
         'is_pr': True
     }
 
+    integration = factories.Integration()
+    repo = factories.GithubRepo(integration_name=integration.name)
     job = factories.Job(
-        integration_name='github', conf=conf, number=3)
+        integration_name='github', conf=conf, number=3, source=repo)
 
     post_task_handler(
             retval=job.to_dict(), kwargs={'job_id': job.id}, state='ERROR')
@@ -74,5 +69,5 @@ def test_signal_sets_status_task_error(get_tokens_for_job, set_commit_status):
         sha='abcde',
         is_pr=True,
         job_number=3,
-        tokens=['a', 'b'],
+        tokens=job.source.tokens,
     )
