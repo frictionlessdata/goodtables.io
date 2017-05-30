@@ -12,9 +12,8 @@ def test_activate_hook(GitHub):
     GitHub.return_value.repository.return_value.create_hook.assert_called_with('web',
         config={
             'secret': settings.GITHUB_HOOK_SECRET,
-            'url': '%s/github/hook' % settings.BASE_URL,
+            'url': settings.GITHUB_HOOK_URL,
             'content_type': 'json',
-            'is_goodtables_hook': True,
         }, events=['pull_request', 'push'])
 
 

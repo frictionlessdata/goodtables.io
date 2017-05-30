@@ -11,9 +11,7 @@ def activate_hook(token, owner, repo):
     config = {
         'content_type': 'json',
         'secret': settings.GITHUB_HOOK_SECRET,
-        # We can't use url_for here because there is no app context
-        'url': '%s/github/hook' % settings.BASE_URL,
-        'is_goodtables_hook': True,
+        'url': settings.GITHUB_HOOK_URL,
     }
     events = [
         'pull_request',
