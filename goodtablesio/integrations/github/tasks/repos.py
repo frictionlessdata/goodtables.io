@@ -9,6 +9,8 @@ from goodtablesio.integrations.github.models.repo import GithubRepo
 from goodtablesio.integrations.github.utils.repos import iter_repos_by_token
 
 
+# Module API
+
 @celery_app.task(name='goodtablesio.github.sync_user_repos',
                  queue='internal', base=InternalJobTask)
 def sync_user_repos(user_id, job_id):
@@ -67,6 +69,8 @@ def sync_user_repos(user_id, job_id):
     # Commit to database
     database['session'].commit()
 
+
+# Internal
 
 def _can_see_private_repos(user, repo_data):
     # TODO: check that there is any subscription that gives access to this

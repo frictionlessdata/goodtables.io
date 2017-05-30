@@ -1,8 +1,9 @@
 import cryptography
-
 from goodtablesio.crypto import encrypt_string, decrypt_string
 from goodtablesio.models.user import User
 
+
+# Helpers
 
 def get_token(self):
     token = self.conf.get('github_oauth_token')
@@ -27,7 +28,7 @@ def del_token(self):
     del self.conf['github_oauth_token']
 
 
-github_oauth_token = property(
-    get_token, set_token, del_token, 'GitHub OAuth Token')
+# Module API
 
-setattr(User, 'github_oauth_token', github_oauth_token)
+setattr(User, 'github_oauth_token', property(
+    get_token, set_token, del_token, 'GitHub OAuth Token'))

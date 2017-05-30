@@ -1,21 +1,18 @@
 import logging
-
 import requests
 from github3 import GitHub
-
 from goodtablesio.services import database
 from goodtablesio.models.job import Job
 from goodtablesio.celery_app import celery_app
 from goodtablesio.tasks.base import JobTask
 from goodtablesio.utils.jobconf import make_validation_conf
-from goodtablesio.integrations.github.utils.hook import get_tokens_for_job
-
-
 log = logging.getLogger(__name__)
 
 
+# Module API
+
 @celery_app.task(name='goodtablesio.github.get_validation_conf', base=JobTask)
-def get_validation_conf(owner, repo, sha, job_id):
+def get_validation_conf(owner, repo, sha, job_id, tokens):
     """Celery tast to get validation conf.
     """
 
@@ -24,11 +21,6 @@ def get_validation_conf(owner, repo, sha, job_id):
     job.status = 'running'
     database['session'].add(job)
     database['session'].commit()
-
-    tokens = get_tokens_for_job(job)
-    if not tokens:
-        log.error('No GitHub tokens available to perform the job')
-        return {}
 
     # Get validation conf
     job_base = _get_job_base(owner, repo, sha)
@@ -40,7 +32,6 @@ def get_validation_conf(owner, repo, sha, job_id):
 
 
 # Internal
-
 
 def _get_job_base(owner, repo, sha):
     """Get job's base url.
