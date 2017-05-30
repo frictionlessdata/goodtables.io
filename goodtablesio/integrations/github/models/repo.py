@@ -5,6 +5,7 @@ from goodtablesio.models.job import Job
 from goodtablesio.models.source import Source
 from goodtablesio.integrations.github.utils.status import set_commit_status
 from goodtablesio.integrations.github.utils.validation import run_validation
+from goodtablesio.integrations.github.utils.repos import get_default_repo_details
 log = logging.getLogger(__name__)
 
 
@@ -43,6 +44,13 @@ class GithubRepo(Source):
         if not self.tokens:
             log.error('No GitHub tokens available to perform the job')
             return None
+
+        # Get default repo details
+        if not conf:
+            conf = get_default_repo_details(self.owner, self.repo, token=self.tokens[0])
+            if not conf:
+                log.error('No default repo details are available')
+                return None
 
         # Save job to database
         job_id = str(uuid.uuid4())

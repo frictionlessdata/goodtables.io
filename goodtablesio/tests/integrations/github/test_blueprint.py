@@ -14,7 +14,7 @@ pytestmark = pytest.mark.usefixtures('session_cleanup')
 # Tests
 @mock.patch('goodtablesio.integrations.github.models.repo.run_validation')
 @mock.patch('goodtablesio.integrations.github.models.repo.set_commit_status')
-def test_create_job_push(run_validation, set_commit_status, client):
+def test_create_job_push(set_commit_status, run_validation, client):
 
     user = factories.User(github_oauth_token='xxx')
     factories.GithubRepo(name='test-org/example',
@@ -45,7 +45,7 @@ def test_create_job_push(run_validation, set_commit_status, client):
 
 @mock.patch('goodtablesio.integrations.github.models.repo.run_validation')
 @mock.patch('goodtablesio.integrations.github.models.repo.set_commit_status')
-def test_create_job_pr(run_validation, set_commit_status, client):
+def test_create_job_pr(set_commit_status, run_validation, client):
 
     user = factories.User(github_oauth_token='xxx')
     factories.GithubRepo(name='test-org/example',
@@ -84,7 +84,7 @@ def test_create_job_pr(run_validation, set_commit_status, client):
 
 @mock.patch('goodtablesio.integrations.github.models.repo.run_validation')
 @mock.patch('goodtablesio.integrations.github.models.repo.set_commit_status')
-def test_create_job_pr_other_action(run_validation, set_commit_status, client):
+def test_create_job_pr_other_action(set_commit_status, run_validation, client):
 
     user = factories.User(github_oauth_token='xxx')
     source = factories.GithubRepo(name='test-org/example',
@@ -121,7 +121,7 @@ def test_create_job_pr_other_action(run_validation, set_commit_status, client):
 
 @mock.patch('goodtablesio.integrations.github.models.repo.run_validation')
 @mock.patch('goodtablesio.integrations.github.models.repo.set_commit_status')
-def test_create_job_pr_from_fork(run_validation, set_commit_status, client):
+def test_create_job_pr_from_fork(set_commit_status, run_validation, client):
 
     user = factories.User(github_oauth_token='xxx')
     factories.GithubRepo(name='test-org/example',
@@ -277,7 +277,12 @@ def test_api_repo_list(client):
 
 
 @mock.patch('goodtablesio.integrations.github.blueprint.activate_hook')
-def test_api_repo_activate(activate_hook, client):
+@mock.patch('goodtablesio.integrations.github.models.repo.run_validation')
+@mock.patch('goodtablesio.integrations.github.models.repo.set_commit_status')
+@mock.patch('goodtablesio.integrations.github.models.repo.get_default_repo_details')
+def test_api_repo_activate(get_default_repo_details, set_commit_status,
+        run_validation, activate_hook, client):
+    get_default_repo_details.return_value = None
     user = factories.User(github_oauth_token='token')
     repo = factories.GithubRepo(name='owner/repo', users=[user])
     with client.session_transaction() as session:

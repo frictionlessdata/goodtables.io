@@ -175,6 +175,10 @@ def api_repo_activate(repo_id):
             error = 'Repo activation error'
             log.exception(exception)
 
+    # Validate repo
+    if not error:
+        repo.create_and_start_job()
+
     return jsonify({
         'error': error,
     })
