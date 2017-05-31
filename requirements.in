@@ -7,7 +7,7 @@ flask-login==0.4.0
 flask-oauthlib==0.9.3
 flower==0.9.1
 github3.py==0.9.6
-goodtables[ods]==1.0.0a12
+goodtables[ods]==1.0.0a13
 gunicorn==19.6.0
 jsonschema==2.5.1
 jsontableschema==0.10.1
