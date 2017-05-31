@@ -35,8 +35,9 @@ export default {
         // Create row
         if (!row) {
           let values = error.row
-          if (!error['row-number']) values = this.table.headers
-          if (error.code === 'blank-row') values = this.table.headers.map(() => '')
+          if (!error['row-number']) {
+            values = this.table.headers
+          }
           row = {
             values,
             badcols: new Set(),
