@@ -84,6 +84,7 @@ To build frontend files to `public` directory:
 ```bash
 make frontend
 make frontend-dev
+make frontend-watch
 
 ```
 
