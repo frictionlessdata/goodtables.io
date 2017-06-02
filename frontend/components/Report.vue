@@ -24,7 +24,7 @@ export default {
     invalidTables() {
       return this.report.tables.filter(table => !table.valid)
     },
-  }
+  },
 }
 </script>
 

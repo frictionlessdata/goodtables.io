@@ -52,6 +52,7 @@ export default {
               </template>
               <h2 class="source-title">
                 <a :href="sourceURL">{{ source.name }}</a>
+                <img :src="`/badge/${source.integration_name}/${source.name}.svg`">
               </h2>
               <JobListItem v-if="job" :job="job" :inSourcePanel="true"/>
               <div v-else class="alert alert-warning">
@@ -68,6 +69,7 @@ export default {
                 <ul class="nav nav-tabs" role="tablist">
                  <li role="presentation" class="active"><a href="#report" aria-controls="home" role="tab" data-toggle="tab">Report</a></li>
                  <li role="presentation"><a href="#history" aria-controls="profile" role="tab" data-toggle="tab">Job history</a></li>
+                 <li role="presentation"><a href="#badge" aria-controls="profile" role="tab" data-toggle="tab">Get badge</a></li>
                 </ul>
 
                 <div class="tab-content">
@@ -84,6 +86,18 @@ export default {
                  <div role="tabpanel" class="tab-pane" id="history">
                    <div class="main-nav">
                      <JobList :jobs="source.job_history.reverse()" />
+                   </div>
+                 </div>
+
+                 <div role="tabpanel" class="tab-pane" id="badge">
+                   <div class="main-nav">
+                     <h3>Image URL</h3>
+                     <pre>https://goodtables.io/badge/{{source.integration_name}}/{{source.name}}.svg</pre>
+                     <h3>Markdown</h3>
+                     <pre>[![goodtables.io](https://goodtables.io/badge/{{source.integration_name}}/{{source.name}}.svg)](https://goodtables.io/{{source.integration_name}}/{{source.name}})</pre>
+                     <h3>RST</h3>
+                     <pre>.. image:: https://goodtables.io/badge/{{source.integration_name}}/{{source.name}}.svg
+     :target: https://goodtables.io/{{source.integration_name}}/{{source.name}}</pre>
                    </div>
                  </div>
 
