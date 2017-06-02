@@ -2,6 +2,7 @@
 import Report from './Report.vue'
 import JobList from './JobList.vue'
 import JobListItem from './JobListItem.vue'
+import MessageGroup from './MessageGroup.vue'
 
 export default {
   name: 'Source',
@@ -13,6 +14,7 @@ export default {
     Report,
     JobList,
     JobListItem,
+    MessageGroup,
   },
   computed: {
     statusClass() {
@@ -70,13 +72,13 @@ export default {
 
                 <div class="tab-content">
                   <div role="tabpanel" class="report tab-pane active" id="report">
-                    <div v-if="job.error" class="alert alert-warning">
-                      {{ job.error.message }}
-                    </div>
+                    <MessageGroup v-if="job.error"
+                                  type="warning"
+                                  title="Job has finished with a fatal error"
+                                  expandText="Error details"
+                                  :messages="[job.error.message]" />
                     <Report v-if="job.report" :report="job.report" />
-                    <ul class="meta">
-                      <li>Report calculated on {{ job.finished }}</li>
-                    </ul>
+                    <div class="meta">Report calculated on {{ job.finished }}</div>
                   </div>
 
                  <div role="tabpanel" class="tab-pane" id="history">

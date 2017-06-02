@@ -1,5 +1,9 @@
 .report {
 
+  .alert {
+    margin-top: 20px;
+  }
+
   .file-heading {
     font-size: 13px;
     font-weight: 500;
@@ -61,6 +65,10 @@
     .table-container {
       overflow-y: auto;
     }
+  }
+
+  .meta {
+    color: #777;
   }
 }
 

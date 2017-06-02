@@ -1,5 +1,6 @@
 <script>
 import ReportErrorGroup from './ReportErrorGroup.vue'
+import {removeBaseUrl} from '../helpers'
 
 export default {
   name: 'ReportTable',
@@ -26,6 +27,7 @@ export default {
             rows: {},
             count: 0,
             headers: this.table.headers,
+            messages: [],
           }
         }
 
@@ -58,18 +60,15 @@ export default {
 
         // Save group
         group.count += 1
+        group.messages.push(error.message)
         group.rows[error['row-number']] = row
         groups[error.code] = group
 
       }
       return groups
     },
-    githubTableSourceName() {
-      const source = this.table.source
-      if (source.startsWith('https://raw.githubusercontent.com')) {
-        return source.replace(/https:\/\/raw\.githubusercontent\.com\/\S*\/\S*\/[a-z0-9]{40}\//, '')
-      }
-      return source
+    tableFile() {
+      return removeBaseUrl(this.table.source)
     },
   },
 }
@@ -80,8 +79,8 @@ export default {
 
   <h4 class="file-heading">
     <span>
-      <a class="file-name" :href="table.source">{{ githubTableSourceName }}</a>
-      <span class="file-count">Table {{ tableNumber }} of {{ tablesCount }}</span>
+      <a class="file-name" :href="table.source">{{ tableFile }}</a>
+      <span class="file-count">Invalid {{ tableNumber }} of {{ tablesCount }}</span>
     </span>
   </h4>
 
