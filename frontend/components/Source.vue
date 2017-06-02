@@ -2,6 +2,7 @@
 import Report from './Report.vue'
 import JobList from './JobList.vue'
 import JobListItem from './JobListItem.vue'
+import MessageGroup from './MessageGroup.vue'
 
 export default {
   name: 'Source',
@@ -13,6 +14,7 @@ export default {
     Report,
     JobList,
     JobListItem,
+    MessageGroup,
   },
   computed: {
     statusClass() {
@@ -50,6 +52,7 @@ export default {
               </template>
               <h2 class="source-title">
                 <a :href="sourceURL">{{ source.name }}</a>
+                <img :src="`/badge/${source.integration_name}/${source.name}.svg`">
               </h2>
               <JobListItem v-if="job" :job="job" :inSourcePanel="true"/>
               <div v-else class="alert alert-warning">
@@ -66,22 +69,35 @@ export default {
                 <ul class="nav nav-tabs" role="tablist">
                  <li role="presentation" class="active"><a href="#report" aria-controls="home" role="tab" data-toggle="tab">Report</a></li>
                  <li role="presentation"><a href="#history" aria-controls="profile" role="tab" data-toggle="tab">Job history</a></li>
+                 <li role="presentation"><a href="#badge" aria-controls="profile" role="tab" data-toggle="tab">Get badge</a></li>
                 </ul>
 
                 <div class="tab-content">
                   <div role="tabpanel" class="report tab-pane active" id="report">
-                    <div v-if="job.error" class="alert alert-warning">
-                      {{ job.error.message }}
-                    </div>
+                    <MessageGroup v-if="job.error"
+                                  type="warning"
+                                  title="Job has finished with a fatal error"
+                                  expandText="Error details"
+                                  :messages="[job.error.message]" />
                     <Report v-if="job.report" :report="job.report" />
-                    <ul class="meta">
-                      <li>Report calculated on {{ job.finished }}</li>
-                    </ul>
+                    <div class="meta">Report calculated on {{ job.finished }}</div>
                   </div>
 
                  <div role="tabpanel" class="tab-pane" id="history">
                    <div class="main-nav">
                      <JobList :jobs="source.job_history.reverse()" />
+                   </div>
+                 </div>
+
+                 <div role="tabpanel" class="tab-pane" id="badge">
+                   <div class="main-nav">
+                     <h3>Image URL</h3>
+                     <pre>https://goodtables.io/badge/{{source.integration_name}}/{{source.name}}.svg</pre>
+                     <h3>Markdown</h3>
+                     <pre>[![goodtables.io](https://goodtables.io/badge/{{source.integration_name}}/{{source.name}}.svg)](https://goodtables.io/{{source.integration_name}}/{{source.name}})</pre>
+                     <h3>RST</h3>
+                     <pre>.. image:: https://goodtables.io/badge/{{source.integration_name}}/{{source.name}}.svg
+     :target: https://goodtables.io/{{source.integration_name}}/{{source.name}}</pre>
                    </div>
                  </div>
 
