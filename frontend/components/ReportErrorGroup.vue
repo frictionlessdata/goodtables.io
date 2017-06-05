@@ -63,7 +63,7 @@ export default {
   </div>
 
   <div v-if="showErrorDetails" class="panel-heading error-details">
-    <p>The full of list error messages:</p>
+    <p>The full list of error messages:</p>
     <ul><li v-for="message of errorGroup.messages">{{ message }}</li></ul>
   </div>
 
