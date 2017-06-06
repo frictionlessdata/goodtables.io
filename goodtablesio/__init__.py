@@ -6,6 +6,7 @@ import goodtablesio.models.source
 import goodtablesio.models.integration
 import goodtablesio.models.plan
 import goodtablesio.models.subscription
+import goodtablesio.models.api_token
 
 # Register tasks
 import goodtablesio.tasks.validate

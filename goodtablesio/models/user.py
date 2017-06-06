@@ -11,6 +11,7 @@ from goodtablesio.services import database
 from goodtablesio.models.base import Base, BaseModelMixin, make_uuid
 from goodtablesio.models.plan import Plan
 from goodtablesio.models.subscription import Subscription
+from goodtablesio.models.api_token import ApiToken
 
 
 log = logging.getLogger(__name__)
@@ -28,13 +29,14 @@ class User(Base, BaseModelMixin, UserLoginMixin):
     admin = Column(Boolean, nullable=False, default=False)
     provider_ids = Column(MutableDict.as_mutable(JSONB))
     conf = Column(MutableDict.as_mutable(JSONB))
+    subscriptions = relationship(
+        'Subscription', primaryjoin='Subscription.user_id == User.id')
+    api_tokens = relationship(
+        'ApiToken', primaryjoin='ApiToken.user_id == User.id')
 
     def get_id(self):
         """This method is required by Flask-Login"""
         return self.id
-
-    subscriptions = relationship(
-        'Subscription', primaryjoin='Subscription.user_id == User.id')
 
     @property
     def subscription(self):
@@ -109,3 +111,26 @@ class User(Base, BaseModelMixin, UserLoginMixin):
                 self.subscription.expires + datetime.timedelta(days=days))
         database['session'].add(self.subscription)
         database['session'].commit()
+
+    def create_api_token(self, description=None):
+        token = ApiToken(
+            user_id=self.id,
+            description=description,
+        )
+        database['session'].add(token)
+        database['session'].commit()
+        return token
+
+    def delete_api_token(self, token_id):
+        token = database['session'].query(ApiToken).get(token_id)
+        if not token:
+            return False
+        database['session'].delete(token)
+        database['session'].commit()
+        return True
+
+    @staticmethod
+    def get_by_api_token(token):
+        return (database['session'].query(User).
+                filter(User.api_tokens.any(token=token)).
+                one_or_none())
