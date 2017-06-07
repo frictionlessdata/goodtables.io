@@ -216,7 +216,7 @@ def test_create_api_token():
 
 def test_create_api_token_with_description():
     user = factories.User()
-    user.create_api_token('description')
+    user.create_api_token(description='description')
     assert len(user.api_tokens) == 1
     assert len(user.api_tokens[0].token) == 40
     assert user.api_tokens[0].description == 'description'

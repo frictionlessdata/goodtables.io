@@ -5,12 +5,11 @@ from goodtablesio.models.base import Base, BaseModelMixin, make_uuid, make_token
 log = logging.getLogger(__name__)
 
 
-# Helpers
-
-
 # Module API
 
 class ApiToken(Base, BaseModelMixin):
+
+    # Public
 
     __tablename__ = 'api_tokens'
 
@@ -20,3 +19,6 @@ class ApiToken(Base, BaseModelMixin):
     description = Column(Unicode, nullable=True)
     created = Column(DateTime(timezone=True),
         nullable=False, default=datetime.datetime.utcnow)
+
+    def to_api(self):
+        return self.to_dict()

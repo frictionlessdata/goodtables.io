@@ -83,6 +83,35 @@ def get_job(job_id):
         raise _ApiError(404, 'Job not found')
 
 
+@api.route('/token')
+@login_required
+def token_list():
+    return jsonify({
+        'tokens': [token.to_api() for token in current_user.api_tokens],
+    })
+
+
+@api.route('/token', methods=['POST'])
+@login_required
+def token_create():
+    data = request.get_json()
+    token = current_user.create_api_token(description=data.get('description'))
+    return jsonify({
+        'token': token.to_api(),
+    })
+
+
+@api.route('/token/<token_id>', methods=['DELETE'])
+@login_required
+def token_delete(token_id):
+    success = current_user.delete_api_token(token_id)
+    if not success:
+        raise _ApiError(404, 'Token not found')
+    return jsonify({
+        'token_id': token_id,
+    })
+
+
 # Internal
 
 class _ApiError(Exception):
