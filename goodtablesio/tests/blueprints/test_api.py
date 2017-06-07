@@ -24,6 +24,22 @@ def test_api_root_no_token(client):
     assert data['message'] == 'Unauthorized'
 
 
+def test_api_root_empty_token(client):
+    response = client.get('/api/', headers={'Authorization': ''})
+    data = get_response_data(response)
+    assert response.status_code == 401
+    assert data['message'] == 'Unauthorized'
+
+
+def test_api_root_bad_token(client):
+    user = factories.User()
+    token = user.create_api_token()
+    response = client.get('/api/', headers={'Authorization': '%s-bad' % token.token})
+    data = get_response_data(response)
+    assert response.status_code == 401
+    assert data['message'] == 'Unauthorized'
+
+
 def test_api_job_list_empty(client):
     user = factories.User()
     token = user.create_api_token()
