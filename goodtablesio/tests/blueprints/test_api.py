@@ -1,24 +1,15 @@
 import json
 from unittest import mock
-
 import pytest
-
 from goodtablesio import models
 from goodtablesio.tests import factories
-
-
 # Clean up DB on all this module's tests
-
 pytestmark = pytest.mark.usefixtures('session_cleanup')
 
 
-# TODO reactivate tests once API auth is implemented
+# Tests
 
-def _data(response):
-
-    return json.loads(response.get_data(as_text=True))
-
-
+# TODO reactivate once API auth is implemented
 @pytest.mark.xfail
 def test_api_basic(client):
 
@@ -28,14 +19,16 @@ def test_api_basic(client):
     assert response.content_type == 'application/json; charset=utf-8'
 
 
+# TODO reactivate once API auth is implemented
 @pytest.mark.xfail
 def test_api_job_list_empty(client):
 
     response = client.get('/api/job')
 
-    assert _data(response) == []
+    assert get_response_data(response) == []
 
 
+# TODO reactivate once API auth is implemented
 @pytest.mark.xfail
 def test_api_job_list(client):
 
@@ -44,9 +37,10 @@ def test_api_job_list(client):
 
     response = client.get('/api/job')
 
-    assert _data(response) == [job2.id, job1.id]
+    assert get_response_data(response) == [job2.id, job1.id]
 
 
+# TODO reactivate once API auth is implemented
 @pytest.mark.xfail
 def test_api_get_job(client):
 
@@ -54,7 +48,7 @@ def test_api_get_job(client):
 
     response = client.get('/api/job/{0}'.format(job.id))
 
-    data = _data(response)
+    data = get_response_data(response)
 
     # TODO: Update after #19
 
@@ -64,6 +58,7 @@ def test_api_get_job(client):
     assert 'status' in data
 
 
+# TODO reactivate once API auth is implemented
 @pytest.mark.xfail
 def test_api_get_job_not_found(client):
 
@@ -71,9 +66,10 @@ def test_api_get_job_not_found(client):
 
     assert response.status_code == 404
 
-    assert _data(response) == {'message': 'Job not found'}
+    assert get_response_data(response) == {'message': 'Job not found'}
 
 
+# TODO reactivate once API auth is implemented
 @pytest.mark.xfail
 def test_api_create_job(client):
 
@@ -94,6 +90,7 @@ def test_api_create_job(client):
     assert models.job.get(job_id)
 
 
+# TODO reactivate once API auth is implemented
 @pytest.mark.xfail
 def test_api_create_job_empty_body(client):
 
@@ -101,9 +98,10 @@ def test_api_create_job_empty_body(client):
 
     assert response.status_code == 400
 
-    assert _data(response) == {'message': 'Missing configuration'}
+    assert get_response_data(response) == {'message': 'Missing configuration'}
 
 
+# TODO reactivate once API auth is implemented
 @pytest.mark.xfail
 def test_api_create_job_wrong_params(client):
 
@@ -116,4 +114,56 @@ def test_api_create_job_wrong_params(client):
 
     assert response.status_code == 400
 
-    assert _data(response) == {'message': 'Invalid configuration'}
+    assert get_response_data(response) == {'message': 'Invalid configuration'}
+
+
+def test_api_token_list(client):
+    user = factories.User()
+    token1 = user.create_api_token()
+    token2 = user.create_api_token()
+    with client.session_transaction() as session:
+        session['user_id'] = user.id
+    response = client.get('/api/token')
+    data = get_response_data(response)
+    assert len(data['tokens']) == 2
+    assert data['tokens'][0]['id'] == token1.id
+    assert data['tokens'][0]['token'] == token1.token
+    assert data['tokens'][1]['id'] == token2.id
+    assert data['tokens'][1]['token'] == token2.token
+
+
+def test_api_token_list_not_logged_in(client):
+    response = client.get('/api/token')
+    data = get_response_data(response)
+    assert data['status'] == 401
+
+
+def test_api_token_create(client):
+    user = factories.User()
+    with client.session_transaction() as session:
+        session['user_id'] = user.id
+    response = client.post(
+        '/api/token',
+        data=json.dumps({'description': 'description'}),
+        headers={'Content-Type': 'application/json'})
+    data = get_response_data(response)
+    assert data['token']['id'] == user.api_tokens[0].id
+    assert data['token']['token'] == user.api_tokens[0].token
+    assert len(user.api_tokens) == 1
+
+
+def test_api_token_delete(client):
+    user = factories.User()
+    token1 = user.create_api_token()
+    token2 = user.create_api_token()
+    with client.session_transaction() as session:
+        session['user_id'] = user.id
+    response = client.delete('/api/token/%s' % token2.id)
+    get_response_data(response)
+    assert user.api_tokens == [token1]
+
+
+# Helpers
+
+def get_response_data(response):
+    return json.loads(response.get_data(as_text=True))

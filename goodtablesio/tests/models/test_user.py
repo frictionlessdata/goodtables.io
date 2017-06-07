@@ -205,3 +205,44 @@ def test_user_set_plan_extend_subscription_no_active_subscription():
     user = factories.User()
     with pytest.raises(ValueError):
         user.extend_subscription()
+
+
+def test_create_api_token():
+    user = factories.User()
+    user.create_api_token()
+    assert len(user.api_tokens) == 1
+    assert len(user.api_tokens[0].token) == 40
+
+
+def test_create_api_token_with_description():
+    user = factories.User()
+    user.create_api_token(description='description')
+    assert len(user.api_tokens) == 1
+    assert len(user.api_tokens[0].token) == 40
+    assert user.api_tokens[0].description == 'description'
+
+
+def test_delete_api_token():
+    user = factories.User()
+    token = user.create_api_token()
+    assert user.delete_api_token(token.id) is True
+    assert len(user.api_tokens) == 0
+
+
+def test_delete_api_token_not_existent():
+    user = factories.User()
+    assert user.delete_api_token('not-existent') is False
+    assert len(user.api_tokens) == 0
+
+
+def test_get_by_api_token():
+    user = factories.User()
+    token = user.create_api_token()
+    user = User.get_by_api_token(token.token)
+    assert len(user.api_tokens) == 1
+    assert len(user.api_tokens[0].token) == 40
+
+
+def test_get_by_api_token_not_existent():
+    user = User.get_by_api_token('not-existent')
+    assert user is None

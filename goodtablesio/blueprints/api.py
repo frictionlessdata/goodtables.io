@@ -1,30 +1,18 @@
 import logging
 import uuid
-
 from flask import Blueprint, request
 from flask.json import jsonify
-from flask_login import login_required
-
-from goodtablesio import exceptions
+from flask_login import login_required, current_user
 from goodtablesio import models
+from goodtablesio import exceptions
 from goodtablesio.tasks.validate import validate
 from goodtablesio.utils.jobconf import verify_validation_conf
-
 log = logging.getLogger(__name__)
 
 
 # Module API
 
 api = Blueprint('api', __name__, url_prefix='/api')
-
-
-class APIError(Exception):
-    status_code = 400
-
-    def __init__(self, status_code, message):
-        Exception.__init__(self)
-        self.status_code = status_code
-        self.message = message
 
 
 @api.record
@@ -39,7 +27,7 @@ def handle_api_errors(error):
     # so this error handler is global for the whole app
     if api.debug:
         raise error
-    if not isinstance(error, APIError):
+    if not isinstance(error, _ApiError):
         log.exception(repr(error))
     message = getattr(error, 'message', 'Internal Error')
     status_code = getattr(error, 'status_code', 500)
@@ -61,18 +49,16 @@ def create_job():
     # Get validation configuration
     validation_conf = request.get_json()
     if not validation_conf:
-        raise APIError(400, 'Missing configuration')
+        raise _ApiError(400, 'Missing configuration')
 
     # Validate validation configuration
-
     try:
         verify_validation_conf(validation_conf)
     except exceptions.InvalidValidationConfiguration:
-        raise APIError(400, 'Invalid configuration')
+        raise _ApiError(400, 'Invalid configuration')
 
+    # Create job
     job_id = str(uuid.uuid4())
-
-    # Write to database
     models.job.create({'id': job_id})
 
     # Create celery task
@@ -94,4 +80,44 @@ def get_job(job_id):
     if job:
         return jsonify(job)
     else:
-        raise APIError(404, 'Job not found')
+        raise _ApiError(404, 'Job not found')
+
+
+@api.route('/token')
+@login_required
+def token_list():
+    return jsonify({
+        'tokens': [token.to_api() for token in current_user.api_tokens],
+    })
+
+
+@api.route('/token', methods=['POST'])
+@login_required
+def token_create():
+    data = request.get_json()
+    token = current_user.create_api_token(description=data.get('description'))
+    return jsonify({
+        'token': token.to_api(),
+    })
+
+
+@api.route('/token/<token_id>', methods=['DELETE'])
+@login_required
+def token_delete(token_id):
+    success = current_user.delete_api_token(token_id)
+    if not success:
+        raise _ApiError(404, 'Token not found')
+    return jsonify({
+        'token_id': token_id,
+    })
+
+
+# Internal
+
+class _ApiError(Exception):
+    status_code = 400
+
+    def __init__(self, status_code, message):
+        Exception.__init__(self)
+        self.status_code = status_code
+        self.message = message

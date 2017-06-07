@@ -1,16 +1,16 @@
 import logging
 from urllib.parse import urlparse
-
 from flask import Blueprint, request, session, redirect, url_for, abort, flash
 from flask_login import login_user, logout_user, login_required, current_user
-
 from goodtablesio import settings
 from goodtablesio.services import database
 from goodtablesio.models.user import User
 from goodtablesio.auth import github_auth
 from goodtablesio.utils.frontend import render_component
-
 log = logging.getLogger(__name__)
+
+
+# Module API
 
 user = Blueprint('user', __name__, url_prefix='/user')
 
@@ -51,17 +51,6 @@ def logout():
     log.debug('User logged out: {0}'.format(user.name))
 
     return redirect(url_for('site.home'))
-
-
-def _get_user_by_provider_id(provider_name, provider_id):
-    return database['session'].query(User).filter(
-        User.provider_ids[provider_name].astext == str(provider_id)
-        ).one_or_none()
-
-
-def _get_user_by_email(email):
-    return database['session'].query(User).filter_by(
-        email=email).one_or_none()
 
 
 @user.route('/login/<any(github):provider>/authorized')
@@ -123,3 +112,16 @@ def authorized(provider):
                 user.name, provider_id))
 
     return redirect(url_for('site.home'))
+
+
+# Internal
+
+def _get_user_by_provider_id(provider_name, provider_id):
+    return database['session'].query(User).filter(
+        User.provider_ids[provider_name].astext == str(provider_id)
+        ).one_or_none()
+
+
+def _get_user_by_email(email):
+    return database['session'].query(User).filter_by(
+        email=email).one_or_none()
