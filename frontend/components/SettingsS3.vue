@@ -116,7 +116,7 @@ export default {
 
   <Messages v-if="error" :messages="[['danger', error]]" />
 
-  <div v-if="showAddBucket" style="padding: 25px 15px; width: 50%; border-bottom: solid 5px #333">
+  <div v-if="showAddBucket" style="padding: 25px 15px; width: 100%; border-bottom: solid 5px #333">
     <form @submit.prevent="addBucket()">
       <div class="form-group">
         <label for="access-key-id">Access Key Id</label>

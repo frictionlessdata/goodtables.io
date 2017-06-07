@@ -159,7 +159,7 @@ def test_api_token_delete(client):
     with client.session_transaction() as session:
         session['user_id'] = user.id
     response = client.delete('/api/token/%s' % token2.id)
-    data = get_response_data(response)
+    get_response_data(response)
     assert user.api_tokens == [token1]
 
 
