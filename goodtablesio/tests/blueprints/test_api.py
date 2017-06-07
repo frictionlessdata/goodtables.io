@@ -1,121 +1,113 @@
 import json
-from unittest import mock
 import pytest
+from unittest import mock
 from goodtablesio import models
 from goodtablesio.tests import factories
-# Clean up DB on all this module's tests
 pytestmark = pytest.mark.usefixtures('session_cleanup')
 
 
-# Tests
+# General endpoints
 
-# TODO reactivate once API auth is implemented
-@pytest.mark.xfail
-def test_api_basic(client):
-
-    response = client.get('/api/')
-
+def test_api_root(client):
+    user = factories.User()
+    token = user.create_api_token()
+    response = client.get('/api/', headers={'Authorization': token.token})
+    data = get_response_data(response)
     assert response.status_code == 200
-    assert response.content_type == 'application/json; charset=utf-8'
+    assert data['help'] == 'todo'
 
 
-# TODO reactivate once API auth is implemented
-@pytest.mark.xfail
+def test_api_root_no_token(client):
+    response = client.get('/api/')
+    data = get_response_data(response)
+    assert response.status_code == 401
+    assert data['message'] == 'Unauthorized'
+
+
 def test_api_job_list_empty(client):
+    user = factories.User()
+    token = user.create_api_token()
+    response = client.get('/api/job', headers={'Authorization': token.token})
+    data = get_response_data(response)
+    assert data == []
 
-    response = client.get('/api/job')
 
-    assert get_response_data(response) == []
-
-
-# TODO reactivate once API auth is implemented
-@pytest.mark.xfail
 def test_api_job_list(client):
-
     job1 = factories.Job()
     job2 = factories.Job()
-
-    response = client.get('/api/job')
-
-    assert get_response_data(response) == [job2.id, job1.id]
-
-
-# TODO reactivate once API auth is implemented
-@pytest.mark.xfail
-def test_api_get_job(client):
-
-    job = factories.Job()
-
-    response = client.get('/api/job/{0}'.format(job.id))
-
+    user = factories.User()
+    token = user.create_api_token()
+    response = client.get('/api/job', headers={'Authorization': token.token})
     data = get_response_data(response)
+    assert data == [job2.id, job1.id]
 
-    # TODO: Update after #19
 
+def test_api_job_get(client):
+    job = factories.Job()
+    user = factories.User()
+    token = user.create_api_token()
+    response = client.get('/api/job/%s' % job.id, headers={'Authorization': token.token})
+    data = get_response_data(response)
     assert 'report' in data
     assert data['id'] == job.id
     assert 'created' in data
     assert 'status' in data
 
 
-# TODO reactivate once API auth is implemented
-@pytest.mark.xfail
-def test_api_get_job_not_found(client):
-
-    response = client.get('/api/job/xxx')
-
+def test_api_job_get_not_found(client):
+    user = factories.User()
+    token = user.create_api_token()
+    response = client.get('/api/job/xxx', headers={'Authorization': token.token})
+    data = get_response_data(response)
     assert response.status_code == 404
+    assert data == {'message': 'Job not found'}
 
-    assert get_response_data(response) == {'message': 'Job not found'}
 
-
-# TODO reactivate once API auth is implemented
-@pytest.mark.xfail
-def test_api_create_job(client):
-
+def test_api_job_create(client):
+    user = factories.User()
+    token = user.create_api_token()
     payload = {'source': [{'source': 'http://example.com'}]}
-
-    # NB: We can't post the payload directly in `data` as Werkzeug
-    # will think that the `files` key are actual uploads
-
     with mock.patch('goodtablesio.tasks.validate'):
+        # NB: We can't post the payload directly in `data` as Werkzeug
+        # will think that the `files` key are actual uploads
         response = client.post(
             '/api/job',
             data=json.dumps(payload),
-            headers={'Content-Type': 'application/json'})
-
-    assert response.status_code == 200
-
+            headers={
+                'Authorization': token.token,
+                'Content-Type': 'application/json'
+            })
     job_id = response.get_data(as_text=True)
+    assert response.status_code == 200
     assert models.job.get(job_id)
 
 
-# TODO reactivate once API auth is implemented
-@pytest.mark.xfail
-def test_api_create_job_empty_body(client):
-
-    response = client.post('/api/job')
-
+def test_api_job_create_empty_body(client):
+    user = factories.User()
+    token = user.create_api_token()
+    response = client.post('/api/job', headers={'Authorization': token.token})
+    data = get_response_data(response)
     assert response.status_code == 400
+    assert data == {'message': 'Missing configuration'}
 
-    assert get_response_data(response) == {'message': 'Missing configuration'}
 
-
-# TODO reactivate once API auth is implemented
-@pytest.mark.xfail
-def test_api_create_job_wrong_params(client):
-
+def test_api_job_create_wrong_params(client):
+    user = factories.User()
+    token = user.create_api_token()
     payload = {'not_files': [{'source': 'http://example.com'}]}
-
     response = client.post(
         '/api/job',
         data=json.dumps(payload),
-        headers={'Content-Type': 'application/json'})
-
+        headers={
+            'Authorization': token.token,
+            'Content-Type': 'application/json'
+        })
+    data = get_response_data(response)
     assert response.status_code == 400
+    assert data == {'message': 'Invalid configuration'}
 
-    assert get_response_data(response) == {'message': 'Invalid configuration'}
 
+# Token endpoints
 
 def test_api_token_list(client):
     user = factories.User()
