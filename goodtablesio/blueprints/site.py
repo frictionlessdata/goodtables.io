@@ -7,7 +7,7 @@ from goodtablesio.services import database
 from goodtablesio.models.job import Job
 from goodtablesio.models.source import Source
 from goodtablesio.utils.frontend import render_component
-from goodtablesio.utils.view import no_cache
+from goodtablesio.utils.backend import no_cache
 
 
 # Module API
