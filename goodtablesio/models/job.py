@@ -28,7 +28,7 @@ class Job(Base, BaseModelMixin):
     integration_name = Column(
         Unicode, ForeignKey('integrations.name'), default='api')
     conf = Column(MutableDict.as_mutable(JSONB))
-    source_id = Column(Unicode, ForeignKey('sources.id'), nullable=False)
+    source_id = Column(Unicode, ForeignKey('sources.id'))
 
     def to_api(self):
         return self.to_dict()
