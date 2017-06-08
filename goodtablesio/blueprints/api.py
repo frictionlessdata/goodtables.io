@@ -1,11 +1,8 @@
-import uuid
 import logging
 from flask.json import jsonify
 from flask_login import login_required, current_user
 from flask import Blueprint, request, current_app
-from goodtablesio import models
 from goodtablesio import exceptions
-from goodtablesio.services import database
 from goodtablesio.models.job import Job
 from goodtablesio.models.source import Source
 from goodtablesio.tasks.validate import validate

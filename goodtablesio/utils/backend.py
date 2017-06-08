@@ -1,7 +1,7 @@
 # pylama:ignore=E301
 import datetime
 from werkzeug.http import http_date
-from flask import make_response, request, url_for
+from flask import make_response, request
 from functools import wraps, update_wrapper
 from goodtablesio.models.user import User
 
