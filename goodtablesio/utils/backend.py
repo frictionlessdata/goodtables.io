@@ -1,12 +1,26 @@
 # pylama:ignore=E301
 import datetime
 from werkzeug.http import http_date
-from flask import make_response, request
+from flask import make_response, request, url_for
 from functools import wraps, update_wrapper
 from goodtablesio.models.user import User
 
 
 # Module API
+
+def list_endpoints(app, url_prefix=''):
+    endpoints = []
+    for rule in app.url_map.iter_rules():
+        url = rule.rule
+        methods = ','.join(rule.methods)
+        if not url.startswith(url_prefix):
+            continue
+        endpoints.append({
+            'url': url,
+            'methods': methods,
+        })
+    return endpoints
+
 
 def no_cache(view):
     @wraps(view)

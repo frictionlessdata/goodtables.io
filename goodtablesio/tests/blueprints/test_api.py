@@ -14,7 +14,7 @@ def test_api_root(client):
     response = client.get('/api/', headers={'Authorization': token.token})
     data = get_response_data(response)
     assert response.status_code == 200
-    assert data['help'] == 'todo'
+    assert 'endpoints' in data
 
 
 def test_api_root_no_token(client):

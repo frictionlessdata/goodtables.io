@@ -81,3 +81,9 @@ class Source(Base, BaseModelMixin):
                 'conf': job.conf,
             })
         return history
+
+    @staticmethod
+    def get_by_integration_and_name(integration_name, name):
+        return (Source.query().
+                filter_by(integration_name=integration_name, name=name).
+                one_or_none())

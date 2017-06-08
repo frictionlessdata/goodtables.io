@@ -15,6 +15,7 @@ import goodtablesio.tasks.validate
 import goodtablesio.signals
 
 # Register integrations
+import goodtablesio.integrations.api
 import goodtablesio.integrations.github
 import goodtablesio.integrations.s3
 
