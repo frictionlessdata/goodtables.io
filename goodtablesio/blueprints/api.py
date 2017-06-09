@@ -1,13 +1,13 @@
-import uuid
 import logging
-from flask import Blueprint, request
 from flask.json import jsonify
 from flask_login import login_required, current_user
-from goodtablesio import models
+from flask import Blueprint, request, current_app
 from goodtablesio import exceptions
+from goodtablesio.models.job import Job
+from goodtablesio.models.source import Source
 from goodtablesio.tasks.validate import validate
 from goodtablesio.utils.jobconf import verify_validation_conf
-from goodtablesio.utils.backend import ApiError, token_required
+from goodtablesio.utils.backend import ApiError, token_required, list_endpoints
 log = logging.getLogger(__name__)
 
 
@@ -20,49 +20,115 @@ api = Blueprint('api', __name__, url_prefix='/api')
 
 @api.route('/')
 @token_required
-def root(user):
-    return jsonify({'help': 'todo'})
+def help(user):
+    return jsonify({
+        'endpoints': list_endpoints(current_app, url_prefix='/api')
+    })
 
 
-@api.route('/job/<job_id>')
+@api.route('/source')
 @token_required
-def job_get(job_id, user):
-    job = models.job.get(job_id)
-    if job:
-        return jsonify(job)
-    else:
-        raise ApiError(404, 'Job not found')
+def source_list(user):
+    return jsonify({
+        'sources': [source.to_api() for source in user.sources],
+    })
 
 
-@api.route('/job')
+@api.route('/source/<source_id>')
 @token_required
-def job_list(user):
-    return jsonify(models.job.get_ids())
+def source_get(source_id, user):
+    source = Source.get(source_id)
+    if not source:
+        raise ApiError(404, 'Not Found')
+    if source not in user.sources:
+        if source.conf.get('private'):
+            raise ApiError(403, 'Forbidden')
+    return jsonify({
+        'source': source.to_api(),
+    })
 
 
-@api.route('/job', methods=['POST'])
+@api.route('/source', methods=['POST'])
 @token_required
-def job_create(user):
+def source_create(user):
+    data = request.get_json()
+    name = data.get('name')
+    private = data.get('private', False)
+    if not name:
+        raise ApiError(400, 'Source name is required')
+    if Source.get_by_integration_and_name('api', name):
+        raise ApiError(409, 'Source name is in use')
+    source = Source.create(
+        name=name,
+        active=True,
+        conf={'private': private},
+        integration_name='api',
+        users=[user],
+    )
+    return jsonify({
+        'source': source.to_api(),
+    })
+
+
+@api.route('/source/<source_id>/job')
+@token_required
+def source_job_list(source_id, user):
+    source = Source.get(source_id)
+    if not source:
+        raise ApiError(404, 'Not Found')
+    if source not in user.sources:
+        if source.conf.get('private'):
+            raise ApiError(403, 'Forbidden')
+    return jsonify({
+        'jobs': [job.to_api() for job in source.jobs],
+    })
+
+
+@api.route('/source/<source_id>/job/<job_id>')
+@token_required
+def source_job_get(source_id, job_id, user):
+    job = Job.query().filter_by(source_id=source_id, id=job_id).one_or_none()
+    if not job:
+        raise ApiError(404, 'Not Found')
+    if job.source.conf.get('private'):
+        if job.source not in user.sources:
+            raise ApiError(403, 'Forbidden')
+    return jsonify({
+        'job': job.to_api(),
+    })
+
+
+@api.route('/source/<source_id>/job', methods=['POST'])
+@token_required
+def source_job_create(source_id, user):
+
+    # Get source
+    source = Source.get(source_id)
+    if not source:
+        raise ApiError(404, 'Not Found')
+    if source not in user.sources:
+        raise ApiError(403, 'Forbidden')
+    if source.integration_name != 'api':
+        raise ApiError(403, 'Forbidden')
 
     # Get validation configuration
     validation_conf = request.get_json()
     if not validation_conf:
         raise ApiError(400, 'Missing configuration')
 
-    # Validate validation configuration
+    # Verify validation configuration
     try:
         verify_validation_conf(validation_conf)
     except exceptions.InvalidValidationConfiguration:
         raise ApiError(400, 'Invalid configuration')
 
-    # Create job
-    job_id = str(uuid.uuid4())
-    models.job.create({'id': job_id})
+    # Create and run job
+    job = Job.create(source=source)
+    validate.delay(validation_conf, job_id=job.id)
 
-    # Create celery task
-    validate.delay(validation_conf, job_id=job_id)
-
-    return job_id
+    return jsonify({
+        'job': job.to_api(),
+    })
 
 
 # Token endpoints
@@ -96,7 +162,7 @@ def token_delete(token_id):
     })
 
 
-# Service functions
+# Blueprint service
 
 @api.app_errorhandler(Exception)
 def handle_api_errors(error):

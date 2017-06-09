@@ -1,25 +1,38 @@
 import hmac
 import uuid
 import hashlib
-
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import class_mapper
-
-
+from goodtablesio.services import database
 Base = declarative_base()
 
 
+# Module API
+
 class BaseModelMixin(object):
 
+    # Public
+
+    @classmethod
+    def create(cls, **params):
+        instance = cls(**params)
+        database['session'].add(instance)
+        database['session'].commit()
+        return instance
+
+    @classmethod
+    def query(cls):
+        return database['session'].query(cls)
+
+    @classmethod
+    def get(cls, id):
+        return database['session'].query(cls).get(id)
+
     def to_dict(self):
-        '''Get any model object and represent it as a dict'''
-
         out = {}
-
         ModelClass = self.__class__
         table = class_mapper(ModelClass).mapped_table
         field_names = [field.name for field in table.c]
-
         for field_name in field_names:
             value = getattr(self, field_name, None)
             out[field_name] = value

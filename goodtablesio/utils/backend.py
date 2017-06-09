@@ -8,6 +8,20 @@ from goodtablesio.models.user import User
 
 # Module API
 
+def list_endpoints(app, url_prefix=''):
+    endpoints = []
+    for rule in app.url_map.iter_rules():
+        url = rule.rule
+        methods = ','.join(rule.methods)
+        if not url.startswith(url_prefix):
+            continue
+        endpoints.append({
+            'url': url,
+            'methods': methods,
+        })
+    return endpoints
+
+
 def no_cache(view):
     @wraps(view)
     def no_cache(*args, **kwargs):
