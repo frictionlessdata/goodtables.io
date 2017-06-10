@@ -1,4 +1,5 @@
 import logging
+from flask_cors import CORS
 from flask.json import jsonify
 from flask_login import login_required, current_user
 from flask import Blueprint, request, current_app
@@ -14,6 +15,7 @@ log = logging.getLogger(__name__)
 # Create blueprint
 
 api = Blueprint('api', __name__, url_prefix='/api')
+CORS(api)
 
 
 # General endpoints
