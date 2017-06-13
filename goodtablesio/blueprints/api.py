@@ -174,7 +174,7 @@ def handle_api_errors(error):
     # TODO: this is not really correct way to catch blueprint errors
     # because flask doesn't support error handlers per blueprint
     # so this error handler is global for the whole app
-    if api.debug:
+    if api.debug and not isinstance(error, ApiError):
         raise error
     if not isinstance(error, ApiError):
         log.exception(repr(error))
