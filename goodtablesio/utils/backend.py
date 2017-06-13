@@ -39,11 +39,13 @@ def token_required(view):
     @wraps(view)
     def decorated_view(*args, **kwargs):
         token = request.headers.get('Authorization')
+        msg = ('Unauthorized, please provide a valid token in the ' +
+               '`Authorization` header')
         if not token:
-            raise ApiError(401, 'Unauthorized')
+            raise ApiError(401, msg)
         user = User.get_by_api_token(token)
         if not user:
-            raise ApiError(401, 'Unauthorized')
+            raise ApiError(401, msg)
         return view(*args, user=user, **kwargs)
     return decorated_view
 

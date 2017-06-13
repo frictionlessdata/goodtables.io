@@ -21,13 +21,13 @@ def test_api_root(get):
 def test_api_root_no_token(get):
     code, data = get('/api/')
     assert code == 401
-    assert data['message'] == 'Unauthorized'
+    assert data['message'].startswith('Unauthorized')
 
 
 def test_api_root_empty_token(get):
     code, data = get('/api/', token='')
     assert code == 401
-    assert data['message'] == 'Unauthorized'
+    assert data['message'].startswith('Unauthorized')
 
 
 def test_api_root_bad_token(get):
@@ -35,7 +35,7 @@ def test_api_root_bad_token(get):
     token = user.create_api_token()
     code, data = get('/api/', token='%s-bad' % token.token)
     assert code == 401
-    assert data['message'] == 'Unauthorized'
+    assert data['message'].startswith('Unauthorized')
 
 
 def test_api_source_list(get):
