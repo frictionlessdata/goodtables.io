@@ -81,8 +81,11 @@ def source_job_list(source_id, user):
     if source not in user.sources:
         if source.conf.get('private'):
             raise ApiError(403, 'Forbidden')
+    jobs = (Job.query().filter_by(source_id=source_id)
+            .order_by(Job.created.desc()).limit(10).all())
+
     return jsonify({
-        'jobs': [job.to_api() for job in source.jobs],
+        'jobs': [job.to_api() for job in jobs],
     })
 
 

@@ -137,8 +137,8 @@ def test_api_source_job_list(get):
     token = user.create_api_token()
     code, data = get('/api/source/%s/job' % source.id, token=token.token)
     assert code == 200
-    assert data['jobs'][0]['id'] == job1.id
-    assert data['jobs'][1]['id'] == job2.id
+    assert data['jobs'][0]['id'] == job2.id
+    assert data['jobs'][1]['id'] == job1.id
 
 
 def test_api_source_job_list_foreign_private_source(get):
