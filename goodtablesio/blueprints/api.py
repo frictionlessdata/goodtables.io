@@ -81,8 +81,11 @@ def source_job_list(source_id, user):
     if source not in user.sources:
         if source.conf.get('private'):
             raise ApiError(403, 'Forbidden')
+    jobs = (Job.query().filter_by(source_id=source_id)
+            .order_by(Job.created.desc()).limit(10).all())
+
     return jsonify({
-        'jobs': [job.to_api() for job in source.jobs],
+        'jobs': [job.to_api() for job in jobs],
     })
 
 
@@ -111,7 +114,8 @@ def source_job_create(source_id, user):
     if source not in user.sources:
         raise ApiError(403, 'Forbidden')
     if source.integration_name != 'api':
-        raise ApiError(403, 'Forbidden')
+        raise ApiError(
+            403, 'Forbidden, you can only create jobs on API sources')
 
     # Get validation configuration
     validation_conf = request.get_json()
@@ -171,7 +175,7 @@ def handle_api_errors(error):
     # TODO: this is not really correct way to catch blueprint errors
     # because flask doesn't support error handlers per blueprint
     # so this error handler is global for the whole app
-    if api.debug:
+    if api.debug and not isinstance(error, ApiError):
         raise error
     if not isinstance(error, ApiError):
         log.exception(repr(error))

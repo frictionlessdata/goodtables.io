@@ -21,13 +21,13 @@ def test_api_root(get):
 def test_api_root_no_token(get):
     code, data = get('/api/')
     assert code == 401
-    assert data['message'] == 'Unauthorized'
+    assert data['message'].startswith('Unauthorized')
 
 
 def test_api_root_empty_token(get):
     code, data = get('/api/', token='')
     assert code == 401
-    assert data['message'] == 'Unauthorized'
+    assert data['message'].startswith('Unauthorized')
 
 
 def test_api_root_bad_token(get):
@@ -35,7 +35,7 @@ def test_api_root_bad_token(get):
     token = user.create_api_token()
     code, data = get('/api/', token='%s-bad' % token.token)
     assert code == 401
-    assert data['message'] == 'Unauthorized'
+    assert data['message'].startswith('Unauthorized')
 
 
 def test_api_source_list(get):
@@ -137,8 +137,8 @@ def test_api_source_job_list(get):
     token = user.create_api_token()
     code, data = get('/api/source/%s/job' % source.id, token=token.token)
     assert code == 200
-    assert data['jobs'][0]['id'] == job1.id
-    assert data['jobs'][1]['id'] == job2.id
+    assert data['jobs'][0]['id'] == job2.id
+    assert data['jobs'][1]['id'] == job1.id
 
 
 def test_api_source_job_list_foreign_private_source(get):
@@ -199,7 +199,7 @@ def test_api_source_job_create_non_api_integration_source(post):
     source = factories.Source(users=[user], integration_name='github')
     code, data = post('/api/source/%s/job' % source.id, {}, token=token.token)
     assert code == 403
-    assert data['message'] == 'Forbidden'
+    assert data['message'].startswith('Forbidden')
 
 
 def test_api_source_job_create_empty_body(post):
