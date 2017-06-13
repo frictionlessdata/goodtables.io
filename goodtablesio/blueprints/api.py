@@ -114,7 +114,8 @@ def source_job_create(source_id, user):
     if source not in user.sources:
         raise ApiError(403, 'Forbidden')
     if source.integration_name != 'api':
-        raise ApiError(403, 'Forbidden')
+        raise ApiError(
+            403, 'Forbidden, you can only create jobs on API sources')
 
     # Get validation configuration
     validation_conf = request.get_json()

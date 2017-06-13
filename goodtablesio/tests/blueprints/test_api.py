@@ -199,7 +199,7 @@ def test_api_source_job_create_non_api_integration_source(post):
     source = factories.Source(users=[user], integration_name='github')
     code, data = post('/api/source/%s/job' % source.id, {}, token=token.token)
     assert code == 403
-    assert data['message'] == 'Forbidden'
+    assert data['message'].startswith('Forbidden')
 
 
 def test_api_source_job_create_empty_body(post):
