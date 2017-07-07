@@ -1,3 +1,4 @@
+import os
 import datetime
 from goodtables import Inspector
 from goodtablesio import models, settings
@@ -28,7 +29,7 @@ def validate(validation_conf, job_id, files={}):
         }
         models.job.update(params)
 
-    # Dereference conf
+    # Add uploaded files
     for item in validation_conf['source']:
         if item.get('preset', 'table'):
             item['scheme'] = 'http'
@@ -47,6 +48,11 @@ def validate(validation_conf, job_id, files={}):
         validation_conf['settings']['table_limit'] = max_tables
     inspector = Inspector(**validation_conf.get('settings', {}))
     report = inspector.inspect(validation_conf['source'], preset='nested')
+
+    # Hide uploaded files
+    for table in report['tables']:
+        if table['source'].startswith('/'):
+            table['source'] = os.path.basename(table['source'])
 
     # Save report
     params = {
