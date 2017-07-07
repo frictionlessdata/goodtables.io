@@ -19,4 +19,4 @@ raven[flask]==6.0.0
 redis==2.10.5
 requests==2.11.1
 sqlalchemy==1.1.4
-tabulator[ods]==1.0.0a5
+tabulator[ods]==1.1.0

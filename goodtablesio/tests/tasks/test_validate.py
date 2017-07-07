@@ -18,7 +18,7 @@ def test_validate(_inspect):
     mock_report = {'valid': True, 'errors': [], 'table-count': 1}
     _inspect.return_value = mock_report
 
-    validation_conf = {'source': ['file1', 'file2'], 'settings': {}}
+    validation_conf = {'source': [{'source': 'file1'}, {'source': 'file2'}], 'settings': {}}
     validate(validation_conf, job_id=job.id)
 
     _inspect.assert_called_with(validation_conf['source'], preset='nested')
@@ -33,6 +33,7 @@ def test_validate(_inspect):
     assert isinstance(updated_job['finished'], datetime.datetime)
 
 
+@pytest.mark.skip('now we enforce http scheme')
 def test_validate_skip_rows():
     source = 'text://a,b\n1,2\n#comment'
     format = 'csv'

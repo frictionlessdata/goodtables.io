@@ -1,6 +1,10 @@
+import os
+import json
 import logging
+import tempfile
 from flask_cors import CORS
 from flask.json import jsonify
+from werkzeug.utils import secure_filename
 from flask_login import login_required, current_user
 from flask import Blueprint, request, current_app
 from goodtablesio import exceptions
@@ -106,6 +110,12 @@ def source_job_get(source_id, job_id, user):
 @api.route('/source/<source_id>/job', methods=['POST'])
 @token_required
 def source_job_create(source_id, user):
+    # It supports both:
+    # - application/json
+    #   - data == {'source': [{'source': 'url'}], 'settings': {}}
+    # - multipart/form-data
+    #   - form['data'] == {'source': [{'source': 'file1'}], 'settings': {}}
+    #   - form['file1'] == <uploaded-file>
 
     # Get source
     source = Source.get(source_id)
@@ -118,7 +128,12 @@ def source_job_create(source_id, user):
             403, 'Forbidden, you can only create jobs on API sources')
 
     # Get validation configuration
-    validation_conf = request.get_json()
+    try:
+        validation_conf = request.get_json()
+        if request.form:
+            validation_conf = json.loads(request.form.get('data', ''))
+    except Exception:
+        raise ApiError(400, 'Malformed configuration')
     if not validation_conf:
         raise ApiError(400, 'Missing configuration')
 
@@ -128,9 +143,18 @@ def source_job_create(source_id, user):
     except exceptions.InvalidValidationConfiguration:
         raise ApiError(400, 'Invalid configuration')
 
+    # Save uploaded files
+    files = {}
+    if request.files:
+        dirpath = tempfile.mkdtemp()
+        for name, file in request.files.items():
+            path = os.path.join(dirpath, secure_filename(file.filename))
+            files[name] = path
+            file.save(path)
+
     # Create and run job
     job = Job.create(source=source)
-    validate.delay(validation_conf, job_id=job.id)
+    validate.delay(validation_conf, job_id=job.id, files=files)
 
     return jsonify({
         'job': job.to_api(),

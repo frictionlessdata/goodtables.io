@@ -8,7 +8,7 @@ from goodtablesio.tasks.base import JobTask
 # Module API
 
 @celery_app.task(name='goodtablesio.tasks.validate', base=JobTask)
-def validate(validation_conf, job_id):
+def validate(validation_conf, job_id, files={}):
     """Main validation task.
 
     Args:
@@ -27,6 +27,16 @@ def validate(validation_conf, job_id):
             'status': 'running'
         }
         models.job.update(params)
+
+    # Dereference conf
+    for item in validation_conf['source']:
+        if item.get('preset', 'table'):
+            item['scheme'] = 'http'
+            if item['source'] in files:
+                item['scheme'] = 'file'
+                item['source'] = files[item['source']]
+            if item.get('schema') in files:
+                item['schema'] = files[item['schema']]
 
     # Get report
     if 'settings' not in validation_conf:
