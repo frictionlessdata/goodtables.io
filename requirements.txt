@@ -28,7 +28,7 @@ flask==0.11.1
 flower==0.9.1
 future==0.16.0            # via jsontableschema
 github3.py==0.9.6
-goodtables[ods]==1.0.0a13
+goodtables[ods]==1.0.0a16
 gunicorn==19.6.0
 idna==2.5                 # via cryptography
 ijson==2.3                # via tabulator
