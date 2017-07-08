@@ -36,5 +36,6 @@ def task_postrun(**kwargs):
     files = kwargs['kwargs'].get('files')
     if files:
         for path in files.values():
+            log.debug('Temporary file deletion at "%s"' % path)
             os.remove(path)
         os.rmdir(os.path.dirname(path))

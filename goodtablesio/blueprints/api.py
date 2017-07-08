@@ -149,6 +149,7 @@ def source_job_create(source_id, user):
         dirpath = tempfile.mkdtemp()
         for name, file in request.files.items():
             path = os.path.join(dirpath, secure_filename(file.filename))
+            log.debug('Temporary file creation at "%s"' % path)
             files[name] = path
             file.save(path)
 
