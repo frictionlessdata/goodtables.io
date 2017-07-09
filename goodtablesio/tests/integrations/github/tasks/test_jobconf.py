@@ -15,7 +15,6 @@ TOKENS = [settings.GITHUB_API_TOKEN]
 
 # Tests
 
-@pytest.mark.skip()
 def test_get_job_base():
     actual = jobconf._get_job_base(OWNER, REPO, SHA)
     expect = 'https://raw.githubusercontent.com/frictionlessdata/'
@@ -35,6 +34,7 @@ def test_get_job_files():
     assert actual == expect
 
 
+@pytest.mark.skip()
 @patch.object(jobconf, '_get_job_files_tree_api')
 def test_get_job_files_fallback(_get_job_files_tree_api):
     _get_job_files_tree_api.return_value = None
