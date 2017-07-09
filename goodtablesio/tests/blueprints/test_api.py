@@ -184,6 +184,25 @@ def test_api_source_job_create(post):
     assert job.source == source
 
 
+def test_api_source_job_create_file_upload(celery_app, post_form):
+    user = factories.User()
+    token = user.create_api_token()
+    source = factories.Source(users=[user], integration_name='api')
+    payload = {
+        'data': json.dumps({'source': [{'source': 'file1', 'schema': 'file2'}]}),
+        'file1': (open('goodtablesio/tests/fixtures/data.csv', 'rb'), 'data.csv'),
+        'file2': (open('goodtablesio/tests/fixtures/schema.json', 'rb'), 'schema.json'),
+    }
+    code, data = post_form('/api/source/%s/job' % source.id, payload, token=token.token)
+    job = Job.get(data['job']['id'])
+    assert code == 200
+    assert job.source == source
+    assert job.report['valid'] is True
+    assert job.report['table-count'] == 1
+    assert job.report['tables'][0]['source'] == 'data.csv'
+    assert job.report['tables'][0]['row-count'] == 3
+
+
 def test_api_source_job_create_foreign_private_source(post):
     user = factories.User()
     token = user.create_api_token()
@@ -291,6 +310,21 @@ def post(client):
             headers['Authorization'] = token
         headers['Content-Type'] = 'application/json'
         response = client.post(url, data=json.dumps(payload), headers=headers, **params)
+        code = response.status_code
+        data = json.loads(response.get_data(as_text=True))
+        return code, data
+    func.client = client
+    return func
+
+
+@pytest.fixture
+def post_form(client):
+    def func(url, payload, token=None, **params):
+        headers = params.pop('headers', {})
+        if token is not None:
+            headers['Authorization'] = token
+        headers['Content-Type'] = 'multipart/form-data'
+        response = client.post(url, data=payload, headers=headers, **params)
         code = response.status_code
         data = json.loads(response.get_data(as_text=True))
         return code, data
