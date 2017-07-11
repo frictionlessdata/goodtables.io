@@ -147,7 +147,7 @@ def source_job_create(source_id, user):
     files = {}
     if request.files:
         if len(request.files) > settings.FLASK_MAX_CONTENT_FILES:
-            raise ApiError(403, 'Forbidden, too much files')
+            raise ApiError(403, 'Forbidden, too many files')
         dirpath = tempfile.mkdtemp()
         for name, file in request.files.items():
             path = os.path.join(dirpath, secure_filename(file.filename))
