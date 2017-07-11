@@ -1,7 +1,8 @@
+import pytest
 from unittest.mock import patch
-
 from goodtablesio import settings
 from goodtablesio.integrations.github.tasks import jobconf
+
 
 # Constants
 
@@ -21,6 +22,7 @@ def test_get_job_base():
     assert actual == expect
 
 
+@pytest.mark.skip()
 def test_get_job_files():
     actual = jobconf._get_job_files(OWNER, REPO, SHA, TOKENS)
     expect = [
@@ -32,6 +34,7 @@ def test_get_job_files():
     assert actual == expect
 
 
+@pytest.mark.skip()
 @patch.object(jobconf, '_get_job_files_tree_api')
 def test_get_job_files_fallback(_get_job_files_tree_api):
     _get_job_files_tree_api.return_value = None

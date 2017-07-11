@@ -31,6 +31,7 @@ app.secret_key = settings.FLASK_SECRET_KEY
 url_parts = urlparse(settings.BASE_URL)
 app.config['SERVER_NAME'] = url_parts.netloc
 app.config['JSONIFY_MIMETYPE'] = 'application/json; charset=utf-8'
+app.config['MAX_CONTENT_LENGTH'] = settings.FLASK_MAX_CONTENT_LENGTH
 
 # Register Flask integrations
 oauth.init_app(app)

@@ -1,3 +1,4 @@
+import os
 import logging
 import sqlalchemy
 from celery import signals
@@ -28,3 +29,13 @@ def task_failure(**kwargs):
         # https://github.com/frictionlessdata/goodtables.io/issues/97
         log.info('Database session rollback by celery error handler')
         database['session'].rollback()
+
+
+@signals.task_postrun.connect
+def task_postrun(**kwargs):
+    files = kwargs['kwargs'].get('files')
+    if files:
+        for path in files.values():
+            log.debug('Temporary file deletion at "%s"' % path)
+            os.remove(path)
+        os.rmdir(os.path.dirname(path))

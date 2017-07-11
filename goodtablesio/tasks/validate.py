@@ -1,3 +1,5 @@
+import os
+import re
 import datetime
 from goodtables import Inspector
 from goodtablesio import models, settings
@@ -8,7 +10,7 @@ from goodtablesio.tasks.base import JobTask
 # Module API
 
 @celery_app.task(name='goodtablesio.tasks.validate', base=JobTask)
-def validate(validation_conf, job_id):
+def validate(validation_conf, job_id, files={}):
     """Main validation task.
 
     Args:
@@ -28,6 +30,16 @@ def validate(validation_conf, job_id):
         }
         models.job.update(params)
 
+    # Add uploaded files
+    for item in validation_conf['source']:
+        if item.get('preset', 'table'):
+            item['scheme'] = 'http'
+            if item['source'] in files:
+                item['scheme'] = 'file'
+                item['source'] = files[item['source']]
+            if item.get('schema') in files:
+                item['schema'] = files[item['schema']]
+
     # Get report
     if 'settings' not in validation_conf:
         validation_conf['settings'] = {}
@@ -37,6 +49,13 @@ def validate(validation_conf, job_id):
         validation_conf['settings']['table_limit'] = max_tables
     inspector = Inspector(**validation_conf.get('settings', {}))
     report = inspector.inspect(validation_conf['source'], preset='nested')
+
+    # Hide uploaded files
+    for table in report['tables']:
+        if table['source'].startswith('/'):
+            table['source'] = os.path.basename(table['source'])
+    for index, warning in enumerate(report['warnings']):
+        report['warnings'][index] = re.sub(r'/tmp/.*?/', '', warning)
 
     # Save report
     params = {
