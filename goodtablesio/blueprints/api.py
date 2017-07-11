@@ -7,6 +7,7 @@ from flask.json import jsonify
 from werkzeug.utils import secure_filename
 from flask_login import login_required, current_user
 from flask import Blueprint, request, current_app
+from goodtablesio import settings
 from goodtablesio import exceptions
 from goodtablesio.models.job import Job
 from goodtablesio.models.source import Source
@@ -87,7 +88,6 @@ def source_job_list(source_id, user):
             raise ApiError(403, 'Forbidden')
     jobs = (Job.query().filter_by(source_id=source_id)
             .order_by(Job.created.desc()).limit(10).all())
-
     return jsonify({
         'jobs': [job.to_api() for job in jobs],
     })
@@ -146,6 +146,8 @@ def source_job_create(source_id, user):
     # Save uploaded files
     files = {}
     if request.files:
+        if len(request.files) > settings.FLASK_MAX_CONTENT_FILES:
+            raise ApiError(403, 'Forbidden, too much files')
         dirpath = tempfile.mkdtemp()
         for name, file in request.files.items():
             path = os.path.join(dirpath, secure_filename(file.filename))
