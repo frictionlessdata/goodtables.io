@@ -15,7 +15,13 @@ def test_validate(_inspect):
     # We need to save it on the DB so the session used by the tasks can find it
     job = factories.Job(_save_in_db=True)
 
-    mock_report = {'valid': True, 'tables': [], 'errors': [], 'table-count': 1}
+    mock_report = {
+        'valid': True,
+        'tables': [],
+        'errors': [],
+        'warnings': [],
+        'table-count': 1,
+    }
     _inspect.return_value = mock_report
 
     validation_conf = {'source': [{'source': 'url1'}, {'source': 'url2'}], 'settings': {}}

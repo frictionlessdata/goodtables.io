@@ -1,4 +1,5 @@
 import os
+import re
 import datetime
 from goodtables import Inspector
 from goodtablesio import models, settings
@@ -53,6 +54,8 @@ def validate(validation_conf, job_id, files={}):
     for table in report['tables']:
         if table['source'].startswith('/'):
             table['source'] = os.path.basename(table['source'])
+    for index, warning in enumerate(report['warnings']):
+        report['warnings'][index] = re.sub(r'/tmp/.*?/', '', warning)
 
     # Save report
     params = {
