@@ -25,7 +25,7 @@ export default {
           return client.getReport(apiJobId)
         }).then(report => {
           const queryString = `${location.pathname}?${qs.stringify(queryData)}`
-          history.pushState(null, null, queryString);
+          history.pushState(null, null, queryString)
           resolve(report)
         }).catch(error => {
           reject(error)
@@ -35,17 +35,17 @@ export default {
     const options = qs.parse(location.search.slice(1))
     const source = options.source; delete options.source
     const apiJobId = options.apiJobId; delete options.apiJobId
-    if ((options.checks || {})['blank-row']){
+    if ((options.checks || {})['blank-row']) {
       options.checks['blank-row'] = JSON.parse(options.checks['blank-row'])
     }
-    if ((options.checks || {})['duplicate-row']){
+    if ((options.checks || {})['duplicate-row']) {
       options.checks['duplicate-row'] = JSON.parse(options.checks['duplicate-row'])
     }
     const element = document.getElementById('form')
     const component = goodtablesUI.Form
     const props = {source, options, validate}
     if (apiJobId) props.reportPromise = client.getReport(apiJobId)
-    goodtablesUI.render(goodtablesUI.Form, props, element)
+    goodtablesUI.render(component, props, element)
   },
 }
 </script>
