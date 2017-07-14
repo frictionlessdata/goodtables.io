@@ -3,6 +3,7 @@ from flask import Blueprint, abort, redirect, url_for, send_from_directory, requ
 from flask_login import current_user
 from sqlalchemy.sql.expression import true
 from goodtablesio import models
+from goodtablesio import settings
 from goodtablesio.services import database
 from goodtablesio.models.job import Job
 from goodtablesio.models.source import Source
@@ -20,6 +21,15 @@ def home():
     if current_user.is_authenticated:
         return redirect(url_for('site.dashboard'))
     return render_component('Home')
+
+
+@site.route('/demo')
+def demo():
+    return render_component('DemoForm', props={
+        'apiUrl': settings.DEMO_API_URL,
+        'apiToken': settings.DEMO_API_TOKEN,
+        'apiSourceId': settings.DEMO_API_SOURCE_ID,
+    })
 
 
 @site.route('/dashboard')
@@ -62,7 +72,7 @@ def source_s3_job(bucket, job):
 
 
 @site.route('/settings')
-def settings():
+def settings_page():
     if not current_user.is_authenticated:
         return redirect(url_for('site.home'))
     return render_component('Settings')

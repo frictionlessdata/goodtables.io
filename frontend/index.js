@@ -1,5 +1,6 @@
 export Vue from 'vue'
 export Dashboard from './components/Dashboard.vue'
+export DemoForm from './components/DemoForm.vue'
 export Error401 from './components/Error401.vue'
 export Error404 from './components/Error404.vue'
 export Error500 from './components/Error500.vue'

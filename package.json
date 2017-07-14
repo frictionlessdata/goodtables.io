@@ -5,8 +5,11 @@
   "license": "AGPL-3.0",
   "dependencies": {
     "axios": "^0.15.3",
+    "goodtables": "^0.7.2",
+    "goodtables-ui": "^0.3.2",
     "marked": "^0.3.6",
     "moment": "^2.18.1",
+    "qs": "^6.5.0",
     "vue": "^2.1.0",
     "vue-scrollto": "^2.6.7"
   },
