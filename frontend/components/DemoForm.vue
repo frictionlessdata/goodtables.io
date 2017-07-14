@@ -71,7 +71,7 @@ export default {
     <p>Goodtables provides different ways to use it:</p>
     <ul>
       <li>use the form above to do one-time validation</li>
-      <li>register on the <a href="https://goodtables.io">goodtables.io</a> service for continous validation</li>
+      <li>register on the <a href="https://goodtables.io">goodtables.io</a> service for continuous validation</li>
       <li>take a look on <a href="https://github.com/frictionlessdata/goodtables-py" target="_blank">python</a> or <a href="https://github.com/frictionlessdata/goodtables-js" target="_blank">javascript</a> libraries for programming use</li>
     </ul>
     <p>To use a one-time validation form above you just need to provide a link to tabular file or upload it. Then click on the <strong>validate</strong> button. There is a few additional options in the form which is described in-place.</p>
@@ -80,7 +80,7 @@ export default {
     <h3>How provide a feedback?</h3>
     <p>To provide a feedback or report an issue:</p>
     <ul>
-      <li>use a feedback <a href="https://discuss.okfn.org/t/launching-goodtables-io-tell-us-what-you-think" target="_blank">thead</a> on the Open Knowledge forum</li>
+      <li>use a feedback <a href="https://discuss.okfn.org/t/launching-goodtables-io-tell-us-what-you-think" target="_blank">thread</a> on the Open Knowledge forum</li>
       <li>file an issue on the GitHub <a href="https://github.com/frictionlessdata/goodtables.io/issues" target="_blank">issue tracker</a></li>
       <li>join the Frictionless Data Gitter <a href="https://gitter.im/frictionlessdata/chat" target="_blank">channel</a></li>
     </ul>
