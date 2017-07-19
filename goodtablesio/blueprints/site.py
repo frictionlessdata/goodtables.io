@@ -1,5 +1,6 @@
 import os
-from flask import Blueprint, abort, redirect, url_for, send_from_directory, request
+from flask import (
+    Blueprint, abort, redirect, url_for, send_from_directory, request, current_app)
 from flask_login import current_user
 from sqlalchemy.sql.expression import true
 from goodtablesio import models
@@ -16,20 +17,13 @@ from goodtablesio.utils.backend import no_cache
 site = Blueprint('site', __name__)
 
 
+# goodtables.io
+
 @site.route('/')
 def home():
     if current_user.is_authenticated:
         return redirect(url_for('site.dashboard'))
     return render_component('Home')
-
-
-@site.route('/demo')
-def demo():
-    return render_component('DemoForm', props={
-        'apiUrl': settings.DEMO_API_URL,
-        'apiToken': settings.DEMO_API_TOKEN,
-        'apiSourceId': settings.DEMO_API_SOURCE_ID,
-    })
 
 
 @site.route('/dashboard')
@@ -110,6 +104,25 @@ def badge(integration_name, source_name):
         os.path.dirname(__file__), 'badges')
 
     return send_from_directory(file_path, file_name, mimetype='image/svg+xml')
+
+
+# try.goodtables.io
+
+# To have an ability to dev it:
+# - add to /etc/hosts: 127.0.0.1 goodtables.dev try.goodtables.dev
+# - set in .env BASE_URL=http://goodtables.dev:5000
+@site.route('/', subdomain='try')
+def try_goodtables():
+    return render_component('DemoForm', props={
+        'apiUrl': settings.DEMO_API_URL,
+        'apiToken': settings.DEMO_API_TOKEN,
+        'apiSourceId': settings.DEMO_API_SOURCE_ID,
+    })
+
+
+@site.route('/public/<path:filename>', subdomain='try')
+def try_goodtables_public(filename):
+    return send_from_directory(current_app.static_folder, filename)
 
 
 # Internal
