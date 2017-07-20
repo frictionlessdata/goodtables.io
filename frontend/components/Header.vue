@@ -4,6 +4,7 @@ export default {
   name: 'Header',
   props: {
     userName: String,
+    baseUrl: String,
   },
   components: {
     Logo,
@@ -29,7 +30,7 @@ export default {
 
       <ul class="nav navbar-nav navbar-right">
         <template v-if="!userName">
-          <li><a href="/user/login/github">Login with GitHub</a></li>
+          <li><a :href="`${baseUrl}/user/login/github`">Login with GitHub</a></li>
         </template>
         <template v-else>
           <li>
@@ -37,10 +38,10 @@ export default {
           </li>
           <li role="separator" class="divider"></li>
           <li>
-            <a href="/settings"><span class="icon-equalizer"></span>Manage Sources</a>
+            <a :href="`${baseUrl}/settings`"><span class="icon-equalizer"></span>Manage Sources</a>
           </li>
           <li role="separator" class="divider"></li>
-          <li><a href="/user/logout"><span class="icon-exit"></span>Logout</a></li>
+          <li><a :href="`${baseUrl}/user/logout`"><span class="icon-exit"></span>Logout</a></li>
         </template>
       </ul>
     </div>
