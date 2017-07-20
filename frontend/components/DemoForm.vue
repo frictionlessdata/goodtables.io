@@ -70,8 +70,8 @@ export default {
     <h3>How does it work?</h3>
     <p>There are several ways to use goodtables.io</p>
     <ul>
-      <li>Use the form on this page to try goodtables.io out by manually adding data sources you would like to validate.</li>
-      <li>Create a user account to configure goodtables.io for <a href="https://goodtables.io">goodtables.io</a>continuous data validation</li> from GitHub or Amazon S3.
+      <li>Use the form on this page to try goodtables.io out by manually adding data sources you would like to validate. See <a href="http://try.goodtables.io/?source=https%3A%2F%2Fraw.githubusercontent.com%2Ffrictionlessdata%2Fgoodtables-py%2Fmaster%2Fdata%2Finvalid-on-structure.csv&apiJobId=9a84648d-2088-47c2-80a7-923fb9564a7a">invalid structure</a> and <a href="http://try.goodtables.io/?source=https%3A%2F%2Fraw.githubusercontent.com%2Ffrictionlessdata%2Fgoodtables-py%2Fmaster%2Fdata%2Finvalid-on-bis-modified-schema.csv&schema=https%3A%2F%2Fraw.githubusercontent.com%2Ffrictionlessdata%2Fgoodtables-py%2Fmaster%2Fdata%2Fbis-modified-schema.json&apiJobId=0e49fa2e-d74a-4771-a528-f0fc5c6d1a7b">invalid schema</a> examples.</li>
+      <li>Create a user account to configure goodtables.io for <a href="https://goodtables.io">goodtables.io</a> continuous data validation</li> from GitHub or Amazon S3.
       <li>Developers can also look at the open source <a href="https://github.com/frictionlessdata/goodtables-py" target="_blank">python library that provides all the data validation logic</a>, or the <a href="https://github.com/frictionlessdata/goodtables-js" target="_blank">goodtables.io javascript client</a> for use in 3rd party applications.</li>
     </ul>
   </div>
