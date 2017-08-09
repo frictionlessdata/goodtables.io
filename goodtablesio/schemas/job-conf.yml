@@ -111,10 +111,13 @@ properties:
 
       # Checks: structure or schema
       checks:
-        type: string
-        enum:
-          - structure
-          - schema
+        oneOf:
+          - type: string
+            enum:
+              - structure
+              - schema
+          - type: array
+          - type: object
 
       # Error limit per table
       error_limit:

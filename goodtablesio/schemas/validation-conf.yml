@@ -97,6 +97,7 @@ properties:
             enum:
               - structure
               - schema
+          - type: array
           - type: object
 
       # Error limit per table
