@@ -35,7 +35,10 @@ def test_site_home_logged_in(client):
     response = client.get('/')
 
     assert response.status_code == 302
-    assert response.headers['Location'] == 'http://localhost:5000/dashboard'
+    assert response.headers['Location'] in [
+        'http://localhost:5000/dashboard',
+        'http://goodtables.dev:5000/dashboard',
+    ]
 
 
 # Dashboard
@@ -45,7 +48,10 @@ def test_site_dashboard_not_logged_in(client):
     response = client.get('/dashboard')
 
     assert response.status_code == 302
-    assert response.headers['Location'] == 'http://localhost:5000/'
+    assert response.headers['Location'] in [
+        'http://localhost:5000/',
+        'http://goodtables.dev:5000/',
+    ]
 
 
 def test_site_dashboard_logged_in(client):

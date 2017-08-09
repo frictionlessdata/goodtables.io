@@ -5,12 +5,12 @@
 #    pip-compile --output-file requirements.txt requirements.in
 #
 alembic==0.8.9
-amqp==2.1.4               # via kombu
+amqp==2.2.1               # via kombu
 babel==2.4.0              # via flower
-billiard==3.5.0.2         # via celery
+billiard==3.5.0.3         # via celery
 blinker==1.4              # via raven
 boto3==1.4.4
-botocore==1.5.80          # via boto3, s3transfer
+botocore==1.5.93          # via boto3, s3transfer
 cchardet==1.1.3           # via tabulator
 celery==4.0.0
 cffi==1.10.0              # via cryptography
@@ -18,7 +18,7 @@ click==6.7                # via flask, goodtables, jsontableschema, python-doten
 contextlib2==0.5.5        # via raven
 cryptography==1.7.2
 datapackage==0.8.9        # via goodtables
-docutils==0.13.1          # via botocore
+docutils==0.14            # via botocore
 et-xmlfile==1.0.1         # via openpyxl
 ezodf==0.3.2              # via goodtables, tabulator
 flask-cors==3.0.2
@@ -28,29 +28,29 @@ flask==0.11.1
 flower==0.9.1
 future==0.16.0            # via jsontableschema
 github3.py==0.9.6
-goodtables[ods]==1.0.0a16
+goodtables[ods]==1.2.0
 gunicorn==19.6.0
-idna==2.5                 # via cryptography
+idna==2.6                 # via cryptography
 ijson==2.3                # via tabulator
 isodate==0.5.4            # via jsontableschema
 itsdangerous==0.24        # via flask
 jdcal==1.3                # via openpyxl
 Jinja2==2.9.6             # via flask
 jmespath==0.9.3           # via boto3, botocore
-jsonlines==1.1.2          # via tabulator
+jsonlines==1.1.3          # via tabulator
 jsonschema==2.5.1
 jsontableschema==0.10.1
-kombu==4.0.2              # via celery
+kombu==4.1.0              # via celery
 linear-tsv==1.0.0         # via tabulator
 lxml==3.8.0               # via goodtables, tabulator
-Mako==1.0.6               # via alembic
+Mako==1.0.7               # via alembic
 MarkupSafe==1.0           # via jinja2, mako
 oauthlib==2.0.2           # via flask-oauthlib, requests-oauthlib
 openpyxl==2.4.8           # via tabulator
 psycopg2==2.6.2
-pyasn1==0.2.3             # via cryptography
+pyasn1==0.3.2             # via cryptography
 pycparser==2.18           # via cffi
-python-dateutil==2.6.0    # via botocore, jsontableschema
+python-dateutil==2.6.1    # via botocore, jsontableschema
 python-dotenv==0.6.0
 python-editor==1.0.3      # via alembic
 pytz==2017.2              # via babel, celery, flower
@@ -63,12 +63,12 @@ rfc3986==0.4.1            # via jsontableschema
 s3transfer==0.1.10        # via boto3
 six==1.10.0               # via cryptography, datapackage, flask-cors, goodtables, jsonlines, linear-tsv, python-dateutil, tabulator
 sqlalchemy==1.1.4
-tabulator[ods]==1.1.0
+tabulator[ods]==1.3.0
 tornado==4.2.0            # via flower
 unicodecsv==0.14.1        # via datapackage, jsontableschema, tabulator
 uritemplate.py==3.0.2     # via github3.py
 uritemplate==3.0.0        # via uritemplate.py
-vine==1.1.3               # via amqp
+vine==1.1.4               # via amqp
 Werkzeug==0.12.2          # via flask
 xlrd==1.0.0               # via tabulator
 
