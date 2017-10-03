@@ -14,7 +14,8 @@ export default {
   },
   computed: {
     processedWarnings() {
-      return this.report.warnings.map(warning => removeBaseUrl(warning))
+      // Before `goodtables@1.0` there was no warnings property
+      return (this.report.warnings || []).map(warning => removeBaseUrl(warning))
     },
     validTableFiles() {
       return this.report.tables
