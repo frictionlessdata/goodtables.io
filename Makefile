@@ -17,7 +17,7 @@ install-backend: ## Install the dependencies for the backend app
 	pip3 install --upgrade --no-cache-dir --exists-action w -r requirements.txt
 
 install-dev: ## Install the additional development dependencies for the app
-	pip3 install --upgrade --no-cache-dir -r requirements.dev.txt -r requirements.doc.txt
+	pip3 install --upgrade --no-cache-dir tox
 
 install-frontend: ## Install the dependencies for frontend development and compilation
 	npm install
@@ -25,7 +25,7 @@ install-frontend: ## Install the dependencies for frontend development and compi
 install: install-backend install-frontend ## Install backend and frontend dependencies
 
 lint-backend: ## Run lint checker on the backend app
-	pylama goodtablesio
+	tox -e lint
 
 lint-frontend: ## Run lint checker on frontend app
 	eslint --ext js,vue frontend
@@ -33,7 +33,7 @@ lint-frontend: ## Run lint checker on frontend app
 lint: lint-backend lint-frontend ## Run all lint checkers
 
 test-unit-backend: ## Run the unit tests for the backend app
-	py.test --cov goodtablesio --cov-report term-missing
+	tox
 
 test-unit-frontend: ## Run the unit tests for the frontend app
 	NODE_ENV=testing karma start

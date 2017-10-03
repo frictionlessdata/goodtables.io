@@ -99,6 +99,14 @@ after every source code change. Web page should be reloaded manually.
 
 ### Testing
 
+Before running the tests, you need to create a test database, and add its credentials to
+the `TEST_DATABASE_URL` environment variable in your `.env` file. Considering a
+database named `goodtables_test` owned by the Postgres user `goodtables`, that
+has password `password`, the `TEST_DATABASE_URL` would be
+`postgres://goodtables:password@localhost:5432/goodtables_test`.
+
+You also need to install the `tox` Python dependency by running `pip install tox`.
+
 To run all checks:
 
 ```bash
