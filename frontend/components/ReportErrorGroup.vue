@@ -22,7 +22,23 @@ export default {
   },
   computed: {
     errorDetails() {
-      return spec.errors[this.errorGroup.code]
+
+      // Get code handling legacy codes
+      let code = this.errorGroup.code
+      if (code === 'non-castable-value') {
+        code = 'type-or-format-error'
+      }
+
+      // Get details handling custom errors
+      let details = spec.errors[code]
+      if (!details) details = {
+        name: 'Custom Error',
+        type: 'custom',
+        context: 'body',
+        description: 'Custom Error'
+      }
+
+      return details
     },
     rowNumbers() {
       return Object.keys(this.errorGroup.rows)
