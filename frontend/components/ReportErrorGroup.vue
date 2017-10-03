@@ -35,7 +35,7 @@ export default {
         name: 'Custom Error',
         type: 'custom',
         context: 'body',
-        description: 'Custom Error'
+        description: 'Custom Error',
       }
 
       return details
