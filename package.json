@@ -3,6 +3,15 @@
   "version": "0.0.0",
   "description": "Continuous data validation, as a service.",
   "license": "AGPL-3.0",
+  "scripts": {
+    "test": "NODE_ENV=test karma start",
+    "test:e2e": "NODE_ENV=test node rune2e.js",
+    "test:watch": "NODE_ENV=test karma start --auto-watch --no-single-run",
+    "lint": "eslint --ext js,vue frontend",
+    "build": "NODE_ENV=production webpack --progress --hide-modules",
+    "build:dev": "webpack --output-pathinfo --progress --hode-modules",
+    "build:watch": "webpack --output-pathinfo --progress --hide-modules --watch"
+  },
   "dependencies": {
     "axios": "^0.15.3",
     "goodtables": "^0.7.2",

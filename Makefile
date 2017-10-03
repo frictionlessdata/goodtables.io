@@ -2,8 +2,6 @@
 
 .DEFAULT_GOAL := help
 
-export PATH := $(PATH):./node_modules/.bin
-
 PACKAGE := $(shell grep '^PACKAGE =' setup.py | cut -d "'" -f2)
 REPOSITORY := 'frictionlessdata/goodtables.io'
 SHELL := /bin/bash
@@ -28,7 +26,7 @@ lint-backend: ## Run lint checker on the backend app
 	tox -e lint
 
 lint-frontend: ## Run lint checker on frontend app
-	eslint --ext js,vue frontend
+	npm run lint
 
 lint: lint-backend lint-frontend ## Run all lint checkers
 
@@ -36,15 +34,15 @@ test-unit-backend: ## Run the unit tests for the backend app
 	tox
 
 test-unit-frontend: ## Run the unit tests for the frontend app
-	NODE_ENV=testing karma start
+	npm test
 
 test-unit-frontend-watch: ## Run the unit tests for the frontend app
-	NODE_ENV=testing karma start --auto-watch --no-single-run
+	npm run test:watch
 
 test-unit: test-unit-backend test-unit-frontend ## Run all tests
 
 test-e2e: ## Run end to end tests
-	NODE_ENV=testing node rune2e.js
+	npm run test:e2e
 
 test: lint test-unit test-e2e ## Run all tests
 
@@ -72,13 +70,13 @@ migrate: ## Run database migrations for the app
 	alembic upgrade head
 
 frontend: ## Compile the frontend assets
-	NODE_ENV=production webpack --progress --hide-modules
+	npm run build
 
 frontend-dev: ## Compile the frontend assets for development
-	webpack --output-pathinfo --progress --hide-modules
+	npm run build:dev
 
 frontend-watch: ## Compile the frontend assets for development using watch mode
-	webpack --output-pathinfo --progress --hide-modules --watch
+	npm run build:watch
 
 app: ## Serve the app with Gunicorn
 	gunicorn goodtablesio.app:app --config gunicorn_settings.py
