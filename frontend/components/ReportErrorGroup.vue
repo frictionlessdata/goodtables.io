@@ -1,4 +1,5 @@
 <script>
+import lodash from 'lodash'
 import marked from 'marked'
 const spec = require('../spec.json')
 
@@ -32,10 +33,10 @@ export default {
       // Get details handling custom errors
       let details = spec.errors[code]
       if (!details) details = {
-        name: 'Custom Error',
+        name: lodash.startCase(code),
         type: 'custom',
         context: 'body',
-        description: 'Custom Error',
+        description: null,
       }
 
       return details
@@ -49,9 +50,12 @@ export default {
       return this.errorDetails.context === 'body'
     },
     description() {
-      const description = this.errorDetails.description
-        .replace('{validator}', '`goodtables.yml`')
-      return marked(description)
+      let description = this.errorDetails.description
+      if (description) {
+        description = description.replace('{validator}', '`goodtables.yml`')
+        description = marked(description)
+      }
+      return description
     },
   },
 }
@@ -74,7 +78,7 @@ export default {
     </a>
   </div>
 
-  <div v-if="showErrorDetails" class="panel-heading error-details">
+  <div v-if="showErrorDetails && description" class="panel-heading error-details">
     <p><div v-html="description"></div></p>
   </div>
 
