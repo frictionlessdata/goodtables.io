@@ -65,6 +65,8 @@ rules:
     - off
   consistent-return:
     - off
+  curly:
+    - off
   import/prefer-default-export:
     - off
   import/newline-after-import:
