@@ -1,5 +1,5 @@
 <script>
-import Report from './Report.vue'
+import goodtablesUI from 'goodtables-ui'
 import JobList from './JobList.vue'
 import JobListItem from './JobListItem.vue'
 import MessageGroup from './MessageGroup.vue'
@@ -11,7 +11,6 @@ export default {
     job: Object,
   },
   components: {
-    Report,
     JobList,
     JobListItem,
     MessageGroup,
@@ -31,7 +30,12 @@ export default {
       }
     },
   },
-
+  mounted() {
+    const element = document.getElementById('report')
+    const component = goodtablesUI.Report
+    const props = {report: this.job.report}
+    goodtablesUI.render(component, props, element)
+  },
 }
 </script>
 
@@ -79,7 +83,7 @@ export default {
                                   title="Job has finished with a fatal error"
                                   expandText="Error details"
                                   :messages="[job.error.message]" />
-                    <Report v-if="job.report" :report="job.report" />
+                    <div id="report" ></div>
                     <div class="meta">Report calculated on {{ job.finished }}</div>
                   </div>
 

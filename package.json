@@ -6,7 +6,7 @@
   "dependencies": {
     "axios": "^0.15.3",
     "goodtables": "^0.7.2",
-    "goodtables-ui": "^1.1.0",
+    "goodtables-ui": "^1.1.2",
     "marked": "^0.3.6",
     "moment": "^2.18.1",
     "qs": "^6.5.0",
