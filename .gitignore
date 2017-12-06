@@ -139,3 +139,6 @@ jspm_packages
 # Extra
 /static/
 /public/
+
+# Temporary files
+.#*
