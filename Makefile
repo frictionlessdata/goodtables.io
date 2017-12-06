@@ -17,7 +17,7 @@ install-backend: ## Install the dependencies for the backend app
 	pip3 install --upgrade --no-cache-dir --exists-action w -r requirements.txt
 
 install-dev: ## Install the additional development dependencies for the app
-	pip3 install --upgrade --no-cache-dir -r requirements.dev
+	pip3 install --upgrade --no-cache-dir -r requirements.dev -r requirements.doc
 
 install-frontend: ## Install the dependencies for frontend development and compilation
 	npm install
@@ -116,3 +116,9 @@ server: ## Command to run the app as queue or server
 
 spec:
 	wget -O frontend/spec.json https://raw.githubusercontent.com/frictionlessdata/data-quality-spec/master/spec.json
+
+docs:
+	sphinx-build -b html docs/ docs/_build
+
+docs-watch:
+	sphinx-autobuild docs/ docs/_build/html/
