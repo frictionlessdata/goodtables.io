@@ -17,7 +17,7 @@ install-backend: ## Install the dependencies for the backend app
 	pip3 install --upgrade --no-cache-dir --exists-action w -r requirements.txt
 
 install-dev: ## Install the additional development dependencies for the app
-	pip3 install --upgrade --no-cache-dir -r requirements.dev -r requirements.doc
+	pip3 install --upgrade --no-cache-dir -r requirements.dev.txt -r requirements.doc.txt
 
 install-frontend: ## Install the dependencies for frontend development and compilation
 	npm install
