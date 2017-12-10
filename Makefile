@@ -1,4 +1,4 @@
-.PHONY: help frontend
+.PHONY: help frontend docs docs-watch
 
 .DEFAULT_GOAL := help
 

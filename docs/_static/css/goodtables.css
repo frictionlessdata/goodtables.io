@@ -1,0 +1,31 @@
+@import url("theme.css");
+
+body {
+  font-family: frictionlessdata, Raleway, Helvetica Neue, Helvetica, Arial, sans-serif;
+  text-rendering: optimizeLegibility;
+  color: #333;
+}
+
+.wy-nav-side,
+.wy-side-nav-search {
+  background: #01578a;
+  color: #fff;
+}
+
+.wy-menu-vertical a {
+  color: #fff;
+  font-weight: 400;
+  padding: 10px 16px;
+}
+
+.wy-menu-vertical a:hover {
+  background: #3479A2;
+}
+
+.wy-menu-vertical li.current > a {
+  font-weight: normal;
+}
+
+.wy-side-nav-search > a img.logo {
+  width: 210px;
+}
