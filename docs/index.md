@@ -11,7 +11,7 @@ checks on it. It is able to validate things like:
 If any of the checks fail, goodtables generates a report telling you which and
 where the errors occurred.
 
-[![Example report with failed validation](img/failed_validation.png)][bhx-schools]
+[![Example report with failed validation](_static/img/failed_validation.png)][bhx-schools]
 
 By adding goodtables to your data publishing workflow, you'll make sure your
 data is free from these types of errors.
