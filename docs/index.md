@@ -32,6 +32,7 @@ data is free from these types of errors.
    getting_started
    configuring
    goodtables_yml
+   api
 ```
 
 
