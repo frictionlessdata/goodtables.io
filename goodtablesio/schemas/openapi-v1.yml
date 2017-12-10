@@ -1,0 +1,300 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: Goodtables.io API
+basePath: /api
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /source:
+    get:
+      description: Returns list of user\'s sources
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/SourceList"
+
+    post:
+      description: Creates a new source. By default, the `integration_name` is "api"
+      parameters:
+        - name: name
+          in: query
+          type: string
+          description: The source name
+        - name: private
+          in: query
+          type: boolean
+          description: Controls if the created source is private or not
+          default: False
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/SourceResponse"
+      
+  /source/{source_id}:
+    get:
+      description: Gets the source ID
+      parameters:
+        - name: source_id
+          in: path
+          type: string
+          required: true
+          description: The source id
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/SourceResponse"
+        404:
+          description: Source not found
+        403:
+          description: You don\'t have permissions to access source
+
+  /source/{source_id}/job:
+    get:
+      description: Returns list of source\'s jobs
+      parameters:
+        - name: source_id
+          in: path
+          type: string
+          required: true
+          description: The job source\'s id
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/JobList"
+        404:
+          description: Source not found
+        403:
+          description: You don\'t have permissions to access source
+    post:
+      parameters:
+        - name: data
+          in: query
+          type: string
+      # It supports both:
+      # - application/json
+      #   - data == {'source': [{'source': 'url'}], 'settings': {}}
+      # - multipart/form-data
+      #   - form['data'] == {'source': [{'source': 'file1'}], 'settings': {}}
+      #   - form['file1'] == <uploaded-file>
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/JobResponse"
+        404:
+          description: Source not found
+        403:
+          description: You don\'t have permissions to access source, or the source integration_name isn\'t API, or there are too many files.
+        400:
+          description: Malformed, invalid, or missing job configuration
+
+  /source/{source_id}/job/{job_id}:
+    get:
+      description: Returns a specific source\'s job
+      parameters:
+        - name: source_id
+          in: path
+          type: string
+          required: true
+          description: The job source\'s id
+        - name: job_id
+          in: path
+          type: string
+          required: true
+          description: The job id
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/JobResponse"
+        404:
+          description: Job not found
+        403:
+          description: You don\'t have permissions to access source
+
+  /token:
+    get:
+      description: Return user\'s API token list
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/TokenList"
+    post:
+      description: Create new API token
+      parameters:
+        - name: description
+          in: query
+          type: string
+          description: Token description
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/TokenResponse"
+
+  /token/{token_id}:
+    delete:
+      description: Delete API Token
+      parameters:
+        - name: token_id
+          in: path
+          type: string
+          required: true
+          description: The Token id
+      responses:
+        200:
+          description: Success
+          schema:
+            type: object
+            required:
+              - token_id
+            properties:
+              token_id:
+                type: string
+        404:
+          description: Token not found
+
+definitions:
+  SourceResponse:
+    type: object
+    required:
+      - source
+    properties:
+      source:
+        $ref: "#/definitions/Source"
+
+  SourceList:
+    type: object
+    required:
+      - sources
+    properties:
+      sources:
+        type: array
+        items:
+          $ref: "#/definitions/Source"
+
+  Source:
+    type: object
+    required:
+      - id
+      - name
+      - integration_name
+      - active
+    properties:
+      id:
+        type: string
+        description: ID of the source
+      name:
+        type: string
+        description: Name of the source
+      integration_name:
+        type: string
+      active:
+        type: boolean
+      last_job:
+        $ref: "#/definitions/Job"
+      job_history:
+        type: array
+        items:
+          $ref: "#/definitions/Job"
+
+  JobResponse:
+    type: object
+    required:
+      - job
+    properties:
+      job:
+        $ref: "#/definitions/Job"
+
+  JobList:
+    type: object
+    required:
+      - jobs
+    properties:
+      jobs:
+        type: array
+        items:
+          $ref: "#/definitions/Job"
+
+  Job:
+    type: object
+    required:
+      - id
+      - status
+      - created
+      - finished
+      - number
+      - integration_name
+      - conf
+    properties:
+      id:
+        type: string
+      status:
+        type: string
+        enum:
+          - created
+      created:
+        type: string
+        format: date-time
+      finished:
+        type: string
+        format: date-time
+      number:
+        type: integer
+      report:
+        type: object
+      error:
+        type: object
+      integration_name:
+        type: string
+      conf:
+        type: object
+      source_id:
+        type: string
+
+  TokenResponse:
+    type: object
+    required:
+      - token
+    properties:
+      token:
+        $ref: "#/definitions/Token"
+
+  TokenList:
+    type: object
+    required:
+      - tokens
+    properties:
+      tokens:
+        type: array
+        items:
+          $ref: "#/definitions/Token"
+  Token:
+    type: object
+    required:
+      - id
+      - user_id
+      - token
+      - description
+      - created
+    properties:
+      id:
+        type: string
+      user_id:
+        type: string
+      token:
+        type: string
+      description:
+        type: string
+      created:
+        type: string
+        format: date-time
+        description: Token\'s creation date

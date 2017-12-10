@@ -2,3 +2,4 @@ sphinx
 recommonmark
 sphinx-autobuild
 sphinx_rtd_theme
+sphinxcontrib-openapi
