@@ -98,7 +98,6 @@ html_theme_options = {
     'logo_only': True,
 }
 
-html_style = 'css/goodtables.css'
 html_logo = '_static/img/logo.svg'
 
 # Add any paths that contain custom static files (such as style sheets) here,
@@ -174,3 +173,4 @@ def setup(app):
         'enable_eval_rst': True,
     }, True)
     app.add_transform(AutoStructify)
+    app.add_stylesheet('css/goodtables.css')
