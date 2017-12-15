@@ -21,7 +21,7 @@ data is free from these types of errors.
 * **Structural checks**: Ensure that there are no empty rows, no blank headers, etc.
 * **Content checks**: Ensure that the values have the correct types ("string", "number", "date", etc.), that their format is valid ("string must be an e-mail"), and that they respect the constraints ("age must be a number greater than 18").
 * **Support for multiple tabular formats**: CSV, Excel, LibreOffice, Data Package, etc.
-* **Automatically validate on every update on GitHub**
+* **Automatically validate data on every update**: Support for data on [GitHub][gettingstarted-github] and [Amazon S3][gettingstarted-s3].
 
 ## Table of Contents
 
@@ -37,3 +37,5 @@ data is free from these types of errors.
 
 
 [bhx-schools]: https://goodtables.io/github/vitorbaptista/birmingham_schools "Birmingham Schools validation report"
+[gettingstarted-github]: getting_started_github.html "Validating data on GitHub"
+[gettingstarted-s3]: getting_started_s3.html "Validating data on Amazon S3"
