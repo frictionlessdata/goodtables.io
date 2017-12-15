@@ -29,10 +29,10 @@ data is free from these types of errors.
 .. toctree::
    :maxdepth: 2
 
-   getting_started
-   configuring
-   goodtables_yml
-   api
+   getting_started/index
+   configuration/index
+   configuration/goodtables_yml
+   api/index
 ```
 
 

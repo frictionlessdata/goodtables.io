@@ -8,7 +8,7 @@ your authorization token via the `Authorization` header.
 ## Endpoints
 
 ```eval_rst
-.. openapi:: ../goodtablesio/schemas/openapi-v1.yml
+.. openapi:: ../../goodtablesio/schemas/openapi-v1.yml
 ```
 
 
