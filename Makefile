@@ -67,7 +67,7 @@ run: ## Run the container
 deploy: build login push ## Build the Docker image and push it to the Docker Hub
 
 migrate: ## Run database migrations for the app
-	alembic upgrade head
+	tox -e migrate
 
 frontend: ## Compile the frontend assets
 	npm run build
