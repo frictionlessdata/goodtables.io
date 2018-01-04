@@ -26,7 +26,6 @@ before_install:
 
 install:
   - cp .env.example .env
-  - pip install flask
   - make install-frontend
   - make install-dev
   - psql -c 'create database goodtables_test;' -U postgres

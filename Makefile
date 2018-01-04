@@ -42,7 +42,7 @@ test-unit-frontend-watch: ## Run the unit tests for the frontend app
 test-unit: test-unit-backend test-unit-frontend ## Run all tests
 
 test-e2e: ## Run end to end tests
-	npm run test:e2e
+	NODE_ENV=test tox -e e2e
 
 test: lint test-unit test-e2e ## Run all tests
 
@@ -84,9 +84,6 @@ app: ## Serve the app with Gunicorn
 app-dev: ## Serve the app with Werkzeug
 	FLASK_APP=goodtablesio/app.py FLASK_DEBUG=1 flask run
 
-app-e2e: ## Serve the app for e2e with Werkzeug
-	FLASK_APP=goodtablesio/app.py BASE_URL=http://localhost:9999 flask run -p 9999
-
 queue: ## Run celery for production
 	celery -A goodtablesio.celery_app worker -Q default,internal --loglevel=WARNING
 
@@ -116,7 +113,7 @@ spec:
 	wget -O frontend/spec.json https://raw.githubusercontent.com/frictionlessdata/data-quality-spec/master/spec.json
 
 docs:
-	sphinx-build -b html docs/ docs/_build
+	tox -e docs
 
 docs-watch:
-	sphinx-autobuild docs/ docs/_build/html/
+	tox -e docs-watch
