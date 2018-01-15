@@ -2,8 +2,6 @@
 
 .DEFAULT_GOAL := help
 
-export PATH := $(PATH):./node_modules/.bin
-
 PACKAGE := $(shell grep '^PACKAGE =' setup.py | cut -d "'" -f2)
 REPOSITORY := 'frictionlessdata/goodtables.io'
 SHELL := /bin/bash
@@ -17,7 +15,7 @@ install-backend: ## Install the dependencies for the backend app
 	pip3 install --upgrade --no-cache-dir --exists-action w -r requirements.txt
 
 install-dev: ## Install the additional development dependencies for the app
-	pip3 install --upgrade --no-cache-dir -r requirements.dev.txt -r requirements.doc.txt
+	pip3 install --upgrade --no-cache-dir tox
 
 install-frontend: ## Install the dependencies for frontend development and compilation
 	npm install
@@ -25,26 +23,26 @@ install-frontend: ## Install the dependencies for frontend development and compi
 install: install-backend install-frontend ## Install backend and frontend dependencies
 
 lint-backend: ## Run lint checker on the backend app
-	pylama goodtablesio
+	tox -e lint
 
 lint-frontend: ## Run lint checker on frontend app
-	eslint --ext js,vue frontend
+	npm run lint
 
 lint: lint-backend lint-frontend ## Run all lint checkers
 
 test-unit-backend: ## Run the unit tests for the backend app
-	py.test --cov goodtablesio --cov-report term-missing
+	tox
 
 test-unit-frontend: ## Run the unit tests for the frontend app
-	NODE_ENV=testing karma start
+	npm test
 
 test-unit-frontend-watch: ## Run the unit tests for the frontend app
-	NODE_ENV=testing karma start --auto-watch --no-single-run
+	npm run test:watch
 
 test-unit: test-unit-backend test-unit-frontend ## Run all tests
 
 test-e2e: ## Run end to end tests
-	NODE_ENV=testing node rune2e.js
+	NODE_ENV=test tox -e e2e
 
 test: lint test-unit test-e2e ## Run all tests
 
@@ -69,25 +67,22 @@ run: ## Run the container
 deploy: build login push ## Build the Docker image and push it to the Docker Hub
 
 migrate: ## Run database migrations for the app
-	alembic upgrade head
+	tox -e migrate
 
 frontend: ## Compile the frontend assets
-	NODE_ENV=production webpack --progress --hide-modules
+	npm run build
 
 frontend-dev: ## Compile the frontend assets for development
-	webpack --output-pathinfo --progress --hide-modules
+	npm run build:dev
 
 frontend-watch: ## Compile the frontend assets for development using watch mode
-	webpack --output-pathinfo --progress --hide-modules --watch
+	npm run build:watch
 
 app: ## Serve the app with Gunicorn
 	gunicorn goodtablesio.app:app --config gunicorn_settings.py
 
 app-dev: ## Serve the app with Werkzeug
 	FLASK_APP=goodtablesio/app.py FLASK_DEBUG=1 flask run
-
-app-e2e: ## Serve the app for e2e with Werkzeug
-	FLASK_APP=goodtablesio/app.py BASE_URL=http://localhost:9999 flask run -p 9999
 
 queue: ## Run celery for production
 	celery -A goodtablesio.celery_app worker -Q default,internal --loglevel=WARNING
@@ -118,7 +113,7 @@ spec:
 	wget -O frontend/spec.json https://raw.githubusercontent.com/frictionlessdata/data-quality-spec/master/spec.json
 
 docs:
-	sphinx-build -b html docs/ docs/_build
+	tox -e docs
 
 docs-watch:
-	sphinx-autobuild docs/ docs/_build/html/
+	tox -e docs-watch

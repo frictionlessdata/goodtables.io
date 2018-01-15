@@ -18,28 +18,15 @@ services:
 env:
   global:
     - TESTING=True
-    - BASE_URL=http://localhost:5000
     - TEST_DATABASE_URL=postgres://postgres@localhost:5432/goodtables_test
-    - BROKER_URL=redis://localhost:6379/10
-    - RESULT_BACKEND=redis://localhost:6379/11
-    - FLASK_SECRET_KEY=test-key
-    - "GTIO_SECRET_KEY=g2PKWio2rEmNiM1X8mpgCt40wunLJti0SMOT-MfIYjU="
-    - GITHUB_HOOK_SECRET=test-github-hook-secret
-    - GITHUB_CLIENT_ID=test-github-client-id
-    - GITHUB_CLIENT_SECRET=test-github-client-secret
-    - S3_GT_ACCESS_KEY_ID=test
-    - S3_GT_SECRET_ACCESS_KEY=test
-    - S3_GT_AWS_REGION=test
-    - S3_GT_ACCOUNT_ID=test
-    - S3_LAMBDA_ARN=test
-    - S3_LAMBDA_HOOK_SECRET=test
 
 before_install:
   - nvm install 6
   - nvm use 6
 
 install:
-  - make install
+  - cp .env.example .env
+  - make install-frontend
   - make install-dev
   - psql -c 'create database goodtables_test;' -U postgres
   - make migrate

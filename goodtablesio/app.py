@@ -1,8 +1,8 @@
-import os
 from urllib.parse import urlparse
 import logging
 
 import sqlalchemy
+import pkg_resources
 from flask import Flask, request, jsonify
 from raven.contrib.flask import Sentry
 
@@ -21,10 +21,11 @@ log = logging.getLogger(__name__)
 # Module API
 
 # Create instance
+public_folder = pkg_resources.resource_filename('public', '')
 app = Flask(
     __name__,
-    static_folder=os.path.join(os.path.dirname(__file__), '..', 'public'),
-    template_folder=os.path.join(os.path.dirname(__file__), '..', 'public')
+    static_folder=public_folder,
+    template_folder=public_folder,
 )
 app.secret_key = settings.FLASK_SECRET_KEY
 

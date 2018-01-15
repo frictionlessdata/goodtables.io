@@ -138,7 +138,8 @@ jspm_packages
 
 # Extra
 /static/
-/public/
+public/**/*
+!public/__init__.py
 
 # Temporary files
 .#*
