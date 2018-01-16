@@ -42,7 +42,11 @@ const webpackConfig = {
         loader: 'json-loader'
       },
       {
-        test: /\.(png|jpg|gif|svg)$/,
+        test: /\.svg$/,
+        loader: 'svg-inline-loader'
+      },
+      {
+        test: /\.(png|jpg|gif)$/,
         loader: 'url-loader',
         options: {
           limit: 32768,

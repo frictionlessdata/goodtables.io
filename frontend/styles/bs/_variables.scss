@@ -8,19 +8,18 @@ $bootstrap-sass-asset-helper: false !default;
 //
 //## Gray and brand colors for use across Bootstrap.
 
-$gray-base:              #17181a !default;
-$gray-darker:            lighten($gray-base, 6%) !default;
-$gray-dark:              lighten($gray-base, 10%) !default;
-$gray:                   lighten($gray-dark, 7%) !default;
-$gray-light:             lighten($gray-base, 46.7%) !default;
-$gray-lighter:           lighten($gray-base, 80%) !default;
+$gray-base:              #333333 !default;
+$gray-darker:            #595959 !default;
+$gray-dark:              #808080 !default;
+$gray:                   #B3B3B3 !default;
+$gray-light:             #D9D9D9 !default;
+$gray-lighter:           #F2F2F2 !default;
 
-$brand-primary:         #01CD81 !default;
-$brand-success:         $brand-primary !default;
+$brand-primary:         #01578A !default;
+$brand-success:         #01CD81 !default;
 $brand-info:            #1595BC !default;
 $brand-warning:         #f0ad4e !default;
 $brand-danger:          #F13C3F !default;
-
 
 //== Scaffolding
 //
@@ -29,7 +28,7 @@ $brand-danger:          #F13C3F !default;
 //** Background color for `<body>`.
 $body-bg:               #fff !default;
 //** Global text color on `<body>`.
-$text-color:            $gray-dark !default;
+$text-color:            $gray-base !default;
 
 //** Global textual link color.
 $link-color:            $brand-primary !default;
@@ -193,7 +192,7 @@ $input-bg-disabled:              $gray-lighter !default;
 //** Text color for `<input>`s
 $input-color:                    $gray !default;
 //** `<input>` border color
-$input-border:                   #ccc !default;
+$input-border:                   $gray-light !default;
 
 // TODO: Rename `$input-border-radius` to `$input-border-radius-base` in v4
 //** Default `.form-control` border radius
@@ -205,10 +204,10 @@ $input-border-radius-large:      $border-radius-large !default;
 $input-border-radius-small:      $border-radius-small !default;
 
 //** Border color for inputs on focus
-$input-border-focus:             #66afe9 !default;
+$input-border-focus:             $brand-info !default;
 
 //** Placeholder text color
-$input-color-placeholder:        #999 !default;
+$input-color-placeholder:        $gray !default;
 
 //** Default `.form-control` height
 $input-height-base:              ($line-height-computed + ($padding-base-vertical * 2) + 2) !default;
@@ -370,10 +369,8 @@ $navbar-padding-vertical:          (($navbar-height - $line-height-computed) / 2
 $navbar-collapse-max-height:       340px !default;
 
 $navbar-default-color:             #777 !default;
-/* $navbar-default-bg:                #f8f8f8 !default; */
-$navbar-default-bg:                #fff !default;
-/* $navbar-default-border:            darken($navbar-default-bg, 6.5%) !default; */
-$navbar-default-border:            #fff !default;
+$navbar-default-bg:                #f8f8f8 !default;
+$navbar-default-border:            darken($navbar-default-bg, 6.5%) !default;
 
 // Navbar links
 $navbar-default-link-color:                #777 !default;

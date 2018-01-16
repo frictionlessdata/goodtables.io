@@ -1,45 +1,55 @@
 .landing {
   overflow-x: hidden;
 
-  .container {
-    padding-left: $grid-gutter-width;
-    padding-right: $grid-gutter-width;
+  h1,
+  h2,
+  h3 {
+    font-weight: 600;
   }
 
-  .next {
-    position: absolute;
-    bottom: 4vh;
-    display: block;
-    width: 100%;
-    left: 0;
-    color: inherit;
-    text-decoration: none;
-
-    h1 {
-      font-weight: 600;
-      font-size: 1.8em;
-      margin-bottom: 5vh;
-      opacity: 0.9;
-      padding-left: $grid-gutter-width;
-      padding-right: $grid-gutter-width;
-
-      strong {
-        font-weight: 700;
-      }
-      small {
-        color: inherit;
-        font-weight: 600;
-      }
+  .logo {
+    @media screen and (min-width: $screen-lg) {
+      width: 240px;
+      height: 240px*0.1667; // for IE
     }
+  }
 
-    & > span {
-      font-size: 2em;
-      opacity: 0.9;
-    }
+  .cta {
+    display: inline-block;
+    background-color: $brand-primary;
+    @include rev-out(#fff, $brand-primary);
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: $border-radius-large;
+    border-bottom: solid 0.3em darken($brand-primary, 8%);
+    padding-top: 0.4em;
+    margin-top: 5vh;
 
     &:hover {
-      & > span {
-        opacity: 1;
+      background-color: darken($brand-primary, 4%);
+    }
+
+    @media screen and (min-width: $screen-sm) {
+      font-size: 18px;
+    }
+    @media screen and (min-width: $screen-md) {
+      font-size: 20px;
+    }
+    @media screen and (min-width: $screen-lg) {
+      font-size: 24px;
+    }
+
+    .sub-text {
+      font-size: 0.8em;
+      opacity: 0.8;
+      margin: 0;
+
+      .link-icon {
+        margin-right: 0.25em;
+      }
+
+      .link-text {
+        font-size: 0.8em;
       }
     }
   }
@@ -47,8 +57,21 @@
   .main-header {
     text-align: center;
 
-    .inner > div {
-      min-height: 100vh;
+    .inner {
+      // make space for screenshot
+      @media screen and (min-width: $screen-sm) {
+        padding-bottom: 100px;
+      }
+      @media screen and (min-width: $screen-md) {
+        padding-bottom: 150px;
+      }
+      @media screen and (min-width: $screen-lg) {
+        padding-bottom: 200px;
+      }
+    }
+
+    .content {
+      padding-bottom: 6vh;
     }
 
     a {
@@ -56,14 +79,7 @@
     }
 
     .main-nav {
-      position: absolute;
-      width: 100%;
-      left: 0;
-      text-align: right;
-
-      .logo {
-        float: left;
-      }
+      display: flex;
 
       nav {
         padding-top: $grid-gutter-width;
@@ -89,7 +105,7 @@
               display: inline-block;
               font-size: 1.2em;
               font-weight: 600;
-              border: solid 4px #fff;
+              border: solid 2px #fff;
               padding: 0.2em 1em;
               margin-left: 0.5em;
             }
@@ -102,375 +118,289 @@
       }
     }
 
-    .source-item {
-      @keyframes bounceInRight {
-        from, 60%, 75%, 90%, to {
-          animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
-        }
+    h1 {
+      margin-top: 4vh;
 
-        from {
-          opacity: 0;
-          transform: translate3d(3000px, 0, 0);
-        }
-
-        60% {
-          opacity: 1;
-          transform: translate3d(-25px, 0, 0);
-        }
-
-        75% {
-          transform: translate3d(10px, 0, 0);
-        }
-
-        90% {
-          transform: translate3d(-5px, 0, 0);
-        }
-
-        to {
-          transform: none;
-        }
+      @media screen and (min-width: $screen-sm) {
+        font-size: 34px;
       }
-
-      animation-duration: 0.7s;
-      animation-fill-mode: both;
-      animation-name: bounceInRight;
-      text-align: left;
-      font-size: 8vmin;
-      border-radius: 0.1em 0 0 0.1em;
-      width: 100vw;
-      margin-top: 33vh;
-
-      .source {
-        padding: 0.6em 0.5em;
+      @media screen and (min-width: $screen-md) {
+        font-size: 44px;
       }
-
-      .label {
-        font-size: 1em;
-        padding: .1em .45em;
-        border-radius: 0.1em;
+      @media screen and (min-width: $screen-lg) {
+        font-size: 58px;
       }
+    }
 
-      .panel-title {
-        color: $text-color;
-        display: inline-block;
-        font-size: 1em;
-        font-weight: 700;
-        margin-left: 0.3em;
+    p {
+      font-size: 18px;
+
+      @media screen and (min-width: $screen-sm) {
+        font-size: 20px;
       }
-
-      .job {
-        font-size: 1em;
-        padding: 0.2em 0.5em;
-        color: $gray;
-        border-top-color: $gray-lighter;
-        border-top-width: 0.07em;
-        line-height: 1.3;
-
-        .icon-clock {
-          font-size: 0.7em;
-          top: 0em;
-          opacity: 0.7;
-        }
-
-        .time {
-          font-size: 0.6em;
-          font-weight: 600;
-          position: relative;
-          top: -0.2em;
-          opacity: 0.7;
-        }
+      @media screen and (min-width: $screen-md) {
+        font-size: 22px;
+      }
+      @media screen and (min-width: $screen-lg) {
+        font-size: 28px;
       }
     }
   }
 
-  .feature-list {
-    margin: 0;
-    padding: 0;
-    @include make-row();
+  .screenshot {
+    display: none;
 
-    li {
+    @media screen and (min-width: $screen-sm) {
       display: block;
-      @include make-sm-column(4);
-      margin-top: 5vh;
-      margin-bottom: 5vh;
+      background-color: $gray-light;
+      border-top-left-radius: $border-radius-large;
+      border-top-right-radius: $border-radius-large;
+      position: relative;
+      padding-top: 28px;
 
-      p {
-        font-size: 1.5em;
-        font-weight: 600;
-        max-width: 14em;
-        margin: 2vh auto 0 auto;
+      img {
+        width: 100%;
       }
 
-      & > span {
-        display: inline-block;
-        width: 160px;
-        height: 160px;
-
-        &[class^="icon-"] {
-          font-size: 160px;
-          top: 0;
-        }
-      }
-
-      .wrapper {
-        background-color: $text-color;
-        color: #fff;
+      &:before,
+      &:after{
+        content: '';
+        display: block;
+        width: 10px;
+        height: 10px;
+        background-color: darken($gray-light,8%);
+        position: absolute;
         border-radius: 50%;
-
-        [class^="icon-"] {
-          display: block;
-          font-size: 120px;
-          top: 22px;
-        }
+        top: 10px;
+      }
+      &:before {
+        left: 24px;
+        box-shadow: -14px 0px 0px 0px darken($gray-light,8%);
+      }
+      &:after {
+        left: 38px;
       }
 
-      &.check {
-        .wrapper {
-          background-color: $brand-primary;
-          @include gradient-vertical($brand-primary, rgba($brand-info,0.3), 0%, 100%);
-        }
-      }
+      margin-top: -100px;
+    }
+    @media screen and (min-width: $screen-md) {
+      padding-top: 34px;
+      margin-top: -150px;
 
-      &.validate {
-        [class^="icon-"] {
-          font-size: 100px;
-          top: 34px;
-          left: 5px;
-        }
+      &:before,
+      &:after{
+        top: 12px;
       }
-      &.trust {
-        .wrapper {
-          background-color: $brand-primary;
-          @include gradient-vertical($brand-primary, rgba($brand-info,0.3), 0%, 100%);
-        }
-        [class^="icon-"] {
-          top: 28px;
-        }
+      &:before {
+        left: 26px;
       }
-      &.quality {
-        .wrapper {
-          background-color: $brand-primary;
-          @include gradient-vertical($brand-primary, rgba($brand-info,0.3), 0%, 100%);
-        }
-        [class^="icon-"] {
-          font-size: 80px;
-          top: 18px;
+      &:after {
+        left: 40px;
+      }
+    }
+    @media screen and (min-width: $screen-lg) {
+      padding-top: 38px;
+      margin-top: -200px;
 
-          & + [class^="icon-"] {
-            top: -12px;
-          }
-        }
+      &:before,
+      &:after{
+        width: 11px;
+        height: 11px;
+        top: 14px;
       }
+      &:before {
+        left: 30px;
+        box-shadow: -16px 0px 0px 0px darken($gray-light,8%);
+      }
+      &:after {
+        left: 46px;
+      }
+    }
+
+    & + * {
+      margin-top: 6vh;
     }
   }
 
   .features {
-    text-align: center;
-    position: relative;
+    @include make-row();
 
-    .next {
-      display: none;
-    }
+    figure {
+      @include make-sm-column(6);
+      @include make-md-column(3);
+      margin-bottom: $grid-gutter-width;
 
-    @media screen and (min-width: $screen-md) {
-      .container {
-        position: relative;
+      img {
+        display: inline-block;
+        max-width: 170px;
+        border: solid 2px $gray-light;
+        border-radius: 50%;
+        margin-bottom: 1em;
       }
-      .content {
-        display: table;
-        height: 100vh;
 
-        .inner {
-          display: table-cell;
-          vertical-align: middle;
-        }
-      }
-    }
-    @media screen and (min-width: $screen-md) and (min-height: 640px) {
-      .next {
-        display: block;
-      }
-    }
-    @media screen and (min-height: 820px) {
-
-      .feature-list {
-        li {
-          margin-top: 7vh;
-          margin-bottom: 7vh;
-        }
+      figcaption {
+        font-size: 16px;
+        line-height: 1.6;
       }
     }
   }
 
-  .text {
-    background-color: $brand-info;
-    @include rev-out(#fff, $brand-primary);
-    line-height: 1.6;
+  .info {
+    @include make-row();
+
+    .item {
+      text-align: left;
+      @include make-sm-column(4);
+      margin-top: $grid-gutter-width/2;
+      line-height: 1.5;
+
+      .inner {
+        background-color: $gray-lighter;
+        padding: $grid-gutter-width/2 $grid-gutter-width;
+      }
+    }
+  }
+
+  .main-content {
+    text-align: center;
+    padding-bottom: $grid-gutter-width*2;
 
     h2 {
-      font-weight: 600;
-      line-height: 1.4;
-      margin-bottom: 4vh;
-    }
+      margin-bottom: 1em;
 
-    p {
-      font-size: 1.1em;
-    }
-
-    a {
-      color: white;
-      font-weight: bold;
-    }
-    .container {
-      display: table;
-      height: 100vh;
-    }
-
-    .content,
-    .cta {
-      display: table-row;
-
-      .inner {
-        display: table-cell;
-        vertical-align: middle;
+      @media screen and (min-width: $screen-sm) {
+        font-size: 26px;
       }
-    }
-
-    .content {
-      height: 99%;
-
-      .inner {
-        padding-top: 1em;
-        padding-bottom: 1em;
+      @media screen and (min-width: $screen-md) {
+        font-size: 30px;
       }
-    }
-
-    .cta {
-      height: 1%;
-      background-color: $brand-primary;
-
-      h2 {
-        margin-bottom: 0;
-        font-size: 2em;
-
-        @media screen and (min-width: $screen-sm) {
-          font-size: 2.4em;
-        }
-      }
-
-      .btn {
-        font-size: 20px;
-        margin-top: $grid-gutter-width;
-      }
-
-      small {
-        margin-bottom: $grid-gutter-width*0.75;
-        line-height: 1.2;
-        display: block;
-      }
-
-      .inner {
-        position: relative;
-        z-index: 1;
-
-        &:before {
-          content: '';
-          position: absolute;
-          top: 0;
-          bottom: 0;
-          left: -100vw;
-          width: 300vw;
-          background-color: $brand-primary;
-          z-index: -1;
-        }
-      }
-    }
-
-    @media screen and (min-width: $screen-sm) {
-      .btn {
-        float: right;
-        margin-left: $grid-gutter-width;
-      }
-      h2 {
-        font-size: 34px;
-      }
-      p {
-        font-size: 1.4em;
-      }
-    }
-    @media screen and (min-width: $screen-md) {
-      h2 {
-        font-size: 38px;
-      }
-    }
-    @media screen and (min-width: $screen-md) and (min-height: 820px) {
-      h2 {
-        font-size: 42px;
+      @media screen and (min-width: $screen-lg) {
+        font-size: 36px;
       }
     }
   }
 
-  .footer {
-    background-color: $gray-dark;
-    color: rgba(255, 255, 255, 0.6);
-    padding: 30px 0;
-    font-size: 14px;
+  .orgs {
+    background-color: $gray-lighter;
+    color: $gray-dark;
+    text-align: center;
+    padding-top: $grid-gutter-width/2;
+    padding-bottom: $grid-gutter-width;
+    line-height: 1.6;
 
-    a {
-      color: rgba(255, 255, 255, 0.9);
-
-      &:hover {
-        color:#fff;
-      }
+    @media (min-width: $screen-md) {
+      font-size: 18px;
     }
 
-    .footer-primary {
-      @include make-row();
+    .container {
+      max-width: $screen-md;
+    }
 
-      .footer-logo {
-        @include make-md-column(2);
-        opacity: 0.9;
+    svg {
+      fill: $gray-dark;
+    }
 
-        &:hover {
-          opacity: 1;
+    .logos {
+      display: flex;
+      margin: 0;
+      padding: 0;
+      justify-content: center;
+      align-items: center;
+
+      li {
+        display: inline-block;
+        padding: $grid-gutter-width;
+
+        svg {
+          width: 100%;
+          height: 40px;
+
+          @media screen and (min-width: $screen-sm) {
+            height: 52px;
+          }
+
+          @media screen and (min-width: $screen-md) {
+            height: 64px;
+          }
         }
 
-        img {
-          width: 130px;
-          max-width: 100%;
-        }
-      }
-
-      .footer-links {
-        margin: 10px;
-        padding: 0 5px;
-
-        @media (min-width: $screen-md-min) {
-          @include make-md-column(10);
-          text-align: right;
-          margin: 0;
-        }
-
-        li {
-          display: block;
-
-          @media (min-width: $screen-md-min) {
-            display: inline-block;
-            padding: 7px;
-
-            &:last-child {
-              padding-right: 0;
+        &.fd {
+          svg {
+            @media screen and (min-width: $screen-sm) {
+              height: 42px;
+            }
+            @media screen and (min-width: $screen-md) {
+              height: 48px;
             }
           }
         }
       }
     }
+  }
+}
 
-    .footer-secondary {
-      font-size: 13px;
-      border-top: solid 1px rgba(255, 255, 255, 0.4);
-      margin-top: 15px;
-      padding-top: 15px;
+
+// Main footer
+.site-footer {
+  background-color: $gray-base;
+  color: rgba(255, 255, 255, 0.6);
+  padding: 30px 0;
+  font-size: 14px;
+
+  a {
+    color: rgba(255, 255, 255, 0.9);
+
+    &:hover {
+      color:#fff;
     }
+  }
+
+  .footer-primary {
+    @include make-row();
+
+    .footer-logo {
+      @include make-md-column(2);
+      opacity: 0.9;
+
+      &:hover {
+        opacity: 1;
+      }
+
+      img {
+        width: 130px;
+        max-width: 100%;
+      }
+    }
+
+    .footer-links {
+      margin: 10px;
+      padding: 0 5px;
+
+      @media (min-width: $screen-md-min) {
+        @include make-md-column(10);
+        text-align: right;
+        margin: 0;
+      }
+
+      li {
+        display: block;
+
+        @media (min-width: $screen-md-min) {
+          display: inline-block;
+          padding: 7px;
+
+          &:last-child {
+            padding-right: 0;
+          }
+        }
+      }
+    }
+  }
+
+  .footer-secondary {
+    font-size: 13px;
+    border-top: solid 1px rgba(255, 255, 255, 0.4);
+    margin-top: 15px;
+    padding-top: 15px;
   }
 }

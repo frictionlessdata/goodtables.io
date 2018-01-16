@@ -6,15 +6,4 @@
   svg {
     fill: $col;
   }
-
-  .btn {
-    border-color: $col;
-    background-color: $col;
-    color: $bg;
-
-    &.btn-default {
-      color: $col;
-      background-color: rgba($bg,0);
-    }
-  }
 }
