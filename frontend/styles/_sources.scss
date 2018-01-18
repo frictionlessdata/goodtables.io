@@ -1,0 +1,36 @@
+.sources {
+
+  &.only {
+    @media screen and (min-width: $screen-sm) {
+      min-height: 100vh;
+    }
+    @media screen and (min-width: $screen-md) {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .filter {
+      margin-bottom: $grid-gutter-width;
+    }
+
+    .nav-tabs {
+      padding: $grid-gutter-width*0.75 $grid-gutter-width 0 $grid-gutter-width;
+      font-size: $font-size-h3;
+      font-weight: 600;
+    }
+
+    .tab-content {
+      padding: $grid-gutter-width;
+      display: flex;
+      flex-direction: column;
+
+      .tab-pane {
+        &.active {
+          display: flex;
+          flex-direction: column;
+        }
+      }
+    }
+  }
+}

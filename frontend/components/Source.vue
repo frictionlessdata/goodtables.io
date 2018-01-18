@@ -1,7 +1,7 @@
 <script>
 import goodtablesUI from 'goodtables-ui'
-import JobList from './JobList.vue'
-import JobListItem from './JobListItem.vue'
+// import JobList from './JobList.vue'
+// import JobListItem from './JobListItem.vue'
 import MessageGroup from './MessageGroup.vue'
 
 export default {
@@ -11,8 +11,6 @@ export default {
     job: Object,
   },
   components: {
-    JobList,
-    JobListItem,
     MessageGroup,
   },
   computed: {

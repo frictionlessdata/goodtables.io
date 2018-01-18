@@ -1,6 +1,6 @@
 .main-header {
   $header_colour1: $brand-info;
-  $header_colour2: $brand-primary;
+  $header_colour2: $brand-success;
   background-color: $header_colour1;
   @include rev-out(#fff, $header_colour1);
   @include gradient-horizontal($header_colour1, $header_colour2, 0%, 100%);
@@ -12,6 +12,7 @@
   .logo {
     display: block;
     width: 200px;
+    height: 200px*0.1667; // for IE
     padding-top: $grid-gutter-width;
     padding-bottom: $grid-gutter-width;
     box-sizing: content-box;

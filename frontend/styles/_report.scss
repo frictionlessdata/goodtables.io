@@ -1,98 +1,107 @@
-.report {
+.source-view {
 
-  .alert {
-    margin-top: 20px;
+  & > .integration {
+    float: right;
+    margin: 20px 20px 0 20px;
+    font-size: 28px;
+    color: inherit;
+    text-decoration: none;
   }
 
-  .file-heading {
-    font-size: 13px;
-    font-weight: 500;
-    padding-bottom: 10px;
-    margin-top: 0;
-    margin-bottom: 0;
-    min-width: 50%;
-    white-space: nowrap;
+  .latest-job {
+    display: table;
+    width: 100%;
 
-    span {
-      display: table;
-      width: 100%;
+    a {
+      color: inherit;
+      font-weight: 500;
+    }
 
-      :last-child {
-        text-align: right;
+    @media screen and (min-width: $screen-sm) {
+      margin-top: 10px;
+      margin-bottom: $grid-gutter-width;
+    }
+
+    .icon {
+      width: 55px;
+      display: table-cell;
+      vertical-align: middle;
+    }
+
+    .label {
+      float: left;
+      height: 40px;
+      width: 40px;
+      line-height: 39px;
+
+      span {
+        font-size: 19px;
       }
     }
 
-    .file-count,
-    .file-name {
+    .status {
       display: table-cell;
-      color: $text-color;
-      text-decoration: none;
-      height: 64px;
       vertical-align: middle;
 
-      &:hover {
-        color: inherit;
+      & > * {
+        margin: 0;
+        line-height: 1.3;
+      }
+      small {
+        display: block;
+        color: $gray-dark;
       }
     }
 
-    .file-name {
-      font-weight: 600;
-      font-size: 15px;
-    }
-  }
+    .meta {
+      display: table-caption;
+      caption-side: bottom;
+      color: $gray-darker;
 
-  .panel {
+      ul {
+        margin: 0 0 0 45px;
+        padding: 0;
 
-    & + .file-heading {
-      margin-top: 30px;
-      border-top: solid 1px rgba($gray-dark,0.3);
-    }
-  }
-
-  .result {
-    .error-details-link {
-      color: #2f3135;
-    }
-    .error-details {
-      text-align: left;
-    }
-    .show-more {
-      padding-top: 10px;
-      a {
-        color: #2f3135;
-      }
-    }
-    .table-container {
-      overflow-y: auto;
-    }
-  }
-
-  .meta {
-    color: #777;
-  }
-}
-
-.default-view {
-
-  .file-heading {
-    span {
-      &.stick {
-        position: fixed;
-        top: 0;
-        background-color: $body-bg;
-        z-index: 99;
-
-        &:before {
-          content: '';
-          position: absolute;
-          top: 0;
-          bottom: 1px;
-          left: -30px;
-          right: -30px;
-          background-color: $body-bg;
-          z-index: -1;
-          border-bottom: solid 1px $brand-danger;
+        li {
+          display: inline-block;
+          padding: 10px;
         }
+      }
+
+      @media screen and (min-width: $screen-sm) {
+        display: table-cell;
+        text-align: right;
+
+        ul {
+          margin: 0;
+
+          li {
+            display: block;
+            padding: 0;
+          }
+        }
+      }
+    }
+  }
+
+  .report {
+    & > .inner {
+      border-top: solid 4px $brand-info;
+    }
+
+    &.invalid {
+      & > .inner {
+        border-color: $brand-danger;
+
+        .status > * {
+          color: $brand-danger;
+        }
+      }
+    }
+
+    &.valid {
+      & > .inner {
+        border-color: $brand-success;
       }
     }
   }

@@ -1,0 +1,4 @@
+.minimal {
+  background-color: $brand-primary;
+  @include rev-out(#fff, $brand-primary);
+}

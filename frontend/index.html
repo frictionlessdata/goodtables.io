@@ -29,14 +29,16 @@
     new frontend.Vue({
       el: '#app',
       render(createElement) {
-        if (component === 'Home') {
-          return createElement(frontend[component], {props})
+        if (component === 'Landing') {
+          return createElement(frontend.Landing, {props})
         }
-        return createElement('div', null, [
-          createElement(frontend.Header, {props}),
-          createElement(frontend.Messages, {props}),
-          createElement(frontend[component], {props}),
-        ])
+        return createElement(frontend.App, {
+          scopedSlots: {
+            sidebar: () => createElement(frontend.Sidebar, {props}),
+            messages: () => createElement(frontend.Messages, {props}),
+            contents: () => createElement(frontend[component], {props}),
+          }
+        })
       },
     })
   </script>

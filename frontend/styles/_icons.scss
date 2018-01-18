@@ -36,20 +36,17 @@
   }
 }
 
-.icon-keyboard_arrow_down:before {
-  content: "\e907";
+.icon-search:before {
+  content: "\e90b";
 }
-.icon-keyboard_arrow_right:before {
-  content: "\e904";
+.icon-jobs:before {
+  content: "\e9ba";
 }
-.icon-keyboard_arrow_left:before {
-  content: "\e903";
+.icon-arrow-up-right:before {
+  content: "\ea3b";
 }
-.icon-shield:before {
-  content: "\e905";
-}
-.icon-mouse-pointer:before {
-  content: "\e908";
+.icon-dashboard:before {
+  content: "\e9a6";
 }
 .icon-enter:before {
   content: "\e909";
@@ -81,7 +78,7 @@
 .icon-clock:before {
   content: "\e94e";
 }
-.icon-spinner11:before {
+.icon-refresh:before {
   content: "\e984";
 }
 .icon-equalizer:before {
@@ -104,6 +101,24 @@
 }
 .icon-github:before {
   content: "\eab0";
+}
+.icon-dots-three-horizontal:before {
+  content: "\e90a";
+}
+.icon-shield:before {
+  content: "\e905";
+}
+.icon-keyboard_arrow_down:before {
+  content: "\e907";
+}
+.icon-keyboard_arrow_right:before {
+  content: "\e904";
+}
+.icon-keyboard_arrow_left:before {
+  content: "\e903";
+}
+.icon-mouse-pointer:before {
+  content: "\e908";
 }
 .icon-grid:before {
   content: "\e900";

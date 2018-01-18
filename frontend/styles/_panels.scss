@@ -3,36 +3,26 @@
   box-shadow: none;
   border-width: 0;
 
-  @mixin active-panel {
-    background-color: $body-bg;
-    color: $text-color;
-    border-left-width: 5px;
-  }
-
   .github,
-  .s3 {
+  .aws {
     position: relative;
 
     .integration {
       position: absolute;
-      top: 1px;
+      top: 5px;
       right: 0;
       font-size: 15px;
       text-decoration: none;
       padding: 11px 10px;
+      @include gradient-horizontal(rgba(#fff,0), #fff, 0%, 25%);
     }
   }
 
-  &.no-sources {
+  .source-item & {
     white-space: nowrap;
-    border-width: 0;
-    background-color: #f3f4f4;
-    padding: 20px;
-  }
-
-  &.source-item {
-    white-space: nowrap;
-    border-width: 0;
+    border-width: 0 4px 0 0;
+    color: $text-color;
+    margin-bottom: $grid-gutter-width/2;
 
     a {
       color: inherit;
@@ -45,13 +35,10 @@
     .panel-title {
       display: inline-block;
       font-weight: 600;
-    }
+      font-size: 14px;
 
-    .panel-details {
-      padding-top: 1em;
-
-      a {
-        font-weight: bold;
+      .jobnumber {
+        @include text-hide;
       }
     }
 
@@ -66,24 +53,64 @@
           background-color: $brand-warning;
           border-color: $brand-warning;
         }
-        .source-view & {
-          color: #fff;
-        }
       }
     }
 
     .source {
       padding: 10px;
+
+      .status {
+        @include text-hide;
+        display: block; // for safari
+      }
+
+      @media screen and (min-width: $screen-sm) {
+        padding: 14px 12px;
+      }
+
+      .avatar {
+        display: block;
+        width: 24px;
+        height: 24px;
+        border-radius: $border-radius-base;
+        overflow: hidden;
+        float: left;
+        margin-right: 10px;
+
+        img {
+          width: 100%;
+        }
+
+        & + .panel-title {
+          position: relative;
+          top: 2px;
+        }
+      }
     }
 
     .job {
-      border-top: solid 1px $gray-darker;
+      border-top: solid 1px $gray-light;
       padding: 3px 10px;
       font-size: 12px;
       font-weight: 500;
 
+      .label {
+        display: inline-block;
+        width: 24px;
+      }
+
+      .icon-clock,
+      .time,
+      .jobcount {
+        opacity: 0.7;
+      }
+
       .jobcount {
         float: right;
+      }
+
+      @media screen and (min-width: $screen-sm) {
+        padding: 6px 12px;
       }
     }
 
@@ -138,28 +165,8 @@
       }
     }
 
-    &.panel-warning {
-      @media screen and (min-width: $screen-sm) {
-        @include panel_state($brand-warning);
-      }
-      .source-view & {
-        @include panel_state($brand-warning);
-      }
-    }
-
-    &.panel-info {
-      @media screen and (min-width: $screen-sm) {
-        @include panel_state($brand-info);
-      }
-      .source-view & {
-        @include panel_state($brand-info);
-      }
-    }
-
     &.active {
       @media screen and (min-width: $screen-sm) {
-
-        @include active-panel;
 
         .source,
         .job {
@@ -190,67 +197,6 @@
             @include gradient-horizontal(rgba($brand-danger,0), $brand-danger, 0%, 25%);
           }
         }
-      }
-    }
-  }
-
-  .table {
-    font-size: 11px;
-    background-color: $body-bg;
-
-    &:last-child {
-      margin-bottom: 0;
-    }
-
-    .result-header-row {
-      font-weight: 600;
-    }
-
-    .result-row-index {
-      font-weight: normal;
-      width: 1em;
-    }
-  }
-
-  &.result {
-
-    .panel-heading {
-      text-align: right;
-      font-size: 15px;
-      line-height: 1.2;
-      @include clearfix;
-
-      .label,
-      .panel-title {
-        float: left;
-        margin-right: 0.5em;
-      }
-
-      .count {
-        background-color: #fff;
-        color: currentColor;
-      }
-
-      .panel-title {
-        font-size: inherit;
-        small {
-          font-size: 14px;
-        }
-      }
-
-      .help {
-        font-size: 12px;
-        cursor: pointer;
-      }
-    }
-
-    .popover {
-      font-size: 13px;
-
-      .label {
-        float: right;
-        margin-left: 0.5em;
-        margin-right: 0;
       }
     }
   }

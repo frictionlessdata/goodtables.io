@@ -1,0 +1,33 @@
+.error-page {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .inner {
+    width: 70vmin;
+    position: relative;
+    padding-bottom: 0.5vmin;
+  }
+
+  h1 {
+    margin: 0;
+    position: absolute;
+    font-size: 3vmin;
+    bottom: 77vmin;
+    left: 5vmin;
+  }
+
+  .maze {
+    width: 70vmin;
+    height: 70vmin*1.1356; // for IE
+  }
+
+  .logo {
+    width: 28vmin;
+    height: 28vmin*0.1667; // for IE
+    position: absolute;
+    right: 0;
+    bottom: -4vmin;
+  }
+}

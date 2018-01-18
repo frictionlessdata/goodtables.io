@@ -1,8 +1,12 @@
 .nav {
-  & > li > a {
-    [class^="icon-"], [class*=" icon-"] {
-      &:first-child {
-        margin-right: 8px;
+  & > li {
+    & > span {
+      display: block;
+      padding: 6px 16px;
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+        cursor: pointer;
       }
     }
   }
@@ -15,8 +19,25 @@
 }
 
 .nav-tabs {
-  & > li > a {
-    padding: 10px 15px;
-    color: $text-color;
+
+  & > li {
+
+    & > a {
+      padding: 10px 15px;
+      color: $gray-dark;
+    }
+
+    &.active > a {
+      &,
+      &:hover,
+      &:focus {
+        background-color: $gray-lighter;
+        color: $text-color;
+      }
+    }
   }
+}
+
+.tab-content {
+  background-color: $gray-lighter;
 }

@@ -1,0 +1,55 @@
+.jobs {
+  background-color: $gray-lighter;
+
+  .filter {
+    margin: $grid-gutter-width/2 $grid-gutter-width/2 0 $grid-gutter-width/2;
+  }
+
+  .source-item {
+    padding: 0 $grid-gutter-width/2;
+  }
+
+  .source-list {
+    padding-top: $grid-gutter-width/4;
+    padding-bottom: $grid-gutter-width/2;
+
+    .source-item:last-child {
+      .panel {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  &.only {
+    @media screen and (min-width: $screen-sm) {
+      min-height: 100vh;
+    }
+
+    .source-list {
+      padding-top: $grid-gutter-width/2;
+
+      @media screen and (min-width: $screen-md) {
+        padding-left: $grid-gutter-width/4;
+        padding-right: $grid-gutter-width/4;
+        @include clearfix;
+      }
+
+      .source-item  {
+        @media screen and (min-width: $screen-md) {
+          padding-left: $grid-gutter-width/4;
+          padding-right: $grid-gutter-width/4;
+          float: left;
+          width: 50%;
+        }
+
+        @media screen and (min-width: 1536px) {
+          width: (100% / 3);
+        }
+
+        @media screen and (min-width: 1984px) {
+          width: 25%;
+        }
+      }
+    }
+  }
+}

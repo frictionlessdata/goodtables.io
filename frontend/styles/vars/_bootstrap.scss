@@ -8,15 +8,15 @@ $bootstrap-sass-asset-helper: false !default;
 //
 //## Gray and brand colors for use across Bootstrap.
 
-$gray-base:              #17181a !default;
-$gray-darker:            lighten($gray-base, 6%) !default;
-$gray-dark:              lighten($gray-base, 10%) !default;
-$gray:                   lighten($gray-dark, 7%) !default;
-$gray-light:             lighten($gray-base, 46.7%) !default;
-$gray-lighter:           lighten($gray-base, 80%) !default;
+$gray-base:              #333333 !default;
+$gray-darker:            #595959 !default;
+$gray-dark:              #808080 !default;
+$gray:                   #B3B3B3 !default;
+$gray-light:             #D9D9D9 !default;
+$gray-lighter:           #F2F2F2 !default;
 
-$brand-primary:         #01CD81 !default;
-$brand-success:         $brand-primary !default;
+$brand-primary:         #01578A !default;
+$brand-success:         #01CD81 !default;
 $brand-info:            #1595BC !default;
 $brand-warning:         #f0ad4e !default;
 $brand-danger:          #F13C3F !default;
@@ -29,7 +29,7 @@ $brand-danger:          #F13C3F !default;
 //** Background color for `<body>`.
 $body-bg:               #fff !default;
 //** Global text color on `<body>`.
-$text-color:            $gray-dark !default;
+$text-color:            $gray-base !default;
 
 //** Global textual link color.
 $link-color:            $brand-primary !default;
@@ -53,10 +53,10 @@ $font-size-base:          14px !default;
 $font-size-large:         ceil(($font-size-base * 1.25)) !default; // ~18px
 $font-size-small:         ceil(($font-size-base * 0.85)) !default; // ~12px
 
-$font-size-h1:            floor(($font-size-base * 2.6)) !default; // ~36px
-$font-size-h2:            floor(($font-size-base * 2.15)) !default; // ~30px
-$font-size-h3:            ceil(($font-size-base * 1.7)) !default; // ~24px
-$font-size-h4:            ceil(($font-size-base * 1.25)) !default; // ~18px
+$font-size-h1:            floor(($font-size-base * 1.7)) !default; // ~36px
+$font-size-h2:            floor(($font-size-base * 1.5)) !default; // ~30px
+$font-size-h3:            ceil(($font-size-base * 1.3)) !default; // ~24px
+$font-size-h4:            ceil(($font-size-base * 1.2)) !default; // ~18px
 $font-size-h5:            $font-size-base !default;
 $font-size-h6:            ceil(($font-size-base * 0.85)) !default; // ~12px
 
@@ -107,7 +107,7 @@ $padding-xs-horizontal:     5px !default;
 $line-height-large:         1.3333333 !default; // extra decimals for Win 8.1 Chrome
 $line-height-small:         1.5 !default;
 
-$border-radius-base:        0px !default;
+$border-radius-base:        2px !default;
 $border-radius-large:       3px !default;
 $border-radius-small:       1px !default;
 
@@ -147,7 +147,7 @@ $table-border-color:            #ddd !default;
 //
 //## For each of Bootstrap's buttons, define text, background and border color.
 
-$btn-font-weight:                bold !default;
+$btn-font-weight:                500 !default;
 
 $btn-default-color:              $text-color !default;
 $btn-default-bg:                 rgba(#fff,0) !default;
@@ -193,7 +193,7 @@ $input-bg-disabled:              $gray-lighter !default;
 //** Text color for `<input>`s
 $input-color:                    $gray !default;
 //** `<input>` border color
-$input-border:                   #ccc !default;
+$input-border:                   $gray-light !default;
 
 // TODO: Rename `$input-border-radius` to `$input-border-radius-base` in v4
 //** Default `.form-control` border radius
@@ -205,10 +205,10 @@ $input-border-radius-large:      $border-radius-large !default;
 $input-border-radius-small:      $border-radius-small !default;
 
 //** Border color for inputs on focus
-$input-border-focus:             #66afe9 !default;
+$input-border-focus:             $brand-info !default;
 
 //** Placeholder text color
-$input-color-placeholder:        #999 !default;
+$input-color-placeholder:        $gray !default;
 
 //** Default `.form-control` height
 $input-height-base:              ($line-height-computed + ($padding-base-vertical * 2) + 2) !default;
@@ -224,7 +224,7 @@ $legend-color:                   $gray-dark !default;
 $legend-border-color:            #e5e5e5 !default;
 
 //** Background color for textual input addons
-$input-group-addon-bg:           $gray-lighter !default;
+$input-group-addon-bg:           rgba($input-bg,0) !default;
 //** Border color for textual input addons
 $input-group-addon-border-color: $input-border !default;
 
@@ -363,17 +363,15 @@ $container-lg:                 $container-large-desktop !default;
 
 // Basics of a navbar
 $navbar-height:                    50px !default;
-$navbar-margin-bottom:             0 !default;
+$navbar-margin-bottom:             $line-height-computed !default;
 $navbar-border-radius:             $border-radius-base !default;
 $navbar-padding-horizontal:        floor(($grid-gutter-width / 2)) !default;
 $navbar-padding-vertical:          (($navbar-height - $line-height-computed) / 2) !default;
 $navbar-collapse-max-height:       340px !default;
 
 $navbar-default-color:             #777 !default;
-/* $navbar-default-bg:                #f8f8f8 !default; */
-$navbar-default-bg:                #fff !default;
-/* $navbar-default-border:            darken($navbar-default-bg, 6.5%) !default; */
-$navbar-default-border:            #fff !default;
+$navbar-default-bg:                #f8f8f8 !default;
+$navbar-default-border:            darken($navbar-default-bg, 6.5%) !default;
 
 // Navbar links
 $navbar-default-link-color:                #777 !default;
@@ -433,13 +431,13 @@ $nav-disabled-link-color:                   $gray-light !default;
 $nav-disabled-link-hover-color:             $gray-light !default;
 
 //== Tabs
-$nav-tabs-border-color:                     #fff !default;
+$nav-tabs-border-color:                     $gray-light !default;
 
-$nav-tabs-link-hover-border-color:          rgba(#fff,0) !default;
+$nav-tabs-link-hover-border-color:          $nav-tabs-border-color !default;
 
 $nav-tabs-active-link-hover-bg:             #fff !default;
 $nav-tabs-active-link-hover-color:          $text-color !default;
-$nav-tabs-active-link-hover-border-color:   transparent !default;
+$nav-tabs-active-link-hover-border-color:   $nav-tabs-border-color !default;
 
 $nav-tabs-justified-link-border-color:            #ddd !default;
 $nav-tabs-justified-active-link-border-color:     $body-bg !default;
@@ -719,7 +717,7 @@ $panel-border-radius:         $border-radius-base !default;
 $panel-inner-border:          #ddd !default;
 $panel-footer-bg:             #f5f5f5 !default;
 
-$panel-default-text:          $gray-dark!default;
+$panel-default-text:          $text-color !default;
 $panel-default-border:        $panel-bg !default;
 $panel-default-heading-bg:    transparent !default;
 
@@ -767,8 +765,8 @@ $thumbnail-caption-padding:   9px !default;
 //
 //##
 
-$well-bg:                     #f5f5f5 !default;
-$well-border:                 darken($well-bg, 7%) !default;
+$well-bg:                     rgba(#000,0.1) !default;
+$well-border:                 rgba(#000,0.1) !default;
 
 
 //== Badges
@@ -785,7 +783,7 @@ $badge-active-color:          $link-color !default;
 //** Badge background color in active nav link
 $badge-active-bg:             #fff !default;
 
-$badge-font-weight:           bold !default;
+$badge-font-weight:           500 !default;
 $badge-line-height:           1 !default;
 $badge-border-radius:         10px !default;
 
@@ -836,8 +834,8 @@ $close-text-shadow:           0 1px 0 #fff !default;
 //
 //##
 
-$code-color:                  #c7254e !default;
-$code-bg:                     #f9f2f4 !default;
+$code-color:                  $text-color !default;
+$code-bg:                     $body-bg !default;
 
 $kbd-color:                   #fff !default;
 $kbd-bg:                      #333 !default;

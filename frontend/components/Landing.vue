@@ -7,7 +7,7 @@ const VueScrollTo = require('vue-scrollto')
 Vue.use(VueScrollTo)
 
 export default {
-  name: 'Home',
+  name: 'Landing',
   props: {},
   components: {
     Logo,
