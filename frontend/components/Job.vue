@@ -107,9 +107,9 @@ export default {
           <!-- User/message -->
           <span class="source">
             <a class="avatar">
-              <img :src="{userAvatar}" alt="" />
+              <img src="https://avatars1.githubusercontent.com/u/200230?s=48" alt="" />
             </a>
-            <h3 class="panel-title">{{ commitMessage }}</h3>
+            <h3 class="panel-title">{{ job.conf.commit_message }}</h3>
           </span>
 
           <!-- Statistics -->
@@ -118,7 +118,7 @@ export default {
               <span class="jobnumber">{{ commitHash }}</span>
             </span>
             <span class="label label-success">
-              <span class="icon-checkmark"><i>{{ JobStatus }}</i></span>
+              <span class="icon-checkmark"><i>{{ job.status }}</i></span>
             </span>
             <span class="time">{{ jobTimeStamp }}</span>
           </a>
