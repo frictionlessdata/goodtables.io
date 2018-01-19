@@ -177,14 +177,26 @@ export default {
           {{ sourceName }}
           <small>{{ jobTimeStamp }} ({{ commitHash }})</small>
         </h3>
-        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+        <a
+          role="button"
+          data-toggle="collapse"
+          data-parent="#accordion"
+          :href="`#job-${job.id}`"
+          aria-expanded="true"
+          aria-controls="collapseOne"
+        >
           <span class="icon-keyboard_arrow_down"><i>Toggle details</i></span>
         </a>
         <span class="count label label-danger">{{ errorCount }}</span>
       </div>
 
       <!-- Files -->
-      <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+      <div
+        :id="`job-${job.id}`"
+        class="panel-collapse collapse in"
+        role="tabpanel"
+        aria-labelledby="headingOne"
+      >
         <div class="panel-body">
           <ul class="dash-files">
             <li>
