@@ -62,7 +62,7 @@ export default {
         </div>
       </li>
       <li v-if="userName" class="log-out">
-        <a href="#">
+        <a :href="`${baseUrl}/user/logout`">
           <img src="https://github.com/smth.png?size=52" alt="" />
           <span class="text">Log out</span>
         </a>
