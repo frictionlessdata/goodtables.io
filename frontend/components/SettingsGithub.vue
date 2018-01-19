@@ -88,53 +88,81 @@ export default {
 <template>
 <div>
 
-  <div class="tool-bar">
-    <span>
-      <input v-model="filter" type="search" class="form-control search" placeholder="Filter">
-    </span>
-    <span class="sync">
-      <button @click="syncAccount()" class="refresh" :disabled="!ready || syncing"  data-toggle="tooltip" data-placement="left" title="Refresh your organizations and repositories">
-        <span class="icon-spinner11"><i>Sync account</i></span>
-      </button>
-    </span>
+  <!-- Filter -->
+  <div class="filter form-group">
+    <label class="sr-only" for="keyword">Filter by keyword</label>
+    <div class="input-group">
+      <input
+        v-model="filter"
+        type="text"
+        class="form-control input-lg"
+        id="keyword" placeholder="Filter by keyword"
+      >
+      <div class="input-group-addon">
+        <button><span class="icon-search"><i>Search</i></span></button>
+      </div>
+    </div>
   </div>
 
+  <!-- Messages -->
   <Messages v-if="error" :messages="[['danger', error]]" />
   <Messages v-if="syncing" :messages="[['warning', 'Syncing account. Please wait..']]" />
 
-  <ul v-if="repos.length" class="repos">
-    <li v-for="repo of filteredRepos" class="repo" :class="{active: repo.active}">
-      <button v-if="repo.active" @click="deactivateRepo(repo)" class="activate">
-        <span class="icon-cross"><i>Deactivate</i></span>
-      </button>
-      <button v-else @click="activateRepo(repo)" class="activate">
-        <span class="icon-plus"><i>Activate</i></span>
-      </button>
-      <h3 class="repo-title">
-        <a :href="`/github/${repo.name}`">{{ repo.name }}</a>
+  <!-- Sources -->
+  <div class="parts-selector" id="github-sources">
+
+    <!-- Available -->
+    <div class="parts list">
+      <h3 class="list-heading">
+        <a @click="syncAccount()" :disabled="!ready || syncing" class="refresh">
+          <span class="icon-refresh"><i>Refresh</i></span>
+        </a>
+        Available sources
       </h3>
-      <span class="repo-body">
-        <a :href="`https://github.com/${repo.name}`">View repository</a>
-      </span>
-    </li>
-  </ul>
-  <p v-else-if="!ready" class="empty">Loading repos. Please wait..</p>
-  <p v-else class="empty">There are no synced repositories</p>
+      <ul v-if="filteredRepos.filter(repo => !repo.active).length">
+        <li v-for="repo of filteredRepos" v-if="!repo.active">
+          <span class="source name">{{ repo.name }}</span>
+          <a :href="`https://github.com/${repo.name}`" class="repo link">View repository</a>
+          <a @click="activateRepo(repo)" class="add item-button">
+            <span class="icon"></span>
+            <span class="text">Add</span>
+          </a>
+        </li>
+      </ul>
+      <div v-else class="empty action">
+        <p>No sources found.</p>
+        <p>Use the <span class="icon-refresh"><i>Refresh</i></span> button to refresh your list of repositories and organisations.</p>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+      <a class="moveto selected"><span class="icon"></span><span class="text">Add</span></a>
+      <a class="moveto parts"><span class="icon"></span><span class="text">Remove</span></a>
+    </div>
+
+    <!-- Active -->
+    <div class="selected list">
+      <h3 class="list-heading">Active sources</h3>
+      <ul v-if="filteredRepos.filter(repo => repo.active).length">
+        <li v-for="repo of filteredRepos" v-if="repo.active">
+          <span class="source name">{{ repo.name }}</span>
+          <a :href="`https://github.com/${repo.name}`" class="repo link">View repository</a>
+          <a @click="deactivateRepo(repo)" class="remove item-button">
+            <span class="icon"></span>
+            <span class="text">Remove</span>
+          </a>
+        </li>
+      </ul>
+      <div v-else class="empty">
+        <p>No active sources found.</p>
+      </div>
+    </div>
+
+  </div>
 
 </div>
 </template>
 
 <style scoped>
-.sync {
-  margin-bottom: 10px;
-  border-bottom: solid 1px #eee;
-  padding-bottom: 10px;
-  text-align: right;
-}
-.empty {
-  margin: 10px 0;
-}
-.btn {
-  width: 120px;
-}
 </style>
