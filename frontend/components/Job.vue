@@ -7,7 +7,7 @@ export default {
   props: {
     job: Object,
     view: String,
-    collapsed: Boolean,
+    active: Boolean,
   },
   computed: {
     statusPanelClass() {
@@ -119,20 +119,20 @@ export default {
 
   <!-- Compact -->
   <div v-if="view === 'compact'">
-    <div class="source-item">
+    <div class="source-item" :class="{active}">
       <div class="panel panel-success">
         <div :class="job.integration_time">
 
           <!-- User/message -->
           <span class="source">
-            <a class="avatar">
+            <a class="avatar" :href="internalURL">
               <img src="https://avatars1.githubusercontent.com/u/200230?s=48" alt="" />
             </a>
             <h3 class="panel-title">{{ job.conf.commit_message }}</h3>
           </span>
 
           <!-- Statistics -->
-          <a class="job">
+          <a class="job" :href="internalURL">
             <span class="jobcount" v-if="commitHash">
               <span class="jobnumber">{{ commitHash }}</span>
             </span>
@@ -203,7 +203,7 @@ export default {
           :href="`#job-${job.id}`"
           aria-expanded="true"
           aria-controls="collapseOne"
-          :class="{collapsed}"
+          :class="{collapsed: !active}"
         >
           <span class="icon-keyboard_arrow_down"><i>Toggle details</i></span>
         </a>
@@ -214,7 +214,7 @@ export default {
       <div
         :id="`job-${job.id}`"
         class="panel-collapse collapse"
-        :class="{in: !collapsed}"
+        :class="{in: active}"
         role="tabpanel"
         aria-labelledby="headingOne"
       >

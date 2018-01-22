@@ -90,9 +90,19 @@ export default {
             <div>
               <div v-bar>
                 <div>
-                  <a v-on:click="viewClass = 'collapsed-side-view'" class="collapse-view right">Collapse sidebar</a>
+                  <a
+                    v-on:click="viewClass = 'collapsed-side-view'"
+                    class="collapse-view right"
+                  >
+                    Collapse sidebar
+                  </a>
                   <h3 class="aside-title"><span class="text">18 jobs</span></h3>
-                  <Job view="compact" :job="job" v-for="job of source.job_history.reverse()" />
+                  <Job
+                    v-for="item of source.job_history.reverse()"
+                    :active="item.id === job.id"
+                    view="compact"
+                    :job="item"
+                  />
                 </div>
               </div>
             </div>

@@ -32,7 +32,7 @@ export default {
       <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
         <Job
           v-for="(job, index) of invalidLastJobs"
-          :collapsed="index > 0"
+          :active="index === 0"
           view="extended"
           :job="job"
         />
