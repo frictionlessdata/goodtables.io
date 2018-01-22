@@ -10,10 +10,18 @@ export default {
     component: String,
     userName: String,
     baseUrl: String,
+    githubId: Number,
   },
   data: () => {
     return {
       menuClass: 'default-menu-view',
+    }
+  },
+  computed: {
+    avatarURL() {
+      if (this.githubId) {
+        return `https://avatars1.githubusercontent.com/u/${this.githubId}?s=52&v=4`
+      }
     }
   }
 }
@@ -55,7 +63,14 @@ export default {
         <!-- User -->
         <ul class="nav secondary">
           <li class="feedback">
-            <a class="expand collapsed" data-toggle="collapse" href="#feedback" aria-expanded="false" aria-controls="feedback"><img src="../images/feedback.svg" alt="">
+            <a
+              href="#feedback"
+              class="expand collapsed"
+              data-toggle="collapse"
+              aria-expanded="false"
+              aria-controls="feedback"
+            >
+              <img src="../images/feedback.svg" alt="">
               <span class="text">Feedback</span>
             </a>
             <div class="nav-content collapse" id="feedback">
@@ -71,7 +86,7 @@ export default {
           </li>
           <li v-if="userName" class="log-out">
             <a :href="`${baseUrl}/user/logout`">
-              <img src="https://github.com/smth.png?size=52" alt="" />
+              <img v-if="avatarURL" :src="avatarURL" alt="" />
               <span class="text">Log out</span>
             </a>
           </li>
