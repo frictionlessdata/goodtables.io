@@ -11,7 +11,6 @@ export Error500 from './components/Error500.vue'
 export Landing from './components/Landing.vue'
 export Messages from './components/Messages.vue'
 export Settings from './components/Settings.vue'
-export Sidebar from './components/Sidebar.vue'
 export Source from './components/Source.vue'
 
 // Plugins

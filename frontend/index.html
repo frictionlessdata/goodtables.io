@@ -34,11 +34,11 @@
           return createElement(frontend.Landing, {props})
         }
         return createElement(frontend.App, {
+          props: props,
           scopedSlots: {
-            sidebar: () => createElement(frontend.Sidebar, {props}),
             messages: () => createElement(frontend.Messages, {props}),
             contents: () => createElement(frontend[component], {props}),
-          }
+          },
         })
       },
     })
