@@ -25,6 +25,7 @@
     const component = '{{ component }}'
     const props = {{ (props or {}) | tojson | safe }}
     props.messages = {{ get_flashed_messages(with_categories=True) | tojson | safe }}
+    props.component = component
     // vue.js
     new frontend.Vue({
       el: '#app',

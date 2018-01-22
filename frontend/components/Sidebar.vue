@@ -4,6 +4,7 @@ import Logo from './Logo.vue'
 export default {
   name: 'Sidebar',
   props: {
+    component: String,
     userName: String,
     baseUrl: String,
   },
@@ -21,21 +22,21 @@ export default {
 
     <!-- Navigation -->
     <ul class="nav primary">
-      <li class="active">
+      <li :class="{active: component === 'Dashboard'}">
         <a href="/dashboard">
           <span class="icon-keyboard_arrow_left back-icon" aria-hidden="true"></span>
           <span class="icon-dashboard section-icon" aria-hidden="true"></span>
           <span class="text">Dashboard</span>
         </a>
       </li>
-      <li>
+      <li :class="{active: component === 'Jobs', 'active-parent': component === 'Source'}">
         <a href="/jobs">
           <span class="icon-keyboard_arrow_left back-icon" aria-hidden="true"></span>
           <span class="icon-jobs section-icon" aria-hidden="true"></span>
           <span class="text">Jobs</span>
         </a>
       </li>
-      <li>
+      <li :class="{active: component === 'Settings'}">
         <a href="/settings">
           <span class="icon-keyboard_arrow_left back-icon" aria-hidden="true"></span>
           <span class="icon-equalizer section-icon" aria-hidden="true"></span>
