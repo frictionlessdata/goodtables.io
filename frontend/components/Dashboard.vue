@@ -30,7 +30,12 @@ export default {
     <section class="actions">
       <h1>Action required</h1>
       <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-        <Job view="extended" :job="job" v-for="job of invalidLastJobs" />
+        <Job
+          v-for="(job, index) of invalidLastJobs"
+          :collapsed="index > 0"
+          view="extended"
+          :job="job"
+        />
       </div>
     </section>
 

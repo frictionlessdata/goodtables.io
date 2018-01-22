@@ -1,11 +1,13 @@
 <script>
 import moment from 'moment'
+import {removeBaseUrl} from '../helpers'
 
 export default {
   name: 'Job',
   props: {
     job: Object,
     view: String,
+    collapsed: Boolean,
   },
   computed: {
     statusPanelClass() {
@@ -81,9 +83,26 @@ export default {
     githubPullRequestURL() {
       return `https://github.com/${this.sourceName}/pull/${this.job.conf.pr_number}`
     },
+    invalidFiles() {
+      const files = []
+      for (const table of this.job.report.tables) {
+        if (table.valid) continue
+        const rows = {}
+        rows[1] = table.headers
+        for (const error of table.errors) {
+          if (error.row) rows[error['row-number']] = error.row
+        }
+        // TODO: add other rows
+        files.push({
+          name: removeBaseUrl(table.source),
+          errorCount: table['error-count'],
+          rows,
+        })
+      }
+      return files
+    },
     errorCount() {
-      // TODO: implement
-      return 50
+      return this.job.report['error-count']
     },
     fileName() {
       // TODO: implement
@@ -184,6 +203,7 @@ export default {
           :href="`#job-${job.id}`"
           aria-expanded="true"
           aria-controls="collapseOne"
+          :class="{collapsed}"
         >
           <span class="icon-keyboard_arrow_down"><i>Toggle details</i></span>
         </a>
@@ -193,167 +213,31 @@ export default {
       <!-- Files -->
       <div
         :id="`job-${job.id}`"
-        class="panel-collapse collapse in"
+        class="panel-collapse collapse"
+        :class="{in: !collapsed}"
         role="tabpanel"
         aria-labelledby="headingOne"
       >
         <div class="panel-body">
           <ul class="dash-files">
-            <li>
-              <span v-if="errorCount === '1'" class="label label-danger">{{ errorCount }} error</span>
-              <span v-else class="label label-danger">{{ errorCount }} errors</span>
+            <li v-for="file of invalidFiles">
+              <span class="label label-danger">
+                {{ file.errorCount }} {{ file.errorCount > 1 ? 'errors' : 'error' }}
+              </span>
               <div class="report-thumb">
                 <table class="table">
                   <tbody>
-                    <tr class="row-pass">
-                      <td class="result-row-index">1</td>
-                      <td>file</td>
-                      <td>year</td>
-                      <td>manufacturer</td>
-                      <td>model</td>
-                      <td>description</td>
-                      <td>euro_standard</td>
-                      <td>tax_band</td>
-                      <td>transmission</td>
-                      <td>transmission_type</td>
-                      <td>engine_capacity</td>
-                      <td>fuel_type</td>
-                      <td>urban_metric</td>
-                      <td>extra_urban_metric</td>
-                      <td>combined_metric</td>
-                      <td>urban_imperial</td>
-                      <td>extra_urban_imperial</td>
-                      <td>combined_imperial</td>
-                      <td>noise_level</td>
-                      <td>co2</td>
-                      <td>thc_emissions</td>
-                      <td>co_emissions</td>
-                      <td>nox_emissions</td>
-                      <td>thc_nox_emissions</td>
-                      <td>particulates_emissions</td>
-                      <td>fuel_cost_12000_miles</td>
-                      <td>fuel_cost_6000_miles</td>
-                      <td>standard_12_months</td>
-                      <td>standard_6_months</td>
-                      <td>first_year_12_months</td>
-                      <td>first_year_6_months</td>
-                      <td>date_of_change</td>
-                    </tr>
-                    <tr class="row-before-fail">
-                      <td class="result-row-index">2</td>
-                      <td>DatapartC_july2000.csv</td>
-                      <td>2000</td>
-                      <td>Alfa Romeo</td>
-                      <td>145</td>
-                      <td>Range</td>
-                      <td>1.6</td>
-                      <td>Twin Spark</td>
-                      <td>16v</td>
-                      <td>2</td>
-                      <td></td>
-                      <td>M5</td>
-                      <td>Manual</td>
-                      <td>1598</td>
-                      <td>Petrol</td>
-                      <td>11.1</td>
-                      <td>6.5</td>
-                      <td>8.2</td>
-                      <td>25.4</td>
-                      <td>43.5</td>
-                      <td>34.4</td>
-                      <td>74</td>
-                      <td>195</td>
-                      <td></td>
-                      <td>980</td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td>618</td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                    </tr>
-                    <tr class="fail">
-                      <td class="result-row-index">3</td>
-                      <td>DatapartC_july2000.csv</td>
-                      <td>2000</td>
-                      <td>Alfa Romeo</td>
-                      <td>145</td>
-                      <td>Range</td>
-                      <td>1.6</td>
-                      <td>Twin Spark</td>
-                      <td>16v</td>
-                      <td>2</td>
-                      <td></td>
-                      <td>M5</td>
-                      <td>Manual</td>
-                      <td>1598</td>
-                      <td>Petrol</td>
-                      <td>11.1</td>
-                      <td>6.5</td>
-                      <td>8.2</td>
-                      <td>25.4</td>
-                      <td>43.5</td>
-                      <td>34.4</td>
-                      <td>74</td>
-                      <td>195</td>
-                      <td></td>
-                      <td>980</td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td>618</td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                    </tr>
-                    <tr class="row-after-fail">
-                      <td class="result-row-index">4</td>
-                      <td>DatapartC_july2000.csv</td>
-                      <td>2000</td>
-                      <td>Alfa Romeo</td>
-                      <td>145</td>
-                      <td>Range</td>
-                      <td>1.6</td>
-                      <td>Twin Spark</td>
-                      <td>16v</td>
-                      <td>2</td>
-                      <td></td>
-                      <td>M5</td>
-                      <td>Manual</td>
-                      <td>1598</td>
-                      <td>Petrol</td>
-                      <td>11.1</td>
-                      <td>6.5</td>
-                      <td>8.2</td>
-                      <td>25.4</td>
-                      <td>43.5</td>
-                      <td>34.4</td>
-                      <td>74</td>
-                      <td>195</td>
-                      <td></td>
-                      <td>980</td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td>618</td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
+                    <tr v-for="(row, rowNumber) of file.rows">
+                      <td class="result-row-index">{{ rowNumber }}</td>
+                      <td v-for="value of row">{{ value }}</td>
                     </tr>
                   </tbody>
                 </table>
               </div>
-              {{ fileName }}
+              {{ file.name }}
             </li>
           </ul>
-          <a v-bind:href="`/${job.integration_name}/${sourceName}`" class="btn btn-default">
+          <a :href="`/${job.integration_name}/${sourceName}`" class="btn btn-default">
             See full report
           </a>
         </div>
