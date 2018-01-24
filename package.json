@@ -6,7 +6,7 @@
   "dependencies": {
     "axios": "^0.15.3",
     "goodtables": "^0.7.2",
-    "goodtables-ui": "^1.1.2",
+    "goodtables-ui": "github:frictionlessdata/goodtables-ui#fc7c3cd9457442256d2ae5d2f1ee27fb5f3dd88f",
     "marked": "^0.3.6",
     "moment": "^2.18.1",
     "parts-selector": "github:smth/parts-selector",

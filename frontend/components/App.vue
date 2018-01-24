@@ -127,3 +127,4 @@ export default {
 
 <!-- Import global styles -->
 <style lang="scss" src="../styles/main.scss"></style>
+<style lang="css" src="../../node_modules/goodtables-ui/dist/goodtables-ui.css"></style>
