@@ -11,7 +11,7 @@ github3.py==0.9.6
 goodtables[ods]==1.5.1
 gunicorn==19.6.0
 jsonschema==2.5.1
-psycopg2==2.6.2
+psycopg2
 python-dotenv==0.6.0
 pyyaml==3.12.0
 raven[flask]==6.0.0
