@@ -72,16 +72,24 @@ export default {
       return moment(this.job.created).fromNow()
     },
     githubUserURL() {
-      return `https://github.com/${this.job.conf.author_name}`
+      if (this.job.integration_name === 'github') {
+        return `https://github.com/${this.job.conf.author_name}`
+      }
     },
     githubBranchURL() {
-      return `https://github.com/${this.sourceName}/tree/${this.job.conf.branch_name}`
+      if (this.job.integration_name === 'github') {
+        return `https://github.com/${this.sourceName}/tree/${this.job.conf.branch_name}`
+      }
     },
     githubCommitURL() {
-      return `https://github.com/${this.sourceName}/commit/${this.job.conf.sha}`
+      if (this.job.integration_name === 'github') {
+        return `https://github.com/${this.sourceName}/commit/${this.job.conf.sha}`
+      }
     },
     githubPullRequestURL() {
-      return `https://github.com/${this.sourceName}/pull/${this.job.conf.pr_number}`
+      if (this.job.integration_name === 'github') {
+        return `https://github.com/${this.sourceName}/pull/${this.job.conf.pr_number}`
+      }
     },
     invalidFiles() {
       const files = []
@@ -102,23 +110,29 @@ export default {
       return files
     },
     errorCount() {
-      return this.job.report['error-count']
-    },
-    fileName() {
-      // TODO: implement
-      return 'test'
+      if (this.job.report) {
+        return this.job.report['error-count']
+      }
     },
     commitHash() {
-      return this.job.conf.sha ? this.job.conf.sha.slice(0, 6) : ''
+      if (this.job.integration_name === 'github') {
+        return this.job.conf.sha ? this.job.conf.sha.slice(0, 6) : ''
+      }
     },
     commitBranch() {
-      return this.job.conf.branch_name
+      if (this.job.integration_name === 'github') {
+        return this.job.conf.branch_name
+      }
     },
     commitAuthor() {
-      return this.job.conf.author_name
+      if (this.job.integration_name === 'github') {
+        return this.job.conf.author_name
+      }
     },
     commitMessage() {
-      return this.job.conf.commit_message.split('\n')[0]
+      if (this.job.integration_name === 'github') {
+        return this.job.conf.commit_message.split('\n')[0]
+      }
     },
   },
 }
@@ -136,13 +150,14 @@ export default {
           <a class="avatar" :href="internalURL">
             <img src="https://avatars1.githubusercontent.com/u/200230?s=48" alt="" />
           </a>
-          <h3 class="panel-title">{{ commitMessage }}</h3>
+          <h3 class="panel-title">{{ commitMessage || 'Updated' }}</h3>
         </span>
 
         <!-- Statistics -->
         <a class="job" :href="internalURL">
-          <span class="jobcount" v-if="commitHash">
-            <span class="jobnumber">{{ commitHash }}</span>
+          <span class="jobcount">
+            <span class="jobnumber"> #{{ job.number }}</span>
+            <span v-if="commitHash" class="jobid"> ({{ commitHash }})</span>
           </span>
           <span class="label" :class="statusLabelClass">
             <span :class="statusIconClass"><i>{{ job.status }}</i></span>
@@ -175,7 +190,7 @@ export default {
         <a :href="internalURL" class="job">
           <span class="jobcount">
             <span class="jobnumber"> #{{ job.number }}</span>
-            <span class="jobid"> ({{ commitHash }})</span>
+            <span v-if="commitHash" class="jobid"> ({{ commitHash }})</span>
           </span>
           <span class="icon-clock"></span>
           <span class="time">{{ jobTimeStamp }}</span>
@@ -201,16 +216,17 @@ export default {
         <small>{{ jobTimeStamp }}</small>
       </h2>
     </div>
-    <div class="meta">
+    <div v-if="job.integration_name === 'github'" class="meta">
       <ul>
         <li>
           Pushed by
-          <a :href="`https://github.com/${commitAuthor}`">
+          <a :href="githubUserURL">
             {{ commitAuthor }}
           </a>
         </li>
         <li>
-          <a>{{ commitHash }}</a> on <a>{{ commitBranch }}</a>
+          <a :href="githubCommitURL">{{ commitHash }}</a> on
+          <a :href="githubBranchURL">{{ commitBranch }}</a>
         </li>
       </ul>
     </div>
