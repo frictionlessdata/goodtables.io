@@ -3,7 +3,6 @@ import moment from 'moment'
 import goodtablesUI from 'goodtables-ui'
 // import JobList from './JobList.vue'
 // import JobListItem from './JobListItem.vue'
-import MessageGroup from './MessageGroup.vue'
 import Job from './Job.vue'
 
 export default {
@@ -18,7 +17,6 @@ export default {
     }
   },
   components: {
-    MessageGroup,
     Job,
   },
   computed: {
