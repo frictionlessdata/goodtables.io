@@ -53,11 +53,12 @@ export default {
     </div>
 
     <!-- Jobs -->
-    <div v-if="filteredLastJobs" class="source-list">
+    <div v-if="filteredLastJobs.length" class="source-list">
       <Job view="standard" :job="job" v-for="job of filteredLastJobs" />
     </div>
-    <div v-else class="empty">
-      <p>No jobs found.</p>
+    <div v-else class="source-item" style="padding-top: 1em;">
+      There are no jobs yet.
+      Add a <a href="/settings">source</a> to get started.
     </div>
 
   </div>
