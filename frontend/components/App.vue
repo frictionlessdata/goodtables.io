@@ -36,10 +36,10 @@ export default {
       <nav class="main-nav">
 
         <!-- Logo -->
-        <Logo />
+        <Logo :baseUrl="baseUrl" />
 
         <!-- Navigation -->
-        <ul class="nav primary">
+        <ul v-if="userName" class="nav primary">
           <li :class="{active: component === 'Dashboard'}">
             <a href="/dashboard">
               <span class="icon-keyboard_arrow_left back-icon" aria-hidden="true"></span>
@@ -62,6 +62,14 @@ export default {
             </a>
           </li>
         </ul>
+
+        <!-- Description -->
+        <div v-else class="text">
+          <div class="description">
+            <h3>What is goodtables.io?</h3>
+            <p>goodtables.io is a free online service for continuous data validation. goodtables.io checks tabular data sources for structural problems, such as blank rows and non-tabular input, and optionally checks the data against a given schema, providing robust quality assurance for your data. goodtables.io supports many formats used for tabular data storage, including CSV, Excel, JSON, and ODS. Read more about the bad data problems goodtables.io can address <a href="http://okfnlabs.org/bad-data/" target="_blank">here</a>.</p>
+          </div>
+        </div>
 
         <!-- Messages -->
         <Messages :messages="messages" />
@@ -97,7 +105,7 @@ export default {
             </a>
           </li>
           <li v-else class="log-in">
-            <a href="#">
+            <a :href="`${baseUrl}/user/login/github`">
               <img src="../images/login.svg" alt="">
               <span class="text">Log in</span>
             </a>

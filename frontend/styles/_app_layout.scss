@@ -467,6 +467,12 @@
           width: $collapsed-menu-width;
         }
 
+        .text {
+          .description {
+            display: none;
+          }
+        }
+
         .nav {
           padding-right: $grid-gutter-width/2;
 
