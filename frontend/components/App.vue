@@ -1,16 +1,19 @@
 <script>
 import Logo from './Logo.vue'
+import Messages from './Messages.vue'
 
 export default {
   name: 'App',
   components: {
     Logo,
+    Messages,
   },
   props: {
     component: String,
     userName: String,
     baseUrl: String,
     githubId: Number,
+    messages: Array,
   },
   data: () => {
     return {
@@ -60,6 +63,9 @@ export default {
           </li>
         </ul>
 
+        <!-- Messages -->
+        <Messages :messages="messages" />
+
         <!-- User -->
         <ul class="nav secondary">
           <li class="feedback">
@@ -105,9 +111,6 @@ export default {
 
       </nav>
       <div class="content">
-
-        <!-- Messages -->
-        <slot name="messages"></slot>
 
         <!-- Contents -->
         <slot name="contents"></slot>
