@@ -127,160 +127,154 @@ export default {
 <template>
 
   <!-- Compact -->
-  <div v-if="view === 'compact'">
-    <div class="source-item" :class="{active}">
-      <div class="panel" :class="panelStatusClass">
-        <div :class="job.integration_time">
+  <div v-if="view === 'compact'" class="source-item" :class="{active}">
+    <div class="panel" :class="panelStatusClass">
+      <div :class="job.integration_name">
 
-          <!-- User/message -->
-          <span class="source">
-            <a class="avatar" :href="internalURL">
-              <img src="https://avatars1.githubusercontent.com/u/200230?s=48" alt="" />
-            </a>
-            <h3 class="panel-title">{{ commitMessage }}</h3>
-          </span>
-
-          <!-- Statistics -->
-          <a class="job" :href="internalURL">
-            <span class="jobcount" v-if="commitHash">
-              <span class="jobnumber">{{ commitHash }}</span>
-            </span>
-            <span class="label" :class="statusLabelClass">
-              <span :class="statusIconClass"><i>{{ job.status }}</i></span>
-            </span>
-            <span class="time">{{ jobTimeStamp }}</span>
+        <!-- User/message -->
+        <span class="source">
+          <a class="avatar" :href="internalURL">
+            <img src="https://avatars1.githubusercontent.com/u/200230?s=48" alt="" />
           </a>
+          <h3 class="panel-title">{{ commitMessage }}</h3>
+        </span>
 
-        </div>
+        <!-- Statistics -->
+        <a class="job" :href="internalURL">
+          <span class="jobcount" v-if="commitHash">
+            <span class="jobnumber">{{ commitHash }}</span>
+          </span>
+          <span class="label" :class="statusLabelClass">
+            <span :class="statusIconClass"><i>{{ job.status }}</i></span>
+          </span>
+          <span class="time">{{ jobTimeStamp }}</span>
+        </a>
+
       </div>
     </div>
   </div>
 
   <!-- Standard -->
-  <div v-else-if="view === 'standard'">
-    <div class="source-item">
-      <div class="panel" :class="statusPanelClass">
-        <div :class="job.integration_name">
+  <div v-else-if="view === 'standard'" class="source-item">
+    <div class="panel" :class="statusPanelClass">
+      <div :class="job.integration_name">
 
-          <!-- Status/name -->
-          <a :href="internalURL" class="source">
-            <span class="status">{{ job.status }} </span>
-            <span class="label" :class="statusLabelClass">
-              <span :class="statusIconClass"><i>{{ job.status }}</i></span>
-            </span>
-            <h3 class="panel-title">
-              {{ job.integration_name }}/{{ sourceName }}
-              <span class="jobnumber">#{{ job.number }}</span>
-            </h3>
-          </a>
+        <!-- Status/name -->
+        <a :href="internalURL" class="source">
+          <span class="status">{{ job.status }} </span>
+          <span class="label" :class="statusLabelClass">
+            <span :class="statusIconClass"><i>{{ job.status }}</i></span>
+          </span>
+          <h3 class="panel-title">
+            {{ job.integration_name }}/{{ sourceName }}
+            <span class="jobnumber">#{{ job.number }}</span>
+          </h3>
+        </a>
 
-          <!-- Statistics -->
-          <a :href="internalURL" class="job">
-            <span class="jobcount">
-              <span class="jobnumber"> #{{ job.number }}</span>
-              <span class="jobid"> ({{ commitHash }})</span>
-            </span>
-            <span class="icon-clock"></span>
-            <span class="time">{{ jobTimeStamp }}</span>
-          </a>
+        <!-- Statistics -->
+        <a :href="internalURL" class="job">
+          <span class="jobcount">
+            <span class="jobnumber"> #{{ job.number }}</span>
+            <span class="jobid"> ({{ commitHash }})</span>
+          </span>
+          <span class="icon-clock"></span>
+          <span class="time">{{ jobTimeStamp }}</span>
+        </a>
 
-          <!-- Integration -->
-          <a :href="internalURL" class="integration" :class="integrationIconClass"></a>
+        <!-- Integration -->
+        <a :href="internalURL" class="integration" :class="integrationIconClass"></a>
 
-        </div>
       </div>
     </div>
   </div>
 
   <!-- Report -->
   <div v-else-if="view === 'report'" class="latest-job">
-      <div class="icon">
-        <span class="label" :class="statusLabelClass">
-          <span :class="statusIconClass"><i>{{ job.status }}</i></span>
-        </span>
-      </div>
-      <div class="status">
-        <h2>
-          Job #{{ job.number }} {{ job.status }}
-          <small>{{ jobTimeStamp }}</small>
-        </h2>
-      </div>
-      <div class="meta">
-        <ul>
-          <li>
-            Pushed by
-            <a :href="`https://github.com/${commitAuthor}`">
-              {{ commitAuthor }}
-            </a>
-          </li>
-          <li>
-            <a>{{ commitHash }}</a> on <a>{{ commitBranch }}</a>
-          </li>
-        </ul>
-      </div>
+    <div class="icon">
+      <span class="label" :class="statusLabelClass">
+        <span :class="statusIconClass"><i>{{ job.status }}</i></span>
+      </span>
     </div>
+    <div class="status">
+      <h2>
+        Job #{{ job.number }} {{ job.status }}
+        <small>{{ jobTimeStamp }}</small>
+      </h2>
+    </div>
+    <div class="meta">
+      <ul>
+        <li>
+          Pushed by
+          <a :href="`https://github.com/${commitAuthor}`">
+            {{ commitAuthor }}
+          </a>
+        </li>
+        <li>
+          <a>{{ commitHash }}</a> on <a>{{ commitBranch }}</a>
+        </li>
+      </ul>
+    </div>
+  </div>
 
   <!-- Extended -->
-  <div v-else-if="view === 'extended'">
-    <div class="panel panel-default">
+  <div v-else-if="view === 'extended'" class="panel panel-default">
 
-      <!-- Heading -->
-      <div class="panel-heading" role="tab" id="headingOne">
-        <span class="label label-danger">
-          <span class="icon-cross"><i>Invalid</i></span>
-        </span>
-        <h3 class="panel-title">
-          {{ sourceName }}
-          <small>{{ jobTimeStamp }} ({{ commitHash }})</small>
-        </h3>
-        <a
-          role="button"
-          data-toggle="collapse"
-          data-parent="#accordion"
-          :href="`#job-${job.id}`"
-          aria-expanded="true"
-          aria-controls="collapseOne"
-          :class="{collapsed: !active}"
-        >
-          <span class="icon-keyboard_arrow_down"><i>Toggle details</i></span>
-        </a>
-        <span class="count label label-danger">{{ errorCount }}</span>
-      </div>
-
-      <!-- Files -->
-      <div
-        :id="`job-${job.id}`"
-        class="panel-collapse collapse"
-        :class="{in: active}"
-        role="tabpanel"
-        aria-labelledby="headingOne"
+    <!-- Heading -->
+    <div class="panel-heading" role="tab" id="headingOne">
+      <span class="label label-danger">
+        <span class="icon-cross"><i>Invalid</i></span>
+      </span>
+      <h3 class="panel-title">
+        {{ sourceName }}
+        <small>{{ jobTimeStamp }} ({{ commitHash }})</small>
+      </h3>
+      <a
+        role="button"
+        data-toggle="collapse"
+        data-parent="#accordion"
+        :href="`#job-${job.id}`"
+        aria-expanded="true"
+        aria-controls="collapseOne"
+        :class="{collapsed: !active}"
       >
-        <div class="panel-body">
-          <ul class="dash-files">
-            <li v-for="file of invalidFiles">
-              <span class="label label-danger">
-                {{ file.errorCount }} {{ file.errorCount > 1 ? 'errors' : 'error' }}
-              </span>
-              <div class="report-thumb">
-                <table class="table">
-                  <tbody>
-                    <tr v-for="(row, rowNumber) of file.rows">
-                      <td class="result-row-index">{{ rowNumber }}</td>
-                      <td v-for="value of row">{{ value }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              {{ file.name }}
-            </li>
-          </ul>
-          <a :href="`/${job.integration_name}/${sourceName}`" class="btn btn-default">
-            See full report
-          </a>
-        </div>
-      </div>
-
+        <span class="icon-keyboard_arrow_down"><i>Toggle details</i></span>
+      </a>
+      <span class="count label label-danger">{{ errorCount }}</span>
     </div>
+
+    <!-- Files -->
+    <div
+      :id="`job-${job.id}`"
+      class="panel-collapse collapse"
+      :class="{in: active}"
+      role="tabpanel"
+      aria-labelledby="headingOne"
+    >
+      <div class="panel-body">
+        <ul class="dash-files">
+          <li v-for="file of invalidFiles">
+            <span class="label label-danger">
+              {{ file.errorCount }} {{ file.errorCount > 1 ? 'errors' : 'error' }}
+            </span>
+            <div class="report-thumb">
+              <table class="table">
+                <tbody>
+                  <tr v-for="(row, rowNumber) of file.rows">
+                    <td class="result-row-index">{{ rowNumber }}</td>
+                    <td v-for="value of row">{{ value }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            {{ file.name }}
+          </li>
+        </ul>
+        <a :href="`/${job.integration_name}/${sourceName}`" class="btn btn-default">
+          See full report
+        </a>
+      </div>
+    </div>
+
   </div>
 
 </template>
