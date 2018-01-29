@@ -58,7 +58,13 @@ export default {
             <div>
               <h1>Jobs</h1>
               <div class="source-list">
-                <Job view="standard" :job="job" v-for="job of lastJobs" />
+                <template v-if="lastJobs.length">
+                  <Job view="standard" :job="job" v-for="job of lastJobs" />
+                </template>
+                <div v-else class="source-item">
+                  There are no jobs yet.
+                  Add a <a href="/settings">source</a> to get started.
+                </div>
               </div>
             </div>
           </div>
