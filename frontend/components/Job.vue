@@ -128,7 +128,7 @@ export default {
 
   <!-- Compact -->
   <div v-if="view === 'compact'" class="source-item" :class="{active}">
-    <div class="panel" :class="panelStatusClass">
+    <div class="panel" :class="statusPanelClass">
       <div :class="job.integration_name">
 
         <!-- User/message -->
