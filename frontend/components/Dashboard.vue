@@ -12,6 +12,7 @@ export default {
   computed: {
     lastJobs() {
       return this.sources
+        .filter(source => source.integration_name !== 'api')
         .filter(source => source.last_job)
         .map(source => source.last_job)
     },
