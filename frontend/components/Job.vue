@@ -110,7 +110,16 @@ export default {
     },
     commitHash() {
       return this.job.conf.sha ? this.job.conf.sha.slice(0, 6) : ''
-    }
+    },
+    commitBranch() {
+      return this.job.conf.branch_name
+    },
+    commitAuthor() {
+      return this.job.conf.author_name
+    },
+    commitMessage() {
+      return this.job.conf.commit_message.split('\n')[0]
+    },
   },
 }
 </script>
@@ -128,7 +137,7 @@ export default {
             <a class="avatar" :href="internalURL">
               <img src="https://avatars1.githubusercontent.com/u/200230?s=48" alt="" />
             </a>
-            <h3 class="panel-title">{{ job.conf.commit_message }}</h3>
+            <h3 class="panel-title">{{ commitMessage }}</h3>
           </span>
 
           <!-- Statistics -->
@@ -182,6 +191,34 @@ export default {
       </div>
     </div>
   </div>
+
+  <!-- Latest -->
+  <div v-else-if="view === 'latest'" class="latest-job">
+      <div class="icon">
+        <span class="label label-danger">
+          <span class="icon-cross"><i>{{ job.status }}</i></span>
+        </span>
+      </div>
+      <div class="status">
+        <h2>
+          Job #{{ job.number }} {{ job.status }}
+          <small>{{ jobTimeStamp }}</small>
+        </h2>
+      </div>
+      <div class="meta">
+        <ul>
+          <li>
+            Pushed by
+            <a :href="`https://github.com/${commitAuthor}`">
+              {{ commitAuthor }}
+            </a>
+          </li>
+          <li>
+            <a>{{ commitHash }}</a> on <a>{{ commitBranch }}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
 
   <!-- Extended -->
   <div v-else-if="view === 'extended'">

@@ -30,8 +30,8 @@
     new frontend.Vue({
       el: '#app',
       render(createElement) {
-        if (component === 'Landing') {
-          return createElement(frontend.Landing, {props})
+        if (['Landing', 'Error401', 'Error404', 'Error500'].includes(component)) {
+          return createElement(frontend[component], {props})
         }
         return createElement(frontend.App, {
           props: props,

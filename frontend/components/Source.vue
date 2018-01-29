@@ -1,4 +1,5 @@
 <script>
+import moment from 'moment'
 import goodtablesUI from 'goodtables-ui'
 // import JobList from './JobList.vue'
 // import JobListItem from './JobListItem.vue'
@@ -47,37 +48,25 @@ export default {
 <template>
   <div :class="viewClass">
     <div class="primary-secondary source-view">
-      <a class="integration icon-github"></a>
-      <h1>okfn/test-data</h1>
+      <a class="integration" :class="`icon-${source.integration_name}`"></a>
+      <h1>{{ source.name }}</h1>
       <div>
 
         <!-- Report -->
-        <section class="main invalid report">
+        <section class="main report" :class="`${job.status === 'valid' ? 'valid' : 'invalid'}`">
           <div class="inner">
-            <div class="latest-job">
-              <div class="icon">
-                <span class="label label-danger">
-                  <span class="icon-cross"><i>Invalid</i></span>
-                </span>
-              </div>
-              <div class="status">
-                <h2>
-                  Job #16 failed
-                  <small>8 days ago</small>
-                </h2>
-              </div>
-              <div class="meta">
-                <ul>
-                  <li>
-                    Pushed by <a>amercader</a>
-                  </li>
-                  <li>
-                    <a>2928dd</a> on <a>master</a>
-                  </li>
-                </ul>
-              </div>
-            </div>
+            <Job view="latest" :job="job" />
             <div id="report"></div>
+            <hr />
+            <div class="badges">
+              <h3>Image URL</h3>
+              <pre>https://goodtables.io/badge/{{source.integration_name}}/{{source.name}}.svg</pre>
+              <h3>Markdown</h3>
+              <pre>[![goodtables.io](https://goodtables.io/badge/{{source.integration_name}}/{{source.name}}.svg)](https://goodtables.io/{{source.integration_name}}/{{source.name}})</pre>
+              <h3>RST</h3>
+              <pre>.. image:: https://goodtables.io/badge/{{source.integration_name}}/{{source.name}}.svg
+:target: https://goodtables.io/{{source.integration_name}}/{{source.name}}</pre>
+            </div>
             <a v-on:click="viewClass = 'default-side-view'" class="expand-view left">
               Expand sidebar
             </a>
