@@ -1,8 +1,7 @@
 <script>
 import moment from 'moment'
 import goodtablesUI from 'goodtables-ui'
-// import JobList from './JobList.vue'
-// import JobListItem from './JobListItem.vue'
+import Messages from './Messages.vue'
 import Job from './Job.vue'
 
 export default {
@@ -18,14 +17,14 @@ export default {
   },
   components: {
     Job,
+    Messages,
   },
   computed: {
     statusClass() {
       return {
-        valid: this.job && this.job.status === 'success',
-        invalid: this.job && this.job.status === 'failure',
         error: this.job && this.job.status === 'error',
-        info: !this.job,
+        failure: this.job && this.job.status === 'failure',
+        success: this.job && this.job.status === 'success',
       }
     },
     sourceURL() {
@@ -35,10 +34,12 @@ export default {
     },
   },
   mounted() {
-    const element = document.getElementById('report')
-    const component = goodtablesUI.Report
-    const props = {report: this.job.report}
-    goodtablesUI.render(component, props, element)
+    if (this.job.status !== 'error') {
+      const element = document.getElementById('report')
+      const component = goodtablesUI.Report
+      const props = {report: this.job.report}
+      goodtablesUI.render(component, props, element)
+    }
   },
 }
 </script>
@@ -51,9 +52,13 @@ export default {
       <div>
 
         <!-- Report -->
-        <section class="main report" :class="`${job.status === 'valid' ? 'valid' : 'invalid'}`">
+        <section class="main report" :class="statusClass">
           <div class="inner">
-            <Job view="latest" :job="job" />
+            <Job view="report" :job="job" />
+            <Messages
+              v-if="job.status === 'error'"
+              :messages="[['warning', job.error.message]]"
+            />
             <div id="report"></div>
             <hr />
             <div class="badges">
@@ -83,7 +88,12 @@ export default {
                   >
                     Collapse sidebar
                   </a>
-                  <h3 class="aside-title"><span class="text">18 jobs</span></h3>
+                    <h3 class="aside-title">
+                      <span class="text">
+                        {{ source.job_history.length }}
+                        {{ source.job_history.length > 1 ? 'jobs' : 'job' }}
+                      </span>
+                    </h3>
                   <Job
                     v-for="item of source.job_history.reverse()"
                     :active="item.id === job.id"

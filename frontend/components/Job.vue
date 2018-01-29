@@ -29,7 +29,7 @@ export default {
     statusIconClass() {
       return {
         'icon-checkmark': (this.job && this.job.status === 'success'),
-        'icon-cross': (this.job && this.job.status === 'failure'),
+        'icon-cross': (this.job && this.job.status === 'failure' || this.job.status === 'error'),
       }
     },
     integrationIconClass() {
@@ -145,8 +145,8 @@ export default {
             <span class="jobcount" v-if="commitHash">
               <span class="jobnumber">{{ commitHash }}</span>
             </span>
-            <span class="label label-success">
-              <span class="icon-checkmark"><i>{{ job.status }}</i></span>
+            <span class="label" :class="statusLabelClass">
+              <span :class="statusIconClass"><i>{{ job.status }}</i></span>
             </span>
             <span class="time">{{ jobTimeStamp }}</span>
           </a>
@@ -192,11 +192,11 @@ export default {
     </div>
   </div>
 
-  <!-- Latest -->
-  <div v-else-if="view === 'latest'" class="latest-job">
+  <!-- Report -->
+  <div v-else-if="view === 'report'" class="latest-job">
       <div class="icon">
-        <span class="label label-danger">
-          <span class="icon-cross"><i>{{ job.status }}</i></span>
+        <span class="label" :class="statusLabelClass">
+          <span :class="statusIconClass"><i>{{ job.status }}</i></span>
         </span>
       </div>
       <div class="status">

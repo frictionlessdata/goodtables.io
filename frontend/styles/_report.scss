@@ -89,7 +89,17 @@
       border-top: solid 4px $brand-info;
     }
 
-    &.invalid {
+    &.error {
+      & > .inner {
+        border-color: $brand-warning;
+
+        .status > * {
+          color: $brand-warning;
+        }
+      }
+    }
+
+    &.failure {
       & > .inner {
         border-color: $brand-danger;
 
@@ -99,7 +109,7 @@
       }
     }
 
-    &.valid {
+    &.success {
       & > .inner {
         border-color: $brand-success;
       }
