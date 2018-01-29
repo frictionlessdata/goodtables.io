@@ -28,14 +28,25 @@ export default {
 
     <!-- Actions -->
     <section class="actions">
-      <h1>Action required</h1>
-      <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-        <Job
-          v-for="(job, index) of invalidLastJobs"
-          :active="index === 0"
-          view="extended"
-          :job="job"
-        />
+      <template v-if="invalidLastJobs.length">
+        <h1>Action required</h1>
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+          <Job
+            v-for="(job, index) of invalidLastJobs"
+            :active="index === 0"
+            view="extended"
+            :job="job"
+          />
+        </div>
+      </template>
+      <div v-else class="nothing">
+        <h1>No action required</h1>
+        <div class="message">
+          <p>
+            <span class="icon-checkmark"><i>Valid</i></span>
+            <span class="text">Nothing to do here</span>
+          </p>
+        </div>
       </div>
     </section>
 
