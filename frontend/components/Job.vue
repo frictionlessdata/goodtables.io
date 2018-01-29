@@ -129,7 +129,7 @@ export default {
   <!-- Compact -->
   <div v-if="view === 'compact'">
     <div class="source-item" :class="{active}">
-      <div class="panel panel-success">
+      <div class="panel" :class="panelStatusClass">
         <div :class="job.integration_time">
 
           <!-- User/message -->
@@ -159,7 +159,7 @@ export default {
   <!-- Standard -->
   <div v-else-if="view === 'standard'">
     <div class="source-item">
-      <div class="panel panel-success">
+      <div class="panel" :class="statusPanelClass">
         <div :class="job.integration_name">
 
           <!-- Status/name -->
