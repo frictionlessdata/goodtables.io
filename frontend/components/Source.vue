@@ -61,7 +61,7 @@ export default {
             />
             <div id="report"></div>
             <hr />
-            <div class="badges">
+            <div>
               <h3>Image URL</h3>
               <pre>https://goodtables.io/badge/{{source.integration_name}}/{{source.name}}.svg</pre>
               <h3>Markdown</h3>

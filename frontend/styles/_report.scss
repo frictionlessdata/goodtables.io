@@ -115,4 +115,11 @@
       }
     }
   }
+
+  pre {
+    max-width: 500px;
+    overflow: auto;
+    word-wrap: normal;
+    white-space: pre;
+  }
 }
