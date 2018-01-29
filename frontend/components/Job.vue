@@ -93,19 +93,21 @@ export default {
     },
     invalidFiles() {
       const files = []
-      for (const table of this.job.report.tables) {
-        if (table.valid) continue
-        const rows = {}
-        rows[1] = table.headers
-        for (const error of table.errors) {
-          if (error.row) rows[error['row-number']] = error.row
+      if (this.job.report) {
+        for (const table of this.job.report.tables) {
+          if (table.valid) continue
+          const rows = {}
+          rows[1] = table.headers
+          for (const error of table.errors) {
+            if (error.row) rows[error['row-number']] = error.row
+          }
+          // TODO: add other rows
+          files.push({
+            name: removeBaseUrl(table.source),
+            errorCount: table['error-count'],
+            rows,
+          })
         }
-        // TODO: add other rows
-        files.push({
-          name: removeBaseUrl(table.source),
-          errorCount: table['error-count'],
-          rows,
-        })
       }
       return files
     },
@@ -237,12 +239,17 @@ export default {
 
     <!-- Heading -->
     <div class="panel-heading" role="tab" id="headingOne">
-      <span class="label label-danger">
-        <span class="icon-cross"><i>Invalid</i></span>
+      <span class="label" :class="statusLabelClass">
+        <span class="icon-cross"><i>{{ job.status }}</i></span>
       </span>
       <h3 class="panel-title">
         {{ sourceName }}
-        <small>{{ jobTimeStamp }} ({{ commitHash }})</small>
+        <small>
+          {{ jobTimeStamp }} -
+          <span class="jobnumber"> #{{ job.number }}</span>
+          <span v-if="commitHash">({{ commitHash }})</span>
+          <span v-if="job.status === 'error'">- ERROR</span>
+        </small>
       </h3>
       <a
         role="button"
@@ -255,7 +262,9 @@ export default {
       >
         <span class="icon-keyboard_arrow_down"><i>Toggle details</i></span>
       </a>
-      <span class="count label label-danger">{{ errorCount }}</span>
+      <span v-if="job.status !== 'error'" class="count label label-danger">
+        {{ errorCount }}
+      </span>
     </div>
 
     <!-- Files -->
