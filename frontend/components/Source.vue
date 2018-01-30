@@ -9,6 +9,7 @@ export default {
   props: {
     source: Object,
     job: Object,
+    githubId: Number,
   },
   data () {
     return {
@@ -97,6 +98,7 @@ export default {
                   <Job
                     v-for="item of source.job_history.reverse()"
                     :active="item.id === job.id"
+                    :githubId="githubId"
                     view="compact"
                     :job="item"
                   />

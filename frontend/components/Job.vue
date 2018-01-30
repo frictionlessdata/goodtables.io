@@ -8,6 +8,7 @@ export default {
     job: Object,
     view: String,
     active: Boolean,
+    githubId: Number,
   },
   computed: {
     statusPanelClass() {
@@ -150,7 +151,8 @@ export default {
         <!-- User/message -->
         <span class="source">
           <a class="avatar" :href="internalURL">
-            <img src="https://avatars1.githubusercontent.com/u/200230?s=48" alt="" />
+            <img v-if="commitAuthor" :src="`https://github.com/${commitAuthor}.png?s=48`" />
+            <img v-else-if="githubId" :src="`https://avatars1.githubusercontent.com/u/${githubId}?s=52&v=4`" />
           </a>
           <h3 class="panel-title">{{ commitMessage || 'Updated' }}</h3>
         </span>
