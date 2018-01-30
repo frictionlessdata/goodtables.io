@@ -1,0 +1,61 @@
+@import "vars/parts-selector";
+@import "node_modules/parts-selector/src/parts-selector.scss";
+
+.parts-selector {
+  .list {
+    .list-heading {
+      font-weight: 600;
+
+      .refresh {
+        float: right;
+        color: $gray-dark;
+        text-decoration: none;
+        font-size: 1.2em;
+      }
+    }
+
+    .alert {
+      border-radius: 0;
+      margin: 0;
+    }
+
+    .name {
+      display: block;
+      font-weight: 600;
+      font-size: 1.1em;
+    }
+
+    .link {
+      color: inherit;
+      font-size: 0.9em;
+    }
+
+    .empty {
+      display: none;
+    }
+
+    ul:empty {
+      & + .empty {
+        display: block;
+        padding: $grid-gutter-width*2;
+        text-align: center;
+        position: relative;
+        opacity: 0.75;
+
+        &.action {
+          &:before {
+            @include icon-font();
+            content: "\ea3b";
+            position: absolute;
+            top: $grid-gutter-width;
+            right: $grid-gutter-width*2;
+          }
+        }
+      }
+    }
+
+    .form {
+      padding: $grid-gutter-width/2;
+    }
+  }
+}

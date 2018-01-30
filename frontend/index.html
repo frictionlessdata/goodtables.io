@@ -25,18 +25,20 @@
     const component = '{{ component }}'
     const props = {{ (props or {}) | tojson | safe }}
     props.messages = {{ get_flashed_messages(with_categories=True) | tojson | safe }}
+    props.component = component
     // vue.js
     new frontend.Vue({
       el: '#app',
       render(createElement) {
-        if (component === 'Home') {
+        if (['Landing', 'Error401', 'Error404', 'Error500'].includes(component)) {
           return createElement(frontend[component], {props})
         }
-        return createElement('div', null, [
-          createElement(frontend.Header, {props}),
-          createElement(frontend.Messages, {props}),
-          createElement(frontend[component], {props}),
-        ])
+        return createElement(frontend.App, {
+          props: props,
+          scopedSlots: {
+            contents: () => createElement(frontend[component], {props}),
+          },
+        })
       },
     })
   </script>

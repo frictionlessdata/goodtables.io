@@ -31,6 +31,9 @@ def render_component(component, props=None):
             user_name = getattr(current_user, 'name', None)
         props['userName'] = user_name
 
+    # Set github id
+    props.setdefault('githubId', (getattr(current_user, 'provider_ids', {}) or {}).get('github'))
+
     # Set base url
     props.setdefault('baseUrl', settings.BASE_URL)
 

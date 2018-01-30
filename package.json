@@ -6,16 +6,18 @@
   "dependencies": {
     "axios": "^0.15.3",
     "goodtables": "^0.7.2",
-    "goodtables-ui": "^1.1.2",
+    "goodtables-ui": "github:frictionlessdata/goodtables-ui#fc7c3cd9457442256d2ae5d2f1ee27fb5f3dd88f",
     "marked": "^0.3.6",
     "moment": "^2.18.1",
+    "parts-selector": "github:smth/parts-selector",
     "qs": "^6.5.0",
     "vue": "^2.1.0",
-    "vue-scrollto": "^2.6.7"
+    "vue-scrollto": "^2.6.7",
+    "vuebar": "0.0.18"
   },
   "devDependencies": {
     "autoprefixer": "^6.7.2",
-    "avoriaz": "^1.6.0",
+    "avoriaz": "^6.3.0",
     "axios-mock-adapter": "^1.7.1",
     "babel-core": "^6.0.0",
     "babel-eslint": "^7.1.1",

@@ -26,7 +26,7 @@ describe('SettingsGithub', () => {
   it('should have no repositories', (done) => {
     const wrapper = mount(SettingsGithub)
     setTimeout(() => {
-      wrapper.text().should.include('There are no synced repositories')
+      wrapper.text().should.include('No active sources found')
       done()
     })
   })
@@ -34,7 +34,7 @@ describe('SettingsGithub', () => {
   it('should have sync account button', (done) => {
     const wrapper = mount(SettingsGithub)
     setTimeout(() => {
-      wrapper.find('.refresh')[0].text().should.include('Sync account')
+      wrapper.find('.refresh')[0].text().should.include('Refresh')
       done()
     })
   })
@@ -72,7 +72,7 @@ describe('SettingsGithub', () => {
       ],
     })
     const wrapper = mount(SettingsGithub)
-    wrapper.text().should.include('Loading repos. Please wait..')
+    // wrapper.text().should.include('Loading repos. Please wait..')
     setTimeout(() => {
       wrapper.text().should.include('name1')
       wrapper.text().should.include('name2')
@@ -85,7 +85,7 @@ describe('SettingsGithub', () => {
       error: 'Sync account error',
     })
     const wrapper = mount(SettingsGithub)
-    wrapper.find('.refresh')[0].simulate('click')
+    wrapper.find('.refresh')[0].trigger('click')
     setTimeout(() => {
       wrapper.find(Messages).should.has.length(1)
       wrapper.find(Messages)[0].propsData().messages
@@ -116,7 +116,7 @@ describe('SettingsGithub', () => {
     })
     // TODO: use fake timer from sinon.js
     const wrapper = mount(SettingsGithub)
-    wrapper.find('.refresh')[0].simulate('click')
+    wrapper.find('.refresh')[0].trigger('click')
     setTimeout(() => {
       wrapper.find(Messages).should.has.length(1)
       wrapper.find(Messages)[0].propsData().messages
@@ -149,11 +149,11 @@ describe('SettingsGithub', () => {
     const wrapper = mount(SettingsGithub)
     setTimeout(() => {
       wrapper.find('.repo>.btn')[0].text().should.include('Activate')
-      wrapper.find('.repo>.btn')[0].simulate('click')
+      wrapper.find('.repo>.btn')[0].trigger('click')
     }, 200)
     setTimeout(() => {
       wrapper.find('.repo>.btn')[0].text().should.include('Deactivate')
-      wrapper.find('.repo>.btn')[0].simulate('click')
+      wrapper.find('.repo>.btn')[0].trigger('click')
     }, 400)
     setTimeout(() => {
       wrapper.find('.repo>.btn')[0].text().should.include('Activate')

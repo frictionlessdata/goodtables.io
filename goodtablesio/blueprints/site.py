@@ -23,7 +23,7 @@ site = Blueprint('site', __name__)
 def home():
     if current_user.is_authenticated:
         return redirect(url_for('site.dashboard'))
-    return render_component('Home')
+    return render_component('Landing')
 
 
 @site.route('/dashboard')
@@ -41,6 +41,27 @@ def dashboard():
         sources = [source.to_api(with_last_job=True) for source in sources]
 
     return render_component('Dashboard', props={
+        'sources': sources,
+    })
+
+
+@site.route('/jobs')
+def jobs():
+    # TODO: remove duplication between `dashboard/jobs`
+
+    if not current_user.is_authenticated:
+        return redirect(url_for('site.home'))
+
+    # Get user sources
+    sources = (database['session'].query(Source).join(Job, isouter=True).
+               filter(Source.users.any(id=current_user.id)).
+               filter(Source.active == true()).
+               order_by(Job.created.desc().nullslast(), Source.name).all())
+
+    if sources:
+        sources = [source.to_api(with_last_job=True) for source in sources]
+
+    return render_component('Jobs', props={
         'sources': sources,
     })
 

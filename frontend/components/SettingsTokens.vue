@@ -74,44 +74,69 @@ export default {
 <template>
 <div>
 
-  <div class="tool-bar">
-    <span>
-      <input v-model="filter" type="search" class="form-control search" placeholder="Filter">
-    </span>
-    <span class="sync">
-      <button @click="showCreateToken = !showCreateToken" class="show-add" data-toggle="tooltip" data-placement="left" title="Create token">
-        <span :class="createTokenIcon"><i>Create token</i></span>
-      </button>
-    </span>
+  <!-- Filter -->
+  <div class="filter form-group">
+    <label class="sr-only" for="keyword">Filter by keyword</label>
+    <div class="input-group">
+      <input
+        v-model="filter"
+        type="text"
+        class="form-control input-lg"
+        id="keyword"
+        placeholder="Filter by keyword"
+      >
+      <div class="input-group-addon">
+        <button><span class="icon-search"><i>Search</i></span></button>
+      </div>
+    </div>
   </div>
 
+  <!-- Messages -->
   <Messages v-if="error" :messages="[['danger', error]]" />
 
-  <div v-if="showCreateToken" style="padding: 25px 15px; width: 100%; border-bottom: solid 5px #333">
-    <form @submit.prevent="createToken()">
-      <div class="form-group">
-        <label for="token-description">Token Description</label>
-        <input v-model="tokenDescription" type="text" class="form-control" id="token-description" />
-      </div>
-      <button type="submit" class="btn btn-default add">Create Token</button>
-    </form>
-  </div>
+  <!-- Sources -->
+  <div class="parts-selector">
 
-  <ul v-if="tokens.length" class="repos">
-    <li v-for="token of filteredTokens" class="repo active">
-      <button @click="deleteToken(token)" class="activate">
-        <span class="icon-cross"><i>Delete Token</i></span>
-      </button>
-      <h3 class="repo-title">
-        <code>{{ token.token }}</code>
-      </h3>
-      <span class="repo-body">
-        {{ token.description || 'no description'}}
-      </span>
-    </li>
-  </ul>
-  <p v-else-if="!ready" class="empty">Loading tokens. Please wait..</p>
-  <p v-else>No tokens created</p>
+    <!-- Available -->
+    <div class="parts list">
+      <h3 class="list-heading">Add a token</h3>
+      <form @submit.prevent="createToken()" class="add form">
+        <div class="form-group">
+          <label for="access-key-id">Token description</label>
+          <input
+            v-model="tokenDescription"
+            id="token-description"
+            class="form-control"
+            type="text"
+          >
+        </div>
+        <button type="submit" class="btn btn-default add">Create Token</button>
+      </form>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+      <a class="moveto selected"><span class="icon"></span><span class="text">Add</span></a>
+    </div>
+
+    <!-- Active -->
+    <div class="selected list">
+      <h3 class="list-heading">Active sources</h3>
+      <ul v-if="filteredTokens.length">
+        <li v-for="token of filteredTokens">
+          <span class="source name">{{ token.token }}</span>
+          <small v-if="token.description">{{ token.description }}</small>
+          <a @click.prevent="deleteToken(token)" class="remove item-button">
+            <span class="icon"></span><span class="text">Remove</span>
+          </a>
+        </li>
+      </ul>
+      <div v-else class="empty">
+        <p>No active tokens found.</p>
+      </div>
+    </div>
+
+  </div>
 
 </div>
 </template>

@@ -103,66 +103,89 @@ export default {
 <template>
 <div>
 
-  <div class="tool-bar">
-    <span>
-      <input v-model="filter" type="search" class="form-control search" placeholder="Filter">
-    </span>
-    <span class="sync">
-      <button @click="showAddBucket = !showAddBucket" class="show-add" data-toggle="tooltip" data-placement="left" title="Add bucket">
-        <span :class="addBucketIcon"><i>Add bucket</i></span>
-      </button>
-    </span>
+  <!-- Filter -->
+  <div class="filter form-group">
+    <label class="sr-only" for="keyword">Filter by keyword</label>
+    <div class="input-group">
+      <input
+        v-model="filter"
+        type="text"
+        class="form-control input-lg"
+        id="keyword"
+        placeholder="Filter by keyword"
+      >
+      <div class="input-group-addon">
+        <button><span class="icon-search"><i>Search</i></span></button>
+      </div>
+    </div>
   </div>
 
+  <!-- Messages -->
   <Messages v-if="error" :messages="[['danger', error]]" />
 
-  <div v-if="showAddBucket" style="padding: 25px 15px; width: 100%; border-bottom: solid 5px #333">
-    <form @submit.prevent="addBucket()">
-      <div class="form-group">
-        <label for="access-key-id">Access Key Id</label>
-        <input v-model="accessKeyId" type="text" class="form-control" id="access-key-id" />
-      </div>
-      <div class="form-group">
-        <label for="secret-access-key">Secret Access Key</label>
-        <input v-model="secretAccessKey" type="text" class="form-control" id="secret-access-key" />
-      </div>
-      <div class="form-group">
-        <label for="bucket-name">Bucket Name</label>
-        <input v-model="bucketName" type="text" class="form-control" id="bucket-name" />
-      </div>
-      <button type="submit" class="btn btn-default add">Submit</button>
-    </form>
-  </div>
+  <!-- Sources -->
+  <div class="parts-selector">
 
-  <ul v-if="buckets.length" class="repos">
-    <li v-for="bucket of filteredBuckets" class="repo" :class="{active: bucket.active}">
-      <button v-if="bucket.active" @click="deactivateBucket(bucket)" class="activate">
-        <span class="icon-cross"><i>Deactivate</i></span>
-      </button>
-      <button v-else @click="activateBucket(bucket)" class="activate">
-        <span class="icon-plus"><i>Activate</i></span>
-      </button>
-      <h3 class="repo-title">
-        <a :href="`/s3/${bucket.name}`">{{ bucket.name }}</a>
-      </h3>
-      <span class="repo-body">
-        <a :href="`https://console.aws.amazon.com/s3/buckets/${bucket.name}`">View bucket</a>
-        /
-        <a href="#" @click.prevent="removeBucket(bucket)">Remove bucket</a>
-      </span>
-    </li>
-  </ul>
-  <p v-else-if="!ready" class="empty">Loading buckets. Please wait..</p>
-  <p v-else>No buckets configured</p>
+    <!-- Available -->
+    <div class="parts list">
+      <h3 class="list-heading">Add a source</h3>
+      <form @submit.prevent="addBucket()" class="add form">
+        <div class="form-group">
+          <label for="access-key-id">Access Key Id</label>
+          <input
+            v-model="accessKeyId"
+            id="access-key-id"
+            class="form-control"
+            type="text"
+          >
+        </div>
+        <div class="form-group">
+          <label for="secret-access-key">Secret Access Key</label>
+          <input
+            v-model="secretAccessKey"
+            id="secret-access-key"
+            class="form-control"
+            type="text"
+          >
+        </div>
+        <div class="form-group">
+          <label for="bucket-name">Bucket Name</label>
+          <input
+            v-model="bucketName"
+            id="bucket-name"
+            class="form-control"
+            type="text"
+          >
+        </div>
+        <button type="submit" class="btn btn-default add">Add</button>
+      </form>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+      <a class="moveto selected"><span class="icon"></span><span class="text">Add</span></a>
+    </div>
+
+    <!-- Active -->
+    <div class="selected list">
+      <h3 class="list-heading">Active sources</h3>
+      <ul v-if="filteredBuckets.length">
+        <li v-for="bucket of filteredBuckets">
+          <span class="source name">{{ bucket.name }}</span>
+          <a @click.prevent="removeBucket(bucket)" class="remove item-button">
+            <span class="icon"></span><span class="text">Remove</span>
+          </a>
+        </li>
+      </ul>
+      <div v-else class="empty">
+        <p>No active sources found.</p>
+      </div>
+    </div>
+
+  </div>
 
 </div>
 </template>
 
 <style scoped>
-.bucket {
-  padding: 5px 0;
-}
-.bucket:not(:last-child) {
-  border-bottom: solid 1px #eee;
-}
 </style>

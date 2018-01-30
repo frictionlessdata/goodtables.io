@@ -25,7 +25,7 @@ describe('SettingsS3', () => {
   it('should have no buckets', (done) => {
     const wrapper = mount(SettingsS3)
     setTimeout(() => {
-      wrapper.text().should.include('No buckets configured')
+      wrapper.text().should.include('No active sources found')
       done()
     })
   })
@@ -39,7 +39,7 @@ describe('SettingsS3', () => {
       ],
     })
     const wrapper = mount(SettingsS3)
-    wrapper.text().should.include('Loading buckets. Please wait..')
+    // wrapper.text().should.include('Loading buckets. Please wait..')
     setTimeout(() => {
       wrapper.text().should.include('name1')
       wrapper.text().should.include('name2')
@@ -47,16 +47,16 @@ describe('SettingsS3', () => {
     })
   })
 
-  it.skip('should have submit button', (done) => {
+  it('should have add button', (done) => {
     const wrapper = mount(SettingsS3)
     setTimeout(() => {
-      wrapper.find('button.show-add')[0].simulate('click')
-      wrapper.find('button.add')[0].text().should.include('Submit')
+      wrapper.find('button.add')[0].trigger('click')
+      wrapper.find('button.add')[0].text().should.include('Add')
       done()
     })
   })
 
-  it.skip('should add bucket after submit button click', (done) => {
+  it('should add bucket after submit button click', (done) => {
     mockAxios.onPost('/s3/api/bucket').replyOnce(200, {
       bucket: {
         id: 'id',
@@ -67,22 +67,20 @@ describe('SettingsS3', () => {
     })
     const wrapper = mount(SettingsS3)
     wrapper.vm.bucketName = 'name'
-    wrapper.find('button.show-add')[0].simulate('click')
-    wrapper.find('button.add')[0].simulate('click')
+    wrapper.find('button.add')[0].trigger('click')
     setTimeout(() => {
       wrapper.text().should.include('name')
       done()
     })
   })
 
-  it.skip('should show error on submit button click error ', (done) => {
+  it('should show error on submit button click error ', (done) => {
     mockAxios.onPost('/s3/api/bucket').replyOnce(200, {
       error: 'Bucket error',
     })
     const wrapper = mount(SettingsS3)
     wrapper.vm.bucketName = 'bucket-name'
-    wrapper.find('button.show-add')[0].simulate('click')
-    wrapper.find('button.add')[0].simulate('click')
+    wrapper.find('button.add')[0].trigger('click')
     setTimeout(() => {
       wrapper.find(Messages).should.has.length(1)
       wrapper.find(Messages)[0].propsData().messages
