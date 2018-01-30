@@ -28,8 +28,8 @@ export default {
         const sourceName = `${job.source.integration_name}/${job.source.name}`
         return sourceName.includes(this.filter)
       })
-    }
-  }
+    },
+  },
 }
 </script>
 

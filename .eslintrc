@@ -32,6 +32,10 @@ rules:
     - nofunc
   one-var:
     - off
+  no-continue:
+    - off
+  import/first:
+    - off
   eqeqeq:
     - warn
     - smart

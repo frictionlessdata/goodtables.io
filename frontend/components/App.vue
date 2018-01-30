@@ -25,8 +25,8 @@ export default {
       if (this.githubId) {
         return `https://avatars1.githubusercontent.com/u/${this.githubId}?s=52&v=4`
       }
-    }
-  }
+    },
+  },
 }
 </script>
 

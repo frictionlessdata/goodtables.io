@@ -1,7 +1,4 @@
 <script>
-import Logo from './Logo.vue'
-import Messages from './Messages.vue'
-
 export default {
   name: 'Logo',
   props: {

@@ -30,7 +30,7 @@ export default {
     statusIconClass() {
       return {
         'icon-checkmark': (this.job && this.job.status === 'success'),
-        'icon-cross': (this.job && this.job.status === 'failure' || this.job.status === 'error'),
+        'icon-cross': (this.job && (this.job.status === 'failure' || this.job.status === 'error')),
       }
     },
     integrationIconClass() {

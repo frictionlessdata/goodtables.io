@@ -8,7 +8,7 @@ export default {
   components: {
     Logo,
     Maze,
-  }
+  },
 }
 </script>
 

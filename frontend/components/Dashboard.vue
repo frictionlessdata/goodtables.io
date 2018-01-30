@@ -21,7 +21,7 @@ export default {
       return this.lastJobs
         .filter(job => ['failure', 'error'].includes(job.status))
     },
-  }
+  },
 }
 </script>
 

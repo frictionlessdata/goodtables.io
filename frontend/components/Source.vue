@@ -1,5 +1,4 @@
 <script>
-import moment from 'moment'
 import goodtablesUI from 'goodtables-ui'
 import Messages from './Messages.vue'
 import Job from './Job.vue'
@@ -11,7 +10,7 @@ export default {
     job: Object,
     githubId: Number,
   },
-  data () {
+  data() {
     return {
       viewClass: 'default-side-view',
     }

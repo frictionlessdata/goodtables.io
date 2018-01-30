@@ -47,7 +47,7 @@ def dashboard():
 
 @site.route('/jobs')
 def jobs():
-    #TODO: remove duplication between `dashboard/jobs`
+    # TODO: remove duplication between `dashboard/jobs`
 
     if not current_user.is_authenticated:
         return redirect(url_for('site.home'))
