@@ -14,7 +14,8 @@ export default {
       return this.sources
         .filter(source => source.integration_name !== 'api')
         .filter(source => source.last_job)
-        .map(source => source.last_job)
+        // TODO: job.source to data model level
+        .map(source => ({...source.last_job, source}))
     },
     invalidLastJobs() {
       return this.lastJobs

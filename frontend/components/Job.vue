@@ -41,16 +41,10 @@ export default {
       }
     },
     sourceName() {
-      if (this.job.integration_name === 'github') {
-        return `${this.job.conf.owner}/${this.job.conf.repo}`
-      } else if (this.job.integration_name === 's3') {
-        return this.job.conf.bucket
-      }
+      return this.job.source.name
     },
     internalURL() {
-      if (!this.inSourcePanel) {
-        return `/${this.job.integration_name}/${this.sourceName}/jobs/${this.job.number}`
-      }
+      return `/${this.job.integration_name}/${this.sourceName}/jobs/${this.job.number}`
     },
     externalURL() {
       if (this.job.integration_name === 'github') {
@@ -59,18 +53,35 @@ export default {
         return `https://console.aws.amazon.com/s3/buckets/${this.sourceName}`
       }
     },
-    jobTitle() {
-      if (this.job.integration_name === 'github') {
-        if (this.job.conf.is_pr) {
-          return this.job.conf.pr_title
-        }
-        return this.job.conf.commit_message
-      } else if (this.job.integration_name === 's3') {
-        return this.job.conf.bucket
-      }
-    },
     jobTimeStamp() {
       return moment(this.job.created).fromNow()
+    },
+    jobMessage() {
+      let message = ''
+      if (this.job.integration_name === 'github') {
+        message = this.job.conf.is_pr
+          ? this.job.conf.pr_title
+          : this.job.conf.commit_message
+      } else if (this.job.integration_name === 's3') {
+        message = this.job.conf.bucket
+      }
+      message = message.split('\n')[0]
+      return message
+    },
+    jobHash() {
+      if (this.job.integration_name === 'github') {
+        return this.job.conf.sha ? this.job.conf.sha.slice(0, 6) : ''
+      }
+    },
+    jobAuthor() {
+      if (this.job.integration_name === 'github') {
+        return this.job.conf.author_name
+      }
+    },
+    jobBranch() {
+      if (this.job.integration_name === 'github') {
+        return this.job.conf.branch_name
+      }
     },
     githubUserURL() {
       if (this.job.integration_name === 'github') {
@@ -117,26 +128,6 @@ export default {
         return this.job.report['error-count']
       }
     },
-    commitHash() {
-      if (this.job.integration_name === 'github') {
-        return this.job.conf.sha ? this.job.conf.sha.slice(0, 6) : ''
-      }
-    },
-    commitBranch() {
-      if (this.job.integration_name === 'github') {
-        return this.job.conf.branch_name
-      }
-    },
-    commitAuthor() {
-      if (this.job.integration_name === 'github') {
-        return this.job.conf.author_name
-      }
-    },
-    commitMessage() {
-      if (this.job.integration_name === 'github') {
-        return this.job.conf.commit_message.split('\n')[0]
-      }
-    },
   },
 }
 </script>
@@ -151,17 +142,17 @@ export default {
         <!-- User/message -->
         <span class="source">
           <a class="avatar" :href="internalURL">
-            <img v-if="commitAuthor" :src="`https://github.com/${commitAuthor}.png?s=48`" />
+            <img v-if="jobAuthor" :src="`https://github.com/${jobAuthor}.png?s=48`" />
             <img v-else-if="githubId" :src="`https://avatars1.githubusercontent.com/u/${githubId}?s=52&v=4`" />
           </a>
-          <h3 class="panel-title">{{ commitMessage || 'Updated' }}</h3>
+          <h3 class="panel-title">{{ jobMessage }}</h3>
         </span>
 
         <!-- Statistics -->
         <a class="job" :href="internalURL">
           <span class="jobcount">
             <span class="jobnumber"> #{{ job.number }}</span>
-            <span v-if="commitHash" class="jobid"> ({{ commitHash }})</span>
+            <span v-if="jobHash" class="jobid"> ({{ jobHash }})</span>
           </span>
           <span class="label" :class="statusLabelClass">
             <span :class="statusIconClass"><i>{{ job.status }}</i></span>
@@ -194,7 +185,7 @@ export default {
         <a :href="internalURL" class="job">
           <span class="jobcount">
             <span class="jobnumber"> #{{ job.number }}</span>
-            <span v-if="commitHash" class="jobid"> ({{ commitHash }})</span>
+            <span v-if="jobHash" class="jobid"> ({{ jobHash }})</span>
           </span>
           <span class="icon-clock"></span>
           <span class="time">{{ jobTimeStamp }}</span>
@@ -221,16 +212,18 @@ export default {
       </h2>
     </div>
     <div v-if="job.integration_name === 'github'" class="meta">
-      <ul>
+      <ul v-if="job.conf.is_pr">
+        <li>Pull request <a :href="githubPullRequestURL">#{{ job.conf.pr_number }}</a></li>
         <li>
-          Pushed by
-          <a :href="githubUserURL">
-            {{ commitAuthor }}
-          </a>
+          opened by
+          <a :href="githubUserURL">{{ jobAuthor }}</a>
         </li>
+      </ul>
+      <ul v-else>
+        <li>Pushed by <a :href="githubUserURL">{{ jobAuthor }}</a></li>
         <li>
-          <a :href="githubCommitURL">{{ commitHash }}</a> on
-          <a :href="githubBranchURL">{{ commitBranch }}</a>
+          <a :href="githubCommitURL">{{ jobHash }}</a> on
+          <a :href="githubBranchURL">{{ jobBranch }}</a>
         </li>
       </ul>
     </div>
@@ -249,7 +242,7 @@ export default {
         <small>
           {{ jobTimeStamp }} -
           <span class="jobnumber"> #{{ job.number }}</span>
-          <span v-if="commitHash">({{ commitHash }})</span>
+          <span v-if="jobHash">({{ jobHash }})</span>
           <span v-if="job.status === 'error'">- ERROR</span>
         </small>
       </h3>

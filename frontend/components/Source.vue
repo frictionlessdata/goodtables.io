@@ -33,6 +33,16 @@ export default {
         return `/${this.job.integration_name}/${this.source.name}`
       }
     },
+    jobHistory() {
+      return this.source.job_history
+        // TODO: job.source to data model level
+        .map(job => ({...job, source: this.source}))
+        .reverse()
+    },
+  },
+  created() {
+    // TODO: job.source to data model level
+    this.job.source = this.source
   },
   mounted() {
     if (this.job.status !== 'error') {
@@ -96,7 +106,7 @@ export default {
                       </span>
                     </h3>
                   <Job
-                    v-for="item of source.job_history.reverse()"
+                    v-for="item of jobHistory"
                     :active="item.id === job.id"
                     :githubId="githubId"
                     view="compact"
