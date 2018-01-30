@@ -9,7 +9,7 @@ describe('Error404', () => {
 
   it('should contain correct text', () => {
     const wrapper = mount(Error404)
-    wrapper.find('h1')[0].text().should.include('Error 404')
+    wrapper.find('h1')[0].text().should.include('404')
   })
 
 })
