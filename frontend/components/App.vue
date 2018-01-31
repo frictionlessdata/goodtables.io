@@ -1,7 +1,6 @@
 <script>
 import Logo from './Logo.vue'
 import Messages from './Messages.vue'
-import feedbackImage from '../images/feedback.svg'
 import loginImage from '../images/login.svg'
 
 export default {
@@ -20,7 +19,6 @@ export default {
   data: () => {
     return {
       menuClass: 'default-menu-view',
-      feedbackImage,
       loginImage,
     }
   },
@@ -88,7 +86,7 @@ export default {
               aria-expanded="false"
               aria-controls="feedback"
             >
-              <img :src="feedbackImage" alt="Feedback">
+              <span class="icon-bubble"></span>
               <span class="text">Feedback</span>
             </a>
             <div class="nav-content collapse" id="feedback">

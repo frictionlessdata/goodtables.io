@@ -95,6 +95,11 @@
     .nav {
       font-weight: 500;
 
+      &.secondary [class^="icon-"] {
+        font-size: 26px;
+        float: left;
+      }
+
       a {
         color: #fff;
 
