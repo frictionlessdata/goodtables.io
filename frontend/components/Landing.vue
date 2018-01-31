@@ -8,11 +8,6 @@ import screenshotDetails2 from '../images/screenshot-details/2.png'
 import screenshotDetails3 from '../images/screenshot-details/3.png'
 import screenshotDetails4 from '../images/screenshot-details/4.png'
 
-const Vue = require('vue')
-const VueScrollTo = require('vue-scrollto')
-
-Vue.use(VueScrollTo)
-
 export default {
   name: 'Landing',
   props: {},

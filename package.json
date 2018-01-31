@@ -12,7 +12,6 @@
     "parts-selector": "github:smth/parts-selector",
     "qs": "^6.5.0",
     "vue": "^2.1.0",
-    "vue-scrollto": "^2.6.7",
     "vuebar": "0.0.18"
   },
   "devDependencies": {
