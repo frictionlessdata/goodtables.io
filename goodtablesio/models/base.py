@@ -40,7 +40,9 @@ class BaseModelMixin(object):
 
 
 def make_uuid():
-    return str(uuid.uuid4())
+    # Use UUIDv1 because it returns sequential values, which have better
+    # performance on the database.
+    return str(uuid.uuid1())
 
 
 def make_token():

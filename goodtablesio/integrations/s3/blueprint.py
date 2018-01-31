@@ -1,4 +1,3 @@
-import uuid
 import logging
 
 from flask import Blueprint, request, abort, jsonify
@@ -6,6 +5,7 @@ from flask_login import login_required, current_user
 from celery import chain
 
 from goodtablesio import models, settings
+from goodtablesio.models.base import make_uuid
 from goodtablesio.services import database
 from goodtablesio.tasks.validate import validate
 from goodtablesio.utils.signature import validate_signature
@@ -64,7 +64,7 @@ def create_job():
         abort(400, msg)
 
     # Save job to database
-    job_id = str(uuid.uuid4())
+    job_id = make_uuid()
 
     models.job.create({
         'id': job_id,
