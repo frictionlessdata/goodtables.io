@@ -1,13 +1,17 @@
 <script>
 import Logo from './Logo.vue'
-import Maze from './Maze.vue'
+import mazeImage from '../images/maze.svg'
 
 export default {
   name: 'Error500',
   props: {},
   components: {
     Logo,
-    Maze,
+  },
+  data() {
+    return {
+      mazeImage,
+    }
   },
 }
 </script>
@@ -19,7 +23,7 @@ export default {
         <h1>
           Internal error (500)
         </h1>
-        <Maze />
+        <span v-html="mazeImage"></span>
         <Logo />
       </section>
     </div>

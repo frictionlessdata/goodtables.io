@@ -1,6 +1,8 @@
 <script>
 import Logo from './Logo.vue'
 import Messages from './Messages.vue'
+import feedbackImage from '../images/feedback.svg'
+import loginImage from '../images/login.svg'
 
 export default {
   name: 'App',
@@ -18,6 +20,8 @@ export default {
   data: () => {
     return {
       menuClass: 'default-menu-view',
+      feedbackImage,
+      loginImage,
     }
   },
   computed: {
@@ -84,7 +88,7 @@ export default {
               aria-expanded="false"
               aria-controls="feedback"
             >
-              <img src="../images/feedback.svg" alt="">
+              <img :src="feedbackImage" alt="Feedback">
               <span class="text">Feedback</span>
             </a>
             <div class="nav-content collapse" id="feedback">
@@ -106,7 +110,7 @@ export default {
           </li>
           <li v-else class="log-in">
             <a :href="`${baseUrl}/user/login/github`">
-              <img src="../images/login.svg" alt="">
+              <img :src="loginImage" alt="Login">
               <span class="text">Log in</span>
             </a>
           </li>

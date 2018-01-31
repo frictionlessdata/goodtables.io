@@ -1,13 +1,17 @@
 <script>
 import Logo from './Logo.vue'
-import Maze from './Maze.vue'
+import mazeImage from '../images/maze.svg'
 
 export default {
   name: 'Error404',
   props: {},
   components: {
     Logo,
-    Maze,
+  },
+  data() {
+    return {
+      mazeImage,
+    }
   },
 }
 </script>
@@ -19,7 +23,7 @@ export default {
         <h1>
           This page could not be found (404)
         </h1>
-        <Maze />
+        <span v-html="mazeImage"></span>
         <Logo />
       </section>
     </div>

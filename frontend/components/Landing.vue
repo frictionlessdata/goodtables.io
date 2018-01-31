@@ -1,7 +1,12 @@
 <script>
 import Logo from './Logo.vue'
-import LogoFD from './LogoFD.vue'
-import LogoOKI from './LogoOKI.vue'
+import fdLogo from '../images/logo_fd.svg'
+import okiLogo from '../images/logo_oki.svg'
+import screenshot from '../images/screenshot.png'
+import screenshotDetails1 from '../images/screenshot-details/1.png'
+import screenshotDetails2 from '../images/screenshot-details/2.png'
+import screenshotDetails3 from '../images/screenshot-details/3.png'
+import screenshotDetails4 from '../images/screenshot-details/4.png'
 
 const Vue = require('vue')
 const VueScrollTo = require('vue-scrollto')
@@ -13,8 +18,17 @@ export default {
   props: {},
   components: {
     Logo,
-    LogoFD,
-    LogoOKI,
+  },
+  data() {
+    return {
+      screenshot,
+      screenshotDetails1,
+      screenshotDetails2,
+      screenshotDetails3,
+      screenshotDetails4,
+      okiLogo,
+      fdLogo,
+    }
   },
 }
 </script>
@@ -48,32 +62,32 @@ export default {
       <main class="container">
         <div class="inner">
           <figure class="screenshot">
-            <img src="../images/screenshot.png" alt="" />
+            <img :src="screenshot" alt="Goodtables report screenshot" />
           </figure>
 
           <h2>Continuous data validation for spreadsheets</h2>
 
           <div class="features">
             <figure>
-              <img src="../images/screenshot-details/1.png" alt="" />
+              <img :src="screenshotDetails1" alt="" />
               <figcaption>
                 Monitor files in multiple formats, including CSV, Excel, LibreOffice, and <a href="http://docs.goodtables.io/" rel="external">more</a>.
               </figcaption>
             </figure>
             <figure>
-              <img src="../images/screenshot-details/2.png" alt="" />
+              <img :src="screenshotDetails2" alt="" />
               <figcaption>
                 Checks the data structure and contents of your tables for potential issues.
               </figcaption>
             </figure>
             <figure>
-              <img src="../images/screenshot-details/3.png" alt="" />
+              <img :src="screenshotDetails3" alt="" />
               <figcaption>
                 See errors in familiar context, so they can be easily isolated and resolved.
               </figcaption>
             </figure>
             <figure>
-              <img src="../images/screenshot-details/4.png" alt="" />
+              <img :src="screenshotDetails4" alt="" />
               <figcaption>
                 Automatically validate on every change, helping you to keep your data error free.
               </figcaption>
@@ -121,10 +135,10 @@ export default {
       <div class="container">
         <ul class="logos">
           <li>
-            <LogoOKI />
+            <a v-html="okiLogo" href="https://okfn.org" rel="external" ></a>
           </li>
           <li class="fd">
-            <LogoFD />
+            <a v-html="fdLogo" href="https://frictionlessdata.org" rel="external" ></a>
           </li>
         </ul>
         <p>
