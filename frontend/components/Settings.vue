@@ -35,10 +35,10 @@ export default {
       <div role="tabpanel" class="tab-pane active" id="github">
         <SettingsGithub />
       </div>
-      <div role="tabpanel" class="tab-pane active" id="amazon">
+      <div role="tabpanel" class="tab-pane" id="amazon">
         <SettingsS3 />
       </div>
-      <div role="tabpanel" class="tab-pane active" id="tokens">
+      <div role="tabpanel" class="tab-pane" id="tokens">
         <SettingsTokens />
       </div>
     </div>
