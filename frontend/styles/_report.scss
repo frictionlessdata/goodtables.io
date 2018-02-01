@@ -1,11 +1,17 @@
 .source-view {
 
-  & > .integration {
-    float: right;
-    margin: 20px 20px 0 20px;
-    font-size: 28px;
-    color: inherit;
-    text-decoration: none;
+  & > header {
+    a {
+      color: inherit;
+    }
+
+    .integration {
+      float: right;
+      margin: 20px 20px 0 20px;
+      font-size: 28px;
+      color: inherit;
+      text-decoration: none;
+    }
   }
 
   .latest-job {
