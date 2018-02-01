@@ -45,11 +45,18 @@ $ editor .env # edit your vars
 *Note*: `GTIO_SECRET_KEY` must be a 32 bit URL-safe base64 string. You can obtain it by running the followig:
 
 ```python
+import os
 import base64
 
-base64.urlsafe_b64encode(os.urandom(32))
+key = base64.urlsafe_b64encode(os.urandom(32))
+print(key.decode('utf-8'))
 ```
 
+You can also run it as a one-line command as:
+
+```
+python3 -c "import os; import base64; key = base64.urlsafe_b64encode(os.urandom(32)); print(key.decode('utf-8'))"
+```.
 
 ### Migrations
 
