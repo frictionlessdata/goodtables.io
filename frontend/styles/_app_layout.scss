@@ -144,23 +144,10 @@
       }
 
       li {
-        .back-icon {
-          display: none;
-        }
-
         &.active,
         &.active-parent {
           a {
             background-color: $brand-info;
-          }
-        }
-
-        &.active-parent:not(.active) {
-          .section-icon {
-            display: none;
-          }
-          .back-icon {
-            display: inline-block;
           }
         }
 
