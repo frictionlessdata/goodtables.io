@@ -10,11 +10,6 @@ export default {
     job: Object,
     githubId: Number,
   },
-  data() {
-    return {
-      viewClass: 'default-side-view',
-    }
-  },
   components: {
     Job,
     Messages,
@@ -55,7 +50,7 @@ export default {
 </script>
 
 <template>
-  <div :class="viewClass">
+  <div>
     <div class="primary-secondary source-view">
       <a class="integration" :class="`icon-${source.integration_name}`"></a>
       <h1>{{ source.name }}</h1>
@@ -80,9 +75,6 @@ export default {
               <pre>.. image:: https://goodtables.io/badge/{{source.integration_name}}/{{source.name}}.svg
 :target: https://goodtables.io/{{source.integration_name}}/{{source.name}}</pre>
             </div>
-            <a v-on:click="viewClass = 'default-side-view'" class="expand-view left">
-              Expand sidebar
-            </a>
           </div>
         </section>
 
@@ -92,12 +84,6 @@ export default {
             <div>
               <div v-bar>
                 <div>
-                  <a
-                    v-on:click="viewClass = 'collapsed-side-view'"
-                    class="collapse-view right"
-                  >
-                    Collapse sidebar
-                  </a>
                     <h3 class="aside-title">
                       <span class="text">
                         {{ source.job_history.length }}

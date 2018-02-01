@@ -5,50 +5,6 @@
     overflow: visible; // required for position sticky
   }
 
-  .collapse-view,
-  .expand-view {
-    $btn-size: 8px;
-    display: none;
-
-    @media screen and (min-width: $screen-sm) {
-      position: absolute;
-      top: $grid-gutter-width;
-      width: 0;
-      height: 0;
-      border-style: solid;
-      overflow: hidden;
-      cursor: pointer;
-      opacity: 0.7;
-
-      &.left {
-        right: $grid-gutter-width*0.25;
-        border-width: $btn-size $btn-size $btn-size 0;
-        border-color: transparent $gray-base transparent transparent;
-      }
-
-      &.right {
-        left: $grid-gutter-width*0.25;
-        border-width: $btn-size 0 $btn-size $btn-size;
-        border-color: transparent transparent transparent $gray-base;
-      }
-    }
-  }
-  .expand-view {
-    display: none;
-  }
-  .collapse-view {
-    &.left {
-      @media screen and (min-width: $screen-sm) {
-        display: block;
-      }
-    }
-    &.right {
-      @media screen and (min-width: $screen-lg) {
-        display: block;
-      }
-    }
-  }
-
   .main-nav {
     background-color: $brand-primary;
     @include rev-out;
@@ -302,23 +258,6 @@
       @media screen and (min-width: $screen-lg) {
         padding-left: 0;
         padding-right: 0;
-
-        .collapse-view,
-        .expand-view {
-          top: 1.2em;
-        }
-        .collapse-view {
-          left: 0;
-
-          & + .aside-title {
-            .text {
-              margin-left: 1em;
-            }
-          }
-        }
-        .expand-view {
-          top: 1.4em;
-        }
       }
 
       h1 {
@@ -432,123 +371,6 @@
         @media screen and (min-width: $screen-lg) {
           .panel {
             box-shadow: 0px 0px 0px 4px rgba($gray,0.3);
-          }
-        }
-      }
-    }
-  }
-
-  &.collapsed-menu-view {
-    $collapsed-menu-width: 86px;
-
-    .main-nav {
-      @media screen and (min-width: $screen-sm) {
-        width: $collapsed-menu-width;
-
-
-        .logo {
-          .good,
-          .tables,
-          .io {
-            display: none;
-          }
-        }
-
-        .logo {
-          box-sizing: border-box;
-          width: $collapsed-menu-width;
-        }
-
-        .text {
-          .description {
-            display: none;
-          }
-        }
-
-        .nav {
-          padding-right: $grid-gutter-width/2;
-
-          a {
-            border-radius: $border-radius-large;
-
-            .text {
-              width: 0;
-              overflow: hidden;
-              margin-left: 0;
-              margin-top: -1em;
-            }
-          }
-
-          .nav-content {
-            right: auto;
-            width: 300px;
-            border-top-right-radius: $border-radius-large;
-            border-bottom-right-radius: $border-radius-large;
-          }
-        }
-
-        .collapse-view {
-          display: none;
-        }
-      }
-    }
-
-    .content {
-      margin-left: $collapsed-menu-width;
-
-      .expand-view.right {
-        display: block;
-      }
-    }
-  }
-
-  .collapsed-side-view {
-    @media screen and (min-width: $screen-lg) {
-      .expand-view {
-        display: block;
-      }
-      .collapse-view {
-        display: none;
-      }
-      .main {
-        width: 99%;
-      }
-      .aside {
-        $collapsed-side-width: 83px;
-        width: $collapsed-side-width;
-        text-align: center;
-
-        .vb {
-          width: $collapsed-side-width;
-        }
-
-        .aside-title {
-          font-size: 1em;
-          margin: 0;
-
-          .text {
-            display: none;
-          }
-        }
-
-        .source-item {
-          .panel {
-            border: none;
-          }
-
-          .avatar {
-            float: none;
-            margin: 0;
-          }
-
-          .label {
-            margin: 0;
-          }
-
-          .panel-title,
-          .jobcount,
-          .time {
-            display: none;
           }
         }
       }

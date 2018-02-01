@@ -18,7 +18,6 @@ export default {
   },
   data: () => {
     return {
-      menuClass: 'default-menu-view',
       loginImage,
     }
   },
@@ -33,7 +32,7 @@ export default {
 </script>
 
 <template>
-  <div class="app" :class="menuClass">
+  <div class="app">
     <div class="inner">
       <nav class="main-nav">
 
@@ -110,22 +109,11 @@ export default {
             </a>
           </li>
         </ul>
-
-        <!-- Collapse -->
-        <a v-on:click="menuClass = 'collapsed-menu-view'" class="collapse-view left">
-          Collapse sidebar
-        </a>
-
       </nav>
       <div class="content">
 
         <!-- Contents -->
         <slot name="contents"></slot>
-
-        <!-- Collapse -->
-        <a v-on:click="menuClass = 'default-menu-view'" class="expand-view right">
-          Collapse sidebar
-        </a>
 
       </div>
     </div>
