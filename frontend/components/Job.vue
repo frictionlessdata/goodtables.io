@@ -151,8 +151,10 @@ export default {
         <!-- Statistics -->
         <a class="job" :href="internalURL">
           <span class="jobcount">
-            <span class="jobnumber"> #{{ job.number }}</span>
-            <span v-if="jobHash" class="jobid"> ({{ jobHash }})</span>
+            <span class="jobnumber">#{{ job.number }}</span>
+            <span v-if="jobHash" class="jobid">
+              <a :href="githubCommitURL"> ({{ jobHash }})</a>
+            </span>
           </span>
           <span class="label" :class="statusLabelClass">
             <span :class="statusIconClass"><i>{{ job.status }}</i></span>
@@ -185,7 +187,9 @@ export default {
         <a :href="internalURL" class="job">
           <span class="jobcount">
             <span class="jobnumber"> #{{ job.number }}</span>
-            <span v-if="jobHash" class="jobid"> ({{ jobHash }})</span>
+            <span v-if="jobHash" class="jobid">
+              <a :href="githubCommitURL"> ({{ jobHash }})</a>
+            </span>
           </span>
           <span class="icon-clock"></span>
           <span class="time">{{ jobTimeStamp }}</span>
@@ -242,7 +246,9 @@ export default {
         <small>
           {{ jobTimeStamp }} -
           <span class="jobnumber"> #{{ job.number }}</span>
-          <span v-if="jobHash">({{ jobHash }})</span>
+          <span v-if="jobHash">
+            <a :href="githubCommitURL">({{ jobHash }})</a>
+          </span>
           <span v-if="job.status === 'error'">- ERROR</span>
         </small>
       </h3>
