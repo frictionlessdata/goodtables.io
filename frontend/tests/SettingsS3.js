@@ -25,7 +25,7 @@ describe('SettingsS3', () => {
   it('should have no buckets', (done) => {
     const wrapper = mount(SettingsS3)
     setTimeout(() => {
-      wrapper.text().should.include('No active sources found')
+      wrapper.text().should.include('no active buckets')
       done()
     })
   })

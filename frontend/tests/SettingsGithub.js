@@ -26,7 +26,7 @@ describe('SettingsGithub', () => {
   it('should have no repositories', (done) => {
     const wrapper = mount(SettingsGithub)
     setTimeout(() => {
-      wrapper.text().should.include('No active sources found')
+      wrapper.text().should.include('no active repositories')
       done()
     })
   })

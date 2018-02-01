@@ -242,7 +242,9 @@ export default {
         <span class="icon-cross"><i>{{ job.status }}</i></span>
       </span>
       <h3 class="panel-title">
-        {{ sourceName }}
+        <a :href="internalURL">
+          {{ sourceName }}
+        </a>
         <small>
           {{ jobTimeStamp }} -
           <span class="jobnumber"> #{{ job.number }}</span>
@@ -295,8 +297,8 @@ export default {
             {{ file.name }}
           </li>
         </ul>
-        <a :href="`/${job.integration_name}/${sourceName}`" class="btn btn-default">
-          See full report
+        <a :href="internalURL" class="btn btn-default">
+          Full report
         </a>
       </div>
     </div>

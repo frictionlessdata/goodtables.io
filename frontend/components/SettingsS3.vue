@@ -128,7 +128,7 @@ export default {
 
     <!-- Available -->
     <div class="parts list">
-      <h3 class="list-heading">Add a source</h3>
+      <h3 class="list-heading">Add a bucket</h3>
       <form @submit.prevent="addBucket()" class="add form">
         <div class="form-group">
           <label for="access-key-id">Access Key Id</label>
@@ -168,17 +168,17 @@ export default {
 
     <!-- Active -->
     <div class="selected list">
-      <h3 class="list-heading">Active sources</h3>
+      <h3 class="list-heading">Active buckets</h3>
       <ul v-if="filteredBuckets.length">
-        <li v-for="bucket of filteredBuckets">
-          <span class="source name">{{ bucket.name }}</span>
+        <li v-for="bucket of filteredBuckets" title="Remove bucket">
           <a @click.prevent="removeBucket(bucket)" class="remove item-button">
+            <span class="source name">{{ bucket.name }}</span>
             <span class="icon"></span><span class="text">Remove</span>
           </a>
         </li>
       </ul>
       <div v-else class="empty">
-        <p>No active sources found.</p>
+        <p>There are no active buckets.</p>
       </div>
     </div>
 

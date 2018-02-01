@@ -99,10 +99,10 @@ export default {
 
     <!-- Available -->
     <div class="parts list">
-      <h3 class="list-heading">Add a token</h3>
+      <h3 class="list-heading">Create token</h3>
       <form @submit.prevent="createToken()" class="add form">
         <div class="form-group">
-          <label for="access-key-id">Token description</label>
+          <label for="access-key-id">Description</label>
           <input
             v-model="tokenDescription"
             id="token-description"
@@ -110,7 +110,7 @@ export default {
             type="text"
           >
         </div>
-        <button type="submit" class="btn btn-default add">Create Token</button>
+        <button type="submit" class="btn btn-default add">Create</button>
       </form>
     </div>
 
@@ -121,18 +121,18 @@ export default {
 
     <!-- Active -->
     <div class="selected list">
-      <h3 class="list-heading">Active sources</h3>
+      <h3 class="list-heading">Active tokens</h3>
       <ul v-if="filteredTokens.length">
-        <li v-for="token of filteredTokens">
-          <span class="source name">{{ token.token }}</span>
-          <small v-if="token.description">{{ token.description }}</small>
+        <li v-for="token of filteredTokens" title="Remove token">
           <a @click.prevent="deleteToken(token)" class="remove item-button">
+            <span class="source name">{{ token.token }}</span>
+            <small v-if="token.description">{{ token.description }}</small>
             <span class="icon"></span><span class="text">Remove</span>
           </a>
         </li>
       </ul>
       <div v-else class="empty">
-        <p>No active tokens found.</p>
+        <p>There are no active tokens.</p>
       </div>
     </div>
 
