@@ -123,11 +123,6 @@ export default {
       }
       return files
     },
-    errorCount() {
-      if (this.job.report) {
-        return this.job.report['error-count']
-      }
-    },
   },
 }
 </script>
@@ -254,51 +249,32 @@ export default {
           <span v-if="job.status === 'error'">- ERROR</span>
         </small>
       </h3>
-      <a
-        role="button"
-        data-toggle="collapse"
-        data-parent="#accordion"
-        :href="`#job-${job.id}`"
-        aria-expanded="true"
-        aria-controls="collapseOne"
-        :class="{collapsed: !active}"
-      >
-        <span class="icon-keyboard_arrow_down"><i>Toggle details</i></span>
-      </a>
-      <span v-if="job.status !== 'error'" class="count label label-danger">
-        {{ errorCount }}
-      </span>
     </div>
 
     <!-- Files -->
     <div
       :id="`job-${job.id}`"
-      class="panel-collapse collapse"
-      :class="{in: active}"
-      role="tabpanel"
-      aria-labelledby="headingOne"
     >
       <div class="panel-body">
-        <ul class="dash-files">
-          <li v-for="file of invalidFiles">
-            <span class="label label-danger">
-              {{ file.errorCount }} {{ file.errorCount > 1 ? 'errors' : 'error' }}
-            </span>
-            <div class="report-thumb">
-              <table class="table">
-                <tbody>
-                  <tr v-for="(row, rowNumber) of file.rows">
-                    <td class="result-row-index">{{ rowNumber }}</td>
-                    <td v-for="value of row">{{ value }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            {{ file.name }}
-          </li>
-        </ul>
-        <a :href="internalURL" class="btn btn-default">
-          Full report
+        <a :href="internalURL">
+          <ul class="dash-files">
+            <li v-for="file of invalidFiles">
+              <span class="label label-danger">
+                {{ file.errorCount }} {{ file.errorCount > 1 ? 'errors' : 'error' }}
+              </span>
+              <div class="report-thumb">
+                <table class="table">
+                  <tbody>
+                    <tr v-for="(row, rowNumber) of file.rows">
+                      <td class="result-row-index">{{ rowNumber }}</td>
+                      <td v-for="value of row">{{ value }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              {{ file.name }}
+            </li>
+          </ul>
         </a>
       </div>
     </div>
