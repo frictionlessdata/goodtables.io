@@ -39,10 +39,10 @@ export default {
             </div>
 
             <div class="content">
-              <h1>Have confidence in your data</h1>
-              <p>With continuous data validation, you’ll be the first to know if there’s a problem</p>
+              <h1>Publish data with confidence</h1>
+              <p>Validate your data on every change, so you catch errors before your users</p>
               <a href="/user/login/github" class="cta btn">
-                See how your data is doing
+                Validate your data for free
                 <p class="sub-text">
                   <span class="link-icon icon-github"></span>
                   <span class="link-text">Sign in with GitHub</span>
@@ -72,13 +72,13 @@ export default {
             <figure>
               <img :src="screenshotDetails2" alt="" />
               <figcaption>
-                Checks the data structure and contents of your tables for potential issues.
+                Check the structure and contents of your tables for potential issues.
               </figcaption>
             </figure>
             <figure>
               <img :src="screenshotDetails3" alt="" />
               <figcaption>
-                See errors in familiar context, so they can be easily isolated and resolved.
+                See errors in context, so they can be easily isolated and resolved.
               </figcaption>
             </figure>
             <figure>
@@ -92,7 +92,7 @@ export default {
           <div class="info">
             <div class="item">
               <div class="inner">
-                <h3>What does it cost?</h3>
+                <h3>How much does it cost?</h3>
                 <p>
                   It's free! While the basic service of goodtables.io will always remain free, there will be additional features for paid plans in the future.
                 </p>
@@ -102,15 +102,15 @@ export default {
               <div class="inner">
                 <h3>How easy is it to set up?</h3>
                 <p>
-                  If your data is hosted on GitHub, you'll be up and running in a few clicks. We also have an <a href="http://docs.goodtables.io/" rel="external">option for technical users</a> to monitor data from Amazon S3.
+                  If your data is hosted on GitHub, you'll be up and running in a few clicks. We also have an <a href="https://docs.goodtables.io/getting_started/s3.html" rel="external">option for technical users</a> to monitor data from Amazon S3.
                 </p>
               </div>
             </div>
             <div class="item">
               <div class="inner">
-                <h3>Is it private and secure?</h3>
+                <h3>What do you do with my data?</h3>
                 <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi sagittis ut ante id fermentum. Mauris sagittis, tellus quis condimentum finibus.
+                  We only use your data while validating it, removing the files after we're finished. Also, <a href="https://github.com/frictionlessdata/goodtables.io" rel="external">all code is open source</a>, so you can check it yourself, or even host it in your own servers.
                 </p>
               </div>
             </div>
@@ -119,7 +119,7 @@ export default {
         </div>
       </main>
       <a href="/user/login/github" class="cta btn">
-        See how your data is doing
+        Validate your data for free
         <p class="sub-text">
           <span class="link-icon icon-github"></span>
           <span class="link-text">Sign in with GitHub</span>
@@ -137,7 +137,7 @@ export default {
           </li>
         </ul>
         <p>
-          GoodTables is part of the Frictionless Data project from Open Knowledge International, which supports a wider discussion around Open Data quality. We believe that GoodTables can reduce the processing time of your data publication workflow, whatever it may be.
+          GoodTables is part of the <a href="https://frictionlessdata.io" rel="external">Frictionless Data</a> project from <a href="https://okfn.org" rel="external">Open Knowledge International</a>, which supports a wider discussion around Open Data quality. We believe that GoodTables can reduce the processing time of your data publication workflow, whatever it may be.
         </p>
       </div>
     </section>
