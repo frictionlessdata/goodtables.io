@@ -1,6 +1,6 @@
-import uuid
 import logging
 from goodtablesio.services import database
+from goodtablesio.models.base import make_uuid
 from goodtablesio.models.job import Job
 from goodtablesio.models.source import Source
 from goodtablesio.integrations.github.utils.status import set_commit_status
@@ -53,7 +53,7 @@ class GithubRepo(Source):
                 return None
 
         # Save job to database
-        job_id = str(uuid.uuid4())
+        job_id = make_uuid()
         params = {
             'id': job_id,
             'integration_name': 'github',

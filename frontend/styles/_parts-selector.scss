@@ -3,6 +3,24 @@
 
 .parts-selector {
   .list {
+    li {
+      padding: 0;
+    }
+
+    a {
+      cursor: pointer;
+    }
+
+    .item-button {
+      color: inherit;
+      padding: 15px 18px;
+
+      &:hover {
+        background-color: $gray-lighter;
+        text-decoration: none;
+      }
+    }
+
     .list-heading {
       font-weight: 600;
 
@@ -31,11 +49,6 @@
     }
 
     .empty {
-      display: none;
-    }
-
-    ul:empty {
-      & + .empty {
         display: block;
         padding: $grid-gutter-width*2;
         text-align: center;
@@ -51,7 +64,6 @@
             right: $grid-gutter-width*2;
           }
         }
-      }
     }
 
     .form {

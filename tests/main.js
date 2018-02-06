@@ -3,7 +3,7 @@ export default {
     client
       .url(client.launch_url)
       .waitForElementVisible('h1', 5000)
-      .assert.containsText('h1', 'Have confidence in your data')
+      .assert.containsText('h1', 'Publish data with confidence')
       .end();
   },
   afterEach: (client, done) => {

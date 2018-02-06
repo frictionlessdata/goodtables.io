@@ -1,16 +1,16 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('../fonts/icons/icomoon.eot?7pz8ez');
-  src:  url('../fonts/icons/icomoon.eot?7pz8ez#iefix') format('embedded-opentype'),
-    url('../fonts/icons/icomoon.ttf?7pz8ez') format('truetype'),
-    url('../fonts/icons/icomoon.woff?7pz8ez') format('woff'),
-    url('../fonts/icons/icomoon.svg?7pz8ez#icomoon') format('svg');
+  src:  url('../fonts/icons/icomoon.eot?7it4kz');
+  src:  url('../fonts/icons/icomoon.eot?7it4kz#iefix') format('embedded-opentype'),
+    url('../fonts/icons/icomoon.ttf?7it4kz') format('truetype'),
+    url('../fonts/icons/icomoon.woff?7it4kz') format('woff'),
+    url('../fonts/icons/icomoon.svg?7it4kz#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
 }
 
 @mixin icon-font() {
-  // use !important to prevent issues with browser extensions that change fonts
+  /* use !important to prevent issues with browser extensions that change fonts */
   font-family: 'icomoon' !important;
   speak: none;
   font-style: normal;
@@ -18,12 +18,8 @@
   font-variant: normal;
   text-transform: none;
   line-height: 1;
-  //
-  // tweak alignment
-  position: relative;
-  top: 0.1em;
-  //
-  // Better Font Rendering
+
+  /* Better Font Rendering =========== */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -36,6 +32,21 @@
   }
 }
 
+.icon-grid:before {
+  content: "\e900";
+}
+.icon-list:before {
+  content: "\e901";
+}
+.icon-keyboard_arrow_down:before {
+  content: "\e907";
+}
+.icon-dots-three-horizontal:before {
+  content: "\e90a";
+}
+.icon-shield:before {
+  content: "\e905";
+}
 .icon-search:before {
   content: "\e90b";
 }
@@ -102,27 +113,9 @@
 .icon-github:before {
   content: "\eab0";
 }
-.icon-dots-three-horizontal:before {
-  content: "\e90a";
-}
-.icon-shield:before {
-  content: "\e905";
-}
-.icon-keyboard_arrow_down:before {
-  content: "\e907";
-}
-.icon-keyboard_arrow_right:before {
-  content: "\e904";
-}
-.icon-keyboard_arrow_left:before {
-  content: "\e903";
+.icon-bubble:before {
+  content: "\e96b";
 }
 .icon-mouse-pointer:before {
   content: "\e908";
-}
-.icon-grid:before {
-  content: "\e900";
-}
-.icon-list:before {
-  content: "\e901";
 }

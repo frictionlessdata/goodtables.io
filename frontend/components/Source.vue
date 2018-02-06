@@ -6,14 +6,10 @@ import Job from './Job.vue'
 export default {
   name: 'Source',
   props: {
+    baseUrl: String,
     source: Object,
     job: Object,
     githubId: Number,
-  },
-  data() {
-    return {
-      viewClass: 'default-side-view',
-    }
   },
   components: {
     Job,
@@ -27,9 +23,14 @@ export default {
         success: this.job && this.job.status === 'success',
       }
     },
-    sourceURL() {
+    sourceUrl() {
       if (this.job) {
-        return `/${this.job.integration_name}/${this.source.name}`
+        return `${this.baseUrl}/${this.job.integration_name}/${this.source.name}`
+      }
+    },
+    jobUrl() {
+      if (this.sourceUrl) {
+        return `${this.sourceUrl}/jobs/${this.job.number}`
       }
     },
     jobHistory() {
@@ -37,6 +38,10 @@ export default {
         // TODO: job.source to data model level
         .map(job => ({...job, source: this.source}))
         .reverse()
+    },
+    badgeImageUrl() {
+      // TODO: Add branch
+      return `${this.baseUrl}/badge/${this.source.integration_name}/${this.source.name}.svg`
     },
   },
   created() {
@@ -55,10 +60,15 @@ export default {
 </script>
 
 <template>
-  <div :class="viewClass">
-    <div class="primary-secondary source-view">
-      <a class="integration" :class="`icon-${source.integration_name}`"></a>
-      <h1>{{ source.name }}</h1>
+  <div>
+    <section class="primary-secondary source-view">
+      <header>
+        <a class="integration" :class="`icon-${source.integration_name}`"></a>
+        <h1>
+          <a :href="sourceUrl">{{ source.name }}</a>
+          <a :href="jobUrl"><img :src="badgeImageUrl" :alt="job.status"></a>
+        </h1>
+      </header>
       <div>
 
         <!-- Report -->
@@ -72,17 +82,14 @@ export default {
             <div id="report"></div>
             <hr />
             <div>
-              <h3>Image URL</h3>
-              <pre>https://goodtables.io/badge/{{source.integration_name}}/{{source.name}}.svg</pre>
+              <h3>Badge image URL</h3>
+              <pre>{{badgeImageUrl}}</pre>
               <h3>Markdown</h3>
-              <pre>[![goodtables.io](https://goodtables.io/badge/{{source.integration_name}}/{{source.name}}.svg)](https://goodtables.io/{{source.integration_name}}/{{source.name}})</pre>
+              <pre>[![goodtables.io]({{badgeImageUrl}})]({{sourceUrl}})</pre>
               <h3>RST</h3>
-              <pre>.. image:: https://goodtables.io/badge/{{source.integration_name}}/{{source.name}}.svg
-:target: https://goodtables.io/{{source.integration_name}}/{{source.name}}</pre>
+              <pre>.. image:: {{badgeImageUrl}}
+:target: {{sourceUrl}}</pre>
             </div>
-            <a v-on:click="viewClass = 'default-side-view'" class="expand-view left">
-              Expand sidebar
-            </a>
           </div>
         </section>
 
@@ -92,12 +99,6 @@ export default {
             <div>
               <div v-bar>
                 <div>
-                  <a
-                    v-on:click="viewClass = 'collapsed-side-view'"
-                    class="collapse-view right"
-                  >
-                    Collapse sidebar
-                  </a>
                     <h3 class="aside-title">
                       <span class="text">
                         {{ source.job_history.length }}
@@ -118,6 +119,6 @@ export default {
         </section>
 
       </div>
-    </div>
+    </section>
   </div>
 </template>

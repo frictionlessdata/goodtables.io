@@ -123,11 +123,6 @@ export default {
       }
       return files
     },
-    errorCount() {
-      if (this.job.report) {
-        return this.job.report['error-count']
-      }
-    },
   },
 }
 </script>
@@ -151,8 +146,10 @@ export default {
         <!-- Statistics -->
         <a class="job" :href="internalURL">
           <span class="jobcount">
-            <span class="jobnumber"> #{{ job.number }}</span>
-            <span v-if="jobHash" class="jobid"> ({{ jobHash }})</span>
+            <span class="jobnumber">#{{ job.number }}</span>
+            <span v-if="jobHash" class="jobid">
+              <a :href="githubCommitURL"> ({{ jobHash }})</a>
+            </span>
           </span>
           <span class="label" :class="statusLabelClass">
             <span :class="statusIconClass"><i>{{ job.status }}</i></span>
@@ -185,7 +182,9 @@ export default {
         <a :href="internalURL" class="job">
           <span class="jobcount">
             <span class="jobnumber"> #{{ job.number }}</span>
-            <span v-if="jobHash" class="jobid"> ({{ jobHash }})</span>
+            <span v-if="jobHash" class="jobid">
+              <a :href="githubCommitURL"> ({{ jobHash }})</a>
+            </span>
           </span>
           <span class="icon-clock"></span>
           <span class="time">{{ jobTimeStamp }}</span>
@@ -238,59 +237,44 @@ export default {
         <span class="icon-cross"><i>{{ job.status }}</i></span>
       </span>
       <h3 class="panel-title">
-        {{ sourceName }}
+        <a :href="internalURL">
+          {{ sourceName }}
+        </a>
         <small>
           {{ jobTimeStamp }} -
           <span class="jobnumber"> #{{ job.number }}</span>
-          <span v-if="jobHash">({{ jobHash }})</span>
+          <span v-if="jobHash">
+            <a :href="githubCommitURL">({{ jobHash }})</a>
+          </span>
           <span v-if="job.status === 'error'">- ERROR</span>
         </small>
       </h3>
-      <a
-        role="button"
-        data-toggle="collapse"
-        data-parent="#accordion"
-        :href="`#job-${job.id}`"
-        aria-expanded="true"
-        aria-controls="collapseOne"
-        :class="{collapsed: !active}"
-      >
-        <span class="icon-keyboard_arrow_down"><i>Toggle details</i></span>
-      </a>
-      <span v-if="job.status !== 'error'" class="count label label-danger">
-        {{ errorCount }}
-      </span>
     </div>
 
     <!-- Files -->
     <div
       :id="`job-${job.id}`"
-      class="panel-collapse collapse"
-      :class="{in: active}"
-      role="tabpanel"
-      aria-labelledby="headingOne"
     >
       <div class="panel-body">
-        <ul class="dash-files">
-          <li v-for="file of invalidFiles">
-            <span class="label label-danger">
-              {{ file.errorCount }} {{ file.errorCount > 1 ? 'errors' : 'error' }}
-            </span>
-            <div class="report-thumb">
-              <table class="table">
-                <tbody>
-                  <tr v-for="(row, rowNumber) of file.rows">
-                    <td class="result-row-index">{{ rowNumber }}</td>
-                    <td v-for="value of row">{{ value }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            {{ file.name }}
-          </li>
-        </ul>
-        <a :href="`/${job.integration_name}/${sourceName}`" class="btn btn-default">
-          See full report
+        <a :href="internalURL">
+          <ul class="dash-files">
+            <li v-for="file of invalidFiles">
+              <span class="label label-danger">
+                {{ file.errorCount }} {{ file.errorCount > 1 ? 'errors' : 'error' }}
+              </span>
+              <div class="report-thumb">
+                <table class="table">
+                  <tbody>
+                    <tr v-for="(row, rowNumber) of file.rows">
+                      <td class="result-row-index">{{ rowNumber }}</td>
+                      <td v-for="value of row">{{ value }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              {{ file.name }}
+            </li>
+          </ul>
         </a>
       </div>
     </div>

@@ -23,7 +23,7 @@ export default {
         <a href="#github" aria-controls="github" role="tab" data-toggle="tab">GitHub</a>
       </li>
       <li role="presentation">
-        <a href="#amazon" aria-controls="amazon" role="tab" data-toggle="tab">Amazon</a>
+        <a href="#amazon" aria-controls="amazon" role="tab" data-toggle="tab">Amazon S3</a>
       </li>
       <li role="presentation">
         <a href="#tokens" aria-controls="tokens" role="tab" data-toggle="tab">API Tokens</a>
@@ -35,10 +35,10 @@ export default {
       <div role="tabpanel" class="tab-pane active" id="github">
         <SettingsGithub />
       </div>
-      <div role="tabpanel" class="tab-pane active" id="amazon">
+      <div role="tabpanel" class="tab-pane" id="amazon">
         <SettingsS3 />
       </div>
-      <div role="tabpanel" class="tab-pane active" id="tokens">
+      <div role="tabpanel" class="tab-pane" id="tokens">
         <SettingsTokens />
       </div>
     </div>

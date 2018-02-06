@@ -1,6 +1,7 @@
 <script>
 import Logo from './Logo.vue'
 import Messages from './Messages.vue'
+import loginImage from '../images/login.svg'
 
 export default {
   name: 'App',
@@ -17,7 +18,7 @@ export default {
   },
   data: () => {
     return {
-      menuClass: 'default-menu-view',
+      loginImage,
     }
   },
   computed: {
@@ -31,7 +32,7 @@ export default {
 </script>
 
 <template>
-  <div class="app" :class="menuClass">
+  <div class="app">
     <div class="inner">
       <nav class="main-nav">
 
@@ -42,21 +43,18 @@ export default {
         <ul v-if="userName" class="nav primary">
           <li :class="{active: component === 'Dashboard'}">
             <a href="/dashboard">
-              <span class="icon-keyboard_arrow_left back-icon" aria-hidden="true"></span>
               <span class="icon-dashboard section-icon" aria-hidden="true"></span>
               <span class="text">Dashboard</span>
             </a>
           </li>
           <li :class="{active: component === 'Jobs', 'active-parent': component === 'Source'}">
             <a href="/jobs">
-              <span class="icon-keyboard_arrow_left back-icon" aria-hidden="true"></span>
               <span class="icon-jobs section-icon" aria-hidden="true"></span>
               <span class="text">Jobs</span>
             </a>
           </li>
           <li :class="{active: component === 'Settings'}">
             <a href="/settings">
-              <span class="icon-keyboard_arrow_left back-icon" aria-hidden="true"></span>
               <span class="icon-equalizer section-icon" aria-hidden="true"></span>
               <span class="text">Manage Sources</span>
             </a>
@@ -84,7 +82,7 @@ export default {
               aria-expanded="false"
               aria-controls="feedback"
             >
-              <img src="../images/feedback.svg" alt="">
+              <span class="icon-bubble"></span>
               <span class="text">Feedback</span>
             </a>
             <div class="nav-content collapse" id="feedback">
@@ -106,27 +104,16 @@ export default {
           </li>
           <li v-else class="log-in">
             <a :href="`${baseUrl}/user/login/github`">
-              <img src="../images/login.svg" alt="">
+              <img :src="loginImage" alt="Login">
               <span class="text">Log in</span>
             </a>
           </li>
         </ul>
-
-        <!-- Collapse -->
-        <a v-on:click="menuClass = 'collapsed-menu-view'" class="collapse-view left">
-          Collapse sidebar
-        </a>
-
       </nav>
       <div class="content">
 
         <!-- Contents -->
         <slot name="contents"></slot>
-
-        <!-- Collapse -->
-        <a v-on:click="menuClass = 'default-menu-view'" class="expand-view right">
-          Collapse sidebar
-        </a>
 
       </div>
     </div>

@@ -115,22 +115,21 @@ export default {
     <div class="parts list">
       <h3 class="list-heading">
         <a @click="syncAccount()" :disabled="!ready || syncing" class="refresh">
-          <span class="icon-refresh"><i>Refresh</i></span>
+          <span class="icon-refresh" title="Refresh repository list"><i>Refresh</i></span>
         </a>
-        Available sources
+        Available repositories
       </h3>
       <ul v-if="filteredRepos.filter(repo => !repo.active).length">
-        <li v-for="repo of filteredRepos" v-if="!repo.active">
-          <span class="source name">{{ repo.name }}</span>
-          <a :href="`https://github.com/${repo.name}`" class="repo link">View repository</a>
+        <li v-for="repo of filteredRepos" v-if="!repo.active" title="Activate repository">
           <a @click="activateRepo(repo)" class="add item-button">
+            <span class="source name">{{ repo.name }}</span>
             <span class="icon"></span>
             <span class="text">Add</span>
           </a>
         </li>
       </ul>
       <div v-else class="empty action">
-        <p>No sources found.</p>
+        <p>No repositories found.</p>
         <p>Use the <span class="icon-refresh"><i>Refresh</i></span> button to refresh your list of repositories and organisations.</p>
       </div>
     </div>
@@ -143,19 +142,18 @@ export default {
 
     <!-- Active -->
     <div class="selected list">
-      <h3 class="list-heading">Active sources</h3>
+      <h3 class="list-heading">Active repositories</h3>
       <ul v-if="filteredRepos.filter(repo => repo.active).length">
-        <li v-for="repo of filteredRepos" v-if="repo.active">
-          <span class="source name">{{ repo.name }}</span>
-          <a :href="`https://github.com/${repo.name}`" class="repo link">View repository</a>
+        <li v-for="repo of filteredRepos" v-if="repo.active" title="Deactivate repository">
           <a @click="deactivateRepo(repo)" class="remove item-button">
+            <span class="source name">{{ repo.name }}</span>
             <span class="icon"></span>
             <span class="text">Remove</span>
           </a>
         </li>
       </ul>
       <div v-else class="empty">
-        <p>No active sources found.</p>
+        <p>There are no active repositories.</p>
       </div>
     </div>
 

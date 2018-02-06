@@ -12,7 +12,6 @@
     "parts-selector": "github:smth/parts-selector",
     "qs": "^6.5.0",
     "vue": "^2.1.0",
-    "vue-scrollto": "^2.6.7",
     "vuebar": "0.0.18"
   },
   "devDependencies": {
@@ -62,6 +61,7 @@
     "selenium-server": "3.0.1",
     "sinon": "^1.17.7",
     "sinon-chai": "^2.8.0",
+    "svg-inline-loader": "^0.8.0",
     "url-loader": "^0.5.7",
     "vue-loader": "^10.0.0",
     "vue-style-loader": "^2.0.0",

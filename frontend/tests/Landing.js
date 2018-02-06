@@ -7,9 +7,4 @@ should()
 
 describe('Landing', () => {
 
-  it('should contain correct text', () => {
-    const wrapper = mount(Landing)
-    wrapper.find('h1')[0].text().should.include('Have confidence in your data')
-  })
-
 })
