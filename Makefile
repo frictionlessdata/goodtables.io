@@ -1,4 +1,4 @@
-.PHONY: help frontend docs docs-watch
+.PHONY: help frontend docs docs-watch build deploy
 
 .DEFAULT_GOAL := help
 
@@ -55,7 +55,7 @@ build: ## Build the Docker image for this app
 	docker build --tag $(REPOSITORY) --rm=false .
 
 login: ## Login to Docker Hub
-	docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASSWORD
+	docker login -u $(DOCKER_USER) -p $(DOCKER_PASSWORD)
 
 push: ## Push the latest Docker image to Docker Hub
 	docker push $(REPOSITORY)
@@ -105,9 +105,9 @@ remove-admin: ## Remove admin permissions an existing user (Usage: make remove-a
 	FLASK_APP=goodtablesio/app.py flask remove_admin $(USERNAME)
 
 server: ## Command to run the app as queue or server
-	@if [ $(queue_mode) == "1" ]; then \
+	@if [ "$(queue_mode)" == "1" ]; then \
 		make queue; \
-	elif [ $(queue_mode) == "2" ]; then \
+	elif [ "$(queue_mode)" == "2" ]; then \
 		make queue-flower; \
 	else \
 		make migrate; \
