@@ -3,6 +3,7 @@ whoosh_index
 *.log
 
 node_modules/
+env/
 __pycache__/
 *.py[cod]
 *$py.class
@@ -12,3 +13,8 @@ pip-delete-this-directory.txt
 .coverage
 .python-version
 
+public/
+docs/
+build/
+coverage
+*.egg-info

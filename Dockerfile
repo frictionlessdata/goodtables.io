@@ -1,13 +1,9 @@
-FROM gliderlabs/alpine:3.4
+FROM python:3.5-alpine
 
-MAINTAINER Paul Walsh <paulywalsh@gmail.com>
+MAINTAINER Open Knowledge International <sysadmin@okfn.org>
 
 ENV LANG=en_US.UTF-8 \
     APP_DIR=/srv/app
-
-COPY . ${APP_DIR}
-
-WORKDIR ${APP_DIR}
 
 RUN apk add --no-cache --virtual build-dependencies \
     build-base \
@@ -26,7 +22,6 @@ RUN apk add --no-cache --virtual build-dependencies \
     libstdc++ \
     libxml2-dev \
     libxslt-dev \
-    python3 \
     bzip2 \
     bash \
     gettext \
@@ -37,11 +32,16 @@ RUN apk add --no-cache --virtual build-dependencies \
     libpng \
     postgresql-client \
     make \
- && update-ca-certificates \
- && make install \
- && make frontend \
- && rm -rf node_modules \
- && apk del build-dependencies
+ && update-ca-certificates
+
+COPY . ${APP_DIR}
+
+WORKDIR ${APP_DIR}
+
+RUN make install \
+  && make frontend \
+  && rm -rf node_modules \
+  && apk del build-dependencies
 
 EXPOSE 5000
 
