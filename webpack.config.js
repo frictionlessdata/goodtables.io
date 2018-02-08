@@ -42,8 +42,20 @@ const webpackConfig = {
         loader: 'json-loader'
       },
       {
-          test: /\.svg$/,
-          loader: 'svg-inline-loader'
+        test: /\.(woff2?|eot|ttf|otf|svg)(\?.*)?$/,
+        loader: 'url-loader',
+        query: {
+          limit: 10000,
+          name: 'fonts/[name].[hash].[ext]'
+        },
+        include: [
+          // Avoid loading SVGs that aren't fonts
+          path.resolve(__dirname, 'frontend/fonts')
+        ]
+      },
+      {
+        test: /\.svg$/,
+        loader: 'svg-inline-loader'
       },
       {
         test: /\.(png|jpg|gif)$/,
@@ -51,14 +63,6 @@ const webpackConfig = {
         options: {
           limit: 32768,
           name: 'images/[name].[hash].[ext]'
-        }
-      },
-      {
-        test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
-        loader: 'url-loader',
-        query: {
-          limit: 10000,
-          name: 'fonts/[name].[hash].[ext]'
         }
       },
     ]
