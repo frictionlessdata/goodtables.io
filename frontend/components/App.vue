@@ -59,7 +59,9 @@ export default {
         <div v-else class="text">
           <div class="description">
             <h3>What is goodtables.io?</h3>
-            <p>goodtables.io is a free online service for continuous data validation. goodtables.io checks tabular data sources for structural problems, such as blank rows and non-tabular input, and optionally checks the data against a given schema, providing robust quality assurance for your data. goodtables.io supports many formats used for tabular data storage, including CSV, Excel, JSON, and ODS. Read more about the bad data problems goodtables.io can address <a href="http://okfnlabs.org/bad-data/" target="_blank">here</a>.</p>
+            <p>
+              <a href="https://goodtables.io">Goodtables.io</a> is a free online service for continuous data validation. It checks tabular data sources for structural problems, such as blank rows and, if available, checks the data against a <a href="https://frictionlessdata.io/specs/table-schema/">Table Schema</a>. Read more about it on <a href="https://goodtables.io">https://goodtables.io</a>.
+            </p>
           </div>
         </div>
 
