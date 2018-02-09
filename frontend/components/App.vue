@@ -1,7 +1,6 @@
 <script>
 import Logo from './Logo.vue'
 import Messages from './Messages.vue'
-import loginImage from '../images/login.svg'
 
 export default {
   name: 'App',
@@ -15,11 +14,6 @@ export default {
     baseUrl: String,
     githubId: Number,
     messages: Array,
-  },
-  data: () => {
-    return {
-      loginImage,
-    }
   },
   computed: {
     avatarURL() {
@@ -104,7 +98,7 @@ export default {
           </li>
           <li v-else class="log-in">
             <a :href="`${baseUrl}/user/login/github`">
-              <img :src="loginImage" alt="Login">
+              <span class="icon-login"></span>
               <span class="text">Log in</span>
             </a>
           </li>
