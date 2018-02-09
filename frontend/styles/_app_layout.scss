@@ -275,6 +275,7 @@
       & > div {
         @media screen and (min-width: $screen-lg) {
           display: table;
+          table-layout: fixed;
           width: 100%;
           height: 100vh;
         }
