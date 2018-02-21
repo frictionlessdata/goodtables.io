@@ -32,7 +32,7 @@ def validate(validation_conf, job_id, files={}):
 
     # Add uploaded files
     for item in validation_conf['source']:
-        if item.get('preset', 'table') == 'table':
+        if item.get('preset', 'table') in ['table', 'datapackage']:
             item['scheme'] = 'http'
             if item['source'] in files:
                 item['scheme'] = 'file'

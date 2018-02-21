@@ -184,14 +184,14 @@ def test_api_source_job_create(post):
     assert job.source == source
 
 
-def test_api_source_job_create_file_upload(celery_app, post_form):
+def test_api_source_job_create_file_upload(celery_app, post_form, sample_csv, sample_tableschema):
     user = factories.User()
     token = user.create_api_token()
     source = factories.Source(users=[user], integration_name='api')
     payload = {
         'data': json.dumps({'source': [{'source': 'file1', 'schema': 'file2'}]}),
-        'file1': (open('goodtablesio/tests/fixtures/data.csv', 'rb'), 'data.csv'),
-        'file2': (open('goodtablesio/tests/fixtures/schema.json', 'rb'), 'schema.json'),
+        'file1': (sample_csv, 'data.csv'),
+        'file2': (sample_tableschema, 'schema.json'),
     }
     code, data = post_form('/api/source/%s/job' % source.id, payload, token=token.token)
     job = Job.get(data['job']['id'])

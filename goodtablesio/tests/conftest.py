@@ -1,4 +1,5 @@
 import pytest
+import os
 from goodtablesio.app import app
 from goodtablesio.services import database
 from goodtablesio.models.job import Job
@@ -11,6 +12,9 @@ from goodtablesio.celery_app import celery_app as celapp
 
 
 # Fixture
+
+FIXTURES_PATH = os.path.join(os.path.dirname(__file__), 'fixtures')
+
 
 def pytest_configure(config):
 
@@ -50,3 +54,21 @@ def celery_app():
     celapp.conf['task_always_eager'] = True
 
     return celapp
+
+
+@pytest.fixture()
+def sample_datapackage():
+    path = os.path.join(FIXTURES_PATH, 'datapackage.json')
+    yield open(path, 'rb')
+
+
+@pytest.fixture()
+def sample_csv():
+    path = os.path.join(FIXTURES_PATH, 'data.csv')
+    yield open(path, 'rb')
+
+
+@pytest.fixture()
+def sample_tableschema():
+    path = os.path.join(FIXTURES_PATH, 'schema.json')
+    yield open(path, 'rb')

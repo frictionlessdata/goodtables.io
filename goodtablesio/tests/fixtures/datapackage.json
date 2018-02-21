@@ -1,0 +1,21 @@
+{
+  "name": "sample-datapackage",
+  "resources": [
+    {
+      "name": "resource0",
+      "path": "data.csv",
+      "schema": {
+        "fields": [
+          {
+            "name": "id",
+            "type": "integer"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ]
+}
