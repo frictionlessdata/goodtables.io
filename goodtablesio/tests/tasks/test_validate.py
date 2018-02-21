@@ -39,6 +39,23 @@ def test_validate(_inspect):
     assert isinstance(updated_job['finished'], datetime.datetime)
 
 
+def test_validate_datapackage_file(sample_datapackage):
+    job = factories.Job(_save_in_db=True)
+    validation_conf = {
+        'source': [
+            {'preset': 'datapackage', 'source': 'file0'},
+        ],
+        'settings': {},
+    }
+    files = {
+        'file0': sample_datapackage.name,
+    }
+
+    job = validate(validation_conf, job.id, files)
+
+    assert job['error'] is None
+
+
 @pytest.mark.skip('now we enforce http scheme')
 def test_validate_skip_rows():
     source = 'text://a,b\n1,2\n#comment'
