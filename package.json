@@ -9,7 +9,7 @@
   "dependencies": {
     "axios": "^0.15.3",
     "goodtables": "^0.7.2",
-    "goodtables-ui": "github:frictionlessdata/goodtables-ui#9e82cc3ac6eced46cf70180be910a2907714e8a2",
+    "goodtables-ui": "^1.2.0",
     "marked": "^0.3.6",
     "moment": "^2.18.1",
     "parts-selector": "github:smth/parts-selector",
