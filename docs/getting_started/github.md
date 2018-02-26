@@ -25,5 +25,5 @@ Goodtables will then validate all tabular data files (CSV, XLS, XLSX, ODS) and [
 [gh-new-repo]: https://help.github.com/articles/create-a-repo/ "GitHub: Create new repository tutorial"
 [gtio-managesources]: https://goodtables.io/settings "Goodtables.io: Manage sources"
 [datapackage]: https://frictionlessdata.io/data-packages/ "Data Package"
-[gtio-dataschema]: writing_data_schema.html "Writing a data schema"
-[gtio-configuring]: configuring.html "Configuring goodtables.io"
+[gtio-dataschema]: ../writing_data_schema.html "Writing a data schema"
+[gtio-configuring]: ../../configuration/ "Configuring goodtables.io"
