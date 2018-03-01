@@ -26,6 +26,11 @@ def home():
     return render_component('Landing')
 
 
+@site.route('/about')
+def about():
+    return render_component('About')
+
+
 @site.route('/dashboard')
 def dashboard():
     if not current_user.is_authenticated:
