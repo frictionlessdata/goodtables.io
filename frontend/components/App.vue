@@ -70,6 +70,12 @@ export default {
 
         <!-- User -->
         <ul class="nav secondary">
+          <li>
+            <a href="https://docs.goodtables.io" rel="external">
+              <span class="icon-info"></span>
+              <span class="text">Help</span>
+            </a>
+          </li>
           <li class="feedback">
             <a
               href="#feedback"
