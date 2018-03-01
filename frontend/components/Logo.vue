@@ -4,7 +4,10 @@ import logoGoodtables from '../images/logo.svg'
 export default {
   name: 'Logo',
   props: {
-    baseUrl: String,
+    baseUrl: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
