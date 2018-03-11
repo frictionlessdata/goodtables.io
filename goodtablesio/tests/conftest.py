@@ -63,6 +63,12 @@ def sample_datapackage():
 
 
 @pytest.fixture()
+def sample_datapackage_zip():
+    path = os.path.join(FIXTURES_PATH, 'sample_datapackage.zip')
+    yield open(path, 'rb')
+
+
+@pytest.fixture()
 def sample_csv():
     path = os.path.join(FIXTURES_PATH, 'data.csv')
     yield open(path, 'rb')

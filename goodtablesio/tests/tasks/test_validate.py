@@ -56,6 +56,23 @@ def test_validate_datapackage_file(sample_datapackage):
     assert job['error'] is None
 
 
+def test_validate_defaults_zip_files_preset_to_datapackage(sample_datapackage_zip):
+    job = factories.Job(_save_in_db=True)
+    validation_conf = {
+        'source': [
+            {'source': 'file0'},
+        ],
+        'settings': {},
+    }
+    files = {
+        'file0': sample_datapackage_zip.name,
+    }
+
+    job = validate(validation_conf, job.id, files)
+
+    assert job['status'] == 'success'
+
+
 @pytest.mark.skip('now we enforce http scheme')
 def test_validate_skip_rows():
     source = 'text://a,b\n1,2\n#comment'

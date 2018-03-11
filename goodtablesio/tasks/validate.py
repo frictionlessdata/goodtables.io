@@ -39,6 +39,10 @@ def validate(validation_conf, job_id, files={}):
                 item['source'] = files[item['source']]
             if item.get('schema') in files:
                 item['schema'] = files[item['schema']]
+        # FIXME: We consider zip files as datapackages by default. Ideally we'd
+        # have a smarter way of detecting a zipped data package.
+        if not item.get('preset') and item['source'].lower().endswith('.zip'):
+            item['preset'] = 'datapackage'
 
     # Get report
     if 'settings' not in validation_conf:
