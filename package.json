@@ -6,6 +6,11 @@
   "engines": {
     "node": "~8.9.4"
   },
+  "scripts": {
+    "build": "webpack --progress --hide-modules",
+    "build:dev": "webpack --progress --hide-modules --output-pathinfo",
+    "build:watch": "webpack --progress --hide-modules --output-pathinfo --watch"
+  },
   "dependencies": {
     "axios": "^0.15.3",
     "goodtables": "^1.0.1",

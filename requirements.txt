@@ -6,6 +6,7 @@
 #
 alembic==0.8.9
 amqp==2.2.2               # via kombu
+asn1crypto==0.24.0        # via cryptography
 babel==2.5.1              # via flower
 billiard==3.5.0.3         # via celery
 blinker==1.4              # via raven
@@ -16,7 +17,7 @@ celery==4.0.0
 cffi==1.11.2              # via cryptography
 click==6.7                # via datapackage, flask, goodtables, python-dotenv, tableschema, tabulator
 contextlib2==0.5.5        # via raven
-cryptography==1.7.2
+cryptography==2.2.2
 datapackage==1.1.4        # via goodtables
 docutils==0.14            # via botocore, statistics
 et-xmlfile==1.0.1         # via openpyxl
@@ -47,7 +48,6 @@ markupsafe==1.0           # via jinja2, mako
 oauthlib==2.0.6           # via flask-oauthlib, requests-oauthlib
 openpyxl==2.4.9           # via tabulator
 psycopg2==2.7.3.2
-pyasn1==0.3.7             # via cryptography
 pycparser==2.18           # via cffi
 python-dateutil==2.6.1    # via botocore, tableschema
 python-dotenv==0.6.0

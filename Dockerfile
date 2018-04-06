@@ -1,4 +1,4 @@
-FROM python:3.5-alpine
+FROM python:3.6-alpine3.7
 
 MAINTAINER Open Knowledge International <sysadmin@okfn.org>
 
@@ -9,11 +9,12 @@ RUN apk add --no-cache --virtual build-dependencies \
     build-base \
     linux-headers \
     python3-dev \
-    openssl-dev \
+    libressl-dev \
+    nodejs \
+    nodejs-npm \
     readline-dev \
     git \
     curl \
-    nodejs \
     postgresql-dev \
     libpng-dev \
     libjpeg-turbo-dev \
@@ -26,7 +27,7 @@ RUN apk add --no-cache --virtual build-dependencies \
     bash \
     gettext \
     ca-certificates \
-    openssl \
+    libressl \
     libpq \
     libjpeg-turbo \
     libpng \
@@ -34,14 +35,22 @@ RUN apk add --no-cache --virtual build-dependencies \
     make \
  && update-ca-certificates
 
-COPY . ${APP_DIR}
-
 WORKDIR ${APP_DIR}
 
-RUN make install \
-  && make frontend \
-  && rm -rf node_modules \
-  && apk del build-dependencies
+ADD Makefile .
+# Only required because the Makefile uses it to get the package name
+ADD setup.py .
+
+ADD requirements.txt .
+RUN make install-backend
+
+ADD package.json .
+ADD package-lock.json .
+RUN make install-frontend
+
+COPY . ${APP_DIR}
+
+RUN make frontend
 
 EXPOSE 5000
 

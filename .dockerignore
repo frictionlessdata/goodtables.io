@@ -18,3 +18,5 @@ docs/
 build/
 coverage
 *.egg-info
+
+*.md
