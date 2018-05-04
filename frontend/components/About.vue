@@ -80,7 +80,7 @@ export default {
         platform, and;
       </li>
       <li>
-        <a href="https://frictionlessdata.org" rel="external">Frictionless Data</a>, a
+        <a href="https://frictionlessdata.io" rel="external">Frictionless Data</a>, a
         set of specifications and tools to work with data (of which
         Goodtables is part of).
       </li>

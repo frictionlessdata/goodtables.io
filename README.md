@@ -140,7 +140,7 @@ make test-e2e
 
 The current alpha version supports adding two data sources, GitHub repositories and Amazon S3 buckets.
 
-To try it out, go to http://goodtables.oklabs.org and log in with your GitHub account
+To try it out, go to [try.goodtables.io](http://try.goodtables.io) and log in with your GitHub account
 
 To add a Github Repo:
 
