@@ -61,7 +61,7 @@ export default {
             <a v-html="okiLogo" href="https://okfn.org" rel="external" ></a>
           </li>
           <li class="fd">
-            <a v-html="fdLogo" href="https://frictionlessdata.org" rel="external" ></a>
+            <a v-html="fdLogo" href="https://frictionlessdata.io" rel="external" ></a>
           </li>
         </ul>
         <p>
