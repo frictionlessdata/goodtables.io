@@ -146,7 +146,7 @@ def try_goodtables():
     })
 
 
-@site.route('/public/<path:filename>', subdomain='try')
+@site.route('/public/<path:filename>', subdomain=settings.GTIO_TRY_SUBDOMAIN)
 def try_goodtables_public(filename):
     return send_from_directory(current_app.static_folder, filename)
 
