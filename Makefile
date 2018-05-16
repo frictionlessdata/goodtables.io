@@ -72,13 +72,13 @@ migrate: ## Run database migrations for the app
 	alembic upgrade head
 
 frontend: ## Compile the frontend assets
-	NODE_ENV=production webpack --progress --hide-modules
+	npm run build
 
 frontend-dev: ## Compile the frontend assets for development
-	webpack --output-pathinfo --progress --hide-modules
+	npm run build:dev
 
 frontend-watch: ## Compile the frontend assets for development using watch mode
-	webpack --output-pathinfo --progress --hide-modules --watch
+	npm run build:watch
 
 app: ## Serve the app with Gunicorn
 	gunicorn goodtablesio.app:app --config gunicorn_settings.py

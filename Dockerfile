@@ -1,3 +1,28 @@
+FROM node:8-alpine as builder
+MAINTAINER Open Knowledge International <sysadmin@okfn.org>
+WORKDIR /app
+
+RUN apk add --no-cache \
+    build-base \
+    git \
+    libpng-dev \
+    libjpeg-turbo-dev \
+    libffi-dev \
+    bash \
+    make
+
+COPY package.json .
+COPY package-lock.json .
+
+RUN npm install
+
+COPY setup.py .
+COPY Makefile .
+COPY webpack.config.js .
+
+COPY . .
+RUN make frontend
+
 FROM python:3.5-alpine
 
 MAINTAINER Open Knowledge International <sysadmin@okfn.org>
@@ -5,15 +30,15 @@ MAINTAINER Open Knowledge International <sysadmin@okfn.org>
 ENV LANG=en_US.UTF-8 \
     APP_DIR=/srv/app
 
+WORKDIR ${APP_DIR}
+
 RUN apk add --no-cache --virtual build-dependencies \
     build-base \
     linux-headers \
     python3-dev \
     openssl-dev \
     readline-dev \
-    git \
     curl \
-    nodejs \
     postgresql-dev \
     libpng-dev \
     libjpeg-turbo-dev \
@@ -34,14 +59,14 @@ RUN apk add --no-cache --virtual build-dependencies \
     make \
  && update-ca-certificates
 
-COPY . ${APP_DIR}
+COPY requirements.txt .
+COPY Makefile .
 
-WORKDIR ${APP_DIR}
-
-RUN make install \
-  && make frontend \
-  && rm -rf node_modules \
+RUN make install-backend \
   && apk del build-dependencies
+
+COPY --from=builder /app/public ./public
+COPY . .
 
 EXPOSE 5000
 
