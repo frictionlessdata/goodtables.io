@@ -21,6 +21,7 @@ log = logging.getLogger(__name__)
 BASE_URL = os.environ['BASE_URL']
 DEBUG = os.environ.get('FLASK_DEBUG', False)
 GTIO_SECRET_KEY = os.environ['GTIO_SECRET_KEY']
+GTIO_TRY_SUBDOMAIN = os.environ.get('GTIO_TRY_SUBDOMAIN', 'try')
 GLOB_EXCLUDED_FORMATS = ['json', 'sql']
 GOOGLE_ANALYTICS_CODE = os.environ.get('GOOGLE_ANALYTICS_CODE')
 MAX_TABLES_PER_SOURCE = 100

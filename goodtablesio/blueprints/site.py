@@ -137,7 +137,7 @@ def badge(integration_name, source_name):
 # To have an ability to dev it:
 # - add to /etc/hosts: 127.0.0.1 goodtables.dev try.goodtables.dev
 # - set in .env BASE_URL=http://goodtables.dev:5000
-@site.route('/', subdomain='try')
+@site.route('/', subdomain=settings.GTIO_TRY_SUBDOMAIN)
 def try_goodtables():
     return render_component('DemoForm', props={
         'apiUrl': settings.DEMO_API_URL,
