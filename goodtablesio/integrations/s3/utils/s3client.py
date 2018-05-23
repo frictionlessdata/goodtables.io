@@ -39,7 +39,7 @@ class S3Client(object):
     def check_connection(self, bucket_name):
         try:
             return self.client.head_bucket(Bucket=bucket_name)
-        except botocore.exceptions.ParamValidationError as e:
+        except botocore.exceptions.ParamValidationError:
                 raise S3Exception(
                     'Invalid bucket name: {}'.format(bucket_name),
                     's3-invalid-bucket-name')
