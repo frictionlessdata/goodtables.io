@@ -14,6 +14,12 @@
   <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
+  <!-- Consent manager -->
+  {% if google_analytics_code %}
+    <script>var okiConsent = {analyticsTrackingID: '{{ google_analytics_code }}'}</script>
+    <script src="https://a.okfn.org/html/oki/consent/assets/js/consent.js"></script>
+  {% endif %}
+
 </head>
 <body>
 
@@ -42,19 +48,6 @@
       },
     })
   </script>
-
-  {% if google_analytics_code %}
-  <script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-    ga('create', '{{ google_analytics_code }}', 'auto');
-    ga('send', 'pageview');
-
-  </script>
-  {% endif %}
 
 </body>
 </html>
