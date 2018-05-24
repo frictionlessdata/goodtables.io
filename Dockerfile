@@ -36,7 +36,7 @@ RUN apk add --no-cache --virtual build-dependencies \
     build-base \
     linux-headers \
     python3-dev \
-    openssl-dev \
+    libressl-dev \
     readline-dev \
     curl \
     postgresql-dev \
@@ -51,7 +51,7 @@ RUN apk add --no-cache --virtual build-dependencies \
     bash \
     gettext \
     ca-certificates \
-    openssl \
+    libressl \
     libpq \
     libjpeg-turbo \
     libpng \

@@ -1,7 +1,7 @@
 alembic==0.8.9
 boto3==1.4.4
 celery==4.0.0
-cryptography==1.7.2
+cryptography==2.2.2
 flask==0.11.1
 flask-cors==3.0.2
 flask-login==0.4.0
