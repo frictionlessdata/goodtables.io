@@ -98,6 +98,12 @@ export default {
               </div>
             </div>
           </li>
+          <li>
+            <a href="https://okfn.org/privacy-policy/" rel="external">
+              <span class="icon-list"></span>
+              <span class="text">Privacy policy</span>
+            </a>
+          </li>
           <li v-if="userName" class="log-out">
             <a :href="`${baseUrl}/user/logout`">
               <img v-if="avatarURL" :src="avatarURL" alt="" />
