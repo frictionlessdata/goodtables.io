@@ -82,7 +82,7 @@ Writing this as a table schema in our data package, we have:
           },
           {
             "name": "amount",
-            "type": "numeric",
+            "type": "number",
             "description": "Transaction value in Euros",
             "constraints": {
               "minimum": 0
