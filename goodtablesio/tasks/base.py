@@ -56,6 +56,11 @@ def _on_failure(exception, job_class, job_id):
     elif isinstance(exception, SoftTimeLimitExceeded):
         message = 'Time limit exceeded'
     else:
+        # To prevent session from break because of unhandled error with no rollback
+        # https://github.com/frictionlessdata/goodtables.io/issues/97
+        # https://github.com/frictionlessdata/goodtables.io/issues/317
+        log.info('Database session rollback by worker error handler')
+        database['session'].rollback()
         message = 'Internal error'
         log.exception(exception)
 
