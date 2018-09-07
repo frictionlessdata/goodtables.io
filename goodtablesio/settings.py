@@ -52,7 +52,7 @@ else:
 
 broker_url = os.environ['BROKER_URL']
 result_backend = os.environ['RESULT_BACKEND']
-task_soft_time_limit = 10 * 60 # seconds = 10 minutes
+task_soft_time_limit = 10 * 60  # seconds = 10 minutes
 task_default_queue = 'default'
 task_serializer = 'json'
 result_serializer = 'json'

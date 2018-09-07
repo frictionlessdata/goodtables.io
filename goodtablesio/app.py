@@ -14,6 +14,7 @@ from goodtablesio.blueprints.user import user
 from goodtablesio.integrations.github.blueprint import github
 from goodtablesio.integrations.s3.blueprint import s3
 from goodtablesio.utils.frontend import render_component
+from goodtablesio.utils.database import cleanup_session
 from goodtablesio.services import database
 log = logging.getLogger(__name__)
 
@@ -67,10 +68,7 @@ def server_error(err):
 
 @app.errorhandler(sqlalchemy.exc.SQLAlchemyError)
 def error_handler(err):
-    # To prevent session from break because of unhandled error with no rollback
-    # https://github.com/frictionlessdata/goodtables.io/issues/97
-    log.info('Database session rollback by server error handler')
-    database['session'].rollback()
+    cleanup_session(database['session'])
     raise err
 
 

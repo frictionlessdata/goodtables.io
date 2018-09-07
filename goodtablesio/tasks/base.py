@@ -6,6 +6,7 @@ from goodtablesio import exceptions
 from goodtablesio.models.job import Job
 from goodtablesio.services import database
 from goodtablesio.models.internal_job import InternalJob
+from goodtablesio.utils.database import cleanup_session
 log = logging.getLogger(__name__)
 
 
@@ -56,11 +57,7 @@ def _on_failure(exception, job_class, job_id):
     elif isinstance(exception, SoftTimeLimitExceeded):
         message = 'Time limit exceeded'
     else:
-        # To prevent session from break because of unhandled error with no rollback
-        # https://github.com/frictionlessdata/goodtables.io/issues/97
-        # https://github.com/frictionlessdata/goodtables.io/issues/317
-        log.info('Database session rollback by worker error handler')
-        database['session'].rollback()
+        cleanup_session(database['session'])
         message = 'Internal error'
         log.exception(exception)
 
