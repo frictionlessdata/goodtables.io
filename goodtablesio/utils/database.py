@@ -29,7 +29,7 @@ def cleanup_session(session):
         since = utcnow - datetime.timedelta(seconds=settings.task_soft_time_limit)
         error = {'message': 'Time limit exceeded'}
         (session.query(model)
-            .filter(model.finished == None, model.created < since)
+            .filter(model.finished == None, model.created < since)  # noqa
             .update({'finished': utcnow, 'status': 'error', 'error': error},
                 synchronize_session='fetch'))
         session.commit()
