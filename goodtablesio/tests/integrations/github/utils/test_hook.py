@@ -47,6 +47,27 @@ def test_get_details_from_hook_payload_PUSH():
         'branch_name': 'some-branch',
     }
 
+    payload = {
+      'ref': 'refs/heads/some-branch',
+      'repository': {'name': 'test-repo', 'owner': {'name': 'test-owner'}},
+      'head_commit': {
+          'id': 'test-sha',
+          'message': 'Test message',
+          'author': {
+              'name': 'no-username',
+          }},
+      'sender': {'login': 'test-user'},
+    }
+    assert get_details_from_hook_payload(payload) == {
+        'owner': 'test-owner',
+        'repo': 'test-repo',
+        'sha': 'test-sha',
+        'is_pr': False,
+        'commit_message': 'Test message',
+        'author_name': 'test-user',
+        'branch_name': 'some-branch',
+    }
+
 
 def test_get_details_from_hook_payload_PR():
     payload = {
