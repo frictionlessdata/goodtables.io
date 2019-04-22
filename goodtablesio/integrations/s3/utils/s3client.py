@@ -40,9 +40,9 @@ class S3Client(object):
         try:
             return self.client.head_bucket(Bucket=bucket_name)
         except botocore.exceptions.ParamValidationError:
-                raise S3Exception(
-                    'Invalid bucket name: {}'.format(bucket_name),
-                    's3-invalid-bucket-name')
+            raise S3Exception(
+                'Invalid bucket name: {}'.format(bucket_name),
+                's3-invalid-bucket-name')
         except botocore.exceptions.ClientError as e:
             if e.response['Error']['Code'] == 'EndpointConnectionError':
                 raise S3Exception(
