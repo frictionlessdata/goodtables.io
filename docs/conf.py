@@ -52,8 +52,9 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'goodtables.io'
-copyright = '2017, Open Knowledge International'
-author = 'Open Knowledge International'
+copyright = '2017, Open Knowledge Foundation'
+author = 'Open Knowledge Foundation
+'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -137,7 +138,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'Goodtables.tex', 'Goodtables.io Documentation',
-     'Open Knowledge International', 'manual'),
+     'Open Knowledge Foundation', 'manual'),
 ]
 
 
