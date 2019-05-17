@@ -17,7 +17,7 @@ export default {
     <p>
       Goodtables.io is a continuous validation service for tabular data by
       the <a href="https://okfn.org" rel="external">Open Knowledge
-      International</a>. It allows for the checking of common erros and problems
+      Foundation</a>. It allows for the checking of common errors and problems
       in tabular data files, such as:
     </p>
     <ul>
@@ -52,7 +52,7 @@ export default {
     <h2>Who?</h2>
     <p>
       This service is provided by the <a href="https://okfn.org"
-      rel="external">Open Knowledge International</a>, a global non-profit
+      rel="external">Open Knowledge Foundation</a>, a global non-profit
       organisation that focuses on helping civil society groups access and
       use data to achieve their goals. Since we started in 2004, we have been
       pushing governments and organisations to release data, building tools and
