@@ -65,7 +65,7 @@ export default {
           </li>
         </ul>
         <p>
-          GoodTables is part of the <a href="https://frictionlessdata.io" rel="external">Frictionless Data</a> project from <a href="https://okfn.org" rel="external">Open Knowledge International</a>, which supports a wider discussion around Open Data quality. We believe that GoodTables can reduce the processing time of your data publication workflow, whatever it may be. <a href="https://okfn.org/privacy-policy/">Privacy policy</a>.
+          GoodTables is part of the <a href="https://frictionlessdata.io" rel="external">Frictionless Data</a> project from <a href="https://okfn.org" rel="external">Open Knowledge Foundation</a>, which supports a wider discussion around open data quality. We believe that GoodTables can reduce the processing time of your data publication workflow, whatever it may be. <a href="https://okfn.org/privacy-policy/">Privacy policy</a>.
         </p>
       </div>
     </section>
