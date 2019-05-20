@@ -1,5 +1,5 @@
 FROM node:8-alpine as builder
-MAINTAINER Open Knowledge International <sysadmin@okfn.org>
+MAINTAINER Open Knowledge Foundation <sysadmin@okfn.org>
 WORKDIR /app
 
 RUN apk add --no-cache \
@@ -25,7 +25,7 @@ RUN make frontend
 
 FROM python:3.5-alpine
 
-MAINTAINER Open Knowledge International <sysadmin@okfn.org>
+MAINTAINER Open Knowledge Foundation <sysadmin@okfn.org>
 
 ENV LANG=en_US.UTF-8 \
     APP_DIR=/srv/app

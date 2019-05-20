@@ -46,7 +46,7 @@ setup(
             'goodtablesio = goodtablesio.commands:main',
         ]
     },
-    author='Open Knowledge International',
+    author='Open Knowledge Foundation',
     author_email='info@okfn.org',
     url='https://github.com/frictionlessdata/goodtables.io',
     license='GNU Affero General Public License (AGPL) v3.0',
