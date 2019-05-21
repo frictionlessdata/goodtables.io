@@ -81,7 +81,6 @@ bash1$ make app-dev
 bash2$ make queue-dev
 ```
 
-
 The development server runs on `http://localhost:5000`.
 
 ### Frontend building
