@@ -158,3 +158,4 @@ To add an S3 Bucket:
 * Click on the "Add Bucket" button from the dashboard.
 * Enter an AWS Access Key Id and a Secret Access Key pair, and the name of the bucket. Your keys should allow reading the contents of the bucket, as well as creating notification events on it. Click on "Add bucket"
 * From now on, every time you update a file on the S3 bucket (upload or delete) a validation job will be run on goodtables.io.
+
