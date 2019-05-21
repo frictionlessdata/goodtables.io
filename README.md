@@ -154,7 +154,6 @@ To add a Github Repo:
 
 The statuses link to the full report on the prototype app.
 
-
 To add an S3 Bucket:
 
 * Click on the "Add Bucket" button from the dashboard.
