@@ -47,7 +47,8 @@ install:
 
 script:
   - make test
-  - make docs
+  # TODO: recover
+  # - make docs
 
 after_success:
   - pip install coveralls

@@ -18,7 +18,7 @@ cffi==1.11.5              # via cryptography
 click==6.7                # via datapackage, flask, goodtables, python-dotenv, tableschema, tabulator
 contextlib2==0.5.5        # via raven
 cryptography==2.2.2
-datapackage==1.1.4        # via goodtables
+datapackage==1.9.2        # via goodtables
 docutils==0.14            # via botocore, statistics
 et-xmlfile==1.0.1         # via openpyxl
 ezodf==0.3.2              # via goodtables, tabulator
