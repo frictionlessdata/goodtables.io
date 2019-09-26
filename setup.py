@@ -25,7 +25,7 @@ TESTS_REQUIRE = [
     'tox',
 ]
 README = read('README.md')
-VERSION = '1.0.0'
+VERSION = '1.0.1'
 PACKAGES = find_packages(exclude=['examples', 'tests'])
 
 
