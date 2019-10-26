@@ -4,4 +4,4 @@ Please replace this line with full information about your idea or problem. If it
 
 ---
 
-Please preserve this line to notify @amercader (maintainer of this repository)
+Please preserve this line to notify @amercader (lead of this repository)

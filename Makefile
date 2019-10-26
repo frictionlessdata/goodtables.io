@@ -7,7 +7,7 @@ export PATH := $(PATH):./node_modules/.bin
 PACKAGE := $(shell grep '^PACKAGE =' setup.py | cut -d "'" -f2)
 REPOSITORY := 'frictionlessdata/goodtables.io'
 SHELL := /bin/bash
-MAINTAINER := $(shell head -n 1 MAINTAINER.md)
+LEAD := $(shell head -n 1 LEAD.md)
 
 help: # http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -125,5 +125,5 @@ docs-watch:
 	sphinx-autobuild docs/ docs/_build/html/
 
 templates:
-	sed -i -E "s/@(\w*)/@$(MAINTAINER)/" .github/issue_template.md
-	sed -i -E "s/@(\w*)/@$(MAINTAINER)/" .github/pull_request_template.md
+	sed -i -E "s/@(\w*)/@$(LEAD)/" .github/issue_template.md
+	sed -i -E "s/@(\w*)/@$(LEAD)/" .github/pull_request_template.md
