@@ -12,7 +12,7 @@
     "build:watch": "webpack --output-pathinfo --progress --hide-modules --watch"
   },
   "dependencies": {
-    "axios": "^0.15.3",
+    "axios": "^0.19.0",
     "goodtables": "^1.0.1",
     "goodtables-ui": "^1.2.1",
     "marked": "^0.3.6",
