@@ -16,6 +16,6 @@ python-dotenv==0.6.0
 pyyaml==4.2b1
 raven[flask]==6.0.0
 redis==2.10.5
-requests==2.11.1
+requests==2.20.0
 sqlalchemy==1.1.4
 tabulator[ods]==1.29.0
