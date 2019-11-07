@@ -47,7 +47,7 @@ lxml==3.8.0               # via goodtables, tabulator
 mako==1.0.7               # via alembic
 markupsafe==1.0           # via jinja2, mako
 oauthlib==2.0.6           # via flask-oauthlib, requests-oauthlib
-openpyxl==3.0.0           # via tabulator
+openpyxl==2.6.4           # via tabulator
 psycopg2==2.7.3.2
 pycparser==2.18           # via cffi
 python-dateutil==2.6.1    # via botocore, tableschema
