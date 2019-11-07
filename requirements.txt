@@ -26,7 +26,7 @@ ezodf==0.3.2              # via goodtables, tabulator
 flask-cors==3.0.2
 flask-login==0.4.0
 flask-oauthlib==0.9.3
-flask==0.11.1
+flask==1.0
 flower==0.9.1
 github3.py==0.9.6
 goodtables[ods]==2.4.0
@@ -73,5 +73,5 @@ uritemplate.py==3.0.2     # via github3.py
 uritemplate==3.0.0        # via uritemplate.py
 urllib3==1.25.6           # via botocore
 vine==1.1.4               # via amqp
-werkzeug==0.12.2          # via flask
+werkzeug==0.16.0          # via flask
 xlrd==1.1.0               # via tabulator
