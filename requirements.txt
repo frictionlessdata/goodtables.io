@@ -45,7 +45,7 @@ jsonpointer==1.13         # via datapackage
 jsonschema==2.5.1
 kombu==4.1.0              # via celery
 linear-tsv==1.0.0         # via tabulator
-lxml==3.8.0               # via goodtables, tabulator
+lxml==4.4.1               # via goodtables, tabulator
 mako==1.0.7               # via alembic
 markupsafe==1.0           # via jinja2, mako
 oauthlib==2.0.6           # via flask-oauthlib, requests-oauthlib
