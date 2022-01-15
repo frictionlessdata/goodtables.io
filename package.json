@@ -16,7 +16,7 @@
     "goodtables": "^1.0.3",
     "goodtables-ui": "^1.2.1",
     "js-yaml": "^3.13.1",
-    "marked": "^0.7.0",
+    "marked": "^4.0.10",
     "moment": "^2.18.1",
     "parts-selector": "github:smth/parts-selector",
     "qs": "^6.5.0",
