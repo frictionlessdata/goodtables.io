@@ -1,3 +1,5 @@
+# ⚠ Goodtables is not being developed and maintained anymore in favor of the active [project](https://github.com/frictionlessdata/repository/). You can read more [here](https://discuss.okfn.org/t/important-goodtables-io-is-retired-and-out-of-support-as-of-1-december-2022/11224) ⚠
+
 # goodtables.io
 
 [![Travis](https://img.shields.io/travis/frictionlessdata/goodtables.io/master.svg)](https://travis-ci.org/frictionlessdata/goodtables.io)
