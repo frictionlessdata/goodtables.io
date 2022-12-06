@@ -19,7 +19,7 @@
     "marked": "^0.7.0",
     "moment": "^2.18.1",
     "parts-selector": "github:smth/parts-selector",
-    "qs": "^6.5.0",
+    "qs": "^6.5.3",
     "vue": "^2.1.0",
     "vuebar": "0.0.18"
   },
