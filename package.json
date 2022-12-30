@@ -62,7 +62,7 @@
     "karma-sinon-chai": "^1.2.4",
     "karma-spec-reporter": "0.0.26",
     "karma-webpack": "^3.0.5",
-    "mocha": "^6.2.2",
+    "mocha": "^10.2.0",
     "nightwatch": "^0.9.12",
     "node-sass": "^4.13.0",
     "phantomjs": "^2.1.7",
